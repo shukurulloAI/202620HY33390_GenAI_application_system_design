@@ -1,0 +1,4 @@
+# Local waste-guide scraping files
+/Vitou_EDA/waste_disposal_scrape.py
+/Data/waste_disposal.db
+/Data/image/
