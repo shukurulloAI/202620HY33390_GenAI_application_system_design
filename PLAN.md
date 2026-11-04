@@ -2,7 +2,7 @@
 
 Course: 202620HY33390 Design of Generative AI Application Systems (Hanyang University)
 Team: Shukurullo, Vitou, Anar, Naura
-Plan version: v2, 2026-11-03 (v2: team roles assigned)
+Plan version: v3, 2026-11-03 (v2: team roles assigned; v3: Phase 1 baseline done)
 
 This file is the project's single plan. Each design choice is linked to the lesson that taught it, so the final report can show which course concepts we used and how we measured them.
 
@@ -484,7 +484,7 @@ Undefined cases are declared, e.g., Recall@k for abstain cases = `None`, exclude
 | Lexical search | `rank_bm25` + `kiwipiepy` Korean tokenizer | Lessons 4–5 hybrid |
 | Reranker | `BAAI/bge-reranker-v2-m3` (CrossEncoder) | Lesson 5 |
 | Orchestration | LangChain (explicit steps) or plain Python with the same stage boundaries | Lesson 4 |
-| Generator LLM | Ollama `qwen2.5:3b` / `qwen3:4b` (course default) behind an `LLMClient` interface; optional stronger hosted model | Lesson 1 provider boundary; test Korean quality first |
+| Generator LLM | Ollama `qwen2.5:7b` (default since Phase 1) behind an `LLMClient` interface; `qwen2.5:3b` = course baseline; optional stronger hosted model | Lesson 1 provider boundary; 3b contradicted evidence in Phase 1 probes (`experiments/results/PHASE1_NOTES.md`) |
 | Judge LLM | A stronger model than the generator, pinned | Lesson 6 |
 | Evaluation | Own metrics code (chunk-ID based) + `ragas` | Lesson 6 |
 | UI | Streamlit | Simple demo |
@@ -572,19 +572,23 @@ Preprocessing (fixes from §3.2):
 - [ ] Data checks: unique IDs, no empty text, flat metadata types; short data-quality summary for Anar's report
 
 #### Shukurullo: model implementation (RAG pipeline)
-- [ ] Repo setup: `.gitignore`, `requirements.txt`, folder structure (§9)
-- [ ] `llm_client.py`: Ollama + fixture client; test Korean quality and JSON reliability first
-- [ ] `build_index.py` + `verify_index.py`: Qdrant collections for bge-m3 and bge-small-en; verification report
-- [ ] `retrieve.py`: dense, BM25 (kiwipiepy), RRF fusion, cross-encoder rerank
-- [ ] `schedule_tool.py` + date helper, on Vitou's schedule table
+- [x] Repo setup: `.gitignore`, `requirements.txt`, folder structure (§9)
+- [x] `llm_client.py`: Ollama + fixture client; Korean and JSON tested (Phase 1 notes)
+- [x] `build_index.py` + `verify_index.py`: bge-m3 collection built, verification PASS
+- [ ] bge-small-en collection for E2 (`python -m ingest.build_index --embedding bge-small-en`)
+- [x] `retrieve.py`: dense retrieval (baseline)
+- [ ] `retrieve.py`: BM25 (kiwipiepy), RRF fusion, cross-encoder rerank
+- [x] `schedule_tool.py` + date helper (works on the raw CSV now; switches to `preprocess/schedule.csv` automatically)
 - [ ] `router.py`: intent/entity JSON + rewrite validation + fallbacks
 - [ ] `gate.py`: sufficiency gate + 2018/2026 conflict policy
-- [ ] `context.py`: `ContextBudget` + evidence packing
-- [ ] `generate.py`: prompt versions (baseline / zero-shot / few-shot)
+- [x] `context.py`: `ContextBudget` + evidence packing (tokenizer-based counts)
+- [x] `generate.py`: zero-shot contract prompt `answer_v1` + JSON schema + citation check
+- [ ] Prompt versions for E1: baseline (question only) and few-shot
 - [ ] `validate.py`: schema, allowed bins, citation resolution
-- [ ] `pipeline.py`: `answer()` for the website and `run_case()` for evaluation; trace writing
+- [x] `pipeline.py`: `answer()` for the website and `run_case()` for evaluation; trace writing
 - [ ] `experiments/configs/E1–E8`: each variant runnable with one command, so Anar can run it
-- [ ] CLI demo; short implementation notes for the report
+- [x] CLI demo (`python -m rag.pipeline`); Phase 1 notes in `experiments/results/PHASE1_NOTES.md`
+- [x] Developer probe set (`experiments/run_probes.py`, 12 questions) for quick regression checks
 
 #### Anar: evaluation and reports
 Evaluation:
@@ -649,16 +653,16 @@ No deadline is fixed in this plan. Phases are ordered by dependency, and each on
 - [x] Item chunk builder → 394 chunks (`item_guide/`) (done)
 - [ ] CSV fixes, schedule table, lookups, glossary, manifest, UUIDv5 IDs (Vitou)
 - [ ] API key + 770-item snapshot (Vitou, optional)
-- [ ] `.gitignore`, `requirements.txt`, folders (Shukurullo)
+- [x] `.gitignore`, `requirements.txt`, folders (Shukurullo)
 - [ ] Case schema + first test cases (Anar)
 - [ ] Mock-data website skeleton (Naura)
 
 **Phase 1: Baseline system + test set**
 - [ ] Test set v1 frozen: dev + test (Anar)
-- [ ] Qdrant index + verification report (Shukurullo)
-- [ ] Baseline pipeline: vector-only retrieval → simple prompt → answer, CLI (Shukurullo)
-- [ ] Schedule tool v1 (Shukurullo)
-- [ ] `LLMClient` with Ollama; Korean + JSON check (Shukurullo)
+- [x] Qdrant index + verification report (Shukurullo)
+- [x] Baseline pipeline: vector-only retrieval → simple prompt → answer, CLI (Shukurullo)
+- [x] Schedule tool v1 (Shukurullo)
+- [x] `LLMClient` with Ollama; Korean + JSON check (Shukurullo)
 - [ ] `run_eval.py` + `metrics.py`; first baseline numbers on dev (Anar)
 
 **Phase 2: Improvements, one at a time (dev set only)**
@@ -734,7 +738,7 @@ Maintenance (Moderna lesson): each source has an owner, a revision hash and a re
 
 ## 14. Open decisions
 
-- [ ] LLM for generation (local Ollama model vs hosted API) and for judging
+- [ ] LLM for generation: `qwen2.5:7b` chosen for now (Phase 1 probes); still open: hosted model for low-resource languages, and the judge model
 - [ ] Which extra languages besides English and Korean
 - [ ] Whether to include the 770-item API snapshot (needs an API key)
 - [ ] Project deadline, presentation date and demo format

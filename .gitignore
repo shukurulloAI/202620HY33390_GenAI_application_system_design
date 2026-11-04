@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Generated state (rebuild with the scripts; never commit)
+qdrant_data/
+traces/
+.cache/
+
+# Secrets
+.env
