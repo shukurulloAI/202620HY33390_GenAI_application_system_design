@@ -83,9 +83,9 @@ class ScheduleRow:
         age = self.data_age_days()
         return age is None or age > STALE_AFTER_DAYS
 
-    def to_evidence(self, waste_type: str | None = None) -> str:
-        """Text block for the generator. Days are already in English, so the model
-        never has to translate or compute them."""
+    def to_evidence(self, waste_type: str | None = None, day: "DayRef | None" = None) -> str:
+        """Text block for the generator. Days are already in English, and a date the
+        user asked about is checked here, so the model never computes dates."""
         types = [waste_type] if waste_type in WASTE_TYPES else list(WASTE_TYPES)
         lines = [f"[District schedule] {self.province} {self.district} - zone {self.zone}",
                  f"Areas: {', '.join(self.area_names) or 'whole district'}",
@@ -99,6 +99,9 @@ class ScheduleRow:
                          f"time {when}; method: {rule.method or 'not given'}")
         if self.bulky_place and "bulky" in types:
             lines.append(f"Bulky waste place: {self.bulky_place}")
+        if day is not None:
+            for check in day_checks(self, types, day):
+                lines.append(check["text"])
         lines.append(f"No collection: {self.no_collection_days or 'not given'}")
         lines.append(f"Office: {self.office} {self.phone}".strip())
         stale = " (older than 1 year - may be outdated)" if self.is_stale() else ""
@@ -242,9 +245,12 @@ class ScheduleTable:
                 message=f"'{rows[0].district}' exists in {len(provinces)} provinces")
 
         if dong:
+            # The official name of a merged dong is '상계6·7동'; the table has 상계6동, 상계7동.
+            dong = re.sub(r"(\d+)(?:\s*[,.·ㆍ]\s*\d+)+", r"\1", dong.strip())
             target = area_base(dong)
-            zone_rows = [r for r in rows
-                         if any(a == dong or area_base(a) == target for a in r.area_names)]
+            # An exact name wins; the base ('상계동' for 상계1동, 상계2동, ...) is the fallback.
+            zone_rows = ([r for r in rows if dong in r.area_names]
+                         or [r for r in rows if any(area_base(a) == target for a in r.area_names)])
             if zone_rows:
                 message = (f"'{dong}' matches {len(zone_rows)} zones "
                            f"({', '.join(a for r in zone_rows for a in r.area_names if area_base(a) == target)}); "
@@ -274,6 +280,50 @@ def put_out_days(row: ScheduleRow, waste_type: str, start: date | None = None,
     rule = row.rules[waste_type]
     return [(start + timedelta(d)).isoformat() for d in range(n_days)
             if (start + timedelta(d)).weekday() in rule.days]
+
+
+@dataclass(frozen=True)
+class DayRef:
+    label: str                # what the user said: "tonight", "tomorrow", "sun"
+    date: date
+
+    @property
+    def weekday_en(self) -> str:
+        return DAY_EN[self.date.weekday()]
+
+
+def resolve_day(day_ref: str | None, today: date | None = None) -> DayRef | None:
+    """'today' / 'tonight' / 'tomorrow' / 'mon'..'sun' -> a concrete KST date.
+    Weekday names mean the next such day, today included."""
+    if not day_ref or day_ref == "none":
+        return None
+    today = today or datetime.now(KST).date()
+    if day_ref in ("today", "tonight"):
+        return DayRef(day_ref, today)
+    if day_ref == "tomorrow":
+        return DayRef(day_ref, today + timedelta(1))
+    names = [d.lower() for d in DAY_EN]
+    if day_ref in names:
+        ahead = (names.index(day_ref) - today.weekday()) % 7
+        return DayRef(day_ref, today + timedelta(ahead))
+    return None
+
+
+def day_checks(row: ScheduleRow, types: list[str], day: DayRef) -> list[dict]:
+    """Is each waste type collected on the asked day? Holidays are not applied."""
+    out = []
+    for t in types:
+        rule = row.rules[t]
+        if not rule.days:
+            continue
+        allowed = day.date.weekday() in rule.days
+        window = f" between {rule.start} and {rule.end}" if rule.start and rule.end else ""
+        verdict = f"CAN be put out{window}" if allowed else "can NOT be put out that day"
+        out.append({"waste_type": t, "date": day.date.isoformat(), "weekday": day.weekday_en,
+                    "allowed": allowed, "start": rule.start, "end": rule.end,
+                    "text": (f"Date check: {day.label} = {day.weekday_en} {day.date.isoformat()} "
+                             f"(KST). {WASTE_TYPE_EN[t]} {verdict}.")})
+    return out
 
 
 def main() -> None:

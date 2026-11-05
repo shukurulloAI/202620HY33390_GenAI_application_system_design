@@ -12,6 +12,7 @@ import re
 from functools import lru_cache
 
 from rag import config
+from rag.bins import BINS
 
 LANGUAGE_NAMES = {"en": "English", "ko": "Korean", "zh": "Chinese", "uz": "Uzbek",
                   "vi": "Vietnamese", "ru": "Russian", "ja": "Japanese"}
@@ -21,7 +22,7 @@ ANSWER_SCHEMA = {
     "type": "object",
     "properties": {
         "status": {"type": "string", "enum": list(STATUSES)},
-        "bin": {"type": "string"},
+        "bin": {"type": "string", "enum": [""] + list(BINS)},   # constrained decoding
         "bin_en": {"type": "string"},
         "how_to_prepare": {"type": "array", "items": {"type": "string"}},
         "answer_text": {"type": "string"},
@@ -41,11 +42,20 @@ def load_prompt(version: str) -> tuple[str, str]:
     return system.replace("=== SYSTEM ===", "").strip(), user.strip()
 
 
+CONFLICT_RULES = {
+    "prefer_2026": ("- If a 2026 rule and a 2018 rule disagree, follow the 2026 rule and say "
+                    "that the rule changed in 2026."),
+    "none": "",
+}
+
+
 def build_prompt(version: str, question: str, evidence_text: str,
-                 lang: str | None) -> tuple[str, str]:
+                 lang: str | None, conflict_policy: str = "prefer_2026") -> tuple[str, str]:
     system, user = load_prompt(version)
     language = LANGUAGE_NAMES.get(lang or "", "the same language as the question")
-    prompt = (user.replace("{evidence}", evidence_text or "(no evidence found)")
+    prompt = (user.replace("{conflict_rule}\n", CONFLICT_RULES[conflict_policy] + "\n"
+                           if CONFLICT_RULES[conflict_policy] else "")
+                  .replace("{evidence}", evidence_text or "(no evidence found)")
                   .replace("{language}", language)
                   .replace("{question}", question))
     return system, prompt

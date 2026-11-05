@@ -1,0 +1,65 @@
+{
+  "built_at": "2026-11-04T03:38:41+00:00",
+  "collection": "items_bge-small-en_5c38ec7c_dac8d09c",
+  "status": "PASS",
+  "representation_contract": {
+    "embedding_key": "bge-small-en",
+    "model_id": "BAAI/bge-small-en-v1.5",
+    "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "dimension": 384,
+    "normalized": true,
+    "distance": "Cosine",
+    "query_prefix": "Represent this sentence for searching relevant passages: ",
+    "max_seq_length": 512,
+    "languages": "English"
+  },
+  "corpus": {
+    "path": "item_guide/output/item_chunks.jsonl",
+    "sha256": "dac8d09c5687e4f9c6bd6e4aa80107fa3b714bf47b8690f36233e89e80044af6",
+    "chunks": 394,
+    "doc_types": {
+      "faq": 36,
+      "guide": 20,
+      "item": 293,
+      "note": 3,
+      "rule": 42
+    }
+  },
+  "input_checks": {
+    "chunk_ids_present": true,
+    "chunk_ids_unique": true,
+    "text_non_empty": true,
+    "metadata_flat": true,
+    "source_present": true,
+    "no_reserved_keys": true
+  },
+  "embedding_run": {
+    "reused_existing_collection": false,
+    "device": "mps:0",
+    "model_load_seconds": 140.7,
+    "embed_seconds": 2.6,
+    "chunk_tokens_max": 1763,
+    "chunk_tokens_mean": 212.9,
+    "chunks_over_max_seq_length": 29
+  },
+  "verification": {
+    "collection": "items_bge-small-en_5c38ec7c_dac8d09c",
+    "status": "PASS",
+    "checks": {
+      "corpus_hash_matches": true,
+      "count_matches_chunks": true,
+      "ids_unique": true,
+      "ids_match_chunks": true,
+      "repeat_run_ids_match": true,
+      "vector_size_matches_contract": true,
+      "distance_is_cosine": true,
+      "vectors_normalized": true,
+      "payload_provenance": true,
+      "payload_matches_chunks": true
+    },
+    "stored_points": 394,
+    "expected_points": 394,
+    "vector_size": 384,
+    "distance": "Cosine"
+  }
+}

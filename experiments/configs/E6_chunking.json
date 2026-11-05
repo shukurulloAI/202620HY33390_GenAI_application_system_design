@@ -1,0 +1,16 @@
+{
+  "id": "E6",
+  "question": "Which chunk granularity?",
+  "stage": "retrieval",
+  "base": "default",
+  "fixed": {},
+  "variants": {
+    "structure-aware": {}
+  },
+  "todo_variants": {
+    "fixed-500-overlap-80": "needs an alternative chunk file from preprocessing (Vitou) and its own index",
+    "whole-page": "needs an alternative chunk file from preprocessing (Vitou) and its own index"
+  },
+  "metrics": ["Recall@5", "chunk count", "answer correctness"],
+  "notes": "Nice-to-have. Gold chunk IDs differ between chunkings, so score by gold item/page, not chunk ID."
+}

@@ -1,0 +1,13 @@
+{
+  "id": "E8",
+  "question": "Does the conflict policy matter?",
+  "stage": "full",
+  "base": "default",
+  "fixed": {},
+  "variants": {
+    "prefer-2026": {"conflict_policy": "prefer_2026"},
+    "no-year-preference": {"conflict_policy": "none"}
+  },
+  "metrics": ["correctness on the conflict slice"],
+  "notes": "Only prompt v2 reads conflict_policy (v1 always prefers 2026)."
+}

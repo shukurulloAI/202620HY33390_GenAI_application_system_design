@@ -1,0 +1,28 @@
+{
+  "id": "E1",
+  "question": "Does the prompt contract help?",
+  "stage": "full",
+  "base": "default",
+  "fixed": {},
+  "variants": {
+    "v0-minimal": {
+      "prompt_version": "v0"
+    },
+    "v1-zero-shot-contract": {
+      "prompt_version": "v1"
+    },
+    "v2-few-shot-contract": {
+      "prompt_version": "v2"
+    },
+    "v3-few-shot-no-leak": {
+      "prompt_version": "v3"
+    }
+  },
+  "metrics": [
+    "bin correctness",
+    "abstention accuracy",
+    "JSON validity",
+    "citation precision"
+  ],
+  "notes": "Same retrieval, gate and validation for all variants; only the prompt file changes. Few-shot items (볼펜, 소화기; distractors 볼풀공, 고무장갑, 보온병) must not be in the test set. v3 = v2 without the spray-can example that leaked 'empty and puncture' into answers."
+}

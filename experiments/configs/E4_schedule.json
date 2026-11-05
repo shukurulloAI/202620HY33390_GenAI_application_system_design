@@ -1,0 +1,17 @@
+{
+  "id": "E4",
+  "question": "How should schedule questions be retrieved?",
+  "stage": "full",
+  "base": "default",
+  "fixed": {},
+  "variants": {
+    "structured-lookup": {}
+  },
+  "todo_variants": {
+    "vector-over-district-chunks": "needs a Qdrant collection over Vitou_EDA/output/chunks.jsonl (10,187 chunks)",
+    "postfilter": "vector top-k, then keep rows of the asked district",
+    "prefilter": "Qdrant payload filter on district, then vector search"
+  },
+  "metrics": ["correct row found", "exact day/time match", "empty-result rate"],
+  "notes": "Only the structured lookup (rag/schedule_tool.py) is implemented so far."
+}
