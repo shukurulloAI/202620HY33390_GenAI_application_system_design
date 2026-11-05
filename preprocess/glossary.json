@@ -1,0 +1,299 @@
+{
+  "about": "Korean waste terms for answers and the website. English checked against the Ministry of Environment terms; zh/vi/uz/ru are machine-assisted drafts.",
+  "needs_native_check": [
+    "zh",
+    "vi",
+    "uz",
+    "ru"
+  ],
+  "terms": [
+    {
+      "ko": "종량제봉투",
+      "bin": "종량제봉투",
+      "en": "pay-as-you-throw garbage bag (general waste)",
+      "zh": "计量收费垃圾袋（一般垃圾）",
+      "vi": "túi rác trả phí (rác thông thường)",
+      "uz": "pullik chiqindi xaltasi (umumiy chiqindi)",
+      "ru": "платный мешок для мусора (обычные отходы)"
+    },
+    {
+      "ko": "일반쓰레기",
+      "bin": "종량제봉투",
+      "en": "general household waste",
+      "zh": "一般生活垃圾",
+      "vi": "rác sinh hoạt thông thường",
+      "uz": "umumiy maishiy chiqindi",
+      "ru": "обычные бытовые отходы"
+    },
+    {
+      "ko": "음식물쓰레기",
+      "bin": "음식물",
+      "en": "food waste",
+      "zh": "厨余垃圾",
+      "vi": "rác thải thực phẩm",
+      "uz": "oziq-ovqat chiqindisi",
+      "ru": "пищевые отходы"
+    },
+    {
+      "ko": "음식물 전용용기",
+      "bin": "음식물",
+      "en": "food waste container",
+      "zh": "厨余垃圾专用桶",
+      "vi": "thùng đựng rác thực phẩm",
+      "uz": "oziq-ovqat chiqindisi uchun maxsus idish",
+      "ru": "контейнер для пищевых отходов"
+    },
+    {
+      "ko": "재활용품",
+      "bin": "",
+      "en": "recyclables",
+      "zh": "可回收物",
+      "vi": "đồ tái chế",
+      "uz": "qayta ishlanadigan chiqindilar",
+      "ru": "вторсырьё"
+    },
+    {
+      "ko": "분리배출",
+      "bin": "",
+      "en": "sorting waste for disposal",
+      "zh": "垃圾分类投放",
+      "vi": "phân loại rác khi bỏ",
+      "uz": "chiqindini saralab tashlash",
+      "ru": "раздельный сбор мусора"
+    },
+    {
+      "ko": "종이류",
+      "bin": "종이",
+      "en": "paper",
+      "zh": "纸类",
+      "vi": "giấy",
+      "uz": "qog'oz",
+      "ru": "бумага"
+    },
+    {
+      "ko": "종이팩",
+      "bin": "종이팩",
+      "en": "paper cartons (milk / juice)",
+      "zh": "纸盒（牛奶盒、果汁盒）",
+      "vi": "hộp giấy (sữa, nước ép)",
+      "uz": "qog'oz qutilar (sut, sharbat)",
+      "ru": "картонные пакеты (молоко, сок)"
+    },
+    {
+      "ko": "금속캔",
+      "bin": "금속캔",
+      "en": "metal cans",
+      "zh": "金属罐",
+      "vi": "lon kim loại",
+      "uz": "metall bankalar",
+      "ru": "металлические банки"
+    },
+    {
+      "ko": "고철",
+      "bin": "고철",
+      "en": "scrap metal",
+      "zh": "废铁",
+      "vi": "sắt vụn",
+      "uz": "temir-tersak",
+      "ru": "металлолом"
+    },
+    {
+      "ko": "유리병",
+      "bin": "유리병",
+      "en": "glass bottles",
+      "zh": "玻璃瓶",
+      "vi": "chai thủy tinh",
+      "uz": "shisha idishlar",
+      "ru": "стеклянные бутылки"
+    },
+    {
+      "ko": "플라스틱",
+      "bin": "플라스틱",
+      "en": "plastics",
+      "zh": "塑料",
+      "vi": "nhựa",
+      "uz": "plastmassa",
+      "ru": "пластик"
+    },
+    {
+      "ko": "투명페트병",
+      "bin": "투명페트병",
+      "en": "clear PET bottles",
+      "zh": "透明PET瓶",
+      "vi": "chai PET trong suốt",
+      "uz": "shaffof PET butilkalar",
+      "ru": "прозрачные ПЭТ-бутылки"
+    },
+    {
+      "ko": "비닐류",
+      "bin": "비닐",
+      "en": "plastic film and bags",
+      "zh": "塑料袋和薄膜",
+      "vi": "túi ni lông, màng nhựa",
+      "uz": "polietilen paketlar va plyonka",
+      "ru": "полиэтиленовые пакеты и плёнка"
+    },
+    {
+      "ko": "스티로폼 (발포합성수지)",
+      "bin": "발포합성수지",
+      "en": "styrofoam",
+      "zh": "泡沫塑料",
+      "vi": "xốp (styrofoam)",
+      "uz": "penoplast (stiropor)",
+      "ru": "пенопласт"
+    },
+    {
+      "ko": "의류수거함",
+      "bin": "의류",
+      "en": "clothing collection bin",
+      "zh": "旧衣回收箱",
+      "vi": "thùng thu gom quần áo cũ",
+      "uz": "eski kiyimlar qutisi",
+      "ru": "контейнер для старой одежды"
+    },
+    {
+      "ko": "폐가전제품",
+      "bin": "가전제품",
+      "en": "waste electronics and appliances",
+      "zh": "废旧家电",
+      "vi": "đồ điện gia dụng cũ",
+      "uz": "eskirgan maishiy texnika",
+      "ru": "старая бытовая техника"
+    },
+    {
+      "ko": "대형폐기물",
+      "bin": "대형폐기물",
+      "en": "bulky waste",
+      "zh": "大件垃圾",
+      "vi": "rác cồng kềnh",
+      "uz": "yirik o'lchamli chiqindi",
+      "ru": "крупногабаритные отходы"
+    },
+    {
+      "ko": "대형폐기물 배출 스티커 (신고필증)",
+      "bin": "대형폐기물",
+      "en": "bulky-waste disposal sticker (receipt)",
+      "zh": "大件垃圾处理贴纸（申报证）",
+      "vi": "tem dán xử lý rác cồng kềnh",
+      "uz": "yirik chiqindi uchun stiker (kvitansiya)",
+      "ru": "наклейка-квитанция для вывоза крупногабаритных отходов"
+    },
+    {
+      "ko": "불연성 쓰레기 (특수규격마대)",
+      "bin": "불연성종량제",
+      "en": "non-combustible waste (special sack)",
+      "zh": "不可燃垃圾（专用编织袋）",
+      "vi": "rác không cháy được (bao tải chuyên dụng)",
+      "uz": "yonmaydigan chiqindi (maxsus qop)",
+      "ru": "негорючие отходы (специальный мешок)"
+    },
+    {
+      "ko": "폐건전지",
+      "bin": "전용함",
+      "en": "used batteries",
+      "zh": "废电池",
+      "vi": "pin đã qua sử dụng",
+      "uz": "ishlatilgan batareyalar",
+      "ru": "использованные батарейки"
+    },
+    {
+      "ko": "폐형광등",
+      "bin": "전용함",
+      "en": "used fluorescent lamps",
+      "zh": "废荧光灯",
+      "vi": "bóng đèn huỳnh quang cũ",
+      "uz": "eski lyuminessent lampalar",
+      "ru": "старые люминесцентные лампы"
+    },
+    {
+      "ko": "폐의약품",
+      "bin": "전용함",
+      "en": "expired or unused medicines",
+      "zh": "过期药品",
+      "vi": "thuốc hết hạn",
+      "uz": "muddati o'tgan dorilar",
+      "ru": "просроченные лекарства"
+    },
+    {
+      "ko": "전용수거함",
+      "bin": "전용함",
+      "en": "dedicated collection box",
+      "zh": "专用回收箱",
+      "vi": "thùng thu gom chuyên dụng",
+      "uz": "maxsus yig'ish qutisi",
+      "ru": "специальный контейнер для сбора"
+    },
+    {
+      "ko": "문전수거",
+      "bin": "",
+      "en": "door-to-door collection (in front of your house)",
+      "zh": "门前收集",
+      "vi": "thu gom trước cửa nhà",
+      "uz": "uy oldidan yig'ib olish",
+      "ru": "сбор у дома"
+    },
+    {
+      "ko": "거점수거",
+      "bin": "",
+      "en": "collection at a designated point",
+      "zh": "定点收集",
+      "vi": "thu gom tại điểm tập kết",
+      "uz": "belgilangan joydan yig'ib olish",
+      "ru": "сбор в установленном месте"
+    },
+    {
+      "ko": "배출요일",
+      "bin": "",
+      "en": "day to put waste out",
+      "zh": "投放日",
+      "vi": "ngày bỏ rác",
+      "uz": "chiqindi chiqarish kuni",
+      "ru": "день выноса мусора"
+    },
+    {
+      "ko": "배출시간",
+      "bin": "",
+      "en": "time to put waste out",
+      "zh": "投放时间",
+      "vi": "giờ bỏ rác",
+      "uz": "chiqindi chiqarish vaqti",
+      "ru": "время выноса мусора"
+    },
+    {
+      "ko": "미수거일",
+      "bin": "",
+      "en": "no-collection days",
+      "zh": "不收集日",
+      "vi": "ngày không thu gom",
+      "uz": "yig'ilmaydigan kunlar",
+      "ru": "дни без вывоза"
+    },
+    {
+      "ko": "주민센터 (행정복지센터)",
+      "bin": "",
+      "en": "community service centre",
+      "zh": "居民中心（行政福利中心）",
+      "vi": "trung tâm hành chính phường",
+      "uz": "aholiga xizmat ko'rsatish markazi",
+      "ru": "центр обслуживания жителей"
+    },
+    {
+      "ko": "구청",
+      "bin": "",
+      "en": "district office",
+      "zh": "区厅（区政府）",
+      "vi": "ủy ban quận",
+      "uz": "tuman hokimiyati",
+      "ru": "районная администрация"
+    },
+    {
+      "ko": "과태료",
+      "bin": "",
+      "en": "fine (administrative penalty)",
+      "zh": "罚款",
+      "vi": "tiền phạt",
+      "uz": "jarima",
+      "ru": "штраф"
+    }
+  ]
+}
