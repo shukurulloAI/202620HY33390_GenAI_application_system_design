@@ -2,7 +2,7 @@
 
 Course: 202620HY33390 Design of Generative AI Application Systems (Hanyang University)
 Team: Shukurullo, Vitou, Anar, Naura
-Plan version: v3, 2026-11-03 (v2: team roles assigned; v3: Phase 1 baseline done)
+Plan version: v5, 2026-11-04 (v2: team roles assigned; v3: Phase 1 baseline done; v4: Phase 2 components built; v5: preprocessing done, `preprocess/`)
 
 This file is the project's single plan. Each design choice is linked to the lesson that taught it, so the final report can show which course concepts we used and how we measured them.
 
@@ -290,6 +290,8 @@ Output JSON:
  "data_date": "2024-xx-xx", "office_phone": "...", "missing": null}
 ```
 
+`schedule`, `data_date` and `office_phone` are filled by `pipeline.schedule_fields` from the tool's rows, never by the LLM. With several zones or waste types each value is labelled, `data_date` is the oldest date, and `schedule` also keeps the full detail (`status`, `message`, `options`, `zones`).
+
 ### 4.9 Output validation and citation check (Lessons 4, 6, 7)
 
 - JSON schema check; `bin` must come from the **allowed category list**: the 2018 categories (종이, 종이팩, 금속캔, 고철, 유리병, 플라스틱, 비닐, 발포합성, 의류, 가전제품, 대형, 음식물, 유해, 불연성종량제, 종량제봉투, 전용함, 전문시설) plus the 2026 groups (e.g., 투명페트병). This is the Siemens lesson: validate generated output before use.
@@ -381,7 +383,7 @@ Rules for every experiment:
 
 | ID | Question | Fixed | Variable | Main metrics | Priority |
 |---|---|---|---|---|---|
-| E1 | Does the prompt contract help? | Retrieval = best config | baseline (question only) / zero-shot contract / few-shot contract | Bin correctness, abstention accuracy, JSON validity, citation precision | Must |
+| E1 | Does the prompt contract help? | Retrieval = best config | baseline (question only) / zero-shot contract / few-shot contract (v2) / few-shot without the leaking example (v3) | Bin correctness, abstention accuracy, JSON validity, citation precision | Must |
 | E2 | Does the embedding model matter for Korean data + multilingual questions? | Chunks, k | bge-small-en (course) / bge-m3 / bge-small-en after translating the query to Korean | Recall@5, MRR, by language | Must |
 | E3 | Lexical vs dense vs hybrid? | Embedding = best of E2 | dense / BM25 (kiwi tokens) / BM25 (char bigrams) / hybrid RRF | Recall@5, MRR, nDCG@5 | Must |
 | E4 | How should schedule questions be retrieved? | Same schedule cases | vector search over district chunks / postfilter (top-k then filter) / prefilter + structured lookup | Correct row found, exact day/time match, empty-result rate | Must |
@@ -484,7 +486,7 @@ Undefined cases are declared, e.g., Recall@k for abstain cases = `None`, exclude
 | Lexical search | `rank_bm25` + `kiwipiepy` Korean tokenizer | Lessons 4–5 hybrid |
 | Reranker | `BAAI/bge-reranker-v2-m3` (CrossEncoder) | Lesson 5 |
 | Orchestration | LangChain (explicit steps) or plain Python with the same stage boundaries | Lesson 4 |
-| Generator LLM | Ollama `qwen2.5:7b` (default since Phase 1) behind an `LLMClient` interface; `qwen2.5:3b` = course baseline; optional stronger hosted model | Lesson 1 provider boundary; 3b contradicted evidence in Phase 1 probes (`experiments/results/PHASE1_NOTES.md`) |
+| Router + generator LLM | Ollama `qwen2.5:7b` for both (default) behind an `LLMClient` interface; `qwen2.5:3b` = course baseline; `exaone3.5:7.8b` (LG, Korean/English) tested in Phase 2 and not adopted | Lesson 1 provider boundary; see `experiments/results/PHASE1_NOTES.md`, `PHASE2_NOTES.md` |
 | Judge LLM | A stronger model than the generator, pinned | Lesson 6 |
 | Evaluation | Own metrics code (chunk-ID based) + `ragas` | Lesson 6 |
 | UI | Streamlit | Simple demo |
@@ -554,41 +556,50 @@ Add a `.gitignore`: `__pycache__/`, `.DS_Store`, `.venv/`, `qdrant_data/`, `trac
 ### 10.1 Tasks per person
 
 #### Vitou: data collection and preprocessing
+`preprocess/` (`python -m preprocess.build_all`; report in `preprocess/reports/data_quality.md`) was built by Shukurullo on 2026-11-04 so Phase 2 could run on clean data, without having seen Vitou's fixes for `split_dongs`, `province` and row handling, pushed to branch `vitou` on 2026-11-03 (`90ca8b9`, with `Vitou_EDA/README.md`). The pipeline reads `preprocess/`; comparing the two found a real bug in it (below). Vitou: please review the outputs, especially the manual table transcription and the glossary, and take over the open collection items.
+
 Collection:
 - [ ] Apply for the data.go.kr API key; save a snapshot of the ~770-item recycling API (`Data/api_snapshot/`, with fetch date)
 - [ ] Check data.go.kr for a newer version of the district CSV; record download date and file hash
 - [ ] Optional: find schedules for missing Seoul districts (Gangdong-gu, Dobong-gu) on district websites, marked as a separate source
 
 Preprocessing (fixes from §3.2):
-- [ ] Fix `split_dongs` so names ending in 읍/면/리/가/로 are kept
-- [ ] Add `province` to every schedule record; handle the 7 duplicate district names
-- [ ] List the 106 ambiguous neighbourhood names in `dong_lookup.json` (one name → several districts)
-- [ ] Keep `data_date`; flag rows older than 1 year
-- [ ] Export the cleaned schedule table (`preprocess/schedule.csv` or `.sqlite`) with the `ScheduleRow` columns from §4.5
-- [ ] `district_aliases.json`: English romanisations → Korean names (Seongdong-gu → 성동구)
-- [ ] `glossary.json`: ~30 Korean waste terms with English (+ other languages)
-- [ ] `manifest.json` for all sources (§4.1)
-- [ ] Switch item chunk IDs to UUIDv5 in `item_guide/build_item_chunks.py`; add API-snapshot chunks if available; write `preprocess/item_chunks.jsonl`
-- [ ] Data checks: unique IDs, no empty text, flat metadata types; short data-quality summary for Anar's report
+- [x] Keep area names ending in 읍/면/리/가/로 (`preprocess/build_schedule.py`; Vitou's own fix is in `Vitou_EDA/utils.py` on branch `vitou`); expand number lists with any separator (`휘경1,2동`, `상계6.7동`, `청학1·2동`, `수성1,2.3,4가동`); move `(… 제외)` to notes. The `.`/`·`/`ㆍ` lists were found by comparing with Vitou's output
+- [x] Add `province` to every schedule record; handle the 7 duplicate district names (lookup asks which province)
+- [x] List the ambiguous neighbourhood names in `preprocess/dong_lookup.json` (229 of 6,072)
+- [x] Keep `data_date`; flag rows older than 1 year (`오래된데이터`: 56% of rows as of 2026-11-04)
+- [x] Export the cleaned schedule table `preprocess/schedule.csv` (+ `schedule_chunks.jsonl` for E4, `locations.json` for the website)
+- [x] `district_aliases.json`: 1,723 romanised names → Korean (Seongdong-gu → 성동구; `jung-gu` → asks which city)
+- [x] `glossary.json`: 32 terms in ko/en/zh/vi/uz/ru (zh/vi/uz/ru need a native-speaker check)
+- [x] `manifest.json` for all sources and outputs (§4.1)
+- [x] Item chunk IDs → UUIDv5 (`preprocess/build_items.py`; old IDs kept as `legacy_id`); `preprocess/item_chunks.jsonl` (403 chunks)
+- [ ] Add API-snapshot chunks when the API key is available
+- [x] Data checks: unique IDs, no empty text, flat metadata types; summary in `preprocess/reports/data_quality.md`
+- [x] **Clean table chunks for guide p.17/p.18** (9 `table` chunks, `preprocess/manual/food_waste_table_2018.json`; fixed probes p02, p03, p05, p16). (food waste: what is NOT food waste). The PDF tables lose their layout, and the 7B model reads "bones → general-waste bag" as "food waste" (Phase 2 probes p03, p16). Write one clear chunk per row, e.g. "닭 등의 뼈다귀, 생선뼈 → 음식물류폐기물 아님, 종량제봉투로 배출". Check other table pages the same way
 
 #### Shukurullo: model implementation (RAG pipeline)
 - [x] Repo setup: `.gitignore`, `requirements.txt`, folder structure (§9)
 - [x] `llm_client.py`: Ollama + fixture client; Korean and JSON tested (Phase 1 notes)
 - [x] `build_index.py` + `verify_index.py`: bge-m3 collection built, verification PASS
-- [ ] bge-small-en collection for E2 (`python -m ingest.build_index --embedding bge-small-en`)
+- [x] bge-small-en collection for E2 (built, PASS; 29/394 chunks exceed its 512-token limit)
 - [x] `retrieve.py`: dense retrieval (baseline)
-- [ ] `retrieve.py`: BM25 (kiwipiepy), RRF fusion, cross-encoder rerank
+- [x] `retrieve.py`: BM25 (kiwipiepy morphemes / character bigrams), RRF fusion, cross-encoder rerank (`bge-reranker-v2-m3`, best score over original + rewrite)
 - [x] `schedule_tool.py` + date helper (works on the raw CSV now; switches to `preprocess/schedule.csv` automatically)
-- [ ] `router.py`: intent/entity JSON + rewrite validation + fallbacks
-- [ ] `gate.py`: sufficiency gate + 2018/2026 conflict policy
+- [x] `router.py`: intent/entity JSON + rewrite validation (item, Korean script, location named in the question via romanisation, negation, language) + retry/fallback
+- [x] `gate.py`: per-part gate (item: rerank score ≥ τ; schedule: OK / clarify / no data; out of scope). τ = 0.15 is provisional (middle of the probe gap 0.039–0.264, `experiments/tau_sweep.py`) until E5 on dev
+- [x] Conflict policy: prompt rule switchable (`conflict_policy`, E8) + source-year notes in the answer
 - [x] `context.py`: `ContextBudget` + evidence packing (tokenizer-based counts)
 - [x] `generate.py`: zero-shot contract prompt `answer_v1` + JSON schema + citation check
-- [ ] Prompt versions for E1: baseline (question only) and few-shot
-- [ ] `validate.py`: schema, allowed bins, citation resolution
+- [x] Prompt versions for E1: `answer_v0` (minimal), `answer_v1` (zero-shot contract), `answer_v2` (few-shot contract; default), `answer_v3` (v2 without the example that leaked into answers; see `PHASE2_NOTES.md` §5)
+- [x] `validate.py` + `bins.py`: canonical bins (also enforced by the JSON schema), bin supported by cited evidence, empty bin filled from the answer text or cited chunks (must agree with the bin the chunks state), bin field consistent with answer text, cited answer, schedule-day check; `enforce` downgrades to abstain
+- [x] `handoff.py`: office + phone from the district data, Korean sentence to show, what was checked
 - [x] `pipeline.py`: `answer()` for the website and `run_case()` for evaluation; trace writing
-- [ ] `experiments/configs/E1–E8`: each variant runnable with one command, so Anar can run it
+- [x] `experiments/configs/E1–E8` + `run_experiment.py` + `tau_sweep.py` (E4 vector variants and E6 chunkings still need their data)
+- [x] Deterministic unit tests: `python -m tests.test_deterministic`
+- [ ] E4 vector variants: index the 10,187 schedule chunks; vector / postfilter / prefilter
+- [ ] Re-run E1–E8 on Anar's dev set when it exists; pick τ (E5) and freeze the config
 - [x] CLI demo (`python -m rag.pipeline`); Phase 1 notes in `experiments/results/PHASE1_NOTES.md`
-- [x] Developer probe set (`experiments/run_probes.py`, 12 questions) for quick regression checks
+- [x] Developer probe set (`experiments/run_probes.py`, 22 questions) for quick regression checks
 
 #### Anar: evaluation and reports
 Evaluation:
@@ -634,10 +645,10 @@ Reports:
 
 | From → To | What | Format | Needed for |
 |---|---|---|---|
-| Vitou → Shukurullo | Item chunks (UUIDv5), manifest, schedule table, dong lookup, district aliases, glossary | §4.1 chunk record; §4.5 `ScheduleRow` | Phase 1 |
+| Vitou → Shukurullo | Item chunks (UUIDv5), manifest, schedule table, dong lookup, district aliases, glossary; clean table chunks for guide p.17/18 | §4.1 chunk record; §4.5 `ScheduleRow` | Phase 1–2 |
 | Vitou → Anar | Chunk IDs and schedule rows for gold labels; data-quality numbers | Same files | Phase 1 |
 | Vitou → Naura | District and neighbourhood list for dropdowns | `district_aliases.json`, `dong_lookup.json` | Phase 3 |
-| Shukurullo → Anar | `run_case(case, config) -> trace`; experiment configs | Trace §4.11 | Phase 1–2 |
+| Shukurullo → Anar | `Pipeline(cfg).run_case(case) -> trace`; `experiments/configs/E*.json` + `run_experiment.py`; `tau_sweep.py` | Trace §4.11; `experiments/results/<id>/` | Phase 1–2 |
 | Shukurullo → Naura | `answer(question, lang, district, dong) -> dict` | Answer JSON §4.8 | Phase 3 (mock earlier) |
 | Anar → Shukurullo | Dev results and failure labels after each change | `eval/reports/*.json` | Each Phase 2 step |
 | Anar → all | Report draft for each member to check their section | `report/` | Phase 4 |
@@ -651,7 +662,7 @@ No deadline is fixed in this plan. Phases are ordered by dependency, and each on
 **Phase 0: Data foundation**
 - [x] Collect official item guides (2018 guideline, 2026 Annex 1) (done)
 - [x] Item chunk builder → 394 chunks (`item_guide/`) (done)
-- [ ] CSV fixes, schedule table, lookups, glossary, manifest, UUIDv5 IDs (Vitou)
+- [x] CSV fixes, schedule table, lookups, glossary, manifest, UUIDv5 IDs (`preprocess/`)
 - [ ] API key + 770-item snapshot (Vitou, optional)
 - [x] `.gitignore`, `requirements.txt`, folders (Shukurullo)
 - [ ] Case schema + first test cases (Anar)
@@ -666,16 +677,19 @@ No deadline is fixed in this plan. Phases are ordered by dependency, and each on
 - [ ] `run_eval.py` + `metrics.py`; first baseline numbers on dev (Anar)
 
 **Phase 2: Improvements, one at a time (dev set only)**
-- [ ] Router + rewrite validation (Shukurullo)
-- [ ] Hybrid retrieval E3; embedding comparison E2; schedule comparison E4 (Shukurullo builds, Anar measures)
-- [ ] Reranker + gate threshold sweep E5 (Shukurullo builds, Anar measures)
-- [ ] Prompt variants E1 (Shukurullo builds, Anar measures)
+- [x] Router + rewrite validation (Shukurullo)
+- [x] Hybrid retrieval E3; embedding comparison E2 built (Shukurullo); probe runs in `PHASE2_NOTES.md`
+- [ ] E2/E3 on dev; E4 vector variants (Shukurullo builds, Anar measures)
+- [x] Reranker + gate + `tau_sweep.py` built (Shukurullo)
+- [ ] E5 τ sweep on dev (Anar measures)
+- [x] Prompt variants E1 built (Shukurullo)
+- [ ] E1 on dev (Anar measures)
 - [ ] Optional: E6, E7, E8, HyDE
 
 **Phase 3: Product**
-- [ ] Generator JSON contract + validation + citation check (Shukurullo)
-- [ ] Conflict policy + data-date warnings (Shukurullo)
-- [ ] Handoff message: office phone + Korean sentence (Shukurullo)
+- [x] Generator JSON contract + validation + citation check (Shukurullo)
+- [x] Conflict policy + data-date warnings (Shukurullo)
+- [x] Handoff message: office phone + Korean sentence (Shukurullo)
 - [ ] Website connected to `answer()` (Naura)
 - [ ] Trace logging + feedback (Shukurullo, Naura)
 
@@ -738,7 +752,7 @@ Maintenance (Moderna lesson): each source has an owner, a revision hash and a re
 
 ## 14. Open decisions
 
-- [ ] LLM for generation: `qwen2.5:7b` chosen for now (Phase 1 probes); still open: hosted model for low-resource languages, and the judge model
+- [ ] LLM: `qwen2.5:7b` for router and generator (Phase 1–2 probes; EXAONE 3.5 7.8B tested and not adopted, see `PHASE2_NOTES.md` §8); still open: a stronger model for low-resource languages (Uzbek), and the judge model
 - [ ] Which extra languages besides English and Korean
 - [ ] Whether to include the 770-item API snapshot (needs an API key)
 - [ ] Project deadline, presentation date and demo format

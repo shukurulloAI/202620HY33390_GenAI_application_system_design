@@ -31,18 +31,25 @@ class TokenCounter:
 
     def __init__(self, tokenizer_id: str = config.LLM_TOKENIZER):
         self.tokenizer_id = tokenizer_id
+        self._tok, self._fast = None, None
         try:
             from transformers import AutoTokenizer
-            self._tok = AutoTokenizer.from_pretrained(tokenizer_id)
-            self.exact = True
+            self._tok = AutoTokenizer.from_pretrained(tokenizer_id, trust_remote_code=False)
         except Exception:
-            self._tok = None
-            self.exact = False
+            try:   # repos with custom model code: read tokenizer.json directly, no code run
+                from huggingface_hub import hf_hub_download
+                from tokenizers import Tokenizer
+                self._fast = Tokenizer.from_file(hf_hub_download(tokenizer_id, "tokenizer.json"))
+            except Exception:
+                pass
+        self.exact = self._tok is not None or self._fast is not None
 
     def count(self, text: str) -> int:
-        if self._tok is None:
-            return len(text)
-        return len(self._tok(text, add_special_tokens=False)["input_ids"])
+        if self._tok is not None:
+            return len(self._tok(text, add_special_tokens=False)["input_ids"])
+        if self._fast is not None:
+            return len(self._fast.encode(text, add_special_tokens=False).ids)
+        return len(text)
 
 
 @lru_cache(maxsize=2)
@@ -75,7 +82,7 @@ def item_label(metadata: dict) -> str:
 
 def pack_evidence(item_candidates: list, schedule_rows: list, waste_type: str | None,
                   fixed_text: str, counter: TokenCounter,
-                  budget: ContextBudget = ContextBudget()):
+                  budget: ContextBudget = ContextBudget(), day=None):
     """Number the evidence and keep what fits.
 
     Order: item chunks by retrieval rank, then district schedule rows. Schedule rows
@@ -95,7 +102,7 @@ def pack_evidence(item_candidates: list, schedule_rows: list, waste_type: str | 
             item = EvidenceItem(0, "schedule", obj.row_id,
                                 f"District data, {obj.province} {obj.district}, "
                                 f"관리번호 {obj.row_id}, data date {obj.data_date}",
-                                obj.to_evidence(waste_type),
+                                obj.to_evidence(waste_type, day),
                                 {"data_date": obj.data_date, "phone": obj.phone,
                                  "office": obj.office, "stale": obj.is_stale()})
         cost = counter.count(f"[99] ({item.label})\n{item.text}\n\n")

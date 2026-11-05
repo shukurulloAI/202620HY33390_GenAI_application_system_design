@@ -1,0 +1,11 @@
+{
+  "id": "E7",
+  "question": "Is the answer stable across sampling?",
+  "stage": "full",
+  "base": "default",
+  "fixed": {},
+  "grid": {"temperature": [0.0, 0.7, 1.0], "seed": [1, 2, 3, 4, 5]},
+  "limit": 20,
+  "metrics": ["bin agreement rate", "abstention flips"],
+  "notes": "15 runs x 20 cases. Router and generator use the same temperature/seed."
+}

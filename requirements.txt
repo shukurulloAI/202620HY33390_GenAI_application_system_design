@@ -6,6 +6,7 @@
 
 # --- Data preprocessing (Vitou) ---
 pdfplumber>=0.11
+pandas>=2.0                    # Vitou_EDA notebook
 
 # --- RAG pipeline (Shukurullo) ---
 sentence-transformers>=3.0     # bge-m3 embeddings, bge-reranker cross-encoder

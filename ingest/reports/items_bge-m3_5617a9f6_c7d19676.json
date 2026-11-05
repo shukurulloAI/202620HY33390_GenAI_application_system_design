@@ -1,0 +1,66 @@
+{
+  "built_at": "2026-11-04T11:13:12+00:00",
+  "collection": "items_bge-m3_5617a9f6_c7d19676",
+  "status": "PASS",
+  "representation_contract": {
+    "embedding_key": "bge-m3",
+    "model_id": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "dimension": 1024,
+    "normalized": true,
+    "distance": "Cosine",
+    "query_prefix": "",
+    "max_seq_length": 8192,
+    "languages": "multilingual"
+  },
+  "corpus": {
+    "path": "preprocess/item_chunks.jsonl",
+    "sha256": "c7d196766f9135a82942606e690120a6078e24960a5f4305cb56415b2627896d",
+    "chunks": 403,
+    "doc_types": {
+      "faq": 36,
+      "guide": 20,
+      "item": 293,
+      "note": 3,
+      "rule": 42,
+      "table": 9
+    }
+  },
+  "input_checks": {
+    "chunk_ids_present": true,
+    "chunk_ids_unique": true,
+    "text_non_empty": true,
+    "metadata_flat": true,
+    "source_present": true,
+    "no_reserved_keys": true
+  },
+  "embedding_run": {
+    "reused_existing_collection": false,
+    "device": "mps:0",
+    "model_load_seconds": 6.8,
+    "embed_seconds": 9.8,
+    "chunk_tokens_max": 730,
+    "chunk_tokens_mean": 100.0,
+    "chunks_over_max_seq_length": 0
+  },
+  "verification": {
+    "collection": "items_bge-m3_5617a9f6_c7d19676",
+    "status": "PASS",
+    "checks": {
+      "corpus_hash_matches": true,
+      "count_matches_chunks": true,
+      "ids_unique": true,
+      "ids_match_chunks": true,
+      "repeat_run_ids_match": true,
+      "vector_size_matches_contract": true,
+      "distance_is_cosine": true,
+      "vectors_normalized": true,
+      "payload_provenance": true,
+      "payload_matches_chunks": true
+    },
+    "stored_points": 403,
+    "expected_points": 403,
+    "vector_size": 1024,
+    "distance": "Cosine"
+  }
+}
