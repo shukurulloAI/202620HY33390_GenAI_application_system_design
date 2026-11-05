@@ -15,3 +15,6 @@ traces/
 
 # Secrets
 .env
+
+# Rebuilt by python -m preprocess.build_all (9 MB, only for E4)
+preprocess/schedule_chunks.jsonl
