@@ -56,13 +56,21 @@ def fix_days(d):
     return d.replace("+", ", ")      # "월+수+금" -> "월, 수, 금"
 
 def split_dongs(area):
-    # "휘경1,2동" -> "휘경1동,휘경2동"
-    area = re.sub(r"([가-힣]+)(\d),(\d)동", r"\1\2동,\1\3동", area)
-    area = area.replace("+", ",")
+    """Area field -> list of area names. Same rules as preprocess/build_schedule.py:
+    "휘경1,2동" -> 휘경1동, 휘경2동; names ending in 읍/면/리/가/로 are kept;
+    "(... 제외)" notes are dropped; "용산구 16개동" / "전체" (whole district) give no names."""
+    area = re.sub(r"※.*", "", area)
+    while re.search(r"\([^()]*\)", area):
+        area = re.sub(r"\([^()]*\)", "", area)
+    area = re.sub(r"([가-힣]+?)(\d+(?:\s*,\s*\d+)+)(동|리|가)?(?=$|[+,·/\s])",
+                  lambda m: "+".join(f"{m.group(1)}{n.strip()}{m.group(3) or ''}"
+                                     for n in m.group(2).split(",")), area)
     dongs = []
-    for d in area.split(","):
+    for d in re.split(r"[+,·/]", area):
         d = d.strip()
-        if d.endswith("동") and " " not in d:   # skip "용산구 16개동"
+        if not d or re.match(r"^(전체|전지역|전역|관내\s*전지역|.*\d+\s*개\s*(동|읍|면|리)|.*(전역|일원))$", d):
+            continue
+        if d not in dongs:
             dongs.append(d)
     return dongs
 
@@ -128,6 +136,7 @@ def build_chunks(records):
             "id": r["id"],
             "text": make_chunk_text(r),
             "metadata": {
+                "province": r["province"],      # 7 district names exist in several provinces
                 "district": r["district"],
                 "zone": r["zone"],
                 "dongs": ", ".join(r["dongs"]),

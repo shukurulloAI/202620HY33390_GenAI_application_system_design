@@ -8,7 +8,7 @@ These are developer observations from the probe set (`experiments/probes.jsonl`,
 |---|---|
 | Corpus | `preprocess/item_chunks.jsonl`, 403 chunks (item 293, faq 36, guide 20, rule 42, note 3, table 9), UUIDv5 IDs |
 | Index | Qdrant local, `items_bge-m3_5617a9f6_c7d19676` (E2 also `items_bge-small-en_5c38ec7c_c7d19676`); both verified PASS |
-| Schedule | `preprocess/schedule.csv` (10,187 rows, cleaned) through the typed tool, no LLM |
+| Schedule | `preprocess/schedule.csv` (10,187 rows, cleaned) through the typed tool, no LLM. E4's vector variants use `schedule_bge-m3_5617a9f6_7386a17d` (verified PASS) |
 | Router | `qwen2.5:7b`, `router_v1`, JSON schema + invariant checks |
 | Retrieval | Dense (bge-m3) + BM25 (kiwi) -> RRF (k = 60) -> top 20 -> `bge-reranker-v2-m3` @ `953dc6f6`, best score of original and rewrite -> top 5 |
 | Gate | Rerank score ≥ τ = 0.15 (provisional); schedule OK / CLARIFY / NO_DATA; out of scope refused |
@@ -17,7 +17,7 @@ These are developer observations from the probe set (`experiments/probes.jsonl`,
 | Baseline | Phase 1 system: dense only, no router, rerank or gate, `answer_v1`, no validation (`config.BASELINE`) |
 | Hardware | Apple M3 Pro, 36 GB |
 
-Code state: §2–§6 come from commit `fa50916` with a clean tree (`git_dirty` false in every manifest and probe file), re-run on 2026-11-06. The first runs used an uncommitted tree. The re-run reproduced their retrieval numbers, τ and gate counts exactly. Of the answers, only p14 changed (the date moved), plus p06 under v3 (§5). The old-vs-clean table in §1, the rerank-query paragraph in §3 and all of §8 are older runs, and they say so.
+Code state: §2–§5 come from commit `fa50916` with a clean tree (`git_dirty` false in every manifest and probe file), re-run on 2026-11-06. The first runs used an uncommitted tree. The re-run reproduced their retrieval numbers, τ and gate counts exactly. Of the answers, only p14 changed (the date moved), plus p06 under v3 (§5). The old-vs-clean table in §1, the rerank-query paragraph in §3 and all of §8 are older runs, and they say so.
 
 ## 1. Data fixes (Phase 0 tasks, done before these runs; Vitou to review)
 
@@ -38,9 +38,10 @@ Food-waste rules are in tables on guide p.17–18, and PDF extraction lost the l
 | IDs depended on parse order | UUIDv5 of source, chunker, span and text digest; old ID kept as `legacy_id` | Repeat builds give identical IDs |
 | Number lists in area names (`휘경1,2동`, `상계6.7동`, `청학1·2동`, `수성1,2.3,4가동`) | `clean_areas` expands them with any separator and moves notes out | No unexpanded lists or stemless names left in 10,187 rows |
 | Exact area name lost to the base-name match | The exact name now wins; the official `상계6·7동` spelling also resolves | 상계6동: 3 wrong zones -> 1 |
-| Same names in several places | Province kept; ambiguous names ask | 7 district names, 229 of 6,072 area names |
+| Same names in several places | Province kept; ambiguous names ask | 7 district names, 228 of 6,070 area names |
 | Romanised place names | `district_aliases.json` | 1,723 aliases |
 | Bad district names | 남양주 -> 남양주시, 동두천 -> 동두천시, 없음 -> 세종시 | 15 rows |
+| Placeholder areas (`없음`, `해당없음`) read as a place | Now mean the whole district | 486 rows; `없음` is gone from the neighbourhood list |
 | Old data | Flagged and shown to the user | 6,234 rows (61%) older than 1 year on 2026-11-06; median age 843 days |
 | Seoul 도봉구, 강동구 missing | Explicit "no data" | Still no schedules for them |
 
@@ -148,7 +149,7 @@ p02 said chicken bones should be "emptied, punctured" and p15 said to "puncture 
 | p14 Seongdong, tonight | ✅ | ❌ "general waste bag (종량제봉투)"; the source says 음식물 종량제봉투, a food-waste bag (not caught, keyword check passes) |
 | p20 batteries (RU) | ✅ 전용함 | ❌ 금속캔 (not caught) |
 
-**Decision: v2 stays the default for now.** v2's errors are unsupported extra steps. v3's are worse: a wrong bin for batteries, which is a fire risk (p20 still reaches the user; p06 is now stopped), and the wrong bag on p14. But v3 changed two things at once, and with 22 probes a two-probe swing may be chance: small prompt edits changed which chunks qwen cites. E1 on dev should compare both, ideally with the two v3 changes separated. The leak in v2 is still a known defect, so "v2 is better" is not the conclusion here.
+**Decision: v2 stays the default for now.** v2's errors are unsupported extra steps. v3's are worse: a wrong bin for batteries, which is a fire risk (p20 still reaches the user; p06 is now stopped), and the wrong bag on p14, though v2 makes that same bag error elsewhere (§10). But v3 changed two things at once, and with 22 probes a two-probe swing may be chance: small prompt edits changed which chunks qwen cites. E1 on dev should compare both, ideally with the two v3 changes separated. The leak in v2 is still a known defect, so "v2 is better" is not the conclusion here.
 
 ## 6. Validation changes
 
@@ -160,12 +161,12 @@ p13 and v3's p06 found two holes in the bin checks:
 | p13 | 2026 table files styrofoam under 합성 수지류, so the evidence looked like 플라스틱 | The sub-item decides: 스티로폼 -> 발포합성수지 |
 | v3 p06 | Bin 종량제봉투 "supported" because the word appears on a cited guide page, in an unrelated sentence | If cited chunks state bins, the bin must be one of them. Text matching is only the fallback when they state none |
 
-With these, p13 abstains. That counts as a failed probe, and it is the right outcome: the model contradicted its evidence and the system refused to show it. 17 deterministic tests pass (`python -m tests.test_deterministic`).
+With these, p13 abstains. That counts as a failed probe, and it is the right outcome: the model contradicted its evidence and the system refused to show it. 22 deterministic tests pass (`python -m tests.test_deterministic`).
 
 **What validation still cannot catch:**
 - v3's p20: the model cited a 금속캔 rule for batteries. The bin matches the cited chunk; the citation is wrong. This needs a check that the cited chunk is about the asked item.
 - `how_to_prepare` and step text are not checked at all, so the §5 leak passes.
-- The method wording of a schedule answer is not checked. A schedule answer has no bin, so v3's p14 ("general waste bag" for 음식물 종량제봉투) passes every check. `schedule.days/time/place` are safe because they come from the tool, but `answer_text` is what the user reads.
+- The method wording of a schedule answer is not checked. A schedule answer has no bin, so "general waste bag" for 음식물 종량제봉투 (v3's p14; v2's s11 and s18, §10) passes every check. `schedule.days/time/place` are safe because they come from the tool, but `answer_text` is what the user reads.
 - Bins are read from parentheses in `answer_text`, so a Korean answer with no parentheses gets no text check.
 
 ## 7. Router findings
@@ -208,12 +209,57 @@ The deciding failure does not depend on the data. EXAONE rewrote the Uzbek chick
 | Model contradicts its evidence (p13) | Generation | Caught, not fixed; a stronger model or E1 |
 | Few-shot leakage / invented steps | Generation, validation | E1 v2 vs v3; check `how_to_prepare` against cited chunks |
 | Wrong citation with a matching bin (v3 p20) | Validation | Check the cited chunk's item against the question |
-| Schedule method wording not checked (v3 p14) | Validation | Compare the bag or bin named in `answer_text` with the tool's method text |
+| Schedule method wording not checked (v3 p14, v2 s11, s18) | Validation | Compare the bag or bin named in `answer_text` with the tool's method text |
+| Text drops days or zones although the rows are right (s02, s07, s15, s16, s19) | Generation | Write days and times in code, not in the LLM's text (§10) |
+| Gate answers from 4 rows when an area has many with different schedules (88 area names) | Gate | Ask for the village or hand off when the rows differ (§10) |
 | Hybrid not better than dense | Retrieval | E3/E5 on dev, with Korean exact-term cases; drop BM25 if there is no gain |
 | Only 2 negatives for τ | Gate | E5 on dev |
 | Latency about 19 s | System | Measure per stage; try a smaller router model |
 
-Not run yet: E1, E4 vector variants, E6, E7 and E8. All wait for Anar's dev set or for planned work.
+Not run yet: E1, E6, E7 and E8. E4 has run on probes only (§10). All wait for Anar's dev set or for planned work.
+
+## 10. E4: how to retrieve schedules (24 schedule probes)
+
+`experiments/probes_schedule.jsonl` holds 24 hand-written probes in 6 languages. 19 should answer (10 with a neighbourhood, 6 with only a district, 3 with the place only in the question), 3 should ask, and 2 should abstain (강동구 and 도봉구 have no data). Gold rows come from a scan of the table, checked against the raw area text, not from the lookup. Every variant gets the location in its query text and shows at most 4 rows.
+
+This run used an uncommitted tree on top of `9572515` (`git_dirty: true`), so it needs a re-run after commit for the report.
+
+| Variant | Expected behaviour (/24) | Cases showing a wrong place (/24) | Right row shown (/19) | Top row right (/19) | Only right rows (/19) | Top row day/time right (/19) | Median time (s) |
+|---|---|---|---|---|---|---|---|
+| **Structured lookup** | **24** | **0** | **19** | **19** | **19** | **19** | **16.1** |
+| Vector, no filter | 19 | 18 | 18 | 15 | 1 | 17 | 19.4 |
+| Postfilter (top 20) | 21 | 2 | 19 | 17 | 10 | 19 | 18.2 |
+| Prefilter | 21 | 2 | 19 | 17 | 8 | 19 | 18.4 |
+
+Time is the median over the 19 cases all four answered. No variant returned an empty result on an answerable case.
+
+- **Vector alone is unsafe.** It answered all 24, including both no-data districts: "In Gangdong-gu, you can put out food waste on Tuesdays and Thursdays", from rows in 울산 북구, 부산 강서구 and 서울 강북구. For 성동구 without a neighbourhood, all four rows came from 성북구.
+- **Day/time match cannot separate the last three.** All score 19/19, although postfilter and prefilter put the wrong row first on s05 and s09: the zones happen to share a schedule. This is Vitou's near-duplicate finding (#6). Top row and wrong place are the columns that separate them.
+- **The filters' three misses are not retrieval misses.** On s17, s21 and s22 they have no rule to ask back. s21 and s22 show a 중구 and a 고성군 the user never chose, which is why each filter has 2 wrong-place cases. With the lookup's rule they would pass, and the gap left would be row order inside a district.
+- **No candidate starvation here,** but the probes stop at 10 zones per district, so this does not rule it out for 정선군 (2,203 rows). Postfilter's 10 against prefilter's 8 on "only right rows" is a side effect of finding fewer rows, not an advantage.
+- **"Only right rows" is harsh on purpose.** The vector variants always take 4 rows, even for a one-zone place. Taking 1 would match the top-row column, but would break multi-zone districts (s15, s16).
+
+**Decision: keep the structured lookup.** It needs no index, and its search takes 1 ms against about 100 ms. Prefilter is the only alternative worth keeping, and only with the lookup's ask-back rule, which is what the plan's "prefilter + structured lookup" means.
+
+**How far to trust 19/19: not far.** The probes are hand-picked, and s02–s06 come from parser bugs I had just fixed, so the lookup was likely to pass them. Two problems stayed invisible to these scores.
+
+**1. Right row, wrong text.** The columns above stop at the rows. I read the 19 lookup answers against their rows: **12 correct, 4 partial, 3 wrong.**
+
+| Probes | Grade | What the text says |
+|---|---|---|
+| s11, s18 | ❌ | "General waste bag (종량제봉투)" for food waste; the row says 음식물 종량제봉투. Same error as v3's p14 (§5), so this is not only v3 |
+| s15 | ❌ | 성동구 has two zones (Mon/Wed/Fri and Tue/Thu/Sun). The text gives one and treats the other as a houses/apartments difference |
+| s02, s16 | ⚠️ | Sunday is dropped. The row lists it as a put-out day and also under 미수거일, and the model used the second |
+| s19 | ⚠️ | Wednesday is dropped (row: Wednesday for PET and film, Monday and Friday for the rest) |
+| s07 | ⚠️ | The Uzbek answer names no days at all |
+
+`schedule.days/time/place` were right in all 19 because they come from the tool, so the website card and `answer_text` can disagree. `schedule_days_ok` passed all 19: it only flags named days outside the tool's set, so it misses dropped days, ranges like 월~금, and day names outside English and Korean. Fix to consider: write the days and times in code and let the LLM write only the rest.
+
+**2. The gate answers from 4 of many rows.** No probe covers this, and no LLM is involved. In rural districts a row is one collection point, not one zone. 169 area names have more than `MAX_ZONES` rows, and the gate answers all of them from the first 4, because it skips the question once an area matched (`rag/gate.py:94`). In 81 of them the schedule is the same in every row. In the other 88 it differs, and in 60 of those the first 4 rows hide at least one schedule (up to 1,593 rows, 8 districts).
+
+Example: 고흥군 도덕면 has 287 collection points across Monday to Friday. The 4 rows shown all say Monday; 223 of the 287 have another day. The only warning is a note. Fix to consider: when an area's rows differ, ask for the village or hand off to the office. This needs Naura's input, since the question could have 287 options.
+
+**For Anar:** the plan samples the `schedule` slice from CSV rows, which will reach these districts. 정선군 and 고흥군 alone are about a third of the table, so decide whether to sample by row or by district. Both are worth reporting.
 
 ## Raw results
 
@@ -221,4 +267,4 @@ Not run yet: E1, E4 vector variants, E6, E7 and E8. All wait for Anar's dev set 
 - Baseline at `fa50916`: `probes_committed-baseline_20261106-142636.json`
 - First runs, uncommitted tree: `probes_default-final_20261104-232118.json`, `probes_default-v3_20261104-233910.json`, `probes_default-clean_20261104-203516.json` (before the last validation changes), `probes_baseline-clean_20261104-203908.json`
 - Old data, for comparison: `probes_full-qwen7b_*.json`, `probes_router-exaone_*.json`, `probes_all-exaone_*.json`, `probes_rq-*.json`
-- Experiments: `E2/`, `E3/`, `E5/` (traces per case + `manifest.json`)
+- Experiments: `E2/`, `E3/`, `E4/`, `E5/` (traces per case + `manifest.json`)
