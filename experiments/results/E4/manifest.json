@@ -4,11 +4,11 @@
   "stage": "full",
   "spec_file": "experiments/configs/E4_schedule.json",
   "cases": "experiments/probes_schedule.jsonl",
-  "cases_sha256": "924ee3898a37c8b41c28feb4aec956f8dc90024f37368283b6bd0ad3e3dfc0e6",
-  "n_cases": 24,
-  "git_commit": "957251566ba3d122f4be2bf35786094f4293cb40",
-  "git_dirty": true,
-  "started": "2026-11-06T15:58:00",
+  "cases_sha256": "c43868690fe3872f9b90d94b4cb7ef0b28dfe334bff2c146cf86b693f0f55bc6",
+  "n_cases": 27,
+  "git_commit": "27ff6a44e10b73782b2ee41a317f2ca639838dfc",
+  "git_dirty": false,
+  "started": "2026-11-06T23:20:00",
   "variants": {
     "structured-lookup": {
       "config": {
@@ -29,6 +29,7 @@
         "conflict_policy": "prefer_2026",
         "validation": "enforce",
         "schedule_retrieval": "structured",
+        "schedule_text": "code",
         "temperature": 0.0,
         "seed": 7
       },
@@ -52,6 +53,7 @@
           "conflict_policy": "prefer_2026",
           "validation": "enforce",
           "schedule_retrieval": "structured",
+          "schedule_text": "code",
           "temperature": 0.0,
           "seed": 7
         },
@@ -64,26 +66,26 @@
       },
       "traces": "experiments/results/E4/structured-lookup.jsonl",
       "quick_summary": {
-        "cases": 24,
+        "cases": 27,
         "gold_cases": 0,
         "recall@5": null,
         "mrr": null,
         "statuses": {
-          "ANSWER": 19,
-          "CLARIFY": 3,
-          "INSUFFICIENT_CONTEXT": 2
+          "ANSWER": 20,
+          "CLARIFY": 4,
+          "INSUFFICIENT_CONTEXT": 3
         },
-        "mean_total_s": 14.13,
+        "mean_total_s": 6.25,
         "schedule": {
-          "cases": 24,
-          "behaviour_ok": 24,
+          "cases": 27,
+          "behaviour_ok": 27,
           "wrong_place": 0,
-          "answerable": 19,
+          "answerable": 20,
           "empty": 0,
-          "row_found": 19,
-          "top_row": 19,
-          "only_correct_rows": 19,
-          "day_time_match": 19
+          "row_found": 20,
+          "top_row": 20,
+          "only_correct_rows": 20,
+          "day_time_match": 20
         }
       }
     },
@@ -106,6 +108,7 @@
         "conflict_policy": "prefer_2026",
         "validation": "enforce",
         "schedule_retrieval": "vector",
+        "schedule_text": "code",
         "temperature": 0.0,
         "seed": 7
       },
@@ -129,6 +132,7 @@
           "conflict_policy": "prefer_2026",
           "validation": "enforce",
           "schedule_retrieval": "vector",
+          "schedule_text": "code",
           "temperature": 0.0,
           "seed": 7
         },
@@ -141,24 +145,24 @@
       },
       "traces": "experiments/results/E4/vector.jsonl",
       "quick_summary": {
-        "cases": 24,
+        "cases": 27,
         "gold_cases": 0,
         "recall@5": null,
         "mrr": null,
         "statuses": {
-          "ANSWER": 24
+          "ANSWER": 27
         },
-        "mean_total_s": 19.45,
+        "mean_total_s": 8.0,
         "schedule": {
-          "cases": 24,
-          "behaviour_ok": 19,
+          "cases": 27,
+          "behaviour_ok": 20,
           "wrong_place": 18,
-          "answerable": 19,
+          "answerable": 20,
           "empty": 0,
-          "row_found": 18,
-          "top_row": 15,
-          "only_correct_rows": 1,
-          "day_time_match": 17
+          "row_found": 19,
+          "top_row": 16,
+          "only_correct_rows": 2,
+          "day_time_match": 18
         }
       }
     },
@@ -181,6 +185,7 @@
         "conflict_policy": "prefer_2026",
         "validation": "enforce",
         "schedule_retrieval": "postfilter",
+        "schedule_text": "code",
         "temperature": 0.0,
         "seed": 7
       },
@@ -204,6 +209,7 @@
           "conflict_policy": "prefer_2026",
           "validation": "enforce",
           "schedule_retrieval": "postfilter",
+          "schedule_text": "code",
           "temperature": 0.0,
           "seed": 7
         },
@@ -216,25 +222,25 @@
       },
       "traces": "experiments/results/E4/postfilter.jsonl",
       "quick_summary": {
-        "cases": 24,
+        "cases": 27,
         "gold_cases": 0,
         "recall@5": null,
         "mrr": null,
         "statuses": {
-          "ANSWER": 22,
+          "ANSWER": 25,
           "INSUFFICIENT_CONTEXT": 2
         },
-        "mean_total_s": 17.31,
+        "mean_total_s": 6.8,
         "schedule": {
-          "cases": 24,
-          "behaviour_ok": 21,
+          "cases": 27,
+          "behaviour_ok": 22,
           "wrong_place": 2,
-          "answerable": 19,
+          "answerable": 20,
           "empty": 0,
-          "row_found": 19,
-          "top_row": 17,
-          "only_correct_rows": 10,
-          "day_time_match": 19
+          "row_found": 20,
+          "top_row": 18,
+          "only_correct_rows": 11,
+          "day_time_match": 20
         }
       }
     },
@@ -257,6 +263,7 @@
         "conflict_policy": "prefer_2026",
         "validation": "enforce",
         "schedule_retrieval": "prefilter",
+        "schedule_text": "code",
         "temperature": 0.0,
         "seed": 7
       },
@@ -280,6 +287,7 @@
           "conflict_policy": "prefer_2026",
           "validation": "enforce",
           "schedule_retrieval": "prefilter",
+          "schedule_text": "code",
           "temperature": 0.0,
           "seed": 7
         },
@@ -292,28 +300,28 @@
       },
       "traces": "experiments/results/E4/prefilter.jsonl",
       "quick_summary": {
-        "cases": 24,
+        "cases": 27,
         "gold_cases": 0,
         "recall@5": null,
         "mrr": null,
         "statuses": {
-          "ANSWER": 22,
+          "ANSWER": 25,
           "INSUFFICIENT_CONTEXT": 2
         },
-        "mean_total_s": 17.12,
+        "mean_total_s": 6.86,
         "schedule": {
-          "cases": 24,
-          "behaviour_ok": 21,
+          "cases": 27,
+          "behaviour_ok": 22,
           "wrong_place": 2,
-          "answerable": 19,
+          "answerable": 20,
           "empty": 0,
-          "row_found": 19,
-          "top_row": 17,
-          "only_correct_rows": 8,
-          "day_time_match": 19
+          "row_found": 20,
+          "top_row": 18,
+          "only_correct_rows": 9,
+          "day_time_match": 20
         }
       }
     }
   },
-  "finished": "2026-11-06T16:25:26"
+  "finished": "2026-11-06T23:32:49"
 }

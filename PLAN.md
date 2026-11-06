@@ -293,13 +293,14 @@ Output JSON:
  "data_date": "2024-xx-xx", "office_phone": "...", "missing": null}
 ```
 
-`schedule`, `data_date` and `office_phone` are filled by `pipeline.schedule_fields` from the tool's rows, never by the LLM. The schedule part of `answer_text` is written by code too (`rag/schedule_text.py`): the generator sees item evidence only, and a small LLM call translates the free-text `method` field, which falls back to the Korean text if it fails. `schedule_text = llm` keeps the old behaviour, and the baseline uses it. With several zones or waste types each value is labelled, `data_date` is the oldest date, and `schedule` also keeps the full detail (`status`, `message`, `options`, `zones`).
+`schedule`, `data_date` and `office_phone` are filled by `pipeline.schedule_fields` from the tool's rows, never by the LLM. The schedule part of `answer_text` is written by code too (`rag/schedule_text.py`): the generator sees item evidence only, and a small LLM call translates the free-text `method` field, which falls back to English and then to the Korean text if it fails. Uzbek, Vietnamese and Russian method text goes to English until a native speaker has checked them (`METHOD_LANGUAGE`). `schedule_text = llm` keeps the old behaviour, and the baseline uses it. With several zones or waste types each value is labelled, `data_date` is the oldest date, and `schedule` also keeps the full detail (`status`, `message`, `options`, `zones`).
 
 ### 4.9 Output validation and citation check (Lessons 4, 6, 7)
 
 - JSON schema check; `bin` must come from the **allowed category list**: the 2018 categories (종이, 종이팩, 금속캔, 고철, 유리병, 플라스틱, 비닐, 발포합성, 의류, 가전제품, 대형, 음식물, 유해, 불연성종량제, 종량제봉투, 전용함, 전문시설) plus the 2026 groups (e.g., 투명페트병). This is the Siemens lesson: validate generated output before use.
 - Every `[n]` must resolve to a chunk actually in the context.
 - **Cheap support check:** the `bin` value must appear in at least one cited chunk's categories or text. If it doesn't, the answer is downgraded to abstain.
+- **Invented schedule check:** an answer that states days or clock times with no schedule rows behind it is downgraded to abstain (`schedule_invented`).
 - Optional LLM claim check, used in evaluation only, not at runtime.
 
 ### 4.10 Human handoff (Lesson 7, Klarna case)
@@ -599,7 +600,7 @@ Preprocessing (fixes from §3.2):
 - [x] `pipeline.py`: `answer()` for the website and `run_case()` for evaluation; trace writing
 - [x] `experiments/configs/E1–E8` + `run_experiment.py` + `tau_sweep.py` (E6 chunkings still need their data)
 - [x] Deterministic unit tests: `python -m tests.test_deterministic`
-- [x] E4 vector variants: `ingest.build_index --corpus schedule`, `rag/schedule_vector.py`, `experiments/probes_schedule.jsonl` (24 probes; results in `PHASE2_NOTES.md` §10; re-run after commit and on dev)
+- [x] E4 vector variants: `ingest.build_index --corpus schedule`, `rag/schedule_vector.py`, `experiments/probes_schedule.jsonl` (27 probes; results in `PHASE2_NOTES.md` §10; still to run on dev)
 - [x] Gate: when an area has more than `MAX_ZONES` rows with different schedules, ask or hand off instead of answering from the first 4 (`PHASE2_NOTES.md` §10)
 - [x] Schedule answers: write days, times and places in code, so `answer_text` cannot drop or change them (`rag/schedule_text.py`; `PHASE2_NOTES.md` §10)
 - [ ] Re-run E1–E8 on Anar's dev set when it exists; pick τ (E5) and freeze the config
