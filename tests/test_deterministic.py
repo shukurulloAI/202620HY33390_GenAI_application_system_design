@@ -384,6 +384,18 @@ def test_translation_checks():
     assert ok("after 6 pm", source="저녁 6시 이후 배출")
 
 
+def test_translation_must_be_in_the_language_asked_for():
+    ok = lambda text, lang: usable_translation("물기를 최대한 제거한 후 배출", text, lang)
+    romanised = "acjeoekkeul keutjian jeogjeo geuda hamyeon juneungyonggi(soktong) e baeotdal"
+    assert not ok(romanised, "vi")                     # the real output for s04
+    assert not ok(romanised, "zh") and not ok(romanised, "ru")
+    assert ok("giảm tối đa độ ẩm rồi cho vào túi rác trả phí", "vi")
+    assert ok("Dùng bao trong suốt đựng sau đó buộc lại trước khi bỏ ra ngoài", "vi")
+    assert ok("尽量挤出水分后放入计量收费袋中排出", "zh")
+    assert ok("положите PET-бутылки в прозрачный пакет", "ru")
+    assert ok(romanised, "en")                         # no letters of its own to test: known gap
+
+
 def test_failed_translation_tries_english_then_korean():
     class Queue(StubLLM):
         def generate(self, **kwargs):
@@ -391,12 +403,20 @@ def test_failed_translation_tries_english_then_korean():
             return SimpleNamespace(text=self.text.pop(0), model_id="stub", done_reason="stop")
 
     method = "규격봉투에 넣어 지정된 요일에 배출"
-    llm = Queue([json.dumps({"text": "выбросьте по指定的日期"}), json.dumps({"text": "use the bag"})])
-    assert ScheduleWriter(llm).translate([method], "ru")[0] == ["use the bag"]
-    assert "into Russian" in llm.calls[0]["prompt"] and "into English" in llm.calls[1]["prompt"]
-    llm = Queue(['{"text": "по指定的日期"}', '{"text": "use规格式"}'])
-    lines, record = ScheduleWriter(llm).translate([method], "ru")
+    llm = Queue([json.dumps({"text": "放入영营养郡"}), json.dumps({"text": "use the bag"})])
+    assert ScheduleWriter(llm).translate([method], "zh")[0] == ["use the bag"]
+    assert "into Chinese" in llm.calls[0]["prompt"] and "into English" in llm.calls[1]["prompt"]
+    llm = Queue(['{"text": "放入영营养郡"}', '{"text": "use规格式"}'])
+    lines, record = ScheduleWriter(llm).translate([method], "zh")
     assert lines == [method] and record["kept_korean"] == [method]
+
+
+def test_method_text_goes_to_english_for_languages_qwen_gets_wrong():
+    for lang in ("uz", "vi", "ru"):
+        llm = StubLLM(json.dumps({"text": "use the bag"}))
+        lines, record = ScheduleWriter(llm).translate(["규격봉투에 넣어 배출"], lang)
+        assert lines == ["use the bag"] and record["language"] == "en", lang
+        assert len(llm.calls) == 1 and "into English" in llm.calls[0]["prompt"], lang
 
 
 def test_translation_sends_only_the_terms_of_the_line():

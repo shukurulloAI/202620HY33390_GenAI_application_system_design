@@ -33,9 +33,12 @@ TERMS = {"음식물 종량제봉투": ("음식물종량제", "음식물규격봉
          "음식물 전용용기": ("전용용기",),
          "전용봉투": ("전용봉투",),
          "납부필증": ("납부필증",)}
-# qwen2.5:7b writes broken Uzbek ('일반주택' -> 'Oliy xonalar'), so the method text goes to
-# English instead. Days, times and places are still in Uzbek, from the tables below.
-METHOD_LANGUAGE = {"uz": "en"}
+# qwen2.5:7b's Uzbek, Vietnamese and Russian change the meaning in ways no check here can see,
+# so their method text goes to English. Vietnamese made "under 5 tons" into "over 5 tons" and
+# put English profanity in a line; Russian wrote 'thick' for 'paid' bag, and 13 of the 50 most
+# common lines failed outright (PHASE2_NOTES §10). Days, times and labels stay in the user's
+# language, from the tables below. Drop an entry here once a native speaker has checked it.
+METHOD_LANGUAGE = {"uz": "en", "vi": "en", "ru": "en"}
 _DAY = "월화수목금토일"
 _NAMES_DAYS = re.compile(rf"[{_DAY}]요일|(?<![가-힣])[{_DAY}](?=\s*(?:[,·ㆍ/~+\-]|저녁|오전|오후|$))"
                          rf"|(?<=[,·ㆍ/~+\-])\s*[{_DAY}](?![가-힣])")
@@ -177,14 +180,28 @@ def names_days(method: str) -> bool:
     return bool(_NAMES_DAYS.search(method))
 
 
+# Letters only this language uses. qwen sometimes answers in romanised Korean ("acjeoekkeul
+# keutjian ..."), which no check for a wrong script can see. Real Vietnamese lines scored 0.19
+# or more and romanised Korean 0. This tests the script, not the meaning: "acjeo khi mọt tị
+# trươn ..." has its letters and is still nonsense, which is why METHOD_LANGUAGE exists.
+_OWN_LETTERS = {"vi": "[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]",
+                "zh": "[\u4e00-\u9fff]", "ru": "[а-яё]"}
+_MIN_OWN_SHARE = 0.1
+
+
 def usable_translation(source: str, text: str, lang: str) -> bool:
-    """Every number kept, and no other script outside the parentheses meant for Korean."""
+    """Every number kept, no other script outside the parentheses meant for Korean, and
+    written in the language asked for."""
     if not text.strip():
         return False
     numbers = re.findall(r"\d+", text)
     if any(n not in numbers for n in re.findall(r"\d+", source)):
         return False
     outside = re.sub(r"\([^)]*\)", "", text)
+    if lang in _OWN_LETTERS:
+        own = len(re.findall(_OWN_LETTERS[lang], outside, re.IGNORECASE))
+        if own < _MIN_OWN_SHARE * len(re.findall(r"[^\W\d_]", outside)):
+            return False
     return not (re.search("[가-힣]", outside)
                 or (lang != "zh" and re.search("[\u4e00-\u9fff]", outside))
                 or (lang == "ru" and re.search("[a-zA-Z]{3,}", outside.replace("PET", ""))))
