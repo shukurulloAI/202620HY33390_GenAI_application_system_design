@@ -79,8 +79,9 @@ def main() -> None:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--embedding", default=config.DEFAULT_EMBEDDING,
                         choices=sorted(config.EMBEDDING_MODELS))
+    parser.add_argument("--corpus", default="items", choices=["items", "schedule"])
     args = parser.parse_args()
-    record = published_record(args.embedding)
+    record = published_record(args.embedding, args.corpus)
     corpus_path = config.ROOT / record["corpus_path"]
     report = verify(record["collection"], config.EMBEDDING_MODELS[args.embedding],
                     load_chunks(corpus_path), corpus_path, record["corpus_sha256"])

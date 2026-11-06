@@ -60,8 +60,8 @@ def _copy(c: Candidate, **changes) -> Candidate:
 class DenseRetriever:
     """Searches the published (verified) collection for one embedding contract."""
 
-    def __init__(self, embedding_key: str = config.DEFAULT_EMBEDDING):
-        record = published_record(embedding_key)
+    def __init__(self, embedding_key: str = config.DEFAULT_EMBEDDING, corpus: str = "items"):
+        record = published_record(embedding_key, corpus)
         self.spec = config.EMBEDDING_MODELS[embedding_key]
         self.collection = record["collection"]
         self.revision = record["revision"]
@@ -71,11 +71,15 @@ class DenseRetriever:
         self.name = f"dense:{self.spec.key}@{self.revision[:8]}"
 
     def search(self, query: str, k: int = config.K_RETRIEVE,
-               doc_types: list[str] | None = None) -> list[Candidate]:
+               doc_types: list[str] | None = None,
+               where: dict[str, list[str]] | None = None) -> list[Candidate]:
+        """`where`: payload field -> allowed values, applied during the search."""
+        fields = {**({"doc_type": doc_types} if doc_types else {}), **(where or {})}
         query_filter = None
-        if doc_types:                                   # prefilter (Lesson 5)
-            query_filter = models.Filter(must=[models.FieldCondition(
-                key="doc_type", match=models.MatchAny(any=doc_types))])
+        if fields:                                      # prefilter (Lesson 5)
+            query_filter = models.Filter(must=[
+                models.FieldCondition(key=key, match=models.MatchAny(any=values))
+                for key, values in fields.items()])
         result = self.client.query_points(
             collection_name=self.collection, query=self.embedder.encode_query(query),
             query_filter=query_filter, limit=k, with_payload=True)

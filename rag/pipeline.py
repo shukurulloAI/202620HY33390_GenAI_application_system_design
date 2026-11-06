@@ -8,8 +8,9 @@ End-to-end pipeline (PLAN.md §4). Every stage is set by one PipelineConfig
       -> schedule tool: typed lookup + date check (deterministic)
       -> gate: answer / abstain / clarify / out of scope, per part
            (nothing answerable -> fixed message + handoff, no LLM call)
-      -> context under token budget -> generator (LLM call 2, JSON schema)
+      -> context under token budget -> generator (LLM call 2, JSON schema), items only
       -> parse + citation check -> validation (allowed bins, support)
+      -> schedule text: days, times, places by code; method translated (small LLM call)
       -> answer dict (+ handoff, notes) and one JSON trace per request
 
 Interfaces for teammates:
@@ -34,16 +35,18 @@ from datetime import datetime, timezone
 
 from rag import config
 from rag.config import PipelineConfig
-from rag.context import ContextBudget, default_counter, pack_evidence
+from rag.context import ContextBudget, default_counter, pack_evidence, schedule_evidence
 from rag.gate import MAX_ZONES, GateDecision, decide
 from rag.generate import ANSWER_SCHEMA, build_prompt, parse_answer
 from rag.handoff import build_handoff, message
 from rag.llm_client import LLMClient, make_client
 from rag.retrieve import ItemRetriever
 from rag.router import Route, Router
-from rag.schedule_tool import (WASTE_TYPE_EN, WASTE_TYPES, day_checks, default_table, put_out_days,
-                               resolve_day)
-from rag.validate import validate
+from rag.schedule_tool import (DAY_EN, WASTE_TYPE_EN, WASTE_TYPES, day_checks, default_table,
+                               put_out_days, resolve_day)
+from rag.schedule_text import ScheduleWriter, merge_schedule
+from rag.schedule_vector import ScheduleVectorSearch
+from rag.validate import days_mentioned, validate
 
 PIPELINE_VERSION = "v2"
 
@@ -55,6 +58,9 @@ class Pipeline:
         self.llm = llm or make_client("ollama", self.cfg.llm_model)
         self.retriever = ItemRetriever(self.cfg)
         self.schedule = default_table()
+        self.schedule_search = (None if self.cfg.schedule_retrieval == "structured"
+                                else ScheduleVectorSearch(self.schedule, self.cfg))
+        self.writer = ScheduleWriter(self.llm, self.cfg.temperature, self.cfg.seed)
         self.router = None
         if self.cfg.router:
             if router_llm is None:
@@ -71,7 +77,9 @@ class Pipeline:
         return {"pipeline_version": PIPELINE_VERSION, "config": self.cfg.to_dict(),
                 "retriever": self.retriever.name, "collection": self.retriever.collection,
                 "router": self.router.name if self.router else None,
-                "llm": self.llm.model_id, "schedule_source": self.schedule.source}
+                "llm": self.llm.model_id, "schedule_source": self.schedule.source,
+                "schedule_retriever": (self.schedule_search.name if self.schedule_search
+                                       else "structured lookup")}
 
     # ------------------------------------------------------------------ stages
     def route(self, question: str) -> Route:
@@ -116,9 +124,10 @@ class Pipeline:
         same_district = not district or not route.district or route.district == district
         eff_dong = dong or (route.dong if same_district else "") or None
         eff_waste = waste_type or route.waste_type
+        day_ref = day_asked(question, route.day_ref)
         trace["resolved"] = {"intent": intent, "lang": lang, "district": eff_district,
                              "province": province, "dong": eff_dong, "waste_type": eff_waste,
-                             "day_ref": route.day_ref,
+                             "day_ref": day_ref,
                              "location_source": ("input" if district else
                                                  "router" if route.district else None)}
 
@@ -138,9 +147,14 @@ class Pipeline:
         schedule, day = None, None
         needs_schedule = intent in ("schedule", "both") or (intent == "unknown" and eff_district)
         if needs_schedule and eff_district:
-            schedule = self.schedule.lookup(eff_district, province, eff_dong, eff_waste)
+            if self.schedule_search:                      # E4 only
+                usable = route.valid and route.checks.get("rewrite_usable", False)
+                schedule = self.schedule_search.search(route.ko_query if usable else question,
+                                                       eff_district, province, eff_dong, eff_waste)
+            else:
+                schedule = self.schedule.lookup(eff_district, province, eff_dong, eff_waste)
             trace["schedule"] = schedule.to_trace()
-            day = resolve_day(route.day_ref)
+            day = resolve_day(day_ref)
         timings["schedule_s"] = round(time.perf_counter() - t, 3)
 
         tau = self.cfg.gate_tau if self.cfg.rerank else None
@@ -149,22 +163,29 @@ class Pipeline:
 
         item_evidence = selected if gate.item == "answer" else []
         schedule_rows = schedule.rows[:MAX_ZONES] if gate.schedule == "answer" else []
+        # With schedule_text = code the generator never sees days, times or places.
+        write_schedule = self.cfg.schedule_text == "code" and bool(schedule_rows)
+        llm_rows = [] if write_schedule else schedule_rows
 
+        answer, evidence = None, []
+        trace["llm"], trace["checks"], trace["evidence"] = None, {}, []
         if gate.status != "ANSWER":                      # nothing answerable: no LLM call
-            trace["llm"], trace["checks"], trace["evidence"] = None, {}, []
+            key = "SCHEDULE_VARIES" if gate.schedule_varies else gate.status
             answer = {"status": gate.status, "bin": "", "bin_en": "", "how_to_prepare": [],
-                      "answer_text": message(gate.status, lang), "citations": [],
+                      "answer_text": message(key, lang), "citations": [],
                       "missing": "; ".join(gate.reasons)}
-            evidence = []
-        else:
-            system, empty = build_prompt(self.cfg.prompt_version, question, "", lang,
+        elif item_evidence or llm_rows:
+            asked = question
+            if self.cfg.schedule_text == "code" and gate.schedule != "skip":
+                asked = item_only_question(question, route)
+            system, empty = build_prompt(self.cfg.prompt_version, asked, "", lang,
                                          self.cfg.conflict_policy)
             evidence, evidence_text, budget = pack_evidence(
-                item_evidence, schedule_rows, eff_waste, system + "\n" + empty,
+                item_evidence, llm_rows, eff_waste, system + "\n" + empty,
                 self.counter, self.budget, day)
             trace["evidence"] = [e.to_citation() for e in evidence]
             trace["budget"] = budget
-            system, prompt = build_prompt(self.cfg.prompt_version, question, evidence_text,
+            system, prompt = build_prompt(self.cfg.prompt_version, asked, evidence_text,
                                           lang, self.cfg.conflict_policy)
             t = time.perf_counter()
             result = self.llm.generate(system=system, prompt=prompt, json_schema=ANSWER_SCHEMA,
@@ -176,12 +197,34 @@ class Pipeline:
                             "prompt_tokens_measured": result.prompt_tokens,
                             "completion_tokens": result.completion_tokens,
                             "done_reason": result.done_reason}
-            days = _schedule_days(schedule_rows, eff_waste) if schedule_rows else None
+            # A schedule question with no rows shown: any day the model states is invented.
+            days = (_schedule_days(llm_rows, eff_waste) if llm_rows
+                    else set() if gate.schedule != "skip" else None)
             answer, validation = validate(answer, evidence, days, self.cfg.validation,
                                           item_question=gate.item == "answer")
             if validation.get("downgraded"):
                 answer["answer_text"] = message("INSUFFICIENT_CONTEXT", lang)
             trace["checks"] = {**checks, "validation": validation}
+
+        if write_schedule:
+            t = time.perf_counter()
+            item_missing = ""
+            if answer and answer.get("status") != "ANSWER":   # the schedule stands without it
+                item_missing, answer, evidence = answer.get("missing", ""), None, []
+                gate.item = "abstain"
+                gate.reasons.append("item answer did not pass; schedule answered alone")
+                trace["gate"] = gate.to_trace()
+            rows_evidence = [schedule_evidence(r, eff_waste, day) for r in schedule_rows]
+            for n, item in enumerate(rows_evidence, len(evidence) + 1):
+                item.n = n
+            written, record = self.writer.write(schedule_rows, eff_waste, lang, day,
+                                                len(evidence) + 1)
+            answer = merge_schedule(answer, written)
+            answer["missing"] = answer["missing"] or item_missing
+            evidence = evidence + rows_evidence
+            trace["evidence"] = [e.to_citation() for e in evidence]
+            trace["schedule_text"] = record
+            timings["schedule_text_s"] = round(time.perf_counter() - t, 3)
 
         timings["total_s"] = round(time.perf_counter() - start, 3)
         trace["timings"] = timings
@@ -266,6 +309,10 @@ class Pipeline:
                                       "(more than a year old). Please confirm with the office.")
             if schedule.message and schedule_rows:
                 final["notes"].append(schedule.message)
+            if gate.schedule_varies and final["status"] == "ANSWER":
+                final["notes"].append(message("SCHEDULE_VARIES", lang))
+            if gate.schedule == "abstain" and final["status"] == "ANSWER":
+                final["missing"] = final["missing"] or schedule.message  # say what was left out
 
         # handoff when we could not answer, or answered only part of the question
         if final["status"] == "INSUFFICIENT_CONTEXT" or (
@@ -280,7 +327,21 @@ class Pipeline:
                 item_ko=route.item_ko if route.checks.get("item_ko_korean") else "",
                 waste_type=waste_type, district=district, dong=dong, schedule=schedule,
                 asks_schedule=gate.schedule != "skip", checked=checked)
+            final["office_phone"] = final["office_phone"] or final["handoff"]["phone"]
         return final
+
+
+def day_asked(question: str, routed: str | None) -> str | None:
+    """One weekday named in the question beats the router, which read 화요일 as Wednesday."""
+    named = days_mentioned(question)
+    return DAY_EN[next(iter(named))].lower() if len(named) == 1 else routed
+
+
+def item_only_question(question: str, route: Route) -> str:
+    """What the generator is asked when the schedule part is not its job. Asked the whole
+    question with no schedule to read, it copied the days of its few-shot example."""
+    rule = "Answer only about the item. Do not mention days or times."
+    return f"How do I throw away {route.item}? {rule}" if route.item else f"{question}\n({rule})"
 
 
 def schedule_fields(rows, types: list[str]) -> dict:

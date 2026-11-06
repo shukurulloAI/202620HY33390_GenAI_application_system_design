@@ -29,6 +29,12 @@ MESSAGES = {
         "en": "I need one more detail to answer.",
         "ko": "답변을 위해 정보가 하나 더 필요합니다.",
     },
+    "SCHEDULE_VARIES": {
+        "en": "Collection days differ between collection points in this area, so I will not "
+              "give you one day. Your district office can tell you which point is yours.",
+        "ko": "이 지역은 배출 장소마다 수거 요일이 달라 한 가지 요일로 안내하지 않겠습니다. "
+              "이용하시는 배출 장소는 구청이나 군청에 문의해 주세요.",
+    },
 }
 
 

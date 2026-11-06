@@ -35,8 +35,8 @@ ANSWER_SCHEMA = {
 
 
 @lru_cache(maxsize=8)
-def load_prompt(version: str) -> tuple[str, str]:
-    raw = (config.PROMPT_DIR / f"answer_{version}.md").read_text(encoding="utf-8")
+def load_prompt(name: str) -> tuple[str, str]:
+    raw = (config.PROMPT_DIR / f"{name}.md").read_text(encoding="utf-8")
     raw = re.sub(r"<!--.*?-->", "", raw, flags=re.S)
     system, user = raw.split("=== USER ===")
     return system.replace("=== SYSTEM ===", "").strip(), user.strip()
@@ -51,7 +51,7 @@ CONFLICT_RULES = {
 
 def build_prompt(version: str, question: str, evidence_text: str,
                  lang: str | None, conflict_policy: str = "prefer_2026") -> tuple[str, str]:
-    system, user = load_prompt(version)
+    system, user = load_prompt(f"answer_{version}")
     language = LANGUAGE_NAMES.get(lang or "", "the same language as the question")
     prompt = (user.replace("{conflict_rule}\n", CONFLICT_RULES[conflict_policy] + "\n"
                            if CONFLICT_RULES[conflict_policy] else "")

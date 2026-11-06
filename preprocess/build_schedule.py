@@ -36,7 +36,7 @@ from rag.korean import romanize
 RAW = SOURCES["schedule_csv"]["path"]
 STALE_AFTER_DAYS = 365
 DISTRICT_FIXES = {"남양주": "남양주시", "동두천": "동두천시"}
-WHOLE = re.compile(r"^(전체|전지역|전역|관내\s*전지역|.*\d+\s*개\s*(동|읍|면|리)|.*(전역|일원))$")
+WHOLE = re.compile(r"^(전체|전지역|전역|없음|해당없음|관내\s*전지역|.*\d+\s*개\s*(동|읍|면|리)|.*(전역|일원))$")
 SEOUL_DISTRICTS = ("종로구 중구 용산구 성동구 광진구 동대문구 중랑구 성북구 강북구 도봉구 노원구 은평구 "
                    "서대문구 마포구 양천구 강서구 구로구 금천구 영등포구 동작구 관악구 서초구 강남구 "
                    "송파구 강동구").split()
@@ -178,7 +178,8 @@ def district_aliases(pairs: list[tuple[str, str]]) -> dict:
 
 
 def schedule_chunk(row: dict) -> dict:
-    lines = [f"[{row['시도명']} {row['시군구명']} {row['관리구역명']}] 쓰레기 배출 안내".replace("  ", " "),
+    place = " ".join(p for p in (row["시도명"], row["시군구명"], row["관리구역명"]) if p)
+    lines = [f"[{place}] 쓰레기 배출 안내",
              "대상 지역: " + (row["관리구역대상지역명"].replace("+", ", ") or "전체")]
     for label, prefix in (("생활쓰레기", "생활쓰레기"), ("음식물쓰레기", "음식물쓰레기"),
                           ("재활용품", "재활용품")):
@@ -187,11 +188,13 @@ def schedule_chunk(row: dict) -> dict:
     lines += [f"미수거일: {row['미수거일']}",
               f"문의: {row['관리부서명']} ({row['관리부서전화번호']})",
               f"데이터 기준일: {row['데이터기준일자']}"]
+    # No `stale` flag here: it depends on the build date, so it would change the corpus hash
+    # and invalidate the index with no change in content. The runtime computes it.
     return {"id": f"schedule_{row['관리번호']}", "text": "\n".join(lines),
             "metadata": {"doc_type": "schedule", "row_id": row["관리번호"],
                          "province": row["시도명"], "district": row["시군구명"],
                          "zone": row["관리구역명"], "areas": row["관리구역대상지역명"].replace("+", ", "),
-                         "data_date": row["데이터기준일자"], "stale": row["오래된데이터"] == "Y",
+                         "data_date": row["데이터기준일자"],
                          "source": SOURCES["schedule_csv"]["title"]}}
 
 

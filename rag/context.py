@@ -80,6 +80,15 @@ def item_label(metadata: dict) -> str:
     return f"{metadata.get('source', 'unknown source')} {where}".strip()
 
 
+def schedule_evidence(row, waste_type: str | None, day=None) -> EvidenceItem:
+    return EvidenceItem(0, "schedule", row.row_id,
+                        f"District data, {row.province} {row.district}, "
+                        f"관리번호 {row.row_id}, data date {row.data_date}",
+                        row.to_evidence(waste_type, day),
+                        {"data_date": row.data_date, "phone": row.phone,
+                         "office": row.office, "stale": row.is_stale()})
+
+
 def pack_evidence(item_candidates: list, schedule_rows: list, waste_type: str | None,
                   fixed_text: str, counter: TokenCounter,
                   budget: ContextBudget = ContextBudget(), day=None):
@@ -99,12 +108,7 @@ def pack_evidence(item_candidates: list, schedule_rows: list, waste_type: str | 
             item = EvidenceItem(0, "item", obj.chunk_id, item_label(obj.metadata),
                                 obj.text, obj.metadata)
         else:
-            item = EvidenceItem(0, "schedule", obj.row_id,
-                                f"District data, {obj.province} {obj.district}, "
-                                f"관리번호 {obj.row_id}, data date {obj.data_date}",
-                                obj.to_evidence(waste_type, day),
-                                {"data_date": obj.data_date, "phone": obj.phone,
-                                 "office": obj.office, "stale": obj.is_stale()})
+            item = schedule_evidence(obj, waste_type, day)
         cost = counter.count(f"[99] ({item.label})\n{item.text}\n\n")
         if used + cost > budget.input_budget:
             dropped.append(item.ref)

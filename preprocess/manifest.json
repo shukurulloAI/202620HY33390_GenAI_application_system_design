@@ -1,6 +1,6 @@
 {
   "manifest_version": 1,
-  "built_at": "2026-11-06T00:17:14+09:00",
+  "built_at": "2026-11-06T21:41:21+09:00",
   "sources": [
     {
       "key": "guide2018",
@@ -62,15 +62,15 @@
     },
     "schedule.csv": {
       "path": "preprocess/schedule.csv",
-      "sha256": "983078eabe4f6cf00d95631cfbf520f7c85c4c634131b1b6516c657da3ba63b5"
+      "sha256": "0a5a9d2c2bc1e52d7cbd6349e5c374ecf6593fa847c6f3843cf9218b7405d771"
     },
     "schedule_chunks.jsonl": {
       "path": "preprocess/schedule_chunks.jsonl",
-      "sha256": "ffd6c1801dc38375b73dedd6c8f8890072d939f3050420351086aa0f6a50d381"
+      "sha256": "7386a17d0f685f75483497e7fb4d0bfbb2e999696e0228d86f9ce59a3d01f16b"
     },
     "dong_lookup.json": {
       "path": "preprocess/dong_lookup.json",
-      "sha256": "858f38f527bac31c3f11c5ec43f5058b7affa73db675ee37a1ef98b4702bc464"
+      "sha256": "eafdc3acfcdbd8a148ff304ab8a819725ed215737004a89167ad11c2ec2c2241"
     },
     "district_aliases.json": {
       "path": "preprocess/district_aliases.json",
@@ -78,11 +78,11 @@
     },
     "locations.json": {
       "path": "preprocess/locations.json",
-      "sha256": "6c18de2c5154e524b11ad893bee1e8dc82e00d5b2ac8de94c2d5e7fbd89384b2"
+      "sha256": "26c4b639eb70ad759ec58314bdd02573a2c53989843d2b11d8b0dec5e728c4f3"
     },
     "glossary.json": {
       "path": "preprocess/glossary.json",
-      "sha256": "fb8fb24487141804e5944521d8f8ac91d10c7845a5e46b92a54a222a5d305fbd"
+      "sha256": "ac73ceca8c3d9650a3c61c5750ec96c8a3eb9d38eefa0d37607e532caab7be14"
     },
     "manual/food_waste_table_2018.json": {
       "path": "preprocess/manual/food_waste_table_2018.json",

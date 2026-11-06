@@ -85,6 +85,46 @@ def quick_summary(traces: list[dict], cases: list[dict], k: int) -> dict:
             "mean_total_s": round(sum(totals) / len(totals), 2) if totals else None}
 
 
+def schedule_summary(traces: list[dict], cases: list[dict], table) -> dict:
+    """E4, as counts (a first look, like quick_summary). `expected_schedule.row_ids` come
+    from a scan of the table, never from the tool being measured. Rows are scored as shown
+    to the user: an answer that was refused shows none.
+
+    A row with another district's identical days still counts as a day/time match, because
+    the rows are near-duplicates. So wrong_place is counted apart: the days may be right by
+    luck, but the place and the office phone are not."""
+    by_id = {c.get("case_id") or c.get("probe_id"): c for c in cases}
+    expected_status = {"answer": "ANSWER", "abstain": "INSUFFICIENT_CONTEXT",
+                       "clarify": "CLARIFY"}
+    out = Counter()
+    for t in traces:
+        case = by_id.get(t["case_id"], {})
+        if not case.get("expected_schedule"):
+            continue
+        answer = t.get("answer") or {}
+        zones = (answer.get("schedule") or {}).get("zones") or []
+        shown = [z["row_id"] for z in zones] if answer.get("status") == "ANSWER" else []
+        gold = set(case["expected_schedule"]["row_ids"])
+        places = {(table.by_id[i].province, table.by_id[i].district) for i in gold}
+        out["cases"] += 1
+        out["behaviour_ok"] += answer.get("status") == expected_status[case["expected_behavior"]]
+        out["wrong_place"] += any((table.by_id[i].province, table.by_id[i].district) not in places
+                                  for i in shown)
+        if case["expected_behavior"] != "answer":
+            continue
+        out["answerable"] += 1
+        out["empty"] += not shown
+        out["row_found"] += bool(gold & set(shown))
+        out["top_row"] += bool(shown) and shown[0] in gold
+        out["only_correct_rows"] += bool(shown) and set(shown) <= gold
+
+        def when(row_id: str) -> tuple:
+            rule = table.by_id[row_id].rules[case["waste_type"]]
+            return tuple(rule.days), rule.start, rule.end
+        out["day_time_match"] += bool(shown) and when(shown[0]) in {when(i) for i in gold}
+    return dict(out)
+
+
 def git_commit() -> str | None:
     try:
         return subprocess.run(["git", "rev-parse", "HEAD"], cwd=config.ROOT, text=True,
@@ -152,6 +192,8 @@ def main() -> None:
                 traces.append(trace)
                 print(f"\r{spec['id']} {name}: {i}/{len(cases)}", end="", flush=True)
         summary = quick_summary(traces, cases, cfg.k_final)
+        if any(c.get("expected_schedule") for c in cases):
+            summary["schedule"] = schedule_summary(traces, cases, pipeline.schedule)
         manifest["variants"][name] = {"config": cfg.to_dict(), "settings": pipeline.settings(),
                                       "traces": str(path.relative_to(config.ROOT)),
                                       "quick_summary": summary}
