@@ -1,5 +1,5 @@
 {
-  "built_at": "2026-11-06T00:17:14+09:00",
+  "built_at": "2026-11-06T21:41:21+09:00",
   "items": {
     "output": "preprocess/item_chunks.jsonl",
     "sha256": "c7d196766f9135a82942606e690120a6078e24960a5f4305cb56415b2627896d",
@@ -39,11 +39,11 @@
     "input_sha256": "ff436b4d711e0090c0be20e09e544071fdb1b33f4a00027004fb31ef8738f4a1",
     "built_on": "2026-11-06",
     "outputs": {
-      "schedule.csv": "983078eabe4f6cf00d95631cfbf520f7c85c4c634131b1b6516c657da3ba63b5",
-      "schedule_chunks.jsonl": "ffd6c1801dc38375b73dedd6c8f8890072d939f3050420351086aa0f6a50d381",
-      "dong_lookup.json": "858f38f527bac31c3f11c5ec43f5058b7affa73db675ee37a1ef98b4702bc464",
+      "schedule.csv": "0a5a9d2c2bc1e52d7cbd6349e5c374ecf6593fa847c6f3843cf9218b7405d771",
+      "schedule_chunks.jsonl": "7386a17d0f685f75483497e7fb4d0bfbb2e999696e0228d86f9ce59a3d01f16b",
+      "dong_lookup.json": "eafdc3acfcdbd8a148ff304ab8a819725ed215737004a89167ad11c2ec2c2241",
       "district_aliases.json": "2af08d4224960df93a1de05e1aabc15089fcc728268bd608126c3441a22e4dd0",
-      "locations.json": "6c18de2c5154e524b11ad893bee1e8dc82e00d5b2ac8de94c2d5e7fbd89384b2"
+      "locations.json": "26c4b639eb70ad759ec58314bdd02573a2c53989843d2b11d8b0dec5e728c4f3"
     },
     "rows": 10187,
     "province_district_pairs": 222,
@@ -67,9 +67,9 @@
       "도봉구",
       "강동구"
     ],
-    "rows_whole_district": 37,
+    "rows_whole_district": 523,
     "rows_with_area_notes": 947,
-    "rows_without_area_names": 29,
+    "rows_without_area_names": 515,
     "rows_days_irregular": 88,
     "rows_without_phone": 3,
     "rows_stale": 6234,
@@ -84,8 +84,8 @@
       "2026": 3761
     },
     "data_age_days_median": 843,
-    "area_names": 6072,
-    "ambiguous_area_names": 229,
+    "area_names": 6070,
+    "ambiguous_area_names": 228,
     "district_aliases": 1723,
     "place_types": {
       "문전수거": 1155,
@@ -94,7 +94,7 @@
     }
   },
   "glossary": {
-    "terms": 32,
+    "terms": 36,
     "all_languages_filled": true,
     "bins_valid": true,
     "ko_unique": true,
@@ -107,7 +107,7 @@
   },
   "manifest": {
     "manifest_version": 1,
-    "built_at": "2026-11-06T00:17:14+09:00",
+    "built_at": "2026-11-06T21:41:21+09:00",
     "sources": [
       {
         "key": "guide2018",
@@ -169,15 +169,15 @@
       },
       "schedule.csv": {
         "path": "preprocess/schedule.csv",
-        "sha256": "983078eabe4f6cf00d95631cfbf520f7c85c4c634131b1b6516c657da3ba63b5"
+        "sha256": "0a5a9d2c2bc1e52d7cbd6349e5c374ecf6593fa847c6f3843cf9218b7405d771"
       },
       "schedule_chunks.jsonl": {
         "path": "preprocess/schedule_chunks.jsonl",
-        "sha256": "ffd6c1801dc38375b73dedd6c8f8890072d939f3050420351086aa0f6a50d381"
+        "sha256": "7386a17d0f685f75483497e7fb4d0bfbb2e999696e0228d86f9ce59a3d01f16b"
       },
       "dong_lookup.json": {
         "path": "preprocess/dong_lookup.json",
-        "sha256": "858f38f527bac31c3f11c5ec43f5058b7affa73db675ee37a1ef98b4702bc464"
+        "sha256": "eafdc3acfcdbd8a148ff304ab8a819725ed215737004a89167ad11c2ec2c2241"
       },
       "district_aliases.json": {
         "path": "preprocess/district_aliases.json",
@@ -185,11 +185,11 @@
       },
       "locations.json": {
         "path": "preprocess/locations.json",
-        "sha256": "6c18de2c5154e524b11ad893bee1e8dc82e00d5b2ac8de94c2d5e7fbd89384b2"
+        "sha256": "26c4b639eb70ad759ec58314bdd02573a2c53989843d2b11d8b0dec5e728c4f3"
       },
       "glossary.json": {
         "path": "preprocess/glossary.json",
-        "sha256": "fb8fb24487141804e5944521d8f8ac91d10c7845a5e46b92a54a222a5d305fbd"
+        "sha256": "ac73ceca8c3d9650a3c61c5750ec96c8a3eb9d38eefa0d37607e532caab7be14"
       },
       "manual/food_waste_table_2018.json": {
         "path": "preprocess/manual/food_waste_table_2018.json",

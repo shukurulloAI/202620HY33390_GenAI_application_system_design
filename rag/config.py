@@ -23,6 +23,8 @@ SCHEDULE_PATHS = (
     ROOT / "Data" / "korean_waste_policies.csv",           # raw data.go.kr file, CP949
 )
 DISTRICT_ALIASES_PATH = PREPROCESS_DIR / "district_aliases.json"  # optional (Vitou)
+SCHEDULE_CHUNK_PATH = PREPROCESS_DIR / "schedule_chunks.jsonl"    # for E4 vector variants only
+GLOSSARY_PATH = PREPROCESS_DIR / "glossary.json"
 
 # --- Local state (gitignored) and evidence (committed) ---
 QDRANT_DIR = ROOT / "qdrant_data"
@@ -112,6 +114,11 @@ class PipelineConfig:
     prompt_version: str = "v2"          # v0 minimal | v1 zero-shot contract | v2 few-shot
     conflict_policy: str = "prefer_2026"  # prefer_2026 | none   (E8)
     validation: str = "enforce"         # off | flag | enforce   (PLAN.md §4.9)
+    schedule_retrieval: str = "structured"  # structured (typed lookup) | vector | postfilter |
+                                            # prefilter; the last three exist only for E4
+    schedule_text: str = "code"         # code: days, times and places written by code, the LLM
+                                        # only translates the method text | llm: the generator
+                                        # writes them (Phase 1 behaviour)
     temperature: float = TEMPERATURE
     seed: int = SEED
 
@@ -121,7 +128,9 @@ class PipelineConfig:
                "rerank_query": ("original", "rewrite", "max"),
                "prompt_version": ("v0", "v1", "v2", "v3"),
                "conflict_policy": ("prefer_2026", "none"),
-               "validation": ("off", "flag", "enforce")}
+               "validation": ("off", "flag", "enforce"),
+               "schedule_retrieval": ("structured", "vector", "postfilter", "prefilter"),
+               "schedule_text": ("code", "llm")}
 
     def __post_init__(self):
         for name, allowed in self.CHOICES.items():
@@ -149,5 +158,6 @@ class PipelineConfig:
 
 # The Phase 1 system, kept runnable as the baseline for every comparison.
 BASELINE = PipelineConfig(retrieval="dense", rerank=False, router=False, gate_tau=None,
-                          query_mode="original", prompt_version="v1", validation="off")
+                          query_mode="original", prompt_version="v1", validation="off",
+                          schedule_text="llm")
 DEFAULT = PipelineConfig()

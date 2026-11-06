@@ -5,13 +5,11 @@
   "base": "default",
   "fixed": {},
   "variants": {
-    "structured-lookup": {}
+    "structured-lookup": {"schedule_retrieval": "structured"},
+    "vector": {"schedule_retrieval": "vector"},
+    "postfilter": {"schedule_retrieval": "postfilter"},
+    "prefilter": {"schedule_retrieval": "prefilter"}
   },
-  "todo_variants": {
-    "vector-over-district-chunks": "needs a Qdrant collection over Vitou_EDA/output/chunks.jsonl (10,187 chunks)",
-    "postfilter": "vector top-k, then keep rows of the asked district",
-    "prefilter": "Qdrant payload filter on district, then vector search"
-  },
-  "metrics": ["correct row found", "exact day/time match", "empty-result rate"],
-  "notes": "Only the structured lookup (rag/schedule_tool.py) is implemented so far."
+  "metrics": ["correct row found", "top row correct", "only correct rows shown", "exact day/time match", "empty-result rate", "wrong-place rate", "expected behaviour"],
+  "notes": "Needs the schedule index: python -m ingest.build_index --corpus schedule. Until the dev set exists, run with --cases experiments/probes_schedule.jsonl."
 }

@@ -1,5 +1,6 @@
 """
-Build, verify and publish the Qdrant index of item chunks (PLAN.md §4.1, Lesson 3).
+Build, verify and publish a Qdrant index (PLAN.md §4.1, Lesson 3): the item chunks, or
+the district chunks that only E4's vector variants use.
 
 Pipeline: chunk file -> input checks -> embed (pinned revision, normalised)
           -> Qdrant local collection (cosine) -> verification report -> publish.
@@ -12,6 +13,7 @@ Usage (from the repo root):
     python -m ingest.build_index                          # bge-m3 (default)
     python -m ingest.build_index --embedding bge-small-en # course baseline for E2
     python -m ingest.build_index --rebuild                # re-embed even if present
+    python -m ingest.build_index --corpus schedule        # district chunks, for E4
 """
 from __future__ import annotations
 
@@ -22,8 +24,8 @@ from datetime import datetime, timezone
 
 from qdrant_client import QdrantClient, models
 
-from ingest.index_common import (FLAT_TYPES, chunk_payload, collection_name,
-                                 item_chunk_path, load_chunks, point_id, read_published,
+from ingest.index_common import (FLAT_TYPES, chunk_payload, collection_name, corpus_path,
+                                 load_chunks, point_id, published_key, read_published,
                                  sha256_file, write_published)
 from ingest.verify_index import verify
 from rag import config
@@ -45,17 +47,18 @@ def check_chunks(chunks: list[dict]) -> dict:
     }
 
 
-def build(embedding_key: str, revision: str | None, rebuild: bool) -> dict:
+def build(embedding_key: str, revision: str | None, rebuild: bool,
+          corpus: str = "items") -> dict:
     spec = config.EMBEDDING_MODELS[embedding_key]
-    corpus_path = item_chunk_path()
-    corpus_sha = sha256_file(corpus_path)
-    chunks = load_chunks(corpus_path)
+    path = corpus_path(corpus)
+    corpus_sha = sha256_file(path)
+    chunks = load_chunks(path)
     input_checks = check_chunks(chunks)
     if not all(input_checks.values()):
         raise SystemExit(f"Chunk file failed input checks: {input_checks}")
 
     revision = revision or resolve_revision(spec.model_id)
-    name = collection_name(spec, revision, corpus_sha)
+    name = collection_name(spec, revision, corpus_sha, corpus)
     config.QDRANT_DIR.mkdir(parents=True, exist_ok=True)
 
     client = QdrantClient(path=str(config.QDRANT_DIR))
@@ -96,7 +99,7 @@ def build(embedding_key: str, revision: str | None, rebuild: bool) -> dict:
     finally:
         client.close()
 
-    verification = verify(name, spec, chunks, corpus_path, corpus_sha)
+    verification = verify(name, spec, chunks, path, corpus_sha)
     report = {
         "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "collection": name,
@@ -108,7 +111,7 @@ def build(embedding_key: str, revision: str | None, rebuild: bool) -> dict:
             "languages": spec.languages,
         },
         "corpus": {
-            "path": str(corpus_path.relative_to(config.ROOT)),
+            "path": str(path.relative_to(config.ROOT)),
             "sha256": corpus_sha,
             "chunks": len(chunks),
             "doc_types": dict(sorted(
@@ -126,7 +129,7 @@ def build(embedding_key: str, revision: str | None, rebuild: bool) -> dict:
 
     if report["status"] == "PASS":           # publish only after PASS (Lesson 3)
         published = read_published()
-        published[spec.key] = {
+        published[published_key(spec.key, corpus)] = {
             "collection": name, "model_id": spec.model_id, "revision": revision,
             "corpus_path": report["corpus"]["path"], "corpus_sha256": corpus_sha,
             "report": str(report_path.relative_to(config.ROOT)),
@@ -142,8 +145,9 @@ def main() -> None:
                         choices=sorted(config.EMBEDDING_MODELS))
     parser.add_argument("--revision", help="model commit SHA (default: current hub SHA)")
     parser.add_argument("--rebuild", action="store_true")
+    parser.add_argument("--corpus", default="items", choices=["items", "schedule"])
     args = parser.parse_args()
-    report = build(args.embedding, args.revision, args.rebuild)
+    report = build(args.embedding, args.revision, args.rebuild, args.corpus)
     print(json.dumps({k: report[k] for k in ("collection", "status")}
                      | {"checks": report["verification"]["checks"],
                         "embedding_run": report["embedding_run"]},

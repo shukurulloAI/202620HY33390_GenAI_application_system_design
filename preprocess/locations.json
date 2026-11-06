@@ -207,30 +207,24 @@
       {
         "zone": "",
         "row_id": "202043210000400002",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2020-12-17",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202043210000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2021-10-15",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202243210000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2022-11-28",
         "stale": true
       }
@@ -22582,10 +22576,8 @@
       {
         "zone": "",
         "row_id": "202242810000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2025-10-23",
         "stale": true
       }
@@ -22920,20 +22912,16 @@
       {
         "zone": "",
         "row_id": "202639000000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2026-07-22",
         "stale": false
       },
       {
         "zone": "",
         "row_id": "202039000000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2022-11-29",
         "stale": true
       }
@@ -23513,20 +23501,16 @@
       {
         "zone": "",
         "row_id": "202237800000400003",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2022-11-25",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202237800000400004",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2022-11-25",
         "stale": true
       }
@@ -23542,10 +23526,8 @@
       {
         "zone": "",
         "row_id": "202437400000400002",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-12-18",
         "stale": true
       }
@@ -28885,10 +28867,8 @@
       {
         "zone": "",
         "row_id": "202538300000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2026-05-22",
         "stale": false
       }
@@ -35793,10 +35773,8 @@
       {
         "zone": "",
         "row_id": "202653500000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2026-05-08",
         "stale": false
       }
@@ -38304,10 +38282,8 @@
       {
         "zone": "",
         "row_id": "202253900000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2026-05-19",
         "stale": false
       }
@@ -58234,20 +58210,16 @@
       {
         "zone": "",
         "row_id": "202051200000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-02-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202251200000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-02-01",
         "stale": true
       }
@@ -67476,10 +67448,8 @@
       {
         "zone": "",
         "row_id": "202052300000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2019-11-30",
         "stale": true
       }
@@ -67767,4520 +67737,3616 @@
       {
         "zone": "",
         "row_id": "202451410000400137",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400348",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400423",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400356",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400017",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400422",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400101",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400289",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400398",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400280",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400044",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400055",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400221",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400061",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400230",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400362",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400199",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400379",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400131",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400307",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400436",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400404",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400108",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400102",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400029",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400259",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400383",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400056",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400174",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400327",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400181",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400452",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400258",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400380",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400006",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400390",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400092",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400300",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400345",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400025",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400011",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400138",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400210",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400019",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400091",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400157",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400023",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400273",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400038",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400155",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400167",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400225",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400234",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400213",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400166",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400008",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400104",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400262",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400335",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400128",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400096",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400176",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400121",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400306",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400275",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400431",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400298",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400316",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400127",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400288",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400408",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400203",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400286",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400354",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400239",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400232",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400344",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400069",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400393",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400331",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400093",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400365",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400443",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400336",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400320",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400015",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400214",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400018",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400308",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400425",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400349",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400248",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400274",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400281",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400111",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400429",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400369",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400112",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400070",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400322",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400364",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400337",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400152",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400378",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400156",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400169",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400314",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400012",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400267",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400301",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400323",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400261",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400276",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400397",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400413",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400278",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400065",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400195",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400334",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400107",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400373",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400146",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400130",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400326",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400136",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400182",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400430",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400360",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400148",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400164",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400416",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400016",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400279",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400240",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400403",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400294",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400194",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400057",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400433",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400269",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400134",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400381",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400325",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400370",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400173",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400246",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400090",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400116",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400036",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400424",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400245",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400030",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400143",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400405",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400193",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400154",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400412",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400285",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400020",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400151",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400448",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400004",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400059",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400072",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400043",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400361",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400014",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400243",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400224",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400035",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400084",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400292",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400419",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400411",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400339",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400277",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400005",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400066",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400268",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400105",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400178",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400191",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400382",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400217",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400197",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400099",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400208",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400420",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400432",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400363",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400260",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400253",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400450",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400444",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400192",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400002",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400341",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400426",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400113",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400028",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400159",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400054",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400124",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400144",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400302",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400228",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400385",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400042",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400264",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400257",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400122",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400447",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400220",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400442",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400438",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400357",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400200",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400434",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400149",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400303",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400058",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400366",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400133",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400150",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400333",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400118",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400287",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400171",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400402",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400437",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400188",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400235",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400350",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400175",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400332",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400265",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400106",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400299",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400271",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400022",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400355",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400142",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400223",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400309",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400010",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400087",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400158",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400353",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400250",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400445",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400283",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400013",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400141",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400053",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400126",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400241",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400196",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400399",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400170",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400050",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400115",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400367",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400184",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400187",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400255",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400270",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400215",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400247",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400100",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400206",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400394",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400190",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400376",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400451",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400324",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400060",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400052",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400185",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400237",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400409",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400295",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400396",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400254",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400147",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400359",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400003",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400293",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400132",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400039",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400358",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400449",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400290",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400338",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400282",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400062",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400236",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400110",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400318",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400218",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400071",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400310",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400391",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400395",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400351",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400031",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400120",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400089",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400222",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400226",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400145",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400161",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400103",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400163",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400082",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400297",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400446",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400051",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400328",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400321",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400368",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400041",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400162",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400400",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400153",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400204",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400263",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400305",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400032",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400219",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400406",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400233",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400140",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400418",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400078",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400123",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400415",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400085",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400242",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400177",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400401",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400117",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400068",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400139",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400073",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400311",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400198",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400249",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400119",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400026",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400086",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400340",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400229",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400238",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400189",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400315",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400352",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400075",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400211",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400317",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400371",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400064",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400081",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400347",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400205",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400304",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400172",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400410",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400377",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400063",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400201",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400212",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400375",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400435",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400033",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400049",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400372",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400135",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400291",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400076",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400165",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400342",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400440",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400083",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400389",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400009",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400048",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400109",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400046",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400180",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400329",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400168",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400231",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400079",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400330",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400256",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400125",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400207",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400441",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400045",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400417",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400088",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400392",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400034",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400186",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400129",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400097",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400037",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400343",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400414",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400209",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400114",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400252",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400313",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400021",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400386",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400407",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400272",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400179",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400439",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400074",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400216",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400098",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400227",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400284",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400160",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400251",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400024",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400067",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400183",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400040",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400007",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400421",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400428",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400094",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400387",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400374",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400244",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400047",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400384",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400296",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400202",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400077",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400319",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400095",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400346",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400312",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400266",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400427",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400027",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400388",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202451410000400080",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-01-01",
         "stale": true
       }
@@ -73943,10 +73009,8 @@
       {
         "zone": "",
         "row_id": "202336800000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-06-30",
         "stale": true
       }
@@ -74397,60 +73461,48 @@
       {
         "zone": "",
         "row_id": "202236500000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2022-06-17",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202436500000400002",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-06-30",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202536500000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2025-09-30",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202636500000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2026-04-30",
         "stale": false
       },
       {
         "zone": "",
         "row_id": "202436500000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2023-12-31",
         "stale": true
       },
       {
         "zone": "",
         "row_id": "202336500000400002",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2023-08-28",
         "stale": true
       }
@@ -75146,10 +74198,8 @@
       {
         "zone": "",
         "row_id": "202032000000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2026-05-11",
         "stale": false
       }
@@ -75207,10 +74257,8 @@
       {
         "zone": "",
         "row_id": "202431600000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2026-05-22",
         "stale": false
       }
@@ -76237,10 +75285,8 @@
       {
         "zone": "",
         "row_id": "202030000000400002",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2020-07-10",
         "stale": true
       }
@@ -92657,10 +91703,8 @@
       {
         "zone": "",
         "row_id": "202058050000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2026-05-19",
         "stale": false
       }
@@ -92826,10 +91870,8 @@
       {
         "zone": "",
         "row_id": "202358100000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2023-06-20",
         "stale": true
       }
@@ -92887,10 +91929,8 @@
       {
         "zone": "",
         "row_id": "202259100000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2019-07-01",
         "stale": true
       }
@@ -92906,10 +91946,8 @@
       {
         "zone": "",
         "row_id": "202057850000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-07-31",
         "stale": true
       }
@@ -93208,10 +92246,8 @@
       {
         "zone": "",
         "row_id": "202358950000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2024-07-31",
         "stale": true
       }
@@ -93393,10 +92429,8 @@
       {
         "zone": "",
         "row_id": "202258550000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2026-05-07",
         "stale": false
       }
@@ -104999,10 +104033,8 @@
       {
         "zone": "",
         "row_id": "202145300000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2023-03-28",
         "stale": true
       }
@@ -105018,10 +104050,8 @@
       {
         "zone": "",
         "row_id": "202145800000400001",
-        "areas": [
-          "없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2025-10-27",
         "stale": true
       }
@@ -107033,10 +106063,8 @@
       {
         "zone": "해당없음",
         "row_id": "202655700000400001",
-        "areas": [
-          "해당없음"
-        ],
-        "whole_district": false,
+        "areas": [],
+        "whole_district": true,
         "data_date": "2026-05-19",
         "stale": false
       }

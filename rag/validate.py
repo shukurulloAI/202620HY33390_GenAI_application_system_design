@@ -11,6 +11,7 @@ Checks on the parsed answer, after the JSON/citation checks in generate.parse_an
                      if they state none, one of its names must appear in their text
     cited            an ANSWER cites at least one evidence block
     schedule_days    weekdays named in answer_text are days the tool returned
+    schedule_invented  days or clock times in an answer that was shown no schedule
 
 Modes (PipelineConfig.validation):
     off      no checks
@@ -32,6 +33,9 @@ _DAY_PATTERNS = {
 }
 
 
+_CLOCK_TIME = re.compile(r"\b\d{1,2}:\d{2}\b")
+
+
 def text_bins(text: str) -> set[str]:
     """Canonical bins named in parentheses in the answer, e.g. 'general waste bag (종량제봉투)'."""
     return {b for t in re.findall(r"\(([^()]+)\)", text or "") if (b := canonical_bin(t))}
@@ -45,7 +49,8 @@ def days_mentioned(text: str) -> set[int]:
 def validate(answer: dict, evidence: list, schedule_days: set[int] | None,
              mode: str = "enforce", item_question: bool = True) -> tuple[dict, dict]:
     """Returns (answer, checks). `evidence` = EvidenceItems shown to the model;
-    `schedule_days` = weekdays the tool returned for the asked waste type(s);
+    `schedule_days` = weekdays the tool returned for the asked waste type(s), empty if the
+    model was shown no schedule for a question that asks about one, None if none was asked;
     `item_question` = the question asks about an item (so an answer needs a bin)."""
     if mode == "off":
         return answer, {"mode": "off"}
@@ -103,12 +108,16 @@ def validate(answer: dict, evidence: list, schedule_days: set[int] | None,
         checks["schedule_days_ok"] = not wrong
         if wrong:
             checks["reasons"].append(f"answer names days the tool did not return: {wrong}")
+        if not schedule_days and (named or _CLOCK_TIME.search(answer.get("answer_text", ""))):
+            checks["schedule_invented"] = True
+            checks["reasons"].append("answer states days or times but was shown no schedule")
 
     answer = dict(answer)
     if bin_key:
         answer["bin"], answer["bin_en"] = bin_key, BINS[bin_key]
     failed = (not checks["bin_known"] or checks["bin_supported"] is False
-              or not checks["cited"] or checks.get("bin_text_conflict", False))
+              or not checks["cited"] or checks.get("bin_text_conflict", False)
+              or checks.get("schedule_invented", False))
     if mode == "enforce" and status == "ANSWER" and failed:
         checks["downgraded"] = True
         answer.update(status="INSUFFICIENT_CONTEXT", bin="", bin_en="",

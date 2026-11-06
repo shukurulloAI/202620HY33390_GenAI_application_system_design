@@ -294,6 +294,42 @@
       "vi": "tiền phạt",
       "uz": "jarima",
       "ru": "штраф"
+    },
+    {
+      "ko": "음식물 종량제봉투",
+      "bin": "음식물",
+      "en": "food-waste pay-as-you-throw bag",
+      "zh": "厨余垃圾计量收费袋",
+      "vi": "túi rác thực phẩm trả phí",
+      "uz": "oziq-ovqat chiqindisi uchun pullik xalta",
+      "ru": "платный мешок для пищевых отходов"
+    },
+    {
+      "ko": "규격봉투",
+      "bin": "",
+      "en": "pay-as-you-throw bag",
+      "zh": "计量收费袋",
+      "vi": "túi rác trả phí",
+      "uz": "pullik chiqindi xaltasi",
+      "ru": "платный мешок для мусора"
+    },
+    {
+      "ko": "납부필증",
+      "bin": "",
+      "en": "payment sticker",
+      "zh": "缴费贴纸",
+      "vi": "tem đã nộp phí",
+      "uz": "to'lov stikeri",
+      "ru": "наклейка об оплате"
+    },
+    {
+      "ko": "전용봉투",
+      "bin": "음식물",
+      "en": "dedicated food-waste bag",
+      "zh": "厨余垃圾专用袋",
+      "vi": "túi đựng rác thực phẩm chuyên dụng",
+      "uz": "oziq-ovqat chiqindisi uchun maxsus xalta",
+      "ru": "специальный мешок для пищевых отходов"
     }
   ]
 }

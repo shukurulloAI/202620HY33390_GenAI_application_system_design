@@ -8,6 +8,10 @@ enough evidence to answer each part of the question.
                    no district given                -> clarify ("which district?")
                    tool CLARIFY (name in many cities) or too many zones -> clarify
                    tool NO_DATA                     -> abstain
+                   neighbourhood with more than MAX_ZONES rows on different days:
+                       several names to pick from   -> clarify
+                       one name, many collection points -> abstain (office hand-off)
+                       same days in every row       -> answer
     out_of_scope                                    -> refuse, explain the scope
 
 Overall: ANSWER if any part can be answered (the generator only sees the parts that
@@ -37,6 +41,7 @@ class GateDecision:
     item_match: bool | None = None
     source_years: list = field(default_factory=list)
     clarify: dict | None = None    # {"question": ..., "options": [...]}
+    schedule_varies: bool = False  # days differ between collection points, no name separates them
 
     def to_trace(self) -> dict:
         return asdict(self)
@@ -75,7 +80,7 @@ def decide(intent: str, selected: list, schedule, district: str | None,
                          or key in c.text.replace(" ", "") for c in selected)
 
     # ---- schedule part
-    clarify = None
+    clarify, varies = None, False
     if not needs_schedule:
         sched = "skip"
     elif not district:
@@ -98,6 +103,19 @@ def decide(intent: str, selected: list, schedule, district: str | None,
                                "collection zones. Which neighbourhood (동) do you live in?",
                    "options": areas[:30]}
         reasons.append(f"{len(schedule.rows)} zones and no neighbourhood")
+    elif len(schedule.rows) > MAX_ZONES and schedule.schedules_differ():
+        # Only MAX_ZONES rows reach the answer, so it would state a day that many rows
+        # here do not have. E.g. 고흥군 도덕면: 287 collection points, Monday to Friday.
+        if schedule.options:
+            sched = "clarify"
+            clarify = {"question": f"Which of these do you live in: {dong}?",
+                       "options": schedule.options[:30]}
+            reasons.append(schedule.message)
+        else:
+            sched = "abstain"
+            varies = True
+            reasons.append(f"{len(schedule.rows)} collection points in '{dong}' "
+                           "with different days")
     else:
         sched = "answer"
 
@@ -106,4 +124,5 @@ def decide(intent: str, selected: list, schedule, district: str | None,
               "CLARIFY" if "clarify" in parts else "INSUFFICIENT_CONTEXT")
     years = sorted({c.metadata.get("source_year") for c in selected
                     if c.metadata.get("source_year")}) if item == "answer" else []
-    return GateDecision(status, item, sched, reasons, top, tau, item_match, years, clarify)
+    return GateDecision(status, item, sched, reasons, top, tau, item_match, years, clarify,
+                        varies)

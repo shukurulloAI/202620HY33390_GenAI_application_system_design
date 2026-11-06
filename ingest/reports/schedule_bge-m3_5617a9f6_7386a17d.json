@@ -1,0 +1,61 @@
+{
+  "built_at": "2026-11-06T06:53:17+00:00",
+  "collection": "schedule_bge-m3_5617a9f6_7386a17d",
+  "status": "PASS",
+  "representation_contract": {
+    "embedding_key": "bge-m3",
+    "model_id": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "dimension": 1024,
+    "normalized": true,
+    "distance": "Cosine",
+    "query_prefix": "",
+    "max_seq_length": 8192,
+    "languages": "multilingual"
+  },
+  "corpus": {
+    "path": "preprocess/schedule_chunks.jsonl",
+    "sha256": "7386a17d0f685f75483497e7fb4d0bfbb2e999696e0228d86f9ce59a3d01f16b",
+    "chunks": 10187,
+    "doc_types": {
+      "schedule": 10187
+    }
+  },
+  "input_checks": {
+    "chunk_ids_present": true,
+    "chunk_ids_unique": true,
+    "text_non_empty": true,
+    "metadata_flat": true,
+    "source_present": true,
+    "no_reserved_keys": true
+  },
+  "embedding_run": {
+    "reused_existing_collection": false,
+    "device": "mps:0",
+    "model_load_seconds": 7.6,
+    "embed_seconds": 319.9,
+    "chunk_tokens_max": 364,
+    "chunk_tokens_mean": 163.5,
+    "chunks_over_max_seq_length": 0
+  },
+  "verification": {
+    "collection": "schedule_bge-m3_5617a9f6_7386a17d",
+    "status": "PASS",
+    "checks": {
+      "corpus_hash_matches": true,
+      "count_matches_chunks": true,
+      "ids_unique": true,
+      "ids_match_chunks": true,
+      "repeat_run_ids_match": true,
+      "vector_size_matches_contract": true,
+      "distance_is_cosine": true,
+      "vectors_normalized": true,
+      "payload_provenance": true,
+      "payload_matches_chunks": true
+    },
+    "stored_points": 10187,
+    "expected_points": 10187,
+    "vector_size": 1024,
+    "distance": "Cosine"
+  }
+}

@@ -123,6 +123,13 @@ class ScheduleResult:
     options: list[str] = field(default_factory=list)
     message: str = ""
 
+    def schedules_differ(self) -> bool:
+        """Do the rows give more than one day or time for the asked waste type?"""
+        wanted = self.query.get("waste_type")
+        types = [wanted] if wanted in WASTE_TYPES else list(WASTE_TYPES)
+        return len({tuple((tuple(r.rules[t].days), r.rules[t].start, r.rules[t].end)
+                          for t in types) for r in self.rows}) > 1
+
     def to_trace(self) -> dict:
         return {"status": self.status, "query": self.query, "matched_on": self.matched_on,
                 "row_ids": [r.row_id for r in self.rows], "options": self.options,
@@ -189,6 +196,7 @@ def row_from_csv(r: dict) -> ScheduleRow:
 class ScheduleTable:
     def __init__(self, rows: list[ScheduleRow], source: str, aliases: dict | None = None):
         self.rows = rows
+        self.by_id = {r.row_id: r for r in rows}
         self.source = source
         self.aliases = {k.lower().replace(" ", ""): v for k, v in (aliases or {}).items()}
 
@@ -214,30 +222,31 @@ class ScheduleTable:
             return value, province
         return district, province
 
+    def district_rows(self, district: str, province: str | None = None) -> list[ScheduleRow]:
+        """Rows of a district as typed or routed (alias, '서울특별시 성동구', '성동'), in every
+        province that has that name unless a province is given."""
+        district, province = self._resolve_alias(district.strip(), province)
+        if " " in district and not province:          # "서울특별시 성동구"
+            province, district = district.rsplit(" ", 1)
+        rows = [r for r in self.rows if r.district == district]
+        if not rows:                                   # "성동" -> "성동구"
+            rows = [r for r in self.rows if district_base(r.district) == district_base(district)]
+        if province:
+            prov = province.replace(" ", "")[:2]
+            rows = [r for r in rows if r.province.startswith(prov)]
+        return rows
+
     def lookup(self, district: str | None, province: str | None = None,
                dong: str | None = None, waste_type: str | None = None) -> ScheduleResult:
         query = {"district": district, "province": province, "dong": dong,
                  "waste_type": waste_type}
         if not district:
             return ScheduleResult("NO_DATA", query, message="no district given")
-        district, province = self._resolve_alias(district.strip(), province)
-        if " " in district and not province:          # "서울특별시 성동구"
-            province, district = district.rsplit(" ", 1)
-
-        rows = [r for r in self.rows if r.district == district]
-        if not rows:                                   # "성동" -> "성동구"
-            rows = [r for r in self.rows if district_base(r.district) == district_base(district)]
+        rows = self.district_rows(district, province)
         if not rows:
+            where = f" in province '{province}'" if province else ""
             return ScheduleResult("NO_DATA", query,
-                                  message=f"no schedule data for district '{district}'")
-
-        if province:
-            prov = province.replace(" ", "")[:2]
-            in_province = [r for r in rows if r.province.startswith(prov)]
-            if not in_province:
-                return ScheduleResult("NO_DATA", query,
-                                      message=f"no '{district}' in province '{province}'")
-            rows = in_province
+                                  message=f"no schedule data for district '{district}'{where}")
         provinces = sorted({r.province for r in rows})
         if len(provinces) > 1:
             return ScheduleResult(
@@ -249,13 +258,22 @@ class ScheduleTable:
             dong = re.sub(r"(\d+)(?:\s*[,.·ㆍ]\s*\d+)+", r"\1", dong.strip())
             target = area_base(dong)
             # An exact name wins; the base ('상계동' for 상계1동, 상계2동, ...) is the fallback.
-            zone_rows = ([r for r in rows if dong in r.area_names]
-                         or [r for r in rows if any(area_base(a) == target for a in r.area_names)])
+            exact = [r for r in rows if dong in r.area_names]
+            zone_rows = exact or [r for r in rows
+                                  if any(area_base(a) == target for a in r.area_names)]
             if zone_rows:
-                message = (f"'{dong}' matches {len(zone_rows)} zones "
-                           f"({', '.join(a for r in zone_rows for a in r.area_names if area_base(a) == target)}); "
-                           "ask for the exact neighbourhood" if len(zone_rows) > 1 else "")
-                return ScheduleResult("OK", query, zone_rows, matched_on="area",
+                # Names the user can choose between; in rural districts one name can
+                # instead hold hundreds of collection points, which no name separates.
+                names = [] if exact or len(zone_rows) == 1 else sorted(
+                    {a for r in zone_rows for a in r.area_names if area_base(a) == target})
+                options = names if len(names) > 1 else []
+                message = ""
+                if options:
+                    message = (f"'{dong}' matches {len(zone_rows)} zones ({', '.join(options)}); "
+                               "ask for the exact neighbourhood")
+                elif len(zone_rows) > 1:
+                    message = f"'{dong}' has {len(zone_rows)} collection points; check which is yours"
+                return ScheduleResult("OK", query, zone_rows, matched_on="area", options=options,
                                       message=message)
             return ScheduleResult(
                 "OK", query, rows, matched_on="district",

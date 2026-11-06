@@ -48,7 +48,9 @@ Example conversation:
 
 | | |
 |---|---|
-| **Users** | Foreign residents and students in Korea (e.g., Hanyang international students), with limited Korean |
+| **Users** | Foreign residents and students in Korea (e.g., Hanyang international s
+
+tudents), with limited Korean |
 | **In scope** | Household waste: (a) which bin and how to prepare an item, from the national rules; (b) collection days, times and places by district/neighbourhood, from the district dataset; questions in English and Korean, plus 1–2 more languages (e.g., Chinese, Uzbek, Vietnamese) |
 | **Non-goals** | Business or commercial waste; booking or paying for large-item pickup (we only point to the district); legal advice about fines; real-time truck tracking; personal data of any kind |
 | **Who bears failure** | The user. A wrong bin can mean an uncollected bag or a fine; a wrong day means trash left out on the street |
@@ -251,6 +253,7 @@ lookup_schedule(province: str | None, district: str, dong: str | None,
 | Item only in the 2018 guide | Answer, labelled "based on the 2018 national guide; local rules may differ" |
 | Schedule tool returns `CLARIFY` | Ask a clarifying question; do not guess |
 | Schedule tool returns `NO_DATA` | Answer the item part only and abstain on the schedule part |
+| A neighbourhood has more than `MAX_ZONES` rows on different days | Several names to pick from (오빈리: 오빈1리, 오빈2리): ask. One name with many collection points (도덕면): abstain on the schedule part and hand off to the office. Same days in every row: answer |
 | `out_of_scope` | Explain the scope |
 
 Threshold selection: a wrong bin answer (false positive) is costlier than an unnecessary abstention (false negative). τ is chosen on dev to minimise false positives while keeping false negatives below a set limit. The objective is declared before looking at test results.
@@ -290,7 +293,7 @@ Output JSON:
  "data_date": "2024-xx-xx", "office_phone": "...", "missing": null}
 ```
 
-`schedule`, `data_date` and `office_phone` are filled by `pipeline.schedule_fields` from the tool's rows, never by the LLM. With several zones or waste types each value is labelled, `data_date` is the oldest date, and `schedule` also keeps the full detail (`status`, `message`, `options`, `zones`).
+`schedule`, `data_date` and `office_phone` are filled by `pipeline.schedule_fields` from the tool's rows, never by the LLM. The schedule part of `answer_text` is written by code too (`rag/schedule_text.py`): the generator sees item evidence only, and a small LLM call translates the free-text `method` field, which falls back to the Korean text if it fails. `schedule_text = llm` keeps the old behaviour, and the baseline uses it. With several zones or waste types each value is labelled, `data_date` is the oldest date, and `schedule` also keeps the full detail (`status`, `message`, `options`, `zones`).
 
 ### 4.9 Output validation and citation check (Lessons 4, 6, 7)
 
@@ -566,7 +569,7 @@ Collection:
 Preprocessing (fixes from §3.2):
 - [x] Keep area names ending in 읍/면/리/가/로 (`preprocess/build_schedule.py`; Vitou's own fix is in `Vitou_EDA/utils.py` on branch `vitou`); expand number lists with any separator (`휘경1,2동`, `상계6.7동`, `청학1·2동`, `수성1,2.3,4가동`); move `(… 제외)` to notes. The `.`/`·`/`ㆍ` lists were found by comparing with Vitou's output
 - [x] Add `province` to every schedule record; handle the 7 duplicate district names (lookup asks which province)
-- [x] List the ambiguous neighbourhood names in `preprocess/dong_lookup.json` (229 of 6,072)
+- [x] List the ambiguous neighbourhood names in `preprocess/dong_lookup.json` (228 of 6,070)
 - [x] Keep `data_date`; flag rows older than 1 year (`오래된데이터`: 56% of rows as of 2026-11-04)
 - [x] Export the cleaned schedule table `preprocess/schedule.csv` (+ `schedule_chunks.jsonl` for E4, `locations.json` for the website)
 - [x] `district_aliases.json`: 1,723 romanised names → Korean (Seongdong-gu → 성동구; `jung-gu` → asks which city)
@@ -594,9 +597,11 @@ Preprocessing (fixes from §3.2):
 - [x] `validate.py` + `bins.py`: canonical bins (also enforced by the JSON schema), bin supported by cited evidence, empty bin filled from the answer text or cited chunks (must agree with the bin the chunks state), bin field consistent with answer text, cited answer, schedule-day check; `enforce` downgrades to abstain
 - [x] `handoff.py`: office + phone from the district data, Korean sentence to show, what was checked
 - [x] `pipeline.py`: `answer()` for the website and `run_case()` for evaluation; trace writing
-- [x] `experiments/configs/E1–E8` + `run_experiment.py` + `tau_sweep.py` (E4 vector variants and E6 chunkings still need their data)
+- [x] `experiments/configs/E1–E8` + `run_experiment.py` + `tau_sweep.py` (E6 chunkings still need their data)
 - [x] Deterministic unit tests: `python -m tests.test_deterministic`
-- [ ] E4 vector variants: index the 10,187 schedule chunks; vector / postfilter / prefilter
+- [x] E4 vector variants: `ingest.build_index --corpus schedule`, `rag/schedule_vector.py`, `experiments/probes_schedule.jsonl` (24 probes; results in `PHASE2_NOTES.md` §10; re-run after commit and on dev)
+- [x] Gate: when an area has more than `MAX_ZONES` rows with different schedules, ask or hand off instead of answering from the first 4 (`PHASE2_NOTES.md` §10)
+- [x] Schedule answers: write days, times and places in code, so `answer_text` cannot drop or change them (`rag/schedule_text.py`; `PHASE2_NOTES.md` §10)
 - [ ] Re-run E1–E8 on Anar's dev set when it exists; pick τ (E5) and freeze the config
 - [x] CLI demo (`python -m rag.pipeline`); Phase 1 notes in `experiments/results/PHASE1_NOTES.md`
 - [x] Developer probe set (`experiments/run_probes.py`, 22 questions) for quick regression checks
