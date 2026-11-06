@@ -1,0 +1,463 @@
+{
+  "label": "rq-original",
+  "config": {
+    "embedding": "bge-m3",
+    "retrieval": "hybrid",
+    "bm25_tokenizer": "kiwi",
+    "query_mode": "both",
+    "rerank": true,
+    "rerank_query": "original",
+    "k_retrieve": 20,
+    "k_final": 5,
+    "rrf_k": 60,
+    "router": true,
+    "gate_tau": 0.1,
+    "llm_model": "qwen2.5:7b",
+    "router_model": null,
+    "prompt_version": "v2",
+    "conflict_policy": "prefer_2026",
+    "validation": "enforce",
+    "temperature": 0.0,
+    "seed": 7
+  },
+  "settings": {
+    "pipeline_version": "v2",
+    "config": {
+      "embedding": "bge-m3",
+      "retrieval": "hybrid",
+      "bm25_tokenizer": "kiwi",
+      "query_mode": "both",
+      "rerank": true,
+      "rerank_query": "original",
+      "k_retrieve": 20,
+      "k_final": 5,
+      "rrf_k": 60,
+      "router": true,
+      "gate_tau": 0.1,
+      "llm_model": "qwen2.5:7b",
+      "router_model": null,
+      "prompt_version": "v2",
+      "conflict_policy": "prefer_2026",
+      "validation": "enforce",
+      "temperature": 0.0,
+      "seed": 7
+    },
+    "retriever": "dense:bge-m3@5617a9f6 | bm25:kiwi | rerank:bge-reranker-v2-m3@953dc6f6",
+    "collection": "items_bge-m3_5617a9f6_dac8d09c",
+    "router": "router_v1:qwen2.5:7b",
+    "llm": "qwen2.5:7b",
+    "schedule_source": "Data/korean_waste_policies.csv"
+  },
+  "retrieval_only": true,
+  "total": 20,
+  "hit_at_k_final": 13,
+  "gold_probes": 13,
+  "mrr": 0.821,
+  "median_total_s": 5.355,
+  "rows": [
+    {
+      "probe_id": "p01",
+      "question": "Where do I throw away a pizza box?",
+      "intent": "item",
+      "rewrite": "피자 상자 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.1925,
+      "selected": [
+        "item2018_0278",
+        "item2018_0238",
+        "faq2018_025",
+        "item2018_0052",
+        "item2018_0207"
+      ],
+      "timings": {
+        "route_s": 9.88,
+        "retrieve_s": 0.423,
+        "rerank_s": 1.729,
+        "total_s": 12.033
+      }
+    },
+    {
+      "probe_id": "p02",
+      "question": "Where do I throw chicken bones?",
+      "intent": "item",
+      "rewrite": "닭가슴살 뼈 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 3,
+      "has_gold": true,
+      "top_rerank": 0.1603,
+      "selected": [
+        "item2018_0109",
+        "item2018_0010",
+        "guide2018_p17",
+        "item2018_0238",
+        "guide2018_p18"
+      ],
+      "timings": {
+        "route_s": 3.847,
+        "retrieve_s": 0.119,
+        "rerank_s": 1.682,
+        "total_s": 5.65
+      }
+    },
+    {
+      "probe_id": "p03",
+      "question": "닭뼈는 음식물쓰레기인가요?",
+      "intent": "item",
+      "rewrite": "닭뼈 음식물쓰레기 확인",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.966,
+      "selected": [
+        "guide2018_p17",
+        "guide2018_p18",
+        "item2018_0109",
+        "item2018_0106",
+        "guide2018_p04"
+      ],
+      "timings": {
+        "route_s": 3.463,
+        "retrieve_s": 0.105,
+        "rerank_s": 1.689,
+        "total_s": 5.258
+      }
+    },
+    {
+      "probe_id": "p04",
+      "question": "Tovuq suyaklarini qayerga tashlayman?",
+      "intent": "item",
+      "rewrite": "닭骨头汤 닭 뼈물기 분리배출 방법",
+      "rewrite_used": false,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.0056,
+      "selected": [
+        "guide2018_p18",
+        "guide2018_p17",
+        "item2018_0109",
+        "item2018_0072",
+        "faq2018_036"
+      ],
+      "timings": {
+        "route_s": 3.826,
+        "retrieve_s": 0.097,
+        "rerank_s": 1.798,
+        "total_s": 5.721
+      }
+    },
+    {
+      "probe_id": "p05",
+      "question": "Can I put egg shells in food waste?",
+      "intent": "item",
+      "rewrite": "계란 скор대 음식물쓰레기로 분리배출 가능嘛？",
+      "rewrite_used": false,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.0505,
+      "selected": [
+        "item2018_0010",
+        "guide2018_p18",
+        "item2018_0165",
+        "item2018_0073",
+        "item2018_0109"
+      ],
+      "timings": {
+        "route_s": 3.911,
+        "retrieve_s": 0.075,
+        "rerank_s": 1.173,
+        "total_s": 5.159
+      }
+    },
+    {
+      "probe_id": "p06",
+      "question": "How do I throw away used batteries?",
+      "intent": "item",
+      "rewrite": "쓰레기 배터리 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 3,
+      "has_gold": true,
+      "top_rerank": 0.2467,
+      "selected": [
+        "guide2018_p12",
+        "rule2026_009",
+        "item2018_0207",
+        "item2018_0234",
+        "item2018_0237"
+      ],
+      "timings": {
+        "route_s": 3.726,
+        "retrieve_s": 0.108,
+        "rerank_s": 1.717,
+        "total_s": 5.552
+      }
+    },
+    {
+      "probe_id": "p07",
+      "question": "How should I dispose of an old mattress?",
+      "intent": "item",
+      "rewrite": "고기저귀 처리 방법",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.0814,
+      "selected": [
+        "item2018_0055",
+        "item2018_0240",
+        "item2018_0241",
+        "item2018_0259",
+        "item2018_0244"
+      ],
+      "timings": {
+        "route_s": 3.551,
+        "retrieve_s": 0.112,
+        "rerank_s": 1.055,
+        "total_s": 4.718
+      }
+    },
+    {
+      "probe_id": "p08",
+      "question": "How do I recycle a clear PET water bottle?",
+      "intent": "item",
+      "rewrite": "투명 PET 병 재활용 방법",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.4449,
+      "selected": [
+        "rule2026_010",
+        "rule2026_025",
+        "guide2018_p10",
+        "faq2018_022",
+        "note2026_02"
+      ],
+      "timings": {
+        "route_s": 3.667,
+        "retrieve_s": 0.113,
+        "rerank_s": 1.776,
+        "total_s": 5.556
+      }
+    },
+    {
+      "probe_id": "p09",
+      "question": "Where do I throw away expired medicine?",
+      "intent": "item",
+      "rewrite": "만료된 약 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.7289,
+      "selected": [
+        "faq2018_036",
+        "item2018_0155",
+        "rule2026_035",
+        "item2018_0036",
+        "guide2018_p17"
+      ],
+      "timings": {
+        "route_s": 3.615,
+        "retrieve_s": 0.123,
+        "rerank_s": 1.766,
+        "total_s": 5.505
+      }
+    },
+    {
+      "probe_id": "p10",
+      "question": "How do I scrap my car?",
+      "intent": "out_of_scope",
+      "rewrite": "",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 2.473,
+        "total_s": 2.473
+      }
+    },
+    {
+      "probe_id": "p11",
+      "question": "When can I put out food waste?",
+      "intent": "schedule",
+      "rewrite": "음식물쓰레기 배출 요일 시간",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 3.195,
+        "total_s": 3.195
+      }
+    },
+    {
+      "probe_id": "p12",
+      "question": "What day is recycling collected?",
+      "intent": "schedule",
+      "rewrite": "재활용품 배출 요일",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 3.228,
+        "total_s": 3.228
+      }
+    },
+    {
+      "probe_id": "p13",
+      "question": "How do I throw away a styrofoam box from a delivery?",
+      "intent": "item",
+      "rewrite": "배달 용 스테로폼 상자 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.2923,
+      "selected": [
+        "faq2018_031",
+        "guide2018_p11",
+        "rule2026_001",
+        "guide2018_p14",
+        "faq2018_022"
+      ],
+      "timings": {
+        "route_s": 4.373,
+        "retrieve_s": 0.101,
+        "rerank_s": 1.763,
+        "total_s": 6.238
+      }
+    },
+    {
+      "probe_id": "p14",
+      "question": "I live in Seongdong-gu Haengdang-dong. Can I put food waste out tonight?",
+      "intent": "schedule",
+      "rewrite": "음식물쓰레기 배출 요일 시간",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 3.724,
+        "total_s": 3.724
+      }
+    },
+    {
+      "probe_id": "p15",
+      "question": "Is a pizza box not recyclable?",
+      "intent": "item",
+      "rewrite": "피자 상자가 재활용 가능한지 여부",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.5161,
+      "selected": [
+        "item2018_0278",
+        "guide2018_p20",
+        "faq2018_033",
+        "faq2018_035",
+        "guide2018_p05"
+      ],
+      "timings": {
+        "route_s": 3.586,
+        "retrieve_s": 0.124,
+        "rerank_s": 1.777,
+        "total_s": 5.488
+      }
+    },
+    {
+      "probe_id": "p16",
+      "question": "鸡骨头应该扔在哪里？",
+      "intent": "both",
+      "rewrite": "닭가슴살 뼈 배출 요일 시간",
+      "rewrite_used": true,
+      "gold_rank": 2,
+      "has_gold": true,
+      "top_rerank": 0.0344,
+      "selected": [
+        "item2018_0109",
+        "guide2018_p18",
+        "guide2018_p17",
+        "rule2026_015",
+        "rule2026_041"
+      ],
+      "timings": {
+        "route_s": 3.935,
+        "retrieve_s": 0.109,
+        "rerank_s": 1.721,
+        "total_s": 5.765
+      }
+    },
+    {
+      "probe_id": "p17",
+      "question": "How do I extend my visa?",
+      "intent": "out_of_scope",
+      "rewrite": "",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 2.453,
+        "total_s": 2.453
+      }
+    },
+    {
+      "probe_id": "p18",
+      "question": "What day is recycling collected?",
+      "intent": "schedule",
+      "rewrite": "재활용품 배출 요일",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 3.274,
+        "total_s": 3.274
+      }
+    },
+    {
+      "probe_id": "p19",
+      "question": "중구에 사는데 음식물쓰레기 언제 버려요?",
+      "intent": "schedule",
+      "rewrite": "음식물쓰레기 배출 요일 시간",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 3.283,
+        "total_s": 3.283
+      }
+    },
+    {
+      "probe_id": "p20",
+      "question": "Куда выбросить старые батарейки?",
+      "intent": "item",
+      "rewrite": "바attery(번역 필요) 오래된 배터리 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 2,
+      "has_gold": true,
+      "top_rerank": 0.6371,
+      "selected": [
+        "guide2018_p12",
+        "item2018_0207",
+        "rule2026_009",
+        "item2018_0237",
+        "item2018_0199"
+      ],
+      "timings": {
+        "route_s": 3.609,
+        "retrieve_s": 0.11,
+        "rerank_s": 1.732,
+        "total_s": 5.452
+      }
+    }
+  ]
+}
