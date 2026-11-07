@@ -15,16 +15,18 @@ from pathlib import Path
 
 from qdrant_client import QdrantClient
 
-from ingest.index_common import (chunk_payload, load_chunks, point_id, published_record,
-                                 sha256_file)
-from rag import config
+from ingest.index_common import chunk_payload, point_id
+from rag import config, paths
+from rag.files import read_jsonl, sha256_file
+from rag.index_registry import corpus_path as chunk_file
+from rag.index_registry import published_record
 
 
 def verify(collection: str, spec: config.EmbeddingSpec, chunks: list[dict],
            corpus_path: Path, corpus_sha: str) -> dict:
     """Reopen the stored collection and check it against the chunks it should hold."""
     expected = {point_id(c["id"]): c for c in chunks}
-    client = QdrantClient(path=str(config.QDRANT_DIR))      # reopen = persistence check
+    client = QdrantClient(path=str(paths.QDRANT_DIR))       # reopen = persistence check
     try:
         params = client.get_collection(collection).config.params.vectors
         stored_count = client.count(collection, exact=True).count
@@ -52,7 +54,7 @@ def verify(collection: str, spec: config.EmbeddingSpec, chunks: list[dict],
         "ids_unique": len(set(ids)) == len(ids),
         "ids_match_chunks": set(ids) == set(expected),
         # IDs recomputed from a fresh read of the file must equal the stored ones
-        "repeat_run_ids_match": sorted(point_id(c["id"]) for c in load_chunks(corpus_path))
+        "repeat_run_ids_match": sorted(point_id(c["id"]) for c in read_jsonl(corpus_path))
                                 == sorted(ids),
         "vector_size_matches_contract": params.size == spec.dim
                                         and all(len(p.vector) == spec.dim for p in points),
@@ -82,9 +84,10 @@ def main() -> None:
     parser.add_argument("--corpus", default="items", choices=["items", "schedule"])
     args = parser.parse_args()
     record = published_record(args.embedding, args.corpus)
-    corpus_path = config.ROOT / record["corpus_path"]
+    # The hash ties the file to the index, so the registry's stored path may be out of date.
+    path = chunk_file(args.corpus)
     report = verify(record["collection"], config.EMBEDDING_MODELS[args.embedding],
-                    load_chunks(corpus_path), corpus_path, record["corpus_sha256"])
+                    read_jsonl(path), path, record["corpus_sha256"])
     print(json.dumps(report, indent=2, ensure_ascii=False))
     raise SystemExit(0 if report["status"] == "PASS" else 1)
 

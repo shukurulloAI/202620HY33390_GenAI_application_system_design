@@ -1,0 +1,23 @@
+# Tool settings only: the project runs from the repo root and is not installed as a package.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+# Korean strings, regexes and data tables read better on one line.
+"tests/*" = ["E501"]
+"preprocess/*" = ["E501"]
+"rag/bins.py" = ["E501"]
+"rag/schedule_text.py" = ["E501"]
+# PDF layout code: its zips pair neighbouring edges and table cells of unequal length.
+"preprocess/parse_item_guides.py" = ["E501", "B905", "B023"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["eval", "experiments", "ingest", "preprocess", "rag", "tests"]

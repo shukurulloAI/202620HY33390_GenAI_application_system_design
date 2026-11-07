@@ -20,16 +20,22 @@ from __future__ import annotations
 import argparse
 import json
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from qdrant_client import QdrantClient, models
 
-from ingest.index_common import (FLAT_TYPES, chunk_payload, collection_name, corpus_path,
-                                 load_chunks, point_id, published_key, read_published,
-                                 sha256_file, write_published)
+from ingest.index_common import (
+    FLAT_TYPES,
+    chunk_payload,
+    collection_name,
+    point_id,
+    write_published,
+)
 from ingest.verify_index import verify
-from rag import config
+from rag import config, paths
 from rag.embeddings import Embedder, resolve_revision
+from rag.files import read_jsonl, sha256_file
+from rag.index_registry import corpus_path, published_key, read_published
 
 
 def check_chunks(chunks: list[dict]) -> dict:
@@ -52,16 +58,16 @@ def build(embedding_key: str, revision: str | None, rebuild: bool,
     spec = config.EMBEDDING_MODELS[embedding_key]
     path = corpus_path(corpus)
     corpus_sha = sha256_file(path)
-    chunks = load_chunks(path)
+    chunks = read_jsonl(path)
     input_checks = check_chunks(chunks)
     if not all(input_checks.values()):
         raise SystemExit(f"Chunk file failed input checks: {input_checks}")
 
     revision = revision or resolve_revision(spec.model_id)
     name = collection_name(spec, revision, corpus_sha, corpus)
-    config.QDRANT_DIR.mkdir(parents=True, exist_ok=True)
+    paths.QDRANT_DIR.mkdir(parents=True, exist_ok=True)
 
-    client = QdrantClient(path=str(config.QDRANT_DIR))
+    client = QdrantClient(path=str(paths.QDRANT_DIR))
     embed_info = {"reused_existing_collection": True}
     try:
         exists = client.collection_exists(name)
@@ -101,7 +107,7 @@ def build(embedding_key: str, revision: str | None, rebuild: bool,
 
     verification = verify(name, spec, chunks, path, corpus_sha)
     report = {
-        "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "built_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "collection": name,
         "status": verification["status"],
         "representation_contract": {
@@ -111,7 +117,7 @@ def build(embedding_key: str, revision: str | None, rebuild: bool,
             "languages": spec.languages,
         },
         "corpus": {
-            "path": str(path.relative_to(config.ROOT)),
+            "path": paths.relative(path),
             "sha256": corpus_sha,
             "chunks": len(chunks),
             "doc_types": dict(sorted(
@@ -122,8 +128,8 @@ def build(embedding_key: str, revision: str | None, rebuild: bool,
         "embedding_run": embed_info,
         "verification": verification,
     }
-    config.INDEX_REPORT_DIR.mkdir(parents=True, exist_ok=True)
-    report_path = config.INDEX_REPORT_DIR / f"{name}.json"
+    paths.INDEX_REPORT_DIR.mkdir(parents=True, exist_ok=True)
+    report_path = paths.INDEX_REPORT_DIR / f"{name}.json"
     report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n",
                            encoding="utf-8")
 
@@ -132,7 +138,7 @@ def build(embedding_key: str, revision: str | None, rebuild: bool,
         published[published_key(spec.key, corpus)] = {
             "collection": name, "model_id": spec.model_id, "revision": revision,
             "corpus_path": report["corpus"]["path"], "corpus_sha256": corpus_sha,
-            "report": str(report_path.relative_to(config.ROOT)),
+            "report": paths.relative(report_path),
         }
         write_published(published)
     return report

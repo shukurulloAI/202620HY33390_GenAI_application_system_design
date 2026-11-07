@@ -21,17 +21,20 @@ import argparse
 import atexit
 import math
 import re
+import shutil
+import sys
+import tempfile
 import time
-from collections import Counter as _Counter
 from dataclasses import asdict, dataclass, field
 from functools import lru_cache
 from pathlib import Path
 
 from qdrant_client import QdrantClient, models
 
-from ingest.index_common import item_chunk_path, load_chunks, published_record, sha256_file
-from rag import config
+from rag import config, paths
 from rag.embeddings import Embedder
+from rag.files import read_jsonl, sha256_file
+from rag.index_registry import corpus_path, published_record
 
 
 @dataclass
@@ -107,17 +110,14 @@ def _qdrant_client() -> QdrantClient:
     eval run) holds it, open a temporary copy instead: published collections are never
     modified, so a copy is an exact read-only snapshot."""
     try:
-        client = QdrantClient(path=str(config.QDRANT_DIR))
+        client = QdrantClient(path=str(paths.QDRANT_DIR))
     except RuntimeError as exc:
         if "already accessed" not in str(exc):
             raise
-        import shutil
-        import sys
-        import tempfile
         snapshot = Path(tempfile.mkdtemp(prefix="qdrant_snapshot_")) / "qdrant_data"
-        shutil.copytree(config.QDRANT_DIR, snapshot,
+        shutil.copytree(paths.QDRANT_DIR, snapshot,
                         ignore=shutil.ignore_patterns(".lock"))
-        print(f"note: {config.QDRANT_DIR.name}/ is in use by another process; "
+        print(f"note: {paths.QDRANT_DIR.name}/ is in use by another process; "
               f"reading a snapshot copy at {snapshot}", file=sys.stderr)
         client = QdrantClient(path=str(snapshot))
         atexit.register(shutil.rmtree, snapshot.parent, True)
@@ -166,13 +166,13 @@ class BM25Retriever:
 
     def __init__(self, tokenizer: str = "kiwi", expected_sha256: str | None = None):
         from rank_bm25 import BM25Okapi
-        path = item_chunk_path()
+        path = corpus_path("items")
         sha = sha256_file(path)
         if expected_sha256 and sha != expected_sha256:
             raise RuntimeError(
                 f"{path} changed since the dense index was built "
                 f"({sha[:8]} != {expected_sha256[:8]}); rebuild the index first")
-        self.chunks = load_chunks(path)
+        self.chunks = read_jsonl(path)
         self.corpus_sha256 = sha
         self.tokenize = TOKENIZERS[tokenizer]
         self.bm25 = BM25Okapi([self.tokenize(c["text"]) for c in self.chunks])
@@ -241,7 +241,7 @@ class Reranker:
         if not candidates:
             return []
         per_query = [self.score(q, candidates) for q in queries if q]
-        scores = [max(col) for col in zip(*per_query)]
+        scores = [max(col) for col in zip(*per_query, strict=True)]
         order = sorted(range(len(candidates)), key=lambda i: -scores[i])
         return [_copy(candidates[i], rank=r, rerank_score=round(scores[i], 4),
                       ranks={**candidates[i].ranks, "fused": candidates[i].rank})

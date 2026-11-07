@@ -2,7 +2,7 @@
 
 Course: 202620HY33390 Design of Generative AI Application Systems (Hanyang University)
 Team: Shukurullo, Vitou, Anar, Naura
-Plan version: v5, 2026-11-04 (v2: team roles assigned; v3: Phase 1 baseline done; v4: Phase 2 components built; v5: preprocessing done, `preprocess/`)
+Plan version: v6, 2026-11-07 (v2: team roles assigned; v3: Phase 1 baseline done; v4: Phase 2 components built; v5: preprocessing done, `preprocess/`; v6: repository restructured, road to website-ready in §10.4)
 
 This file is the project's single plan. Each design choice is linked to the lesson that taught it, so the final report can show which course concepts we used and how we measured them.
 
@@ -63,12 +63,12 @@ tudents), with limited Korean |
 
 | Source | File | What it answers | Status |
 |---|---|---|---|
-| MoE Recycling Separation Guideline (2018), 36 pages | `Data/item_guides/moe_recycling_guideline_2018.pdf` | Which bin for ~290 items, FAQ, general guidance | ✅ Chunked |
-| Separation directive, Annex 1 (기후에너지환경부훈령 제18호, effective 2026-01-01), 8 pages | `Data/item_guides/moe_separation_directive_annex1_2026.pdf` | Current official rules by material group (incl. clear PET bottles) | ✅ Chunked |
-| National household-waste schedule data (data.go.kr), CP949, 10,187 rows, 222 districts | `Data/korean_waste_policies.csv` | When and where: days, times, place, method per waste type, office phone, data date | ⚠️ Chunked by Vitou, needs fixes (below) |
+| MoE Recycling Separation Guideline (2018), 36 pages | `data/raw/item_guides/moe_recycling_guideline_2018.pdf` | Which bin for ~290 items, FAQ, general guidance | ✅ Chunked |
+| Separation directive, Annex 1 (기후에너지환경부훈령 제18호, effective 2026-01-01), 8 pages | `data/raw/item_guides/moe_separation_directive_annex1_2026.pdf` | Current official rules by material group (incl. clear PET bottles) | ✅ Chunked |
+| National household-waste schedule data (data.go.kr), CP949, 10,187 rows, 222 districts | `data/raw/korean_waste_policies.csv` | When and where: days, times, place, method per waste type, office phone, data date | ⚠️ Chunked by Vitou, needs fixes (below) |
 | Recycling item API (data.go.kr 15156866), ~770 items | not downloaded yet | More items with sorting methods | ⏳ API key needed; take a snapshot file, never call it live |
 
-### 3.1 Item chunks (`item_guide/output/item_chunks.jsonl`, 394 chunks)
+### 3.1 Item chunks (`data/interim/parsed_item_chunks.jsonl`, 394 chunks)
 
 | doc_type | Count | ID pattern | Content |
 |---|---|---|---|
@@ -83,7 +83,7 @@ Known issues:
 - **The 2018 and 2026 rules disagree on some items.** For example, the 2018 guide puts PET bottles under plastics, while the 2026 annex makes clear PET bottles a separate stream. This needs a conflict policy (§4.6).
 - **Some 2026 text has broken spacing** that comes from the PDF itself ("판 매업자", "내용물을비우고"). It may hurt BM25; keep it in mind for E3.
 
-### 3.2 District schedule data (`Vitou_EDA/output/chunks.jsonl`, 10,187 chunks)
+### 3.2 District schedule data (`notebooks/schedule_eda/output/chunks.jsonl`, 10,187 chunks)
 
 CSV columns used: 시도명, 시군구명, 관리구역명, 관리구역대상지역명, 배출장소(유형), the 생활쓰레기/음식물/재활용품/일시적다량폐기물 배출방법·요일·시각 columns, 미수거일, 관리부서명·전화번호, 데이터기준일자.
 
@@ -398,7 +398,7 @@ Rules for every experiment:
 
 Also record **latency and cost per stage** (rewrite, embed, retrieve, rerank, generate) for the baseline and the final system.
 
-Result tables go to `experiments/results/E*.json` and the report.
+Raw results go to `experiments/results/E*/`, and result tables to the report.
 
 ---
 
@@ -484,13 +484,13 @@ Undefined cases are declared, e.g., Recall@k for abstain cases = `None`, exclude
 | Role | Choice | Why / course link |
 |---|---|---|
 | Language | Python 3.11+ | Course labs |
-| PDF parsing | pdfplumber | Already used in `item_guide/build_item_chunks.py` |
+| PDF parsing | pdfplumber | Already used in `preprocess/parse_item_guides.py` |
 | Embeddings | `BAAI/bge-m3` (pinned revision); baseline `BAAI/bge-small-en-v1.5` | Multilingual; course baseline for comparison |
 | Vector store | Qdrant local mode (`QdrantClient(path=...)`) | Lessons 3–5 |
 | Lexical search | `rank_bm25` + `kiwipiepy` Korean tokenizer | Lessons 4–5 hybrid |
 | Reranker | `BAAI/bge-reranker-v2-m3` (CrossEncoder) | Lesson 5 |
 | Orchestration | LangChain (explicit steps) or plain Python with the same stage boundaries | Lesson 4 |
-| Router + generator LLM | Ollama `qwen2.5:7b` for both (default) behind an `LLMClient` interface; `qwen2.5:3b` = course baseline; `exaone3.5:7.8b` (LG, Korean/English) tested in Phase 2 and not adopted | Lesson 1 provider boundary; see `experiments/results/PHASE1_NOTES.md`, `PHASE2_NOTES.md` |
+| Router + generator LLM | Ollama `qwen2.5:7b` for both (default) behind an `LLMClient` interface; `qwen2.5:3b` = course baseline; `exaone3.5:7.8b` (LG, Korean/English) tested in Phase 2 and not adopted | Lesson 1 provider boundary; see `docs/PHASE1_NOTES.md`, `PHASE2_NOTES.md` |
 | Judge LLM | A stronger model than the generator, pinned | Lesson 6 |
 | Evaluation | Own metrics code (chunk-ID based) + `ragas` | Lesson 6 |
 | UI | Streamlit | Simple demo |
@@ -500,58 +500,71 @@ Undefined cases are declared, e.g., Recall@k for abstain cases = `None`, exclude
 
 ---
 
-## 9. Proposed repository structure
+## 9. Repository structure
 
-Owner of each folder in brackets.
+Owner of each folder in brackets. Code folders hold code; generated files live under `data/` or `experiments/results/`. Every path is defined once, in `rag/paths.py`. Dependencies run one way: `preprocess`, `ingest`, `eval` and `experiments` import `rag`, and `rag` imports none of them (`tests/test_layering.py`).
 
 ```
-Data/                         raw sources, never edited                 [Vitou]
-  korean_waste_policies.csv
-  item_guides/*.pdf
-  api_snapshot/               (later) 770-item API snapshot + fetch date
-item_guide/                   PDF → item chunks (built; maintained by Vitou from now on)
-Vitou_EDA/                    CSV EDA + schedule cleaning               [Vitou]
-preprocess/                   final cleaned outputs for the pipeline    [Vitou]
-  manifest.json               source records + hashes
-  item_chunks.jsonl           all item chunks with UUIDv5 IDs
-  schedule.csv / .sqlite      cleaned schedule table
-  dong_lookup.json, district_aliases.json, glossary.json
+data/                                                                   [Vitou]
+  raw/                        official sources, never edited
+    korean_waste_policies.csv, item_guides/*.pdf
+    api_snapshot/             (later) 770-item API snapshot + fetch date
+  manual/                     written by hand: glossary.json, food_waste_table_2018.json
+  interim/                    parsed_item_chunks.jsonl (PDF parser output)
+  processed/                  item_chunks.jsonl, schedule.csv, dong_lookup.json,
+                              district_aliases.json, locations.json, manifest.json
+  reports/                    data_quality.md, index/ (index verification reports)
+preprocess/                   raw → processed                           [Vitou]
+  parse_item_guides.py        PDF → parsed chunks
+  build_items.py, build_schedule.py, build_all.py, common.py
 ingest/                                                                 [Shukurullo]
   build_index.py              chunks → embeddings → Qdrant
   verify_index.py             verification report
 rag/                                                                    [Shukurullo]
-  llm_client.py               provider interface (Ollama / hosted / fixture)
+  paths.py, config.py         every path; every setting
+  files.py                    JSONL and hash helpers
+  llm_client.py               provider interface (Ollama / fixture)
   router.py                   intent + entity extraction + rewrite validation
   retrieve.py                 dense, BM25, RRF, rerank
+  index_registry.py           which verified index to read
+  embeddings.py, korean.py, bins.py
   schedule_tool.py            typed lookup + date helper
+  schedule_text.py            schedule answers written by code
+  schedule_vector.py          vector variants, E4 only
   gate.py                     sufficiency + conflict policy
   context.py                  ContextBudget + evidence packing
   generate.py                 prompt versions + JSON output
   validate.py                 schema, allowed bins, citation resolution
-  pipeline.py                 end-to-end + trace writing
-  prompts/                    versioned prompt files (router_v1.txt, answer_v1.txt, ...)
+  handoff.py                  office phone, Korean sentence
+  answer.py                   the answer dict (the contract, §4.8)
+  pipeline.py                 end-to-end stages
+  tracing.py                  stage timing, trace writing
+  __main__.py                 command line: python -m rag "..."
+  prompts/                    versioned prompt files (router_v1.md, answer_v2.md, ...)
 eval/                                                                   [Anar]
+  cases.py, metrics.py        built; metrics still to complete (§7.3)
   cases/dev.jsonl, test.jsonl
   make_cases.py               template generation from chunks + CSV
-  metrics.py                  Recall/Precision/MRR/nDCG, gate, citation metrics
   run_eval.py                 run a config over a split → report JSON
   ragas_eval.py               optional judge scoring
   human_audit.csv
   reports/
 experiments/
-  configs/E1_*.yaml ... E8_*.yaml                                       [Shukurullo]
-  results/                                                              [Anar]
+  configs/E1_*.json ... E8_*.json                                       [Shukurullo]
+  probes/                     developer regression questions
+  results/                    E2/ to E5/ traces, probes/ timestamped runs [Anar]
+  run_experiment.py, run_probes.py, tau_sweep.py, provenance.py
+tests/                        one file per module, no models or Ollama  [Shukurullo]
+docs/                         PHASE1_NOTES.md, PHASE2_NOTES.md
+notebooks/schedule_eda/       CSV exploration                           [Vitou]
 app/                          website (optional)                        [Naura]
 report/                       final report + figures                    [Anar]
 slides/                       presentation                              [All]
-traces/                       (gitignored)
-PLAN.md
-README.md
+qdrant_data/, traces/         (gitignored)
+PLAN.md, README.md, pyproject.toml, requirements*.txt
 ```
 
 Each person works on their own branch (`vitou`, `shukurullo`, `anar`, `naura`) and merges into `main` through pull requests.
-
-Add a `.gitignore`: `__pycache__/`, `.DS_Store`, `.venv/`, `qdrant_data/`, `traces/`, model caches.
 
 ---
 
@@ -560,26 +573,26 @@ Add a `.gitignore`: `__pycache__/`, `.DS_Store`, `.venv/`, `qdrant_data/`, `trac
 ### 10.1 Tasks per person
 
 #### Vitou: data collection and preprocessing
-`preprocess/` (`python -m preprocess.build_all`; report in `preprocess/reports/data_quality.md`) was built by Shukurullo on 2026-11-04 so Phase 2 could run on clean data, without having seen Vitou's fixes for `split_dongs`, `province` and row handling, pushed to branch `vitou` on 2026-11-03 (`90ca8b9`, with `Vitou_EDA/README.md`). The pipeline reads `preprocess/`; comparing the two found a real bug in it (below). Vitou: please review the outputs, especially the manual table transcription and the glossary, and take over the open collection items.
+`preprocess/` (`python -m preprocess.build_all`; report in `data/reports/data_quality.md`) was built by Shukurullo on 2026-11-04 so Phase 2 could run on clean data, without having seen Vitou's fixes for `split_dongs`, `province` and row handling, pushed to branch `vitou` on 2026-11-03 (`90ca8b9`, with `notebooks/schedule_eda/README.md`). The pipeline reads `data/processed/`; comparing the two found a real bug in it (below). Vitou: please review the outputs, especially the manual table transcription and the glossary, and take over the open collection items.
 
 Collection:
-- [ ] Apply for the data.go.kr API key; save a snapshot of the ~770-item recycling API (`Data/api_snapshot/`, with fetch date)
+- [ ] Apply for the data.go.kr API key; save a snapshot of the ~770-item recycling API (`data/raw/api_snapshot/`, with fetch date)
 - [ ] Check data.go.kr for a newer version of the district CSV; record download date and file hash
 - [ ] Optional: find schedules for missing Seoul districts (Gangdong-gu, Dobong-gu) on district websites, marked as a separate source
 
 Preprocessing (fixes from §3.2):
-- [x] Keep area names ending in 읍/면/리/가/로 (`preprocess/build_schedule.py`; Vitou's own fix is in `Vitou_EDA/utils.py` on branch `vitou`); expand number lists with any separator (`휘경1,2동`, `상계6.7동`, `청학1·2동`, `수성1,2.3,4가동`); move `(… 제외)` to notes. The `.`/`·`/`ㆍ` lists were found by comparing with Vitou's output
+- [x] Keep area names ending in 읍/면/리/가/로 (`preprocess/build_schedule.py`; Vitou's own fix is in `notebooks/schedule_eda/utils.py` on branch `vitou`); expand number lists with any separator (`휘경1,2동`, `상계6.7동`, `청학1·2동`, `수성1,2.3,4가동`); move `(… 제외)` to notes. The `.`/`·`/`ㆍ` lists were found by comparing with Vitou's output
 - [x] Add `province` to every schedule record; handle the 7 duplicate district names (lookup asks which province)
-- [x] List the ambiguous neighbourhood names in `preprocess/dong_lookup.json` (228 of 6,070)
+- [x] List the ambiguous neighbourhood names in `data/processed/dong_lookup.json` (228 of 6,070)
 - [x] Keep `data_date`; flag rows older than 1 year (`오래된데이터`: 56% of rows as of 2026-11-04)
-- [x] Export the cleaned schedule table `preprocess/schedule.csv` (+ `schedule_chunks.jsonl` for E4, `locations.json` for the website)
+- [x] Export the cleaned schedule table `data/processed/schedule.csv` (+ `schedule_chunks.jsonl` for E4, `locations.json` for the website)
 - [x] `district_aliases.json`: 1,723 romanised names → Korean (Seongdong-gu → 성동구; `jung-gu` → asks which city)
 - [x] `glossary.json`: 32 terms in ko/en/zh/vi/uz/ru (zh/vi/uz/ru need a native-speaker check)
 - [x] `manifest.json` for all sources and outputs (§4.1)
-- [x] Item chunk IDs → UUIDv5 (`preprocess/build_items.py`; old IDs kept as `legacy_id`); `preprocess/item_chunks.jsonl` (403 chunks)
+- [x] Item chunk IDs → UUIDv5 (`preprocess/build_items.py`; old IDs kept as `legacy_id`); `data/processed/item_chunks.jsonl` (403 chunks)
 - [ ] Add API-snapshot chunks when the API key is available
-- [x] Data checks: unique IDs, no empty text, flat metadata types; summary in `preprocess/reports/data_quality.md`
-- [x] **Clean table chunks for guide p.17/p.18** (9 `table` chunks, `preprocess/manual/food_waste_table_2018.json`; fixed probes p02, p03, p05, p16). (food waste: what is NOT food waste). The PDF tables lose their layout, and the 7B model reads "bones → general-waste bag" as "food waste" (Phase 2 probes p03, p16). Write one clear chunk per row, e.g. "닭 등의 뼈다귀, 생선뼈 → 음식물류폐기물 아님, 종량제봉투로 배출". Check other table pages the same way
+- [x] Data checks: unique IDs, no empty text, flat metadata types; summary in `data/reports/data_quality.md`
+- [x] **Clean table chunks for guide p.17/p.18** (9 `table` chunks, `data/manual/food_waste_table_2018.json`; fixed probes p02, p03, p05, p16). (food waste: what is NOT food waste). The PDF tables lose their layout, and the 7B model reads "bones → general-waste bag" as "food waste" (Phase 2 probes p03, p16). Write one clear chunk per row, e.g. "닭 등의 뼈다귀, 생선뼈 → 음식물류폐기물 아님, 종량제봉투로 배출". Check other table pages the same way
 
 #### Shukurullo: model implementation (RAG pipeline)
 - [x] Repo setup: `.gitignore`, `requirements.txt`, folder structure (§9)
@@ -588,7 +601,7 @@ Preprocessing (fixes from §3.2):
 - [x] bge-small-en collection for E2 (built, PASS; 29/394 chunks exceed its 512-token limit)
 - [x] `retrieve.py`: dense retrieval (baseline)
 - [x] `retrieve.py`: BM25 (kiwipiepy morphemes / character bigrams), RRF fusion, cross-encoder rerank (`bge-reranker-v2-m3`, best score over original + rewrite)
-- [x] `schedule_tool.py` + date helper (works on the raw CSV now; switches to `preprocess/schedule.csv` automatically)
+- [x] `schedule_tool.py` + date helper, over `data/processed/schedule.csv`
 - [x] `router.py`: intent/entity JSON + rewrite validation (item, Korean script, location named in the question via romanisation, negation, language) + retry/fallback
 - [x] `gate.py`: per-part gate (item: rerank score ≥ τ; schedule: OK / clarify / no data; out of scope). τ = 0.15 is provisional (middle of the probe gap 0.039–0.264, `experiments/tau_sweep.py`) until E5 on dev
 - [x] Conflict policy: prompt rule switchable (`conflict_policy`, E8) + source-year notes in the answer
@@ -599,12 +612,13 @@ Preprocessing (fixes from §3.2):
 - [x] `handoff.py`: office + phone from the district data, Korean sentence to show, what was checked
 - [x] `pipeline.py`: `answer()` for the website and `run_case()` for evaluation; trace writing
 - [x] `experiments/configs/E1–E8` + `run_experiment.py` + `tau_sweep.py` (E6 chunkings still need their data)
-- [x] Deterministic unit tests: `python -m tests.test_deterministic`
-- [x] E4 vector variants: `ingest.build_index --corpus schedule`, `rag/schedule_vector.py`, `experiments/probes_schedule.jsonl` (27 probes; results in `PHASE2_NOTES.md` §10; still to run on dev)
+- [x] Deterministic unit tests: `python -m pytest`
+- [x] E4 vector variants: `ingest.build_index --corpus schedule`, `rag/schedule_vector.py`, `experiments/probes/probes_schedule.jsonl` (27 probes; results in `PHASE2_NOTES.md` §10; still to run on dev)
 - [x] Gate: when an area has more than `MAX_ZONES` rows with different schedules, ask or hand off instead of answering from the first 4 (`PHASE2_NOTES.md` §10)
 - [x] Schedule answers: write days, times and places in code, so `answer_text` cannot drop or change them (`rag/schedule_text.py`; `PHASE2_NOTES.md` §10)
+- [x] Repository restructured (§9): code apart from data, one way of depending on `rag/`, `pipeline.py` split into stages, tests per module under pytest. Same output as before on all 147 recorded traces
 - [ ] Re-run E1–E8 on Anar's dev set when it exists; pick τ (E5) and freeze the config
-- [x] CLI demo (`python -m rag.pipeline`); Phase 1 notes in `experiments/results/PHASE1_NOTES.md`
+- [x] CLI demo (`python -m rag`); Phase 1 notes in `docs/PHASE1_NOTES.md`
 - [x] Developer probe set (`experiments/run_probes.py`, 22 questions) for quick regression checks
 
 #### Anar: evaluation and reports
@@ -667,12 +681,12 @@ No deadline is fixed in this plan. Phases are ordered by dependency, and each on
 
 **Phase 0: Data foundation**
 - [x] Collect official item guides (2018 guideline, 2026 Annex 1) (done)
-- [x] Item chunk builder → 394 chunks (`item_guide/`) (done)
+- [x] Item chunk builder → 394 chunks (`preprocess/parse_item_guides.py`) (done)
 - [x] CSV fixes, schedule table, lookups, glossary, manifest, UUIDv5 IDs (`preprocess/`)
 - [ ] API key + 770-item snapshot (Vitou, optional)
 - [x] `.gitignore`, `requirements.txt`, folders (Shukurullo)
 - [ ] Case schema + first test cases (Anar)
-- [ ] Mock-data website skeleton (Naura)
+- [x] Mock-data website skeleton (Naura; `app/` on branch `naura`, not merged yet)
 
 **Phase 1: Baseline system + test set**
 - [ ] Test set v1 frozen: dev + test (Anar)
@@ -705,6 +719,59 @@ No deadline is fixed in this plan. Phases are ordered by dependency, and each on
 - [ ] Failure heatmap, case studies, robustness probes (Anar)
 - [ ] Final report (Anar, with input from all)
 - [ ] Slides, demo, rehearsal (All)
+
+### 10.4 Road to website-ready
+
+Goal: everything except the website is finished, and connecting the website is one small, known step. The stages run in this order because each needs the one before. Stage 1 comes before evaluation because it changes what users see, and nothing is measured on inputs we already know are wrong.
+
+**Stage 1: Website-ready system.** No outside dependency.
+- [ ] Merge branches `vitou` and `naura` here, so `app/` and Vitou's README sit in the new layout. Move `main` forward by pull request: it still holds only the initial commit
+- [ ] `rag/contract.py`: the answer as typed models, with the JSON schema exported to `docs/answer_schema.json`. `answer()` checks its output against them, so a field cannot change without a failing test
+- [ ] `rag/service.py`: the one module the website imports. `ask()`, `save_feedback(trace_id, rating, comment)`, `source_text(citation)`, `locations()`, `glossary()`, `languages()`. It holds the single `Pipeline`, which takes time to load
+- [ ] Fixed text in all six languages. Today `clarify.question`, `handoff.contact` and `notes` are English only, and `message()` covers English and Korean only
+- [ ] The answer gaps in `PHASE2_NOTES.md` §10: say in `answer_text` when the item part failed, and show `no_collection_days`
+- [ ] Citations carry the page and text, for the source cards
+- [ ] Feedback saved by `trace_id` in `traces/feedback.jsonl`
+- [ ] `docs/answer_examples.json`: one real answer per status, replacing Naura's mock, and an offline mode so the website runs without Ollama
+- [ ] `docs/WEBSITE.md`: one page on what to call and what to show
+
+Done when: a contract test passes on all 49 probes in every status, and the page's data needs are all answered by `rag/service.py`.
+
+**Stage 2: Evaluation tools and cases.**
+- [ ] `eval/make_cases.py` and a schema check for cases (§7.1): about 100 cases over the slices in §7.2
+- [ ] Decide the `schedule` sampling: by row, by district, or both (`PHASE2_NOTES.md` §10; 정선군 and 고흥군 are about a third of the table)
+- [ ] Stratified 70/30 split with a fixed seed, frozen with its hash **before** any tuning
+- [ ] `eval/metrics.py` complete (§7.3) and `eval/run_eval.py`, writing `eval/reports/`
+- [ ] Baseline numbers on dev
+
+**Stage 3: Tune on dev.** About 4 to 5 hours of unattended machine time, estimated from measured medians and about 70 dev cases.
+- [ ] E2, E3, E5 (rerank and τ), E1, E4, E8, E7; E6 if its chunk files are built. HyDE stays out unless a retrieval failure calls for it
+- [ ] Work through `PHASE2_NOTES.md` §9 one change at a time, each measured on dev: Uzbek abstention, fluent wrong rewrites, `is_korean`, invented steps in `how_to_prepare`, wrong citations, latency
+- [ ] Choose τ by the §4.6 objective, choose the prompt version, freeze the config in `rag/config.py`, and record the commit
+
+**Stage 4: Final evaluation.**
+- [ ] One run on test with the frozen config
+- [ ] Ragas with a pinned judge; export the audit sheet of about 20 answers
+- [ ] Results by slice and language, failure heatmap, 3 to 5 case studies, robustness probes (§7.6)
+
+**Stage 5: Report and slides.**
+- [ ] Figures and tables, the report following §12, and slides following §10.1
+
+**Stage 6: Website (Naura).** The only stage left at this point.
+- [ ] Replace `get_mock_answer` in `app/streamlit_app.py` with `rag.service.ask()`
+- [ ] Add the page parts the mock does not have: `OUT_OF_SCOPE`, clarify options, handoff, source cards, all six languages, the full location list
+- [ ] Demo flow, backup screenshots
+
+**What only people can do.** These cannot be generated, and the report must not imply they were.
+
+| Task | Who | Needed by |
+|---|---|---|
+| 6 to 10 real questions from international students | Team | Stage 2, or the `real_users` slice is reported as missing |
+| Review of the table transcription and glossary | Vitou | Before Stage 2: gold labels depend on them |
+| Native-speaker check: glossary, day and label tables, Chinese method text | Speakers of zh, vi, uz, ru | Before the report claims those languages work |
+| Paraphrased cases checked by a person (§7.2) | Team | Stage 2 |
+| Human audit of about 20 answers, two independent raters | Two members | Stage 4 |
+| Deadline, presentation date, demo format | Team | Sets how far E6 and the optional work go |
 
 ---
 

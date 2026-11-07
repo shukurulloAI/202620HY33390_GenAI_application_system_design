@@ -3,7 +3,7 @@ Schedule answers written by code (PLAN.md §4.8; Lesson 1: use a tool for facts)
 
 Days, times and places come straight from the tool's rows, and the LLM never sees them, so
 it cannot drop or change them. E4 showed why: with the right row, the generator's text still
-dropped days or zones on 5 of 19 probes (experiments/results/PHASE2_NOTES.md §10).
+dropped days or zones on 5 of 19 probes (docs/PHASE2_NOTES.md §10).
 
 The LLM does one job here: translating the free-text `method` field, which has 599 distinct
 values. It is not trusted with facts: a method that names days is never sent (it turned
@@ -20,9 +20,9 @@ import json
 import re
 from functools import lru_cache
 
-from rag import config
+from rag import config, paths
 from rag.generate import LANGUAGE_NAMES, load_prompt
-from rag.schedule_tool import WASTE_TYPES, DayRef, ScheduleRow, WasteRule
+from rag.schedule_tool import DayRef, ScheduleRow, WasteRule, waste_types
 
 PROMPT = "schedule_method_v1"
 METHOD_SCHEMA = {"type": "object", "properties": {"text": {"type": "string"}},
@@ -85,7 +85,7 @@ TEXT = {
 
 @lru_cache(maxsize=1)
 def glossary() -> dict[str, dict]:
-    data = json.loads(config.GLOSSARY_PATH.read_text(encoding="utf-8"))
+    data = json.loads(paths.GLOSSARY.read_text(encoding="utf-8"))
     return {t["ko"]: t for t in data["terms"]}
 
 
@@ -95,10 +95,6 @@ def term(ko: str, lang: str) -> str:
         return ko
     text = glossary()[ko][lang]
     return f"{text[0].upper()}{text[1:]} ({ko})"
-
-
-def _types(waste_type: str | None) -> list[str]:
-    return [waste_type] if waste_type in WASTE_TYPES else list(WASTE_TYPES)
 
 
 def _when(rule: WasteRule, lang: str) -> str:
@@ -135,7 +131,7 @@ def write_when(rows: list[ScheduleRow], waste_type: str | None, lang: str,
     """One line per waste type. Zones share a line when their days and times are the same,
     and get one line each when they are not, so no zone's schedule is dropped."""
     lines = []
-    for t in _types(waste_type):
+    for t in waste_types(waste_type):
         groups: dict[tuple, list[ScheduleRow]] = {}
         for row in rows:
             rule = row.rules[t]
@@ -172,7 +168,7 @@ def write_where(rows: list[ScheduleRow], lang: str) -> str | None:
 
 
 def method_lines(rows: list[ScheduleRow], waste_type: str | None) -> list[str]:
-    return list(dict.fromkeys(r.rules[t].method for t in _types(waste_type) for r in rows
+    return list(dict.fromkeys(r.rules[t].method for t in waste_types(waste_type) for r in rows
                               if r.rules[t].method))
 
 

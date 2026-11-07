@@ -4,9 +4,12 @@ __pycache__/
 .venv/
 venv/
 .ipynb_checkpoints/
+.pytest_cache/
+.ruff_cache/
 
-# macOS
+# macOS and editors
 .DS_Store
+.vscode/
 
 # Generated state (rebuild with the scripts; never commit)
 qdrant_data/
@@ -17,4 +20,4 @@ traces/
 .env
 
 # Rebuilt by python -m preprocess.build_all (9 MB, only for E4)
-preprocess/schedule_chunks.jsonl
+data/processed/schedule_chunks.jsonl

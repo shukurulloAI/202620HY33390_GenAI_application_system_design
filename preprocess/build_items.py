@@ -1,9 +1,9 @@
 """
 Final item chunks for the index (PLAN.md §3.1, §4.1).
 
-Input:  item_guide/output/item_chunks.jsonl (PDF parser output, parse-order IDs)
-        preprocess/manual/food_waste_table_2018.json (manual table transcription)
-Output: preprocess/item_chunks.jsonl
+Input:  data/interim/parsed_item_chunks.jsonl (PDF parser output, parse-order IDs)
+        data/manual/food_waste_table_2018.json (manual table transcription)
+Output: data/processed/item_chunks.jsonl
 
 Changes:
   - chunk IDs -> UUIDv5(doc_id | source sha256 | chunker_id | span | text digest);
@@ -19,12 +19,13 @@ from __future__ import annotations
 import json
 from collections import Counter
 
-from preprocess.common import (OUT, ROOT, SOURCES, chunk_id, doc_id, nfc, sha256_file,
-                               write_jsonl)
+from preprocess.common import SOURCES, chunk_id, doc_id, nfc
+from rag import paths
+from rag.files import read_jsonl, sha256_file, write_jsonl
 
-PARSED = ROOT / "item_guide" / "output" / "item_chunks.jsonl"
-MANUAL_TABLE = OUT / "manual" / "food_waste_table_2018.json"
-OUT_PATH = OUT / "item_chunks.jsonl"
+PARSED = paths.PARSED_ITEM_CHUNKS
+MANUAL_TABLE = paths.FOOD_WASTE_TABLE
+OUT_PATH = paths.ITEM_CHUNKS
 
 CHUNKERS = {"item": "item-dict-v1", "faq": "faq-pair-v1", "guide": "guide-page-v1",
             "rule": "annex-row-v1", "note": "annex-note-v1"}
@@ -80,10 +81,8 @@ def table_chunks(source_sha: dict) -> list[dict]:
 
 def build() -> dict:
     source_sha = {key: sha256_file(SOURCES[key]["path"]) for key in ("guide2018", "annex2026")}
-    parsed = [json.loads(line) for line in PARSED.read_text(encoding="utf-8").splitlines()
-              if line.strip()]
     chunks = []
-    for c in parsed:
+    for c in read_jsonl(PARSED):
         meta = dict(c["metadata"])
         key, chunker, span = source_key(meta), CHUNKERS[meta["doc_type"]], span_of(meta)
         text = nfc(c["text"])
@@ -107,9 +106,9 @@ def build() -> dict:
     write_jsonl(OUT_PATH, chunks)
     lengths = [len(c["text"]) for c in chunks]
     return {
-        "output": str(OUT_PATH.relative_to(ROOT)), "sha256": sha256_file(OUT_PATH),
-        "inputs": {"parsed": str(PARSED.relative_to(ROOT)), "parsed_sha256": sha256_file(PARSED),
-                   "manual_table": str(MANUAL_TABLE.relative_to(ROOT)),
+        "output": paths.relative(OUT_PATH), "sha256": sha256_file(OUT_PATH),
+        "inputs": {"parsed": paths.relative(PARSED), "parsed_sha256": sha256_file(PARSED),
+                   "manual_table": paths.relative(MANUAL_TABLE),
                    "manual_table_sha256": sha256_file(MANUAL_TABLE),
                    "source_sha256": source_sha},
         "chunks": len(chunks),

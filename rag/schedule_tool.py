@@ -4,8 +4,8 @@ Schedule lookup tool (PLAN.md §4.5; Lesson 1 "use a tool", Lesson 5 typed filte
 When and where to put waste out is answered by deterministic code over the district
 table, never by the LLM or by vector search (the rows are near-duplicate text).
 
-Input table: Vitou's cleaned `preprocess/schedule.csv` (UTF-8, original Korean column
-names + any extra columns) if it exists, otherwise the raw data.go.kr CSV (CP949).
+Input table: `data/processed/schedule.csv` (UTF-8, the original Korean column names plus the
+columns preprocessing adds).
 
 Statuses:
     OK       rows found (one zone, or all zones of the district if the area is unknown)
@@ -28,7 +28,7 @@ from functools import lru_cache
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from rag import config
+from rag import paths
 
 KST = ZoneInfo("Asia/Seoul")
 STALE_AFTER_DAYS = 365
@@ -42,6 +42,11 @@ WASTE_TYPE_EN = {"general": "General waste (pay-as-you-throw bag)", "food": "Foo
                  "recycling": "Recyclables", "bulky": "Temporary large amounts / bulky"}
 DAY_KO = "월화수목금토일"              # index = date.weekday()
 DAY_EN = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+
+def waste_types(waste_type: str | None) -> list[str]:
+    """The one type asked about, or all of them when the question named none."""
+    return [waste_type] if waste_type in WASTE_TYPES else list(WASTE_TYPES)
 
 
 @dataclass
@@ -83,7 +88,7 @@ class ScheduleRow:
         age = self.data_age_days()
         return age is None or age > STALE_AFTER_DAYS
 
-    def to_evidence(self, waste_type: str | None = None, day: "DayRef | None" = None) -> str:
+    def to_evidence(self, waste_type: str | None = None, day: DayRef | None = None) -> str:
         """Text block for the generator. Days are already in English, and a date the
         user asked about is checked here, so the model never computes dates."""
         types = [waste_type] if waste_type in WASTE_TYPES else list(WASTE_TYPES)
@@ -201,20 +206,14 @@ class ScheduleTable:
         self.aliases = {k.lower().replace(" ", ""): v for k, v in (aliases or {}).items()}
 
     @classmethod
-    def load(cls, path: Path | None = None) -> "ScheduleTable":
-        path = path or next((p for p in config.SCHEDULE_PATHS if p.exists()), None)
-        if path is None:
-            raise FileNotFoundError("no schedule table found")
-        encoding = "cp949" if path.name == "korean_waste_policies.csv" else "utf-8-sig"
-        with path.open(encoding=encoding, newline="") as f:
+    def load(cls, path: Path = paths.SCHEDULE_CSV) -> ScheduleTable:
+        with path.open(encoding="utf-8-sig", newline="") as f:
             rows = [row_from_csv(r) for r in csv.DictReader(f)]
-        aliases = {}
-        if config.DISTRICT_ALIASES_PATH.exists():
-            aliases = json.loads(config.DISTRICT_ALIASES_PATH.read_text(encoding="utf-8"))
-        return cls(rows, str(path.relative_to(config.ROOT)), aliases)
+        aliases = json.loads(paths.DISTRICT_ALIASES.read_text(encoding="utf-8"))
+        return cls(rows, paths.relative(path), aliases)
 
     def _resolve_alias(self, district: str, province: str | None):
-        """Alias file (Vitou): {"seongdong-gu": "성동구"} or {"...": ["서울특별시", "성동구"]}."""
+        """Alias file: {"seongdong-gu": "성동구"} or {"...": ["서울특별시", "성동구"]}."""
         value = self.aliases.get(district.lower().replace(" ", ""))
         if isinstance(value, list) and len(value) == 2:
             return value[1], province or value[0]
@@ -272,7 +271,8 @@ class ScheduleTable:
                     message = (f"'{dong}' matches {len(zone_rows)} zones ({', '.join(options)}); "
                                "ask for the exact neighbourhood")
                 elif len(zone_rows) > 1:
-                    message = f"'{dong}' has {len(zone_rows)} collection points; check which is yours"
+                    message = (f"'{dong}' has {len(zone_rows)} collection points; "
+                               "check which is yours")
                 return ScheduleResult("OK", query, zone_rows, matched_on="area", options=options,
                                       message=message)
             return ScheduleResult(

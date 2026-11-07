@@ -1,40 +1,14 @@
 """
-Shared paths and settings for the pipeline.
+Settings for the pipeline; locations are in rag/paths.py.
 
 Every component reads its settings from here, so an experiment changes one value
 in one place (PLAN.md §6).
 """
 from __future__ import annotations
 
-import uuid
+import json
 from dataclasses import dataclass
 from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-
-# --- Inputs (preprocessed outputs from Vitou take priority when they exist) ---
-PREPROCESS_DIR = ROOT / "preprocess"
-ITEM_CHUNK_PATHS = (
-    PREPROCESS_DIR / "item_chunks.jsonl",                 # final, UUIDv5 IDs (Vitou)
-    ROOT / "item_guide" / "output" / "item_chunks.jsonl",  # current builder output
-)
-SCHEDULE_PATHS = (
-    PREPROCESS_DIR / "schedule.csv",                       # cleaned table (Vitou), UTF-8
-    ROOT / "Data" / "korean_waste_policies.csv",           # raw data.go.kr file, CP949
-)
-DISTRICT_ALIASES_PATH = PREPROCESS_DIR / "district_aliases.json"  # optional (Vitou)
-SCHEDULE_CHUNK_PATH = PREPROCESS_DIR / "schedule_chunks.jsonl"    # for E4 vector variants only
-GLOSSARY_PATH = PREPROCESS_DIR / "glossary.json"
-
-# --- Local state (gitignored) and evidence (committed) ---
-QDRANT_DIR = ROOT / "qdrant_data"
-PUBLISHED_PATH = QDRANT_DIR / "published.json"   # embedding key -> verified collection
-INDEX_REPORT_DIR = ROOT / "ingest" / "reports"
-TRACE_DIR = ROOT / "traces"
-PROMPT_DIR = ROOT / "rag" / "prompts"
-
-# Fixed namespace for deterministic point IDs (never change it: IDs would change).
-POINT_NAMESPACE = uuid.UUID("6f1d3c9e-2b7a-5e4f-9c8d-1a2b3c4d5e6f")
 
 
 @dataclass(frozen=True)
@@ -76,7 +50,7 @@ RERANKER_MAX_LENGTH = 512
 OLLAMA_URL = "http://localhost:11434"
 # qwen2.5:7b chosen over the course default qwen2.5:3b after the Phase 1 probes:
 # 3b contradicted its evidence on pizza box / chicken bones (7/12 vs 9/12 correct,
-# see experiments/results/PHASE1_NOTES.md). 3b stays available with --model.
+# see docs/PHASE1_NOTES.md). 3b stays available with --set llm_model.
 LLM_MODEL = "qwen2.5:7b"
 # Hugging Face tokenizer per Ollama model, used to count prompt tokens before sending.
 LLM_TOKENIZERS = {
@@ -142,14 +116,14 @@ class PipelineConfig:
             object.__setattr__(self, "query_mode", "original")   # no rewrite without router
 
     @classmethod
-    def from_dict(cls, values: dict) -> "PipelineConfig":
+    def from_dict(cls, values: dict) -> PipelineConfig:
         known = set(cls.__dataclass_fields__)
         unknown = set(values) - known
         if unknown:
             raise ValueError(f"unknown config fields: {sorted(unknown)}")
         return cls(**values)
 
-    def replace(self, **changes) -> "PipelineConfig":
+    def replace(self, **changes) -> PipelineConfig:
         return PipelineConfig.from_dict({**self.to_dict(), **changes})
 
     def to_dict(self) -> dict:
@@ -161,3 +135,26 @@ BASELINE = PipelineConfig(retrieval="dense", rerank=False, router=False, gate_ta
                           query_mode="original", prompt_version="v1", validation="off",
                           schedule_text="llm")
 DEFAULT = PipelineConfig()
+
+
+def parse_overrides(pairs: list[str] | None) -> dict:
+    """['retrieval=dense', 'rerank=false', 'gate_tau=0.2'] -> typed dict."""
+    out = {}
+    for pair in pairs or []:
+        key, _, raw = pair.partition("=")
+        try:
+            out[key.strip()] = json.loads(raw)
+        except json.JSONDecodeError:
+            out[key.strip()] = raw
+    return out
+
+
+def load_config(base: str | None = None, overrides: list[str] | None = None) -> PipelineConfig:
+    """`base`: None (the full system), "baseline", or a JSON file of PipelineConfig fields."""
+    if base == "baseline":
+        cfg = BASELINE
+    elif base:
+        cfg = PipelineConfig.from_dict(json.loads(Path(base).read_text(encoding="utf-8")))
+    else:
+        cfg = DEFAULT
+    return cfg.replace(**parse_overrides(overrides)) if overrides else cfg
