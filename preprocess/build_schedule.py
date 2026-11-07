@@ -1,9 +1,9 @@
 """
 Cleaned district schedule table and location lookups (PLAN.md §3.2, §4.5).
 
-Input:  Data/korean_waste_policies.csv (data.go.kr, CP949, 10,187 rows)
-Outputs (preprocess/):
-  schedule.csv           UTF-8, the original Korean columns (cleaned) + extra columns:
+Input:  data/raw/korean_waste_policies.csv (data.go.kr, CP949, 10,187 rows)
+Outputs (data/processed/):
+  schedule.csv          UTF-8, the original Korean columns (cleaned) + extra columns:
                          관리구역대상지역명_원문, 구역비고, 전체구역, 요일기타, 오래된데이터 (as of built_on)
   schedule_chunks.jsonl  one text chunk per row, with province in the metadata (E4 vector variants;
                          9 MB, not committed: rebuild with this script)
@@ -30,10 +30,13 @@ from collections import Counter, defaultdict
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
-from preprocess.common import OUT, ROOT, SOURCES, nfc, sha256_file, write_json, write_jsonl
+from preprocess.common import SOURCES, nfc, write_json
+from rag import paths
+from rag.files import sha256_file, write_jsonl
 from rag.korean import romanize
 
 RAW = SOURCES["schedule_csv"]["path"]
+OUT = paths.PROCESSED_DIR
 STALE_AFTER_DAYS = 365
 DISTRICT_FIXES = {"남양주": "남양주시", "동두천": "동두천시"}
 WHOLE = re.compile(r"^(전체|전지역|전역|없음|해당없음|관내\s*전지역|.*\d+\s*개\s*(동|읍|면|리)|.*(전역|일원))$")
@@ -204,7 +207,7 @@ def build(today: date | None = None) -> dict:
         reader = csv.DictReader(f)
         raw_rows = list(reader)
         raw_columns = [c.strip() for c in reader.fieldnames]
-    cleaned, flags = zip(*(clean_row(r, today) for r in raw_rows))
+    cleaned, flags = zip(*(clean_row(r, today) for r in raw_rows), strict=True)
     # no per-day age column: it would change the file every day (age is computed at runtime)
     columns = raw_columns + ["관리구역대상지역명_원문", "구역비고", "전체구역", "요일기타", "오래된데이터"]
     with (OUT / "schedule.csv").open("w", encoding="utf-8-sig", newline="") as f:
@@ -260,7 +263,7 @@ def build(today: date | None = None) -> dict:
     ages = [f["age_days"] for f in flags if f["age_days"] is not None]
     dup_names = Counter(d for _, d in pairs)
     return {
-        "input": str(RAW.relative_to(ROOT)), "input_sha256": sha256_file(RAW),
+        "input": paths.relative(RAW), "input_sha256": sha256_file(RAW),
         "built_on": today.isoformat(),
         "outputs": {name: sha256_file(OUT / name) for name in
                     ("schedule.csv", "schedule_chunks.jsonl", "dong_lookup.json",

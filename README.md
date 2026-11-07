@@ -1,7 +1,10 @@
 # Waste-Sorting Assistant for Foreigners in Korea (RAG)
 
 Course project for 202620HY33390 *Design of Generative AI Application Systems*, Hanyang University.
-Team: Shukurullo, Vitou, Anar, Naura. The full design and task list is in [PLAN.md](PLAN.md).
+Team: Shukurullo, Vitou, Anar, Naura. The design, task list and roadmap are in [PLAN.md](PLAN.md).
+
+The assistant tells a foreigner in Korea which bin an item goes in (from the national guides) and
+when and where to put waste out (from the district table), with sources, in their language.
 
 ## Quick start
 
@@ -9,45 +12,64 @@ Team: Shukurullo, Vitou, Anar, Naura. The full design and task list is in [PLAN.
 # 1. Python environment (3.11 or 3.12)
 python3.12 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 
 # 2. Local LLM (https://ollama.com)
 ollama serve                # or open the Ollama app
 ollama pull qwen2.5:7b      # default router + generator (qwen2.5:3b = course baseline)
 
-# 3. Preprocess the data (cleaned schedule table, UUIDv5 chunk IDs, lookups, manifest)
-python -m preprocess.build_all
-
-# 4. Build and verify the vector index (first run downloads BAAI/bge-m3, ~2.3 GB;
-#    the first question downloads the reranker BAAI/bge-reranker-v2-m3, ~2.3 GB)
+# 3. Build and verify the vector index. Cleaned data is already in data/processed/.
+#    The first run downloads BAAI/bge-m3, and the first question BAAI/bge-reranker-v2-m3
+#    (~2.3 GB each).
 python -m ingest.build_index
 python -m ingest.verify_index
 
-# 5. Ask a question
-python -m rag.pipeline "Where do I throw away a pizza box?" --lang en
-python -m rag.pipeline "I live in Seongdong-gu Haengdang-dong. Can I put food waste out tonight?"
-python -m rag.pipeline "When can I put out food waste?" --district 성동구 --dong 행당동
+# 4. Ask a question
+python -m rag "Where do I throw away a pizza box?" --lang en
+python -m rag "I live in Seongdong-gu Haengdang-dong. Can I put food waste out tonight?"
+python -m rag "When can I put out food waste?" --district 성동구 --dong 행당동
+
+# 5. Check your setup (no models or Ollama needed, about 1 second)
+python -m pytest
+ruff check .
 ```
 
-Add `--show-trace` to see the full trace (router output, candidates with dense/BM25/rerank
-ranks, gate decision, evidence, token budget, raw LLM output, validation, timings).
-Every request is also appended to `traces/<date>.jsonl`.
+Add `--show-trace` to see the full trace: router output, candidates with dense/BM25/rerank ranks,
+gate decision, evidence, token budget, raw LLM output, validation, timings. Every request is also
+appended to `traces/<date>.jsonl`.
 
-## Data
+## Repository layout
 
-| File (`preprocess/`) | What |
-|---|---|
-| `item_chunks.jsonl` | 403 item chunks (2018 guide + 2026 annex + 9 hand-transcribed food-waste table rows). IDs are UUIDv5; the old IDs (`item2018_0278`) are in `metadata.legacy_id` |
-| `schedule.csv` | Cleaned district table (UTF-8): area lists split correctly (`휘경1,2동` → 휘경1동, 휘경2동), notes separated, stale rows flagged |
-| `dong_lookup.json` | Neighbourhood → zones; `ambiguous` lists names found in several districts |
-| `district_aliases.json` | Romanised → Korean (`seongdong-gu` → 서울특별시 성동구) |
-| `locations.json` | Province → district → zones/areas, incl. Seoul districts with no data (website dropdowns) |
-| `glossary.json` | 32 waste terms in ko/en/zh/vi/uz/ru |
-| `manifest.json`, `reports/data_quality.md` | Source hashes and dates; data-quality numbers for the report |
-| `manual/food_waste_table_2018.json` | Hand transcription of guide p.17–18 (PDF tables lose their layout) |
+Code folders hold code. Generated files live under `data/` or `experiments/results/`, and what each
+machine rebuilds for itself (`qdrant_data/`, `traces/`) is gitignored. All paths are in `rag/paths.py`.
 
-The pipeline uses `preprocess/` files when they exist and falls back to the raw files otherwise.
-After changing anything in `preprocess/`, rebuild the index (step 4).
+```
+data/
+  raw/            official sources, never edited: district CSV, Ministry of Environment PDFs
+  manual/         written by hand and reviewed: glossary, food-waste table transcription
+  interim/        PDF parser output
+  processed/      built by preprocess/: the files the system reads, plus manifest.json
+  reports/        data-quality report; index/ holds the index verification reports
+preprocess/       raw -> processed: PDF parser, cleaning, stable IDs, lookups, manifest
+ingest/           processed -> vector index: build, verify, publish
+rag/              the system: router, retrieval, schedule tool, gate, generation, validation
+  prompts/        versioned prompt files
+eval/             evaluation cases and metrics
+experiments/
+  configs/        one JSON file per experiment, E1-E8
+  probes/         developer regression questions (not an evaluation set)
+  results/        raw output: E2/ to E5/ traces, probes/ timestamped runs
+tests/            fast tests with no models or Ollama, one file per module
+docs/             written-up results: PHASE1_NOTES.md, PHASE2_NOTES.md
+notebooks/        data exploration (schedule_eda/)
+```
+
+Dependencies run one way: `preprocess`, `ingest`, `eval` and `experiments` import `rag`, and `rag`
+imports none of them (`tests/test_layering.py` enforces this).
+
+**Where are the results?** Read [docs/PHASE2_NOTES.md](docs/PHASE2_NOTES.md). The raw traces behind
+it are in `experiments/results/`. These are developer probe results, not evaluation results: the
+official numbers need the dev and test sets (PLAN.md §7, §10.4).
 
 ## How a question is answered
 
@@ -55,52 +77,82 @@ After changing anything in `preprocess/`, rebuild the index (step 4).
 question
  -> router (LLM): intent, item, Korean rewrite, district/dong, waste type, day   rag/router.py
  -> item retrieval: dense (bge-m3) + BM25 (kiwi) -> RRF -> cross-encoder rerank  rag/retrieve.py
- -> schedule tool: typed lookup + date check, no LLM                            rag/schedule_tool.py
+ -> schedule tool: typed lookup + date check, no LLM                             rag/schedule_tool.py
  -> gate: answer / abstain / clarify / out of scope                              rag/gate.py
- -> context under a token budget -> generator (LLM, JSON schema)                rag/context.py, rag/generate.py
- -> validation: allowed bins, bin supported by cited evidence, citations        rag/validate.py
- -> answer + handoff (office phone, Korean sentence) when it cannot answer      rag/handoff.py
+ -> context under a token budget -> generator (LLM, JSON schema), items only     rag/context.py, rag/generate.py
+ -> validation: allowed bins, bin supported by cited evidence, citations         rag/validate.py
+ -> schedule text: days, times, places by code; method translated                rag/schedule_text.py
+ -> answer dict + handoff (office phone, Korean sentence) when it cannot answer  rag/answer.py, rag/handoff.py
 ```
 
-All settings live in one `PipelineConfig` (`rag/config.py`). `config.DEFAULT` is the full
-system; `config.BASELINE` is the Phase 1 system (dense only, no router/rerank/gate, prompt v1).
+`rag/pipeline.py` runs these stages. All settings live in one `PipelineConfig` (`rag/config.py`).
+`config.DEFAULT` is the full system; `config.BASELINE` is the Phase 1 system (dense only, no
+router, rerank or gate, prompt v1).
 
 ```bash
-python -m rag.pipeline "..." --baseline                          # Phase 1 system
-python -m rag.pipeline "..." --set retrieval=dense --set rerank=false
-python -m rag.pipeline "..." --set llm_model='"exaone3.5:7.8b"'  # another Ollama model
-python -m rag.pipeline "..." --llm fixture                       # offline, no Ollama
+python -m rag "..." --baseline                          # Phase 1 system
+python -m rag "..." --set retrieval=dense --set rerank=false
+python -m rag "..." --set llm_model='"exaone3.5:7.8b"'  # another Ollama model
+python -m rag "..." --llm fixture                       # offline, no Ollama
 ```
 
-## Interfaces for teammates
+## Using it from code
 
 ```python
 from rag.pipeline import Pipeline
 from rag import config
 p = Pipeline()                       # full system; Pipeline(config.BASELINE) for Phase 1
 
-p.answer("Where do PET bottles go?", lang="en", district="성동구", dong="행당동")
+p.answer("Where do PET bottles go?", lang="en", district="성동구", dong="행당동")   # website
 p.run_case({"case_id": "c001", "question": "...", "lang": "en",
-            "location": {"district": "성동구", "dong": "행당동"}})   # full trace, for eval
+            "location": {"district": "성동구", "dong": "행당동"}})                 # evaluation
 ```
 
-Answer dict (website):
+`Pipeline()` loads two models, so create one and keep it. Only one process can open `qdrant_data/`
+at a time; a second process automatically reads a temporary snapshot copy.
+
+Answer dict:
 
 | Field | Meaning |
 |---|---|
 | `status` | `ANSWER`, `INSUFFICIENT_CONTEXT` (abstain), `CLARIFY` (ask the user), `OUT_OF_SCOPE` |
+| `lang` | Language of the answer |
 | `bin`, `bin_en` | Canonical bin (`rag/bins.py`), e.g. `종량제봉투` / "general waste (pay-as-you-throw bag)" |
-| `how_to_prepare`, `answer_text` | Steps and the answer in the user's language, with `[n]` citations |
+| `how_to_prepare`, `answer_text` | Steps and the answer in the user's language, with `[n]` citations. `answer_text` can have several lines |
 | `citations` | `{n, kind: item/schedule, ref: chunk_id or 관리번호, source}` |
-| `schedule` | From the tool, never the LLM: zones, days, times, next dates, `day_check`, office, phone, data date, `stale` |
-| `clarify` | `{question, options}` when `status = CLARIFY` (e.g. which 중구) |
-| `handoff` | When it cannot answer: office + phone, a Korean sentence to show, what was checked |
+| `schedule` | From the tool, never the LLM: `days`, `time`, `place`, and `zones` with next dates, `day_check`, office, phone, data date, `stale` |
+| `data_date`, `office_phone` | Oldest data date of the rows shown; office phone |
+| `missing` | What could not be answered |
+| `clarify` | `{question, options}` when `status = CLARIFY` (e.g. which 중구); up to 30 options |
+| `handoff` | When it cannot answer: office, phone, a Korean sentence to show, what was checked |
 | `notes` | Source-year and data-age warnings |
+| `trace_id` | ID of the trace behind this answer |
 
 Schedule tool on its own (no models needed):
 ```bash
 python -m rag.schedule_tool 성동구 --dong 행당동 --waste-type food
 ```
+
+## Data
+
+| File | What |
+|---|---|
+| `data/processed/item_chunks.jsonl` | 403 item chunks (2018 guide + 2026 annex + 9 hand-transcribed food-waste table rows). IDs are UUIDv5; the old IDs (`item2018_0278`) are in `metadata.legacy_id` |
+| `data/processed/schedule.csv` | Cleaned district table (UTF-8): area lists split correctly (`휘경1,2동` -> 휘경1동, 휘경2동), notes separated, stale rows flagged |
+| `data/processed/dong_lookup.json` | Neighbourhood -> zones; `ambiguous` lists names found in several districts |
+| `data/processed/district_aliases.json` | Romanised -> Korean (`seongdong-gu` -> 서울특별시 성동구) |
+| `data/processed/locations.json` | Province -> district -> zones/areas, incl. Seoul districts with no data (website dropdowns) |
+| `data/manual/glossary.json` | 32 waste terms in ko/en/zh/vi/uz/ru |
+| `data/manual/food_waste_table_2018.json` | Hand transcription of guide p.17-18 (PDF tables lose their layout) |
+| `data/processed/manifest.json`, `data/reports/data_quality.md` | Source hashes and dates; data-quality numbers |
+
+```bash
+python -m preprocess.parse_item_guides   # only when the PDFs or the parser change
+python -m preprocess.build_all           # rebuilds data/processed/ and data/reports/
+```
+
+After changing `data/processed/item_chunks.jsonl`, rebuild the index. Its name contains the corpus
+hash, so the pipeline refuses to run on a mismatch instead of mixing old and new chunks.
 
 ## Experiments
 
@@ -117,21 +169,13 @@ python -m experiments.tau_sweep experiments/results/E5/rerank-on.jsonl --cases e
 `run_experiment` writes `experiments/results/<id>/<variant>.jsonl` (one trace per case) and a
 `manifest.json` (configs, model revisions, cases SHA-256, git commit). It refuses a test file
 without `--allow-test`. Without `eval/cases/dev.jsonl` it falls back to the probes and says so.
+Paths inside older manifests are the paths at the time of that run.
 
-Only one process can open `qdrant_data/` at a time; a second process (e.g. the website
-while an evaluation runs) automatically reads a temporary snapshot copy.
+## Team
 
-## Repository layout
-
-| Path | What | Owner |
-|---|---|---|
-| `Data/` | Raw sources: district CSV (data.go.kr), Ministry of Environment PDFs | Vitou |
-| `item_guide/` | PDF → parsed item chunks (`item_guide/output/item_chunks.jsonl`) | Vitou |
-| `Vitou_EDA/` | CSV exploration and schedule chunks | Vitou |
-| `preprocess/` | Cleaning, IDs, lookups, manifest, data-quality report (`python -m preprocess.build_all`) | Vitou (built by Shukurullo) |
-| `tests/` | Deterministic unit tests (`python -m tests.test_deterministic`) | Shukurullo |
-| `ingest/` | Build and verify the Qdrant index; reports in `ingest/reports/` | Shukurullo |
-| `rag/` | Pipeline: router, retrieval, schedule tool, gate, generation, validation | Shukurullo |
-| `experiments/` | Probes, experiment configs E1–E8, runner, results | Shukurullo (build), Anar (measure) |
-| `eval/` | Test set, metrics, evaluation runs | Anar |
-| `app/` | Website (optional) | Naura |
+| Area | Owner |
+|---|---|
+| Data: `data/`, `preprocess/`, `notebooks/` | Vitou (`preprocess/` built by Shukurullo) |
+| System: `rag/`, `ingest/`, `tests/`, experiment runners | Shukurullo |
+| Evaluation and report: `eval/`, experiment measurement | Anar |
+| Website: `app/` (branch `naura`) | Naura |

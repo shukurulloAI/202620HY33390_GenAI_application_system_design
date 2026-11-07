@@ -27,9 +27,9 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import asdict, dataclass, field
-from functools import lru_cache
 
 from rag import config
+from rag.generate import load_prompt
 from rag.korean import mentions_place
 from rag.llm_client import LLMClient
 
@@ -81,20 +81,15 @@ class Route:
         return asdict(self)
 
 
-@lru_cache(maxsize=4)
-def load_router_prompt(version: str = "v1") -> tuple[str, str]:
-    raw = (config.PROMPT_DIR / f"router_{version}.md").read_text(encoding="utf-8")
-    raw = re.sub(r"<!--.*?-->", "", raw, flags=re.S)
-    system, user = raw.split("=== USER ===")
-    return system.replace("=== SYSTEM ===", "").strip(), user.strip()
-
-
 def script_lang(text: str) -> str | None:
     """Language from the writing system, when it is unambiguous."""
     letters = [ch for ch in text if ch.isalpha()]
     if not letters:
         return None
-    share = lambda lo, hi: sum(lo <= ch <= hi for ch in letters) / len(letters)
+
+    def share(lo: str, hi: str) -> float:
+        return sum(lo <= ch <= hi for ch in letters) / len(letters)
+
     if share("가", "힣") > 0.3:
         return "ko"
     if share("぀", "ヿ") > 0.1:
@@ -117,7 +112,7 @@ class Router:
         self.name = f"router_{prompt_version}:{llm.model_id}"
 
     def route(self, question: str) -> Route:
-        system, user = load_router_prompt(self.prompt_version)
+        system, user = load_prompt(f"router_{self.prompt_version}")
         prompt = user.replace("{question}", question)
         attempts, data = [], None
         for attempt in range(2):                         # one retry (PLAN.md §4.3)

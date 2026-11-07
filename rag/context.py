@@ -90,8 +90,7 @@ def schedule_evidence(row, waste_type: str | None, day=None) -> EvidenceItem:
 
 
 def pack_evidence(item_candidates: list, schedule_rows: list, waste_type: str | None,
-                  fixed_text: str, counter: TokenCounter,
-                  budget: ContextBudget = ContextBudget(), day=None):
+                  fixed_text: str, counter: TokenCounter, budget: ContextBudget, day=None):
     """Number the evidence and keep what fits.
 
     Order: item chunks by retrieval rank, then district schedule rows. Schedule rows

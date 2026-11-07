@@ -1,7 +1,7 @@
 <!-- prompt_id: schedule_method_v1. Translates one free-text `method` value of a district
      schedule row (rag/schedule_text.py). Days, times and places are written by code and are
      not in this prompt, and there are no worked examples, so neither can leak (PHASE2_NOTES §5).
-     {terms} comes from preprocess/glossary.json. -->
+     {terms} comes from data/manual/glossary.json. -->
 === SYSTEM ===
 You translate Korean instructions for putting out household waste. You translate only. You add nothing.
 

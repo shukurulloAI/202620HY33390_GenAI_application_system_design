@@ -11,7 +11,7 @@ import json
 import re
 from functools import lru_cache
 
-from rag import config
+from rag import paths
 from rag.bins import BINS
 
 LANGUAGE_NAMES = {"en": "English", "ko": "Korean", "zh": "Chinese", "uz": "Uzbek",
@@ -36,7 +36,8 @@ ANSWER_SCHEMA = {
 
 @lru_cache(maxsize=8)
 def load_prompt(name: str) -> tuple[str, str]:
-    raw = (config.PROMPT_DIR / f"{name}.md").read_text(encoding="utf-8")
+    """(system, user) of rag/prompts/<name>.md. HTML comments are notes for us, not the LLM."""
+    raw = (paths.PROMPT_DIR / f"{name}.md").read_text(encoding="utf-8")
     raw = re.sub(r"<!--.*?-->", "", raw, flags=re.S)
     system, user = raw.split("=== USER ===")
     return system.replace("=== SYSTEM ===", "").strip(), user.strip()
