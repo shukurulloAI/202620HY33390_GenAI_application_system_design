@@ -44,14 +44,18 @@ def message(status: str, lang: str | None) -> str:
 
 
 def korean_sentence(item_ko: str, waste_type: str | None, district: str | None,
-                    dong: str | None, asks_schedule: bool) -> str:
+                    dong: str | None, asks_schedule: bool, item_asked: str = "") -> str:
+    """`item_ko`: the Korean item name, empty if unusable. `item_asked`: the item in the
+    user's own words, so the sentence still names it when there is no Korean name."""
     parts = ["안녕하세요."]
     if item_ko:
         parts.append(f"{item_ko}{object_particle(item_ko)} 어떻게 버려야 하는지 알고 싶습니다.")
+    elif item_asked:
+        parts.append(f"이 물건을 어떻게 버려야 하는지 알고 싶습니다: {item_asked}.")
     if asks_schedule:
         what = WASTE_TYPES.get(waste_type or "", "쓰레기")
         parts.append(f"{what} 배출 요일과 시간, 장소를 알고 싶습니다.")
-    if not item_ko and not asks_schedule:
+    if not item_ko and not item_asked and not asks_schedule:
         parts.append("쓰레기 분리배출 방법을 알고 싶습니다.")
     place = " ".join(p for p in (district, dong) if p)
     if place:
@@ -59,8 +63,9 @@ def korean_sentence(item_ko: str, waste_type: str | None, district: str | None,
     return " ".join(parts)
 
 
-def build_handoff(*, item_ko: str, waste_type: str | None, district: str | None,
-                  dong: str | None, schedule, asks_schedule: bool, checked: list[str]) -> dict:
+def build_handoff(*, item_ko: str, item_asked: str, waste_type: str | None,
+                  district: str | None, dong: str | None, schedule, asks_schedule: bool,
+                  checked: list[str]) -> dict:
     office = phone = None
     if schedule is not None and schedule.rows:
         row = schedule.rows[0]
@@ -69,5 +74,5 @@ def build_handoff(*, item_ko: str, waste_type: str | None, district: str | None,
                "Ask your district office (구청) or community service centre (주민센터).")
     return {"office": office, "phone": phone, "contact": contact,
             "korean_sentence": korean_sentence(item_ko, waste_type, district, dong,
-                                               asks_schedule),
+                                               asks_schedule, item_asked),
             "checked": checked}

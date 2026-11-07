@@ -5,6 +5,7 @@ Small Korean text helpers (no models).
   a district the router returns ("성동구") is really in the question ("Seongdong-gu").
 - mentions_place(): that check.
 - object_particle(): 을/를 for the handoff sentence (PLAN.md §4.10).
+- fit_to_show(): is this Korean good enough to put in front of a person?
 """
 from __future__ import annotations
 
@@ -89,6 +90,16 @@ def mentions_place(question: str, korean_name: str) -> bool:
     pattern = rf"\b{re.escape(roman)}(?:[\s-]?(?:{'|'.join(_SUFFIXES)}))?\b"
     return re.search(pattern, re.sub(r"(?<=[a-z])-(?=[a-z])", "", text)) is not None or \
         re.search(pattern, text) is not None
+
+
+def fit_to_show(text: str) -> bool:
+    """Korean a person can use: Hangul, with Latin only as capital acronyms ('투명 PET 병').
+    Stricter than router.is_korean: search can still use a mixed rewrite, but someone
+    reading it at an office cannot ('네일 pol리스 병', '바attery(번역 필요)')."""
+    letters = [ch for ch in text if ch.isalpha()]
+    return (any("가" <= ch <= "힣" for ch in letters)
+            and all("가" <= ch <= "힣" or "A" <= ch <= "Z" for ch in letters)
+            and "번역" not in text)
 
 
 def has_final_consonant(word: str) -> bool:

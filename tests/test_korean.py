@@ -1,7 +1,7 @@
 """Romanisation, place matching and Korean particles."""
 from __future__ import annotations
 
-from rag.korean import mentions_place, object_particle, romanize
+from rag.korean import fit_to_show, mentions_place, object_particle, romanize
 
 
 def test_romanize_and_place_mentions():
@@ -16,3 +16,11 @@ def test_romanize_and_place_mentions():
 
 def test_object_particle():
     assert object_particle("우산") == "을" and object_particle("닭뼈") == "를"
+
+
+def test_fit_to_show():
+    """Item names the router really produced (experiments/results/)."""
+    for name in ("피자 상자", "닭뼈", "만료된 약", "투명 PET 병"):
+        assert fit_to_show(name), name
+    for name in ("네일 pol리스 병", "바attery(번역 필요)", "계란 скор대", "닭骨头汤", ""):
+        assert not fit_to_show(name), name

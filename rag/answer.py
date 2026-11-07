@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 
 from rag.gate import GateDecision
 from rag.handoff import build_handoff, message
+from rag.korean import fit_to_show
 from rag.router import Route
 from rag.schedule_tool import (
     WASTE_TYPE_EN,
@@ -148,6 +149,7 @@ def handoff(request: Request, route: Route, gate: GateDecision,
         place = " ".join(p for p in (request.district, request.dong) if p)
         checked.append(f"district collection data for {place}")
     return build_handoff(
-        item_ko=route.item_ko if route.checks.get("item_ko_korean") else "",
+        item_ko=route.item_ko if fit_to_show(route.item_ko) else "",
+        item_asked=route.item if route.checks.get("item_in_question") else "",
         waste_type=request.waste_type, district=request.district, dong=request.dong,
         schedule=schedule, asks_schedule=gate.schedule != "skip", checked=checked)

@@ -142,7 +142,7 @@ python -m rag.schedule_tool 성동구 --dong 행당동 --waste-type food
 | `data/processed/dong_lookup.json` | Neighbourhood -> zones; `ambiguous` lists names found in several districts |
 | `data/processed/district_aliases.json` | Romanised -> Korean (`seongdong-gu` -> 서울특별시 성동구) |
 | `data/processed/locations.json` | Province -> district -> zones/areas, incl. Seoul districts with no data (website dropdowns) |
-| `data/manual/glossary.json` | 32 waste terms in ko/en/zh/vi/uz/ru |
+| `data/manual/glossary.json` | 36 waste terms in ko/en/zh/vi/uz/ru |
 | `data/manual/food_waste_table_2018.json` | Hand transcription of guide p.17-18 (PDF tables lose their layout) |
 | `data/processed/manifest.json`, `data/reports/data_quality.md` | Source hashes and dates; data-quality numbers |
 

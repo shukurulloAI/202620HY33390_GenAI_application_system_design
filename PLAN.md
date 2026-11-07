@@ -587,7 +587,7 @@ Preprocessing (fixes from §3.2):
 - [x] Keep `data_date`; flag rows older than 1 year (`오래된데이터`: 56% of rows as of 2026-11-04)
 - [x] Export the cleaned schedule table `data/processed/schedule.csv` (+ `schedule_chunks.jsonl` for E4, `locations.json` for the website)
 - [x] `district_aliases.json`: 1,723 romanised names → Korean (Seongdong-gu → 성동구; `jung-gu` → asks which city)
-- [x] `glossary.json`: 32 terms in ko/en/zh/vi/uz/ru (zh/vi/uz/ru need a native-speaker check)
+- [x] `glossary.json`: 36 terms in ko/en/zh/vi/uz/ru (zh/vi/uz/ru need a native-speaker check)
 - [x] `manifest.json` for all sources and outputs (§4.1)
 - [x] Item chunk IDs → UUIDv5 (`preprocess/build_items.py`; old IDs kept as `legacy_id`); `data/processed/item_chunks.jsonl` (403 chunks)
 - [ ] Add API-snapshot chunks when the API key is available
