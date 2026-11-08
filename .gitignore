@@ -21,3 +21,8 @@ traces/
 
 # Rebuilt by python -m preprocess.build_all (9 MB, only for E4)
 data/processed/schedule_chunks.jsonl
+
+# Vitou's local scraping files (new layout of /Vitou_EDA and /Data)
+/notebooks/schedule_eda/waste_disposal_scrape.py
+/data/waste_disposal.db
+/data/image/
