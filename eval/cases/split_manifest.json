@@ -1,0 +1,68 @@
+{
+  "version": "v1",
+  "seed": 20261108,
+  "test_share": 0.3,
+  "created": "2026-11-08T16:33:45",
+  "git_commit": "aceeac8c0756e1ac33de5bc2f67fd9871acc13e9",
+  "frozen": true,
+  "frozen_note": "Split made before any tuning. Do not rebuild; a new set is a new version.",
+  "n": {
+    "all": 100,
+    "dev": 70,
+    "test": 30
+  },
+  "by_slice": {
+    "dev": {
+      "item_tricky": 11,
+      "conflict": 6,
+      "false_premise": 6,
+      "no_evidence": 7,
+      "ambiguous_location": 4,
+      "out_of_scope": 3,
+      "combined": 8,
+      "item_direct": 14,
+      "schedule": 11
+    },
+    "test": {
+      "item_tricky": 5,
+      "conflict": 2,
+      "false_premise": 2,
+      "no_evidence": 3,
+      "ambiguous_location": 2,
+      "out_of_scope": 2,
+      "combined": 4,
+      "item_direct": 6,
+      "schedule": 4
+    }
+  },
+  "by_lang": {
+    "dev": {
+      "en": 25,
+      "ko": 22,
+      "zh": 6,
+      "uz": 7,
+      "vi": 4,
+      "ru": 6
+    },
+    "test": {
+      "en": 15,
+      "ru": 2,
+      "ko": 8,
+      "vi": 3,
+      "zh": 2
+    }
+  },
+  "seen_in_development": 12,
+  "sha256": {
+    "dev": "5a62a1c6b68418c405dde29f5b891915335c5f1dbb5102696712e44d92354da5",
+    "test": "c3be328d06ca23ee0d0ca10d3af7ae7848786aac3383ff96463c207aaec64b4c",
+    "handwritten": "4ac2547b3380cc012387e1b7ab9f18f618fba060969df2310dcac1348f482f46",
+    "item_names": "326f5bb6d8c9fadb2758b40bf11622bafbfdca9c2a567c335dd55967b15a8ba1",
+    "item_chunks": "c7d196766f9135a82942606e690120a6078e24960a5f4305cb56415b2627896d",
+    "schedule": "1395dcc72472a3b35f07d59826a76c593acac9ce28732aef5bdd8b4a9f437bb7"
+  },
+  "missing": {
+    "real_users": "No real questions from international students were collected (PLAN.md §7.2). The slice is reported as missing."
+  },
+  "authorship": "All cases were written by the system developer with AI assistance, not by an independent person; translations were not checked by native speakers. See the report's limitations."
+}
