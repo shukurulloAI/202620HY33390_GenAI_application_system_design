@@ -1,0 +1,10 @@
+# LLM judge for eval/ragas_eval.py, in its own environment (Ragas pulls LangChain, which the
+# pipeline does not use):
+#   python3.12 -m venv .venv-judge && .venv-judge/bin/pip install -r requirements-judge.txt
+# Pinned to the versions the reported scores were made with.
+ragas==0.4.3
+openai==1.109.1
+langchain==1.4.9
+langchain-core==1.7.6
+langchain-openai==1.1.9
+langchain-community==0.3.31

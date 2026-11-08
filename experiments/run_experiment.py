@@ -6,9 +6,13 @@ config file, changing only the fields the variant lists.
     python -m experiments.run_experiment <config> --cases eval/cases/dev.jsonl
     python -m experiments.run_experiment <config> --variants dense hybrid-rrf --limit 10
 
-Output:
-    experiments/results/<id>/<variant>.jsonl   one full trace per case (case_id included)
-    experiments/results/<id>/manifest.json     configs, models, cases file + SHA-256, git commit
+Output (probes: experiments/results/<id>/; evaluation cases: experiments/results/dev/<id>/,
+so the Phase 2 probe results stay as they were):
+    <variant>.jsonl   one full trace per case (case_id included)
+    manifest.json     configs, models, cases file + SHA-256, git commit, metrics per variant
+                      (a run of some --variants adds to the manifest of the same cases)
+    summary.md        one table across variants, and the cases each variant got right or
+                      wrong compared with the reference variant (regressions, Lesson 6)
 
 Rules enforced here:
     - cases default to the dev split; a test file needs --allow-test (Lesson 6: run the
@@ -24,12 +28,12 @@ from datetime import datetime
 from pathlib import Path
 
 from eval.cases import default_cases, load_cases
-from eval.metrics import quick_summary, schedule_summary
+from eval.metrics import quick_summary, schedule_summary, score
 from eval.provenance import git_commit, git_dirty
 from rag import config, paths
 from rag.config import PipelineConfig
 from rag.files import sha256_file
-from rag.llm_client import make_client
+from rag.llm_client import CachedClient, make_client
 from rag.pipeline import Pipeline
 
 
@@ -62,9 +66,12 @@ def choose_cases(explicit: Path | None, allow_test: bool) -> Path:
 
 
 def run_variant(spec: dict, name: str, cfg: PipelineConfig, cases: list[dict], llm_name: str,
-                out_dir: Path) -> dict:
+                out_dir: Path, cache: bool = False) -> dict:
     """One variant over every case. Returns its entry for the manifest."""
-    pipeline = Pipeline(cfg, make_client(llm_name, cfg.llm_model), write_traces=False)
+    llm = make_client(llm_name, cfg.llm_model)
+    if cache:
+        llm = CachedClient(llm)
+    pipeline = Pipeline(cfg, llm, write_traces=False)
     path = out_dir / f"{name}.jsonl"
     traces = []
     with path.open("w", encoding="utf-8") as f:
@@ -77,8 +84,13 @@ def run_variant(spec: dict, name: str, cfg: PipelineConfig, cases: list[dict], l
     if any(c.get("expected_schedule") for c in cases):
         summary["schedule"] = schedule_summary(traces, cases, pipeline.schedule)
     print(f"\r{spec['id']} {name}: {json.dumps(summary, ensure_ascii=False)}")
-    return {"config": cfg.to_dict(), "settings": pipeline.settings(),
-            "traces": paths.relative(path), "quick_summary": summary}
+    entry = {"config": cfg.to_dict(), "settings": pipeline.settings(),
+             "traces": paths.relative(path), "quick_summary": summary,
+             "llm_replayed": llm.cached if cache else 0}
+    if any("expected_behavior" in c for c in cases):        # evaluation cases, not probes
+        result = score(traces, cases)
+        entry["metrics"] = {k: v for k, v in result.items() if k != "rows"}
+    return entry
 
 
 def main() -> None:
@@ -90,6 +102,9 @@ def main() -> None:
     parser.add_argument("--limit", type=int)
     parser.add_argument("--allow-test", action="store_true")
     parser.add_argument("--llm", default="ollama", choices=["ollama", "fixture"])
+    parser.add_argument("--cache", action="store_true",
+                        help="replay identical temperature-0 LLM requests from .cache/llm "
+                             "(for retrieval-stage experiments, where routing is the same)")
     args = parser.parse_args()
 
     spec = json.loads(args.config.read_text(encoding="utf-8"))
@@ -102,21 +117,33 @@ def main() -> None:
     variants = expand_variants(spec)
     if args.variants:
         variants = {name: v for name, v in variants.items() if name in args.variants}
-    out_dir = paths.RESULTS_DIR / spec["id"]
+    is_eval = any("expected_behavior" in c for c in cases)
+    out_dir = paths.RESULTS_DIR / cases_path.stem / spec["id"] if is_eval else \
+        paths.RESULTS_DIR / spec["id"]
     out_dir.mkdir(parents=True, exist_ok=True)
+    manifest_file = out_dir / "manifest.json"
+    sha = sha256_file(cases_path)
+    old = json.loads(manifest_file.read_text(encoding="utf-8")) if manifest_file.exists() else {}
+    kept = old.get("variants", {}) if old.get("cases_sha256") == sha and args.variants else {}
     manifest = {"id": spec["id"], "question": spec.get("question"), "stage": spec["stage"],
-                "spec_file": str(args.config), "cases": str(cases_path),
-                "cases_sha256": sha256_file(cases_path),
-                "n_cases": len(cases), "git_commit": git_commit(), "git_dirty": git_dirty(),
-                "started": datetime.now().isoformat(timespec="seconds"), "variants": {}}
+                "spec_file": str(args.config), "cases": paths.relative(cases_path.resolve()),
+                "cases_sha256": sha, "n_cases": len(cases), "git_commit": git_commit(),
+                "git_dirty": git_dirty(),
+                "started": datetime.now().isoformat(timespec="seconds"), "variants": kept}
 
     base = base_config(spec)
     for name, fields in variants.items():
         cfg = base.replace(**spec.get("fixed", {}), **fields)
-        manifest["variants"][name] = run_variant(spec, name, cfg, cases, args.llm, out_dir)
+        manifest["variants"][name] = run_variant(spec, name, cfg, cases, args.llm, out_dir,
+                                                 args.cache)
+        manifest["variants"][name]["git_commit"] = manifest["git_commit"]
+        manifest_file.write_text(json.dumps(manifest, ensure_ascii=False, indent=2),
+                                 encoding="utf-8")         # after each variant: a crash keeps it
     manifest["finished"] = datetime.now().isoformat(timespec="seconds")
-    (out_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2),
-                                           encoding="utf-8")
+    manifest_file.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    if is_eval:
+        from experiments.summarize import write_summary
+        write_summary(spec, manifest, cases, out_dir)
     print(f"-> {paths.relative(out_dir)}/")
 
 
