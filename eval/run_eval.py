@@ -32,14 +32,18 @@ from rag.config import load_config
 from rag.files import read_jsonl, sha256_file
 
 REPORT_DIR = paths.ROOT / "eval" / "reports"
+REPLAYED = " (not valid: some LLM replies were replayed from the cache)"
 
 
 def run(cases: list[dict], config_base: str | None, overrides: list[str], llm: str,
-        out: Path) -> tuple[list[dict], dict]:
-    from rag.llm_client import make_client
+        out: Path, cache: bool = False) -> tuple[list[dict], dict, int]:
+    from rag.llm_client import CachedClient, make_client
     from rag.pipeline import Pipeline
     cfg = load_config(config_base, overrides)
-    pipeline = Pipeline(cfg, make_client(llm, cfg.llm_model), write_traces=False)
+    client = make_client(llm, cfg.llm_model)
+    if cache:
+        client = CachedClient(client)
+    pipeline = Pipeline(cfg, client, write_traces=False)
     traces = []
     with out.open("w", encoding="utf-8") as f:
         for i, case in enumerate(cases, 1):
@@ -50,7 +54,7 @@ def run(cases: list[dict], config_base: str | None, overrides: list[str], llm: s
             status = trace["answer"]["status"]
             print(f"\r{i}/{len(cases)} {case['case_id']:8} {status:22}", end="", flush=True)
     print()
-    return traces, pipeline.settings()
+    return traces, pipeline.settings(), client.cached if cache else 0
 
 
 def fmt(rate: dict | None) -> str:
@@ -89,7 +93,7 @@ def markdown(name: str, result: dict, meta: dict, show_rows: bool) -> str:
              f"| Downgraded by validation | {o['downgraded']} |",
              f"| Contract problems | {o['contract_problems']} |",
              f"| Latency mean / median / p90 (s) | {lat['mean']} / {lat['median']} / "
-             f"{lat['p90']} |",
+             f"{lat['p90']}{REPLAYED if meta.get('llm_replayed') else ''} |",
              ""]
     for key, title in (("by_slice", "By slice"), ("by_lang", "By language")):
         lines += [f"## {title}", "",
@@ -135,6 +139,9 @@ def main() -> None:
     parser.add_argument("--llm", default="ollama", choices=["ollama", "fixture"])
     parser.add_argument("--allow-test", action="store_true")
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--cache", action="store_true",
+                        help="replay identical temperature-0 LLM requests from .cache/llm "
+                             "(tuning runs; latency is then not valid)")
     args = parser.parse_args()
 
     if "test" in args.cases.name and not args.allow_test:
@@ -142,10 +149,12 @@ def main() -> None:
     cases = load_cases(args.cases)[:args.limit] if args.limit else load_cases(args.cases)
     out = REPORT_DIR / args.name
     out.mkdir(parents=True, exist_ok=True)
+    replayed = 0
     if args.traces:
         traces, settings = read_jsonl(args.traces), None
     else:
-        traces, settings = run(cases, args.config, args.set, args.llm, out / "traces.jsonl")
+        traces, settings, replayed = run(cases, args.config, args.set, args.llm,
+                                         out / "traces.jsonl", args.cache)
     result = score(traces, cases)
     meta = {"name": args.name, "cases_file": paths.relative(args.cases.resolve()),
             "cases_sha256": sha256_file(args.cases), "n_cases": len(cases),
@@ -153,7 +162,8 @@ def main() -> None:
                             else f"{paths.relative(out)}/traces.jsonl"),
             "settings": settings or (traces[0].get("settings") if traces else None),
             "config": args.config, "overrides": args.set, "git_commit": git_commit(),
-            "git_dirty": git_dirty(), "time": datetime.now().isoformat(timespec="seconds")}
+            "git_dirty": git_dirty(), "llm_replayed": replayed,
+            "time": datetime.now().isoformat(timespec="seconds")}
     (out / "report.json").write_text(json.dumps({"meta": meta, **result}, ensure_ascii=False,
                                                 indent=1), encoding="utf-8")
     is_test = "test" in args.cases.name

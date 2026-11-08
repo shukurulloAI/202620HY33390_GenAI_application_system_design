@@ -16,6 +16,9 @@
     },
     "v3-few-shot-no-leak": {
       "prompt_version": "v3"
+    },
+    "v4-premise-rule": {
+      "prompt_version": "v4"
     }
   },
   "metrics": [
@@ -24,5 +27,6 @@
     "JSON validity",
     "citation precision"
   ],
-  "notes": "Same retrieval, gate and validation for all variants; only the prompt file changes. Few-shot items (볼펜, 소화기; distractors 볼풀공, 고무장갑, 보온병) must not be in the test set. v3 = v2 without the spray-can example that leaked 'empty and puncture' into answers."
+  "notes": "Same retrieval, gate and validation for all variants; only the prompt file changes. Few-shot items (볼펜, 소화기; distractors 볼풀공, 고무장갑, 보온병) must not be in the test set. v3 = v2 without the spray-can example that leaked 'empty and puncture' into answers. v4 (Stage 3) = v3 + a wrong-premise rule, with the schedule example replaced by a false-premise example (방석).",
+  "reference": "v2-few-shot-contract"
 }

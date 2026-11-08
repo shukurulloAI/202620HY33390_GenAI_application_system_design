@@ -103,13 +103,20 @@ def script_lang(text: str) -> str | None:
     return None
 
 
+REPAIR = ("\n\nYour last answer wrote item_ko = \"{item_ko}\" and ko_query = \"{ko_query}\", "
+          "which are not plain Korean. Return the same JSON object again, with item_ko and "
+          "ko_query written only in Korean (Hangul), using the usual Korean name of the item.")
+
+
 class Router:
     def __init__(self, llm: LLMClient, prompt_version: str = "v1",
-                 temperature: float = config.TEMPERATURE, seed: int = config.SEED):
+                 temperature: float = config.TEMPERATURE, seed: int = config.SEED,
+                 repair: bool = False):
         self.llm = llm
         self.prompt_version = prompt_version
         self.temperature, self.seed = temperature, seed
-        self.name = f"router_{prompt_version}:{llm.model_id}"
+        self.repair = repair             # one retry when the rewrite fails the Korean check
+        self.name = f"router_{prompt_version}{'+repair' if repair else ''}:{llm.model_id}"
 
     def route(self, question: str) -> Route:
         system, user = load_prompt(f"router_{self.prompt_version}")
@@ -131,7 +138,44 @@ class Router:
                          checks={"fallback": "router output was not valid JSON twice"})
         route = Route(valid=True, attempts=attempts, **data)
         route.checks = check_invariants(question, route)
+        if self.repair and needs_repair(route):
+            repaired = self._repair(system, prompt, question, route)
+            if repaired is not None:
+                return repaired
+            route.checks["repair"] = "tried; the second rewrite was not usable either"
         return route
+
+    def _repair(self, system: str, prompt: str, question: str, route: Route) -> Route | None:
+        """Ask once more for a Hangul-only rewrite (dev: qwen2.5:7b wrote '기름occo散布的纸张'
+        for Uzbek frying oil and '#gaşorke su kapağı' for Russian soda bottles)."""
+        suffix = REPAIR.format(item_ko=route.item_ko, ko_query=route.ko_query)
+        result = self.llm.generate(system=system, prompt=prompt + suffix,
+                                   json_schema=ROUTER_SCHEMA, max_tokens=256,
+                                   temperature=self.temperature, seed=self.seed)
+        attempts = [*route.attempts, {"raw": result.text, "latency_s": result.latency_s,
+                                      "prompt_tokens": result.prompt_tokens,
+                                      "completion_tokens": result.completion_tokens,
+                                      "repair": True}]
+        data = _parse(result.text)
+        if data is None:
+            route.attempts = attempts
+            return None
+        second = Route(valid=True, attempts=attempts, **data)
+        second.checks = check_invariants(question, second)
+        if not second.checks.get("rewrite_usable"):
+            route.attempts = attempts
+            return None
+        second.checks["repair"] = (f"rewrite repaired: {route.item_ko!r} -> "
+                                   f"{second.item_ko!r}")
+        return second
+
+
+def needs_repair(route: Route) -> bool:
+    """A rewrite that exists but failed the Korean check (not out of scope, not empty)."""
+    return (route.intent != "out_of_scope" and bool(route.item_ko or route.ko_query)
+            and not route.checks.get("rewrite_usable", False)
+            and (route.checks.get("item_ko_korean") is False
+                 or route.checks.get("ko_query_korean") is False))
 
 
 def _parse(text: str) -> dict | None:

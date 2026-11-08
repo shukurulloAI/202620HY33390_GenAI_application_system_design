@@ -100,6 +100,7 @@ def main() -> None:
     parser.add_argument("--cases", type=Path)
     parser.add_argument("--variants", nargs="*")
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--slices", nargs="*", help="only cases of these slices (e.g. E4)")
     parser.add_argument("--allow-test", action="store_true")
     parser.add_argument("--llm", default="ollama", choices=["ollama", "fixture"])
     parser.add_argument("--cache", action="store_true",
@@ -110,6 +111,9 @@ def main() -> None:
     spec = json.loads(args.config.read_text(encoding="utf-8"))
     cases_path = choose_cases(args.cases, args.allow_test)
     cases = load_cases(cases_path)
+    slices = args.slices or spec.get("slices")
+    if slices:
+        cases = [c for c in cases if c.get("slice") in slices]
     limit = args.limit or spec.get("limit")
     if limit:
         cases = cases[:limit]
@@ -127,7 +131,8 @@ def main() -> None:
     kept = old.get("variants", {}) if old.get("cases_sha256") == sha and args.variants else {}
     manifest = {"id": spec["id"], "question": spec.get("question"), "stage": spec["stage"],
                 "spec_file": str(args.config), "cases": paths.relative(cases_path.resolve()),
-                "cases_sha256": sha, "n_cases": len(cases), "git_commit": git_commit(),
+                "cases_sha256": sha, "n_cases": len(cases), "slices": slices,
+                "limit": limit, "git_commit": git_commit(),
                 "git_dirty": git_dirty(),
                 "started": datetime.now().isoformat(timespec="seconds"), "variants": kept}
 

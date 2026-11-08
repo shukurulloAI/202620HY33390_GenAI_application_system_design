@@ -117,10 +117,11 @@ def _mean(values: list) -> dict:
             "n": len(defined), "failed": len(values) - len(defined)}
 
 
-def score(name: str, model: str) -> None:
+def score(name: str, model: str, limit: int | None = None, out_name: str = "ragas.json") -> None:
     import ragas
     rows = [json.loads(line) for line in
             (REPORTS / name / "judge_input.jsonl").read_text(encoding="utf-8").splitlines()]
+    rows = rows[:limit] if limit else rows
     scored = asyncio.run(_score_all(rows, model))
     by_slice = {}
     for slice_name in sorted({r["slice"] for r in scored if r["slice"]}):
@@ -133,7 +134,7 @@ def score(name: str, model: str) -> None:
               "overall": {m: _mean([r[m] for r in scored])
                           for m in ("faithfulness", "context_relevance")},
               "by_slice": by_slice, "rows": scored}
-    path = REPORTS / name / "ragas.json"
+    path = REPORTS / name / out_name
     path.write_text(json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(result["overall"]), "->", path.relative_to(ROOT))
 
@@ -145,11 +146,13 @@ def main() -> None:
     parser.add_argument("name", help="report folder under eval/reports/")
     parser.add_argument("--cases", type=Path)
     parser.add_argument("--judge", default=JUDGE_MODEL)
+    parser.add_argument("--limit", type=int, help="score only the first N (smoke test)")
     args = parser.parse_args()
     if args.step == "prepare":
         prepare(args.name, args.cases)
     else:
-        score(args.name, args.judge)
+        score(args.name, args.judge, args.limit,
+              "ragas.json" if not args.limit else f"ragas_first{args.limit}.json")
 
 
 if __name__ == "__main__":

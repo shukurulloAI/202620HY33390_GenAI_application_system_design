@@ -74,9 +74,11 @@ class PipelineConfig:
     query_mode: str = "both"            # original | rewrite | both  (rewrite needs router)
     rerank: bool = True                 # cross-encoder over the candidate set R
     rerank_query: str = "max"           # original | rewrite | max (best score of both)
-    name_search: bool = False           # add a list: the router's item name against chunk
-                                        # names only (rag/retrieve.NameIndex); Stage 3, E9
-    rerank_item: bool = False           # also rerank with the item name alone (E9)
+    name_search: bool = True            # add a list: the router's item name against chunk
+                                        # names only (rag/retrieve.NameIndex). E9 on dev:
+                                        # Recall@5 0.795 -> 0.841 with rerank_item, no case
+                                        # worse; full system 49 -> 51/70 correct
+    rerank_item: bool = True            # also rerank with the item name alone (E9)
     k_retrieve: int = K_RETRIEVE
     k_final: int = K_FINAL
     rrf_k: int = RRF_K
@@ -88,6 +90,8 @@ class PipelineConfig:
                                         # dev (E5) once eval/cases/dev.jsonl exists.
     llm_model: str = LLM_MODEL
     router_model: str | None = None     # None = same model as the generator
+    router_repair: bool = False         # one retry when the Korean rewrite fails the script
+                                        # check (Stage 3; rag/router.Router._repair)
     prompt_version: str = "v2"          # v0 minimal | v1 zero-shot | v2 few-shot | v3, v4 fixes
     conflict_policy: str = "prefer_2026"  # prefer_2026 | none   (E8)
     validation: str = "enforce"         # off | flag | enforce   (PLAN.md §4.9)

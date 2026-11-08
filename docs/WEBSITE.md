@@ -70,6 +70,27 @@ the user's language. The zh, vi, uz and ru tables are drafts that still need a n
 check (`rag/texts.py`, `rag/schedule_text.py`). For vi, uz and ru, the free-text "How" line of a
 schedule is shown in English (`docs/PHASE2_NOTES.md` §10).
 
+## The page (`app/streamlit_app.py`)
+
+Naura's design, connected to `rag.service` (Stage 6). What it does with each part of the answer:
+
+- **Form:** question, answer language (six), and an optional area: province, district (all 224,
+  marked "no data" where the table has none) and neighbourhood or zone, from `locations()`.
+- **ANSWER:** bin card, `answer_text` with its line breaks, preparation steps, one card per zone
+  (days, times, next dates, `day_check`, no-collection days, office, data date and a stale
+  warning), the handoff card when part of the question failed, and one source card per citation.
+- **CLARIFY:** the question and one button per option. A province option asks again with
+  `province` and `district`; a zone or neighbourhood option asks again with `dong`.
+- **INSUFFICIENT_CONTEXT:** the message and the handoff card: contact, a `tel:` link and the Korean
+  sentence in a box with a copy button.
+- **OUT_OF_SCOPE:** the message only.
+- **Feedback:** 👍/👎 with an optional comment, saved by `trace_id` in `traces/feedback.jsonl`.
+- **Status line:** offline demo, live, or "the language model is not running" (`health()`).
+- **Glossary:** the 36 terms, Korean next to the chosen language.
+
+`tests/test_app.py` runs the page headless in offline mode on every recorded example, and checks
+the clarify buttons and the feedback file.
+
 ## Running
 
 ```bash

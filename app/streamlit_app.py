@@ -1,8 +1,19 @@
-import json
+"""
+Waste-Sorting Assistant: the website (Streamlit). Design by Naura; connected to the RAG
+system through rag/service.py (docs/WEBSITE.md).
+
+    streamlit run app/streamlit_app.py                  # full system (Ollama + index)
+    RAG_OFFLINE=1 streamlit run app/streamlit_app.py    # recorded answers, no models
+"""
+import re
+import sys
 from pathlib import Path
 
 import streamlit as st
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # run from any folder
+
+from rag import service  # noqa: E402
 
 st.set_page_config(
     page_title="Waste-Sorting Assistant",
@@ -288,41 +299,67 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+st.markdown(
+    """
+    <style>
+    .bin-card {background:#eef7e8;border:1px solid #cfe3c2;border-radius:12px;
+               padding:14px 18px;margin:8px 0 14px 0;}
+    .bin-en {color:#243426;font-size:22px;font-weight:700;line-height:1.25;}
+    .bin-ko {color:#4d6b45;font-size:15px;margin-top:4px;}
+    .zone-card {border:1px solid #dce5d5;border-radius:10px;padding:12px 16px;margin:8px 0;
+                background:#fbfdf9;}
+    .zone-title {font-weight:700;color:#294627;}
+    .handoff {background:#fff8ec;border:1px solid #f0dcb4;border-radius:12px;
+              padding:14px 18px;margin:10px 0;}
+    .status-line {color:#63705f;font-size:12px;}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+WASTE_TYPE_NAMES = {"general": "General waste", "food": "Food waste",
+                    "recycling": "Recycling", "bulky": "Bulky waste"}
+NOT_SELECTED = "Not selected"
+
 
 # ---------- SESSION STATE ----------
-if "result" not in st.session_state:
-    st.session_state.result = None
-
-if "feedback" not in st.session_state:
-    st.session_state.feedback = {}
+for key, default in (("result", None), ("request", None), ("feedback", {})):
+    if key not in st.session_state:
+        st.session_state[key] = default
 
 
 def choose_question(text):
     st.session_state.question_input = text
 
 
-# ---------- LOAD MOCK JSON ----------
-def get_mock_answer(question, lang, district, dong):
-    mock_file = Path(__file__).parent / "mock_answer.json"
+def md(text: str) -> str:
+    """Model text as Markdown: escape Markdown characters, keep the line breaks."""
+    escaped = re.sub(r"([\\`*_{}\[\]<>#|~])", r"\\\1", text or "")
+    return escaped.replace("\n", "  \n")
 
-    with mock_file.open("r", encoding="utf-8") as file:
-        scenarios = json.load(file)
 
-    result = scenarios["INSUFFICIENT_CONTEXT"] 
+# ---------- DATA FOR THE FORM ----------
+@st.cache_data(show_spinner=False)
+def location_tree():
+    tree = {}
+    for loc in service.locations():
+        areas = sorted({a for z in loc["zones"] for a in z["areas"]})
+        tree.setdefault(loc["province"], []).append(
+            {"district": loc["district"], "label": f"{loc['district_en']} ({loc['district']})"
+             + ("" if loc["has_data"] else " - no data"), "areas": areas})
+    return tree
 
-    if not isinstance(result, dict):
-        raise ValueError("The mock JSON must contain one answer object.")
 
-    request_number = st.session_state.get("request_number", 0) + 1
-    st.session_state.request_number = request_number
-
-    result["trace_id"] = f"demo-{request_number}"
-    result["submitted_question"] = question
-    result["submitted_language"] = lang
-    result["submitted_district"] = district
-    result["submitted_neighbourhood"] = dong
-
-    return result
+def ask(question, lang, province=None, district=None, dong=None):
+    request = {"question": question, "lang": lang, "province": province,
+               "district": district, "dong": dong}
+    first = not service.health()["pipeline_loaded"] and not service.health()["offline"]
+    note = ("Loading the models for the first question (about 20 s)..." if first
+            else "Looking it up in the official guides...")
+    with st.spinner(note):
+        result = service.ask(**request)
+    st.session_state.request = request
+    st.session_state.result = result
 
 
 # ---------- BRAND ----------
@@ -339,8 +376,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
-# ---------- BANNER ----------
 st.markdown(
     """
     <div class="hero">
@@ -351,7 +386,8 @@ st.markdown(
             </div>
             <p class="hero-description">
                 Find out how to prepare an item for disposal
-                and check collection details in your neighbourhood.
+                and check collection days in your neighbourhood,
+                from the official Korean guides and district data.
             </p>
         </div>
         <div class="hero-art" aria-hidden="true">
@@ -362,260 +398,240 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.caption("Prototype · Using mock answers, not the live RAG system.")
+health = service.health()
+if health["offline"]:
+    status_line = "Offline demo: answers are recorded examples, not live answers."
+elif health["ollama"]:
+    status_line = f"Live system · model {health['model']} running on this computer."
+else:
+    status_line = ("The language model is not running (start Ollama). "
+                   "Questions will get a contact for the district office instead.")
+st.markdown(f'<div class="status-line">{status_line}</div>', unsafe_allow_html=True)
 
 
 # ---------- EXAMPLE QUESTIONS ----------
 st.subheader("What are you throwing away?")
 
 examples = [
-    (
-        "🧴 Plastic bottle",
-        "How should I dispose of a plastic bottle?",
-    ),
-    (
-        "🍎 Food scraps",
-        "How should I dispose of food scraps?",
-    ),
-    (
-        "🔋 Batteries",
-        "Where should I dispose of used batteries?",
-    ),
+    ("🍕 Pizza box", "Where do I throw away a pizza box?"),
+    ("🍗 Chicken bones", "닭뼈는 음식물쓰레기인가요?"),
+    ("🥬 Food waste days", "When can I put out food waste?"),
 ]
-
-for column, (label, text) in zip(st.columns(3), examples):
-    column.button(
-        label,
-        on_click=choose_question,
-        args=(text,),
-        use_container_width=True,
-    )
+for column, (label, text) in zip(st.columns(3), examples, strict=True):
+    column.button(label, on_click=choose_question, args=(text,), use_container_width=True)
 
 
 # ---------- QUESTION FORM ----------
-with st.container(key="question_panel"):
-    st.subheader("Ask about an item")
+languages = service.languages()
+tree = location_tree()
 
+with st.container(key="question_panel"):
+    st.subheader("Ask about an item or a collection day")
     with st.form("question_form", border=False):
         question = st.text_area(
             "Your question",
-            placeholder=(
-                "For example: How should I dispose "
-                "of a plastic bottle?"
-            ),
+            placeholder="For example: How should I dispose of a plastic bottle?",
             height=105,
             key="question_input",
+            max_chars=500,
         )
+        lang = st.selectbox("Answer language", list(languages),
+                            format_func=lambda code: languages[code])
 
-        language = st.selectbox(
-            "Answer language",
-            ["English", "한국어"],
-        )
+        with st.expander("Your area (for collection days)"):
+            st.caption("Optional. Choose your district, not your street address. "
+                       "You can also write it in the question.")
+            province = st.selectbox("Province / city", [NOT_SELECTED, *tree],
+                                    index=1 + list(tree).index("서울특별시")
+                                    if "서울특별시" in tree else 0)
+            districts = tree.get(province, [])
+            district = st.selectbox("District", [None, *districts],
+                                    format_func=lambda d: NOT_SELECTED if d is None
+                                    else d["label"])
+            areas = district["areas"] if district else []
+            dong = st.selectbox("Neighbourhood (동) or zone", [NOT_SELECTED, *areas])
+            st.caption("If the lists don't match after changing the province, "
+                       "press the button once to refresh them.")
 
-        st.caption(
-            "The mock answer does not change with the question "
-            "or selected language."
-        )
-
-        with st.expander("Add location for collection times"):
-            st.caption(
-                "Optional. Please do not enter your street address."
-            )
-
-            district = st.selectbox(
-                "District",
-                ["Not selected", "Seongdong-gu (sample)"],
-            )
-
-            neighbourhood = st.text_input(
-                "Neighbourhood",
-                placeholder="e.g. Haengdang-dong",
-            )
-
-            st.caption(
-                "The complete location list will be added later."
-            )
-
-        submitted = st.form_submit_button(
-            "Find disposal guidance",
-            type="primary",
-            use_container_width=True,
-        )
+        submitted = st.form_submit_button("Find disposal guidance", type="primary",
+                                          use_container_width=True)
 
     if submitted:
         if not question.strip():
-            st.warning("Please enter an item or question.")
+            st.warning("Please enter an item or a question.")
         else:
-            try:
-                # Later, replace this with the real answer() call.
-                result = get_mock_answer(
-                    question=question.strip(),
-                    lang=language,
-                    district=district,
-                    dong=neighbourhood.strip(),
-                )
+            ask(question.strip(), lang,
+                province=None if province == NOT_SELECTED or district is None else province,
+                district=district["district"] if district else None,
+                dong=None if dong == NOT_SELECTED else dong)
 
-            except FileNotFoundError:
-                st.session_state.result = None
-                st.error(
-                    "mock_answer.json was not found. "
-                    "Place it in the same folder as streamlit_app.py."
-                )
 
-            except json.JSONDecodeError as error:
-                st.session_state.result = None
-                st.error(
-                    f"Check mock_answer.json: invalid JSON "
-                    f"near line {error.lineno}."
-                )
+# ---------- RESULT PARTS ----------
+def show_bin(result):
+    if result.get("bin"):
+        st.markdown(
+            f'<div class="bin-card"><div class="bin-en">♻️ {result["bin_en"]}</div>'
+            f'<div class="bin-ko">{result["bin"]} · the name on the bag or bin</div></div>',
+            unsafe_allow_html=True)
 
-            except (OSError, ValueError) as error:
-                st.session_state.result = None
-                st.error(f"Could not load the mock answer: {error}")
 
+def show_steps(result):
+    steps = result.get("how_to_prepare") or []
+    if steps:
+        st.write("**How to prepare it**")
+        st.markdown("\n".join(f"{i}. {md(step)}" for i, step in enumerate(steps, 1)))
+
+
+def show_schedule(result):
+    schedule = result.get("schedule") or {}
+    zones = schedule.get("zones") or []
+    if not zones:
+        return
+    st.write("**Collection in your area**")
+    for zone in zones:
+        lines = [f'<div class="zone-title">{zone["district"]} · {zone["zone"]}</div>']
+        if zone.get("areas"):
+            shown = ", ".join(zone["areas"][:12]) + (" ..." if len(zone["areas"]) > 12 else "")
+            lines.append(f"<div>Areas: {shown}</div>")
+        if zone.get("place"):
+            lines.append(f"<div>Where: {zone['place']}</div>")
+        for waste_type, rule in (zone.get("by_type") or {}).items():
+            when = rule.get("days") or "days not listed"
+            if rule.get("start"):
+                when += f", {rule['start']}–{rule.get('end') or ''}"
+            nxt = ", ".join(rule.get("next_dates") or [])
+            lines.append(f"<div><b>{WASTE_TYPE_NAMES.get(waste_type, waste_type)}:</b> {when}"
+                         + (f" · next: {nxt}" if nxt else "") + "</div>")
+        for check in zone.get("day_check") or []:
+            mark = "✅" if check["allowed"] else "⛔"
+            lines.append(f"<div>{mark} {check['text']}</div>")
+        if zone.get("no_collection"):
+            lines.append(f"<div>No collection: {zone['no_collection']}</div>")
+        office = " ".join(x for x in (zone.get("office"), zone.get("phone")) if x)
+        if office:
+            lines.append(f"<div>Office: {office}</div>")
+        date = f"Data as of {zone.get('data_date') or 'unknown'}"
+        if zone.get("stale"):
+            date += " · <b>this data is over a year old; check with the office</b>"
+        lines.append(f'<div class="status-line">{date}</div>')
+        st.markdown(f'<div class="zone-card">{"".join(lines)}</div>', unsafe_allow_html=True)
+
+
+def show_sources(result):
+    citations = result.get("citations") or []
+    if not citations:
+        return
+    st.write("**Sources**")
+    for c in citations:
+        where = " · ".join(str(x) for x in (
+            f"p.{c['page']}" if c.get("page") else None,
+            c.get("year"),
+            f"data date {c['data_date']}" if c.get("data_date") else None) if x)
+        with st.expander(f"[{c['n']}] {c['source']}" + (f" · {where}" if where else "")):
+            st.text(service.source_text(c)["text"])
+
+
+def show_handoff(result):
+    handoff = result.get("handoff")
+    if not handoff:
+        return
+    phone = handoff.get("phone")
+    contact = md(handoff.get("contact") or "")
+    if phone:
+        contact += f" · [{phone}](tel:{phone.replace('-', '')})"
+    st.markdown('<div class="handoff"><b>Ask a person</b></div>', unsafe_allow_html=True)
+    st.markdown(contact)
+    if handoff.get("korean_sentence"):
+        st.caption("Show or read this to the office staff (copy button on the right):")
+        st.code(handoff["korean_sentence"], language=None, wrap_lines=True)
+    if handoff.get("checked"):
+        st.caption("What the assistant checked: " + "; ".join(handoff["checked"]))
+
+
+def show_clarify(result):
+    clarify = result.get("clarify")
+    if not clarify:
+        return
+    st.info(clarify["question"])
+    request = st.session_state.request or {}
+    options = clarify.get("options") or []
+    if clarify["kind"] == "district" or not options:
+        st.caption("Choose your district under “Your area” above and ask again.")
+        return
+    columns = st.columns(min(3, len(options)))
+    for i, option in enumerate(options[:30]):
+        if columns[i % len(columns)].button(option, key=f"clarify_{i}_{option}",
+                                            use_container_width=True):
+            if clarify["kind"] == "province":
+                province_name, _, district_name = option.partition(" ")
+                ask(request["question"], request["lang"], province=province_name,
+                    district=district_name)
             else:
-                st.session_state.result = result
+                ask(request["question"], request["lang"], province=request.get("province"),
+                    district=request.get("district"), dong=option)
+            st.rerun()
+
+
+def show_feedback(result):
+    st.divider()
+    st.write("**Was this helpful?**")
+    trace_id = result["trace_id"]
+    if trace_id in st.session_state.feedback:
+        st.caption("Thank you. Your rating is saved with this answer.")
+        return
+    comment = st.text_input("Comment (optional)", key=f"comment_{trace_id}", max_chars=300)
+    up, down, _ = st.columns([1, 1, 3])
+    for column, rating, label in ((up, "up", "👍 Yes"), (down, "down", "👎 No")):
+        if column.button(label, key=f"{rating}_{trace_id}", use_container_width=True):
+            service.save_feedback(trace_id, rating, comment)
+            st.session_state.feedback[trace_id] = rating
+            st.rerun()
 
 
 # ---------- DISPLAY RESULT ----------
 result = st.session_state.result
-
 if result:
+    request = st.session_state.request or {}
     with st.container(key="answer_panel"):
         st.caption("YOUR QUESTION")
-        st.write(result["submitted_question"])
-
-        st.subheader("Disposal guide")
-
-        st.warning(
-            "Demo data only — not verified disposal advice. "
-            "The same mock answer is used for every question."
-        )
-        
-        status = result.get("status", "INSUFFICIENT_CONTEXT")
-        answer_text = result.get("answer_text")
-
-        if answer_text:
-            if status == "CLARIFY":
-                st.info(answer_text)
-            elif status == "INSUFFICIENT_CONTEXT":
-                st.warning(answer_text)
-            else:
-                st.write(answer_text)
-
-        # Item details remain visible whenever provided.
-        bin_en = result.get("bin_en")
-        bin_ko = result.get("bin")
-
-        if bin_en or bin_ko:
-            st.divider()
-            st.write("**♻️ Where it goes**")
-
-            if bin_en:
-                st.write(bin_en)
-
-            if bin_ko:
-                st.caption(bin_ko)
-
-        preparation_steps = result.get("how_to_prepare") or []
-
-        if preparation_steps:
-            st.write("**How to prepare it**")
-
-            for number, step in enumerate(
-                preparation_steps,
-                start=1,
-            ):
-                st.write(f"{number}. {step}")
-
-        # Schedule details are handled independently.
-        st.divider()
-        st.write("**Collection details**")
-
-        if result["submitted_district"] != "Not selected":
-            location = result["submitted_district"]
-
-            if result["submitted_neighbourhood"]:
-                location += (
-                    " / " + result["submitted_neighbourhood"]
-                )
-
-            st.caption(f"Submitted location: {location}")
-
-        schedule = result.get("schedule") or {}
-        schedule_fields = [
-            ("Days", "days"),
-            ("Time", "time"),
-            ("Place", "place"),
-        ]
-
-        if any(schedule.get(field) for _, field in schedule_fields):
-            for label, field in schedule_fields:
-                if schedule.get(field):
-                    st.write(f"**{label}:** {schedule[field]}")
+        st.write(request.get("question", ""))
+        status = result["status"]
+        if status == "ANSWER":
+            st.subheader("Disposal guide")
+            show_bin(result)
+            st.markdown(md(result["answer_text"]))
+            show_steps(result)
+            show_schedule(result)
+            show_clarify(result)
+            show_handoff(result)
+            show_sources(result)
+        elif status == "CLARIFY":
+            st.subheader("One more detail")
+            st.write(md(result["answer_text"]))
+            show_clarify(result)
+        elif status == "INSUFFICIENT_CONTEXT":
+            st.subheader("I can't answer this one safely")
+            st.warning(result["answer_text"])
+            show_handoff(result)
         else:
-            st.caption("No collection schedule provided.")
-
-        if result.get("missing"):
-            st.write("**Missing information:**", result["missing"])
-
-        st.caption(
-            "Data as of: "
-            + (result.get("data_date") or "Not available")
-        )
-
-        with st.expander("Contact the district office"):
-            phone = result.get("office_phone")
-
-            if phone:
-                st.write("**Phone:**", phone)
-            else:
-                st.write("No office contact provided.")
-
-            st.caption(
-                "A Korean handoff sentence will be added "
-                "when supplied by the system."
-            )
-
-        st.divider()
-        st.write("**Was this helpful?**")
-
-        trace_id = result["trace_id"]
-        positive, negative, _ = st.columns([1, 1, 3])
-
-        if positive.button(
-            "👍 Yes",
-            key=f"positive_{trace_id}",
-            use_container_width=True,
-        ):
-            st.session_state.feedback[trace_id] = {
-                "trace_id": trace_id,
-                "rating": "positive",
-            }
-
-        if negative.button(
-            "👎 No",
-            key=f"negative_{trace_id}",
-            use_container_width=True,
-        ):
-            st.session_state.feedback[trace_id] = {
-                "trace_id": trace_id,
-                "rating": "negative",
-            }
-
-        if trace_id in st.session_state.feedback:
-            st.caption(
-                "Thank you. Feedback is saved in this demo "
-                "session only, not in the system trace yet."
-            )
+            st.subheader("Outside what I can help with")
+            st.info(result["answer_text"])
+        for note in result.get("notes") or []:
+            st.caption(note)
+        show_feedback(result)
 
 
 # ---------- GLOSSARY ----------
 st.write("")
-
 with st.expander("Useful Korean terms"):
-    st.write("**분리배출** — separate waste disposal")
-    st.write("**음식물쓰레기** — food waste")
-    st.write("**종량제봉투** — designated pay-as-you-throw bag")
+    chosen = (st.session_state.request or {}).get("lang") or "en"
+    column = chosen if chosen in ("en", "zh", "vi", "uz", "ru") else "en"
+    rows = [f"| {t['ko']} | {md(t.get(column) or t['en'])} |" for t in service.glossary()]
+    st.markdown("| 한국어 | " + languages.get(column, "English") + " |\n|---|---|\n"
+                + "\n".join(rows))
+    if column != "en":
+        st.caption("These translations have not yet been checked by a native speaker.")
 
-st.caption("Midterm group project · Household waste guidance")
+st.caption("Answers come from the Ministry of Environment guides (2018), the 2026 national "
+           "separation rules and district data from data.go.kr. Rules can differ in your "
+           "building or district; when unsure, ask the district office.")

@@ -104,11 +104,14 @@ class Pipeline:
                 router_llm = (make_client("ollama", self.cfg.router_model)
                               if self.cfg.router_model else self.llm)
             self.router = Router(router_llm, temperature=self.cfg.temperature,
-                                 seed=self.cfg.seed)
+                                 seed=self.cfg.seed, repair=self.cfg.router_repair)
         self.counter = default_counter(
             config.LLM_TOKENIZERS.get(self.llm.model_id, config.LLM_TOKENIZER))
         self.budget = ContextBudget()
         self.write_traces = write_traces
+        # Robustness probes only (experiments/robustness.py, PLAN.md §7.6): a function
+        # (selected, trace) -> selected that changes the evidence before the gate.
+        self.evidence_hook = None
 
     def settings(self) -> dict:
         return {"pipeline_version": PIPELINE_VERSION, "config": self.cfg.to_dict(),
@@ -153,6 +156,9 @@ class Pipeline:
         trace["resolved"] = request.to_trace()
 
         selected = self._retrieve_items(request, route, trace, timings)
+        if self.evidence_hook is not None:
+            selected = self.evidence_hook(selected, trace)
+            trace["selected"] = [c.chunk_id for c in selected]
         if stop_after_retrieval:
             timings["total_s"] = round(time.perf_counter() - start, 3)
             trace["timings"] = timings

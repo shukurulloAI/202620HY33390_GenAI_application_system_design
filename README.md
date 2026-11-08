@@ -54,22 +54,28 @@ preprocess/       raw -> processed: PDF parser, cleaning, stable IDs, lookups, m
 ingest/           processed -> vector index: build, verify, publish
 rag/              the system: router, retrieval, schedule tool, gate, generation, validation
   prompts/        versioned prompt files
-eval/             evaluation cases and metrics
+eval/             evaluation: cases (frozen dev/test split), metrics, runner, LLM judge,
+                  audit sheets, figures, report PDF
+  cases/          dev.jsonl (70), test.jsonl (30), split_manifest.json (seed + SHA-256)
+  reports/        one folder per evaluation run: traces, report.json, report.md
 experiments/
-  configs/        one JSON file per experiment, E1-E8
+  configs/        one JSON file per experiment, E1-E9
   probes/         developer regression questions (not an evaluation set)
-  results/        raw output: E2/ to E5/ traces, probes/ timestamped runs
+  results/        raw output: dev/<id>/ (evaluation cases), <id>/ and probes/ (Phase 2 probes)
+app/              the website (Streamlit), on rag/service.py
 tests/            fast tests with no models or Ollama, one file per module
-docs/             written-up results: PHASE1_NOTES.md, PHASE2_NOTES.md
+docs/             REPORT.md / REPORT.pdf (final report), WEBSITE.md, PHASE1/2_NOTES.md
 notebooks/        data exploration (schedule_eda/)
 ```
 
 Dependencies run one way: `preprocess`, `ingest`, `eval` and `experiments` import `rag`, and `rag`
 imports none of them (`tests/test_layering.py` enforces this).
 
-**Where are the results?** Read [docs/PHASE2_NOTES.md](docs/PHASE2_NOTES.md). The raw traces behind
-it are in `experiments/results/`. These are developer probe results, not evaluation results: the
-official numbers need the dev and test sets (PLAN.md §7, §10.4).
+**Where are the results?** The final report is [docs/REPORT.md](docs/REPORT.md) (PDF:
+`docs/REPORT.pdf`). Evaluation runs are in `eval/reports/<name>/` (the final test run is
+`eval/reports/test-final/`), experiments on dev in `experiments/results/dev/<id>/summary.md`.
+[docs/PHASE2_NOTES.md](docs/PHASE2_NOTES.md) holds the earlier developer probe results, which are
+not evaluation results.
 
 ## How a question is answered
 
@@ -171,6 +177,38 @@ python -m experiments.tau_sweep experiments/results/E5/rerank-on.jsonl --cases e
 without `--allow-test`. Without `eval/cases/dev.jsonl` it falls back to the probes and says so.
 Paths inside older manifests are the paths at the time of that run.
 
+## Evaluation
+
+```bash
+python -m eval.run_eval --name my-run                 # full system on the dev split
+python -m eval.run_eval --name my-base --config baseline
+python -m eval.run_eval --name x --set gate_tau=0.3   # one field changed
+python -m eval.make_cases --check                     # the frozen split is unchanged
+python -m experiments.run_experiment experiments/configs/E9_item_names.json --cases eval/cases/dev.jsonl --cache
+python -m experiments.robustness                      # noise / negative / counterfactual probes
+
+# LLM judge (Ragas), in its own environment
+python3.12 -m venv .venv-judge && .venv-judge/bin/pip install -r requirements-judge.txt
+python -m eval.ragas_eval prepare my-run && .venv-judge/bin/python -m eval.ragas_eval score my-run
+
+python -m eval.audit export my-run                    # two blank sheets for human raters
+python -m eval.figures heatmap my-run                 # docs/figures/heatmap_my-run.png
+python -m eval.report_pdf                             # docs/REPORT.md -> docs/REPORT.pdf
+```
+
+The test split is refused without `--allow-test`; it was run once, with the frozen configuration.
+`--cache` replays identical temperature-0 LLM requests (tuning only; latency is then not valid).
+
+## Website
+
+```bash
+pip install -r requirements-app.txt
+streamlit run app/streamlit_app.py                   # live: Ollama running, index built
+RAG_OFFLINE=1 streamlit run app/streamlit_app.py     # recorded answers, no models
+```
+
+What the page shows for each answer field: [docs/WEBSITE.md](docs/WEBSITE.md).
+
 ## Team
 
 | Area | Owner |
@@ -178,4 +216,4 @@ Paths inside older manifests are the paths at the time of that run.
 | Data: `data/`, `preprocess/`, `notebooks/` | Vitou (`preprocess/` built by Shukurullo) |
 | System: `rag/`, `ingest/`, `tests/`, experiment runners | Shukurullo |
 | Evaluation and report: `eval/`, experiment measurement | Anar |
-| Website: `app/` (branch `naura`) | Naura |
+| Website: `app/` (design by Naura; connected to `rag/service.py` in Stage 6) | Naura |

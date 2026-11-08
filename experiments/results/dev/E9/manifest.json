@@ -1,0 +1,7257 @@
+{
+  "id": "E9",
+  "question": "Does searching the router's item name against chunk names help retrieval?",
+  "stage": "retrieval",
+  "spec_file": "experiments/configs/E9_item_names.json",
+  "cases": "eval/cases/dev.jsonl",
+  "cases_sha256": "5a62a1c6b68418c405dde29f5b891915335c5f1dbb5102696712e44d92354da5",
+  "n_cases": 70,
+  "git_commit": "3a4d287c1f6a8cbe84a5ac0745f01d91273487de",
+  "git_dirty": true,
+  "started": "2026-11-08T21:31:04",
+  "variants": {
+    "off": {
+      "config": {
+        "embedding": "bge-m3",
+        "retrieval": "hybrid",
+        "bm25_tokenizer": "kiwi",
+        "query_mode": "both",
+        "rerank": true,
+        "rerank_query": "max",
+        "name_search": false,
+        "rerank_item": false,
+        "k_retrieve": 20,
+        "k_final": 5,
+        "rrf_k": 60,
+        "router": true,
+        "gate_tau": 0.15,
+        "llm_model": "qwen2.5:7b",
+        "router_model": null,
+        "prompt_version": "v2",
+        "conflict_policy": "prefer_2026",
+        "validation": "enforce",
+        "schedule_retrieval": "structured",
+        "schedule_text": "code",
+        "temperature": 0.0,
+        "seed": 7
+      },
+      "settings": {
+        "pipeline_version": "v2",
+        "config": {
+          "embedding": "bge-m3",
+          "retrieval": "hybrid",
+          "bm25_tokenizer": "kiwi",
+          "query_mode": "both",
+          "rerank": true,
+          "rerank_query": "max",
+          "name_search": false,
+          "rerank_item": false,
+          "k_retrieve": 20,
+          "k_final": 5,
+          "rrf_k": 60,
+          "router": true,
+          "gate_tau": 0.15,
+          "llm_model": "qwen2.5:7b",
+          "router_model": null,
+          "prompt_version": "v2",
+          "conflict_policy": "prefer_2026",
+          "validation": "enforce",
+          "schedule_retrieval": "structured",
+          "schedule_text": "code",
+          "temperature": 0.0,
+          "seed": 7
+        },
+        "retriever": "dense:bge-m3@5617a9f6 | bm25:kiwi | rerank:bge-reranker-v2-m3@953dc6f6",
+        "collection": "items_bge-m3_5617a9f6_c7d19676",
+        "router": "router_v1:qwen2.5:7b",
+        "llm": "qwen2.5:7b",
+        "schedule_source": "data/processed/schedule.csv",
+        "schedule_retriever": "structured lookup"
+      },
+      "traces": "experiments/results/dev/E9/off.jsonl",
+      "quick_summary": {
+        "cases": 70,
+        "gold_cases": 45,
+        "recall@5": 0.778,
+        "mrr": 0.663,
+        "statuses": {
+          "retrieval-only": 70
+        },
+        "mean_total_s": 5.59,
+        "schedule": {
+          "cases": 19,
+          "behaviour_ok": 0,
+          "wrong_place": 0,
+          "answerable": 19,
+          "empty": 19,
+          "row_found": 0,
+          "top_row": 0,
+          "only_correct_rows": 0,
+          "day_time_match": 0
+        }
+      },
+      "llm_replayed": 3,
+      "metrics": {
+        "overall": {
+          "cases": 70,
+          "case_ok": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "behaviour_ok": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "bin_ok": {
+            "k": 0,
+            "n": 45,
+            "rate": 0.0,
+            "undefined": 11
+          },
+          "false_answer": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "abstain_ok": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "clarify_ok": {
+            "k": 0,
+            "n": 4,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "intent_ok": {
+            "k": 62,
+            "n": 63,
+            "rate": 0.984,
+            "undefined": 7
+          },
+          "district_ok": {
+            "k": 4,
+            "n": 4,
+            "rate": 1.0,
+            "undefined": 0
+          },
+          "dong_ok": {
+            "k": 3,
+            "n": 4,
+            "rate": 0.75,
+            "undefined": 0
+          },
+          "retrieval": {
+            "n": 44,
+            "recall@5": 0.795,
+            "mrr": 0.678,
+            "ndcg@5": 0.582,
+            "precision@5": 0.259
+          },
+          "gate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "n": 0,
+            "accuracy": null,
+            "fp_rate": null,
+            "fn_rate": null
+          },
+          "rows_found": {
+            "k": 0,
+            "n": 19,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "only_gold_rows": {
+            "k": 0,
+            "n": 19,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "citation_precision": null,
+          "cites_gold": null,
+          "language_ok": null,
+          "json_valid": null,
+          "downgraded": 0,
+          "contract_problems": 0,
+          "latency_s": {
+            "mean": 5.59,
+            "median": 6.58,
+            "p90": 7.62
+          },
+          "failure_stages": {
+            "generation": 27,
+            "retrieval": 9,
+            "other": 10,
+            "gate": 4,
+            "schedule_tool": 19,
+            "router": 1
+          }
+        },
+        "by_slice": {
+          "ambiguous_location": {
+            "cases": 4,
+            "case_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.36,
+              "median": 3.34,
+              "p90": 3.35
+            },
+            "failure_stages": {
+              "gate": 4
+            }
+          },
+          "combined": {
+            "cases": 8,
+            "case_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 8,
+              "n": 8,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 3,
+              "n": 4,
+              "rate": 0.75,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 8,
+              "recall@5": 1.0,
+              "mrr": 0.708,
+              "ndcg@5": 0.662,
+              "precision@5": 0.325
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 7.32,
+              "median": 7.47,
+              "p90": 8.06
+            },
+            "failure_stages": {
+              "schedule_tool": 8
+            }
+          },
+          "conflict": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 6,
+              "recall@5": 0.667,
+              "mrr": 0.542,
+              "ndcg@5": 0.464,
+              "precision@5": 0.267
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 7.27,
+              "median": 7.47,
+              "p90": 7.69
+            },
+            "failure_stages": {
+              "generation": 4,
+              "retrieval": 2
+            }
+          },
+          "false_premise": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 6,
+              "recall@5": 0.833,
+              "mrr": 0.75,
+              "ndcg@5": 0.664,
+              "precision@5": 0.367
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 7.25,
+              "median": 7.21,
+              "p90": 7.33
+            },
+            "failure_stages": {
+              "retrieval": 1,
+              "generation": 5
+            }
+          },
+          "item_direct": {
+            "cases": 14,
+            "case_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 13,
+              "n": 14,
+              "rate": 0.929,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 13,
+              "recall@5": 0.538,
+              "mrr": 0.512,
+              "ndcg@5": 0.356,
+              "precision@5": 0.123
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 6.43,
+              "median": 6.86,
+              "p90": 7.44
+            },
+            "failure_stages": {
+              "generation": 7,
+              "router": 1,
+              "retrieval": 6
+            }
+          },
+          "item_tricky": {
+            "cases": 11,
+            "case_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 11,
+              "n": 11,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 11,
+              "recall@5": 1.0,
+              "mrr": 0.886,
+              "ndcg@5": 0.811,
+              "precision@5": 0.309
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 7.37,
+              "median": 7.18,
+              "p90": 7.57
+            },
+            "failure_stages": {
+              "generation": 11
+            }
+          },
+          "no_evidence": {
+            "cases": 7,
+            "case_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": null,
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 4.08,
+              "median": 3.47,
+              "p90": 6.85
+            },
+            "failure_stages": {
+              "other": 7
+            }
+          },
+          "out_of_scope": {
+            "cases": 3,
+            "case_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 3,
+              "n": 3,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.37,
+              "median": 2.37,
+              "p90": 2.37
+            },
+            "failure_stages": {
+              "other": 3
+            }
+          },
+          "schedule": {
+            "cases": 11,
+            "case_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 11,
+              "n": 11,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.28,
+              "median": 3.1,
+              "p90": 3.28
+            },
+            "failure_stages": {
+              "schedule_tool": 11
+            }
+          }
+        },
+        "by_lang": {
+          "en": {
+            "cases": 25,
+            "case_ok": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 19,
+              "rate": 0.0,
+              "undefined": 2
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 21,
+              "n": 22,
+              "rate": 0.955,
+              "undefined": 3
+            },
+            "district_ok": {
+              "k": 3,
+              "n": 3,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 2,
+              "n": 3,
+              "rate": 0.667,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 18,
+              "recall@5": 0.778,
+              "mrr": 0.629,
+              "ndcg@5": 0.519,
+              "precision@5": 0.233
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 6.29,
+              "median": 7.04,
+              "p90": 7.55
+            },
+            "failure_stages": {
+              "generation": 9,
+              "retrieval": 4,
+              "other": 3,
+              "gate": 1,
+              "schedule_tool": 7,
+              "router": 1
+            }
+          },
+          "ko": {
+            "cases": 22,
+            "case_ok": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 12,
+              "rate": 0.0,
+              "undefined": 8
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 21,
+              "n": 21,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": {
+              "k": 1,
+              "n": 1,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 1,
+              "n": 1,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 12,
+              "recall@5": 1.0,
+              "mrr": 0.917,
+              "ndcg@5": 0.806,
+              "precision@5": 0.333
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 10,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 10,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 4.93,
+              "median": 6.5,
+              "p90": 7.33
+            },
+            "failure_stages": {
+              "generation": 10,
+              "other": 1,
+              "gate": 1,
+              "schedule_tool": 10
+            }
+          },
+          "ru": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 2,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 3,
+              "recall@5": 0.667,
+              "mrr": 0.667,
+              "ndcg@5": 0.539,
+              "precision@5": 0.267
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 5.62,
+              "median": 6.51,
+              "p90": 7.19
+            },
+            "failure_stages": {
+              "retrieval": 1,
+              "generation": 1,
+              "other": 2,
+              "gate": 1,
+              "schedule_tool": 1
+            }
+          },
+          "uz": {
+            "cases": 7,
+            "case_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 1
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 4,
+              "recall@5": 0.25,
+              "mrr": 0.25,
+              "ndcg@5": 0.168,
+              "precision@5": 0.1
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 5.01,
+              "median": 4.84,
+              "p90": 7.64
+            },
+            "failure_stages": {
+              "generation": 1,
+              "retrieval": 3,
+              "other": 1,
+              "gate": 1,
+              "schedule_tool": 1
+            }
+          },
+          "vi": {
+            "cases": 4,
+            "case_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 3,
+              "recall@5": 0.667,
+              "mrr": 0.417,
+              "ndcg@5": 0.348,
+              "precision@5": 0.133
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 5.87,
+              "median": 6.68,
+              "p90": 7.29
+            },
+            "failure_stages": {
+              "generation": 2,
+              "other": 1,
+              "retrieval": 1
+            }
+          },
+          "zh": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 2,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 4,
+              "recall@5": 1.0,
+              "mrr": 0.812,
+              "ndcg@5": 0.816,
+              "precision@5": 0.4
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 5.53,
+              "median": 6.81,
+              "p90": 7.22
+            },
+            "failure_stages": {
+              "generation": 4,
+              "other": 2
+            }
+          }
+        },
+        "failure_heatmap": {
+          "ambiguous_location": {
+            "gate": 4
+          },
+          "combined": {
+            "schedule_tool": 8
+          },
+          "conflict": {
+            "generation": 4,
+            "retrieval": 2
+          },
+          "false_premise": {
+            "retrieval": 1,
+            "generation": 5
+          },
+          "item_direct": {
+            "generation": 7,
+            "router": 1,
+            "retrieval": 6
+          },
+          "item_tricky": {
+            "generation": 11
+          },
+          "no_evidence": {
+            "other": 7
+          },
+          "out_of_scope": {
+            "other": 3
+          },
+          "schedule": {
+            "schedule_tool": 11
+          }
+        },
+        "stage_latency_s": {
+          "rerank_s": {
+            "median": 3.367,
+            "mean": 2.955
+          },
+          "retrieve_s": {
+            "median": 0.113,
+            "mean": 0.123
+          },
+          "route_s": {
+            "median": 3.737,
+            "mean": 3.563
+          },
+          "total_s": {
+            "median": 6.578,
+            "mean": 5.586
+          }
+        },
+        "missing_cases": []
+      },
+      "git_commit": "2d7b521b8c45fb74a32634f429350a8cb402bb9c"
+    },
+    "names": {
+      "config": {
+        "embedding": "bge-m3",
+        "retrieval": "hybrid",
+        "bm25_tokenizer": "kiwi",
+        "query_mode": "both",
+        "rerank": true,
+        "rerank_query": "max",
+        "name_search": true,
+        "rerank_item": false,
+        "k_retrieve": 20,
+        "k_final": 5,
+        "rrf_k": 60,
+        "router": true,
+        "gate_tau": 0.15,
+        "llm_model": "qwen2.5:7b",
+        "router_model": null,
+        "prompt_version": "v2",
+        "conflict_policy": "prefer_2026",
+        "validation": "enforce",
+        "schedule_retrieval": "structured",
+        "schedule_text": "code",
+        "temperature": 0.0,
+        "seed": 7
+      },
+      "settings": {
+        "pipeline_version": "v2",
+        "config": {
+          "embedding": "bge-m3",
+          "retrieval": "hybrid",
+          "bm25_tokenizer": "kiwi",
+          "query_mode": "both",
+          "rerank": true,
+          "rerank_query": "max",
+          "name_search": true,
+          "rerank_item": false,
+          "k_retrieve": 20,
+          "k_final": 5,
+          "rrf_k": 60,
+          "router": true,
+          "gate_tau": 0.15,
+          "llm_model": "qwen2.5:7b",
+          "router_model": null,
+          "prompt_version": "v2",
+          "conflict_policy": "prefer_2026",
+          "validation": "enforce",
+          "schedule_retrieval": "structured",
+          "schedule_text": "code",
+          "temperature": 0.0,
+          "seed": 7
+        },
+        "retriever": "dense:bge-m3@5617a9f6 | bm25:kiwi | names:bge-m3@5617a9f6 | rerank:bge-reranker-v2-m3@953dc6f6",
+        "collection": "items_bge-m3_5617a9f6_c7d19676",
+        "router": "router_v1:qwen2.5:7b",
+        "llm": "qwen2.5:7b",
+        "schedule_source": "data/processed/schedule.csv",
+        "schedule_retriever": "structured lookup"
+      },
+      "traces": "experiments/results/dev/E9/names.jsonl",
+      "quick_summary": {
+        "cases": 70,
+        "gold_cases": 45,
+        "recall@5": 0.8,
+        "mrr": 0.693,
+        "statuses": {
+          "retrieval-only": 70
+        },
+        "mean_total_s": 1.87,
+        "schedule": {
+          "cases": 19,
+          "behaviour_ok": 0,
+          "wrong_place": 0,
+          "answerable": 19,
+          "empty": 19,
+          "row_found": 0,
+          "top_row": 0,
+          "only_correct_rows": 0,
+          "day_time_match": 0
+        }
+      },
+      "llm_replayed": 70,
+      "metrics": {
+        "overall": {
+          "cases": 70,
+          "case_ok": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "behaviour_ok": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "bin_ok": {
+            "k": 0,
+            "n": 45,
+            "rate": 0.0,
+            "undefined": 11
+          },
+          "false_answer": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "abstain_ok": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "clarify_ok": {
+            "k": 0,
+            "n": 4,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "intent_ok": {
+            "k": 62,
+            "n": 63,
+            "rate": 0.984,
+            "undefined": 7
+          },
+          "district_ok": {
+            "k": 4,
+            "n": 4,
+            "rate": 1.0,
+            "undefined": 0
+          },
+          "dong_ok": {
+            "k": 3,
+            "n": 4,
+            "rate": 0.75,
+            "undefined": 0
+          },
+          "retrieval": {
+            "n": 44,
+            "recall@5": 0.818,
+            "mrr": 0.709,
+            "ndcg@5": 0.624,
+            "precision@5": 0.277
+          },
+          "gate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "n": 0,
+            "accuracy": null,
+            "fp_rate": null,
+            "fn_rate": null
+          },
+          "rows_found": {
+            "k": 0,
+            "n": 19,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "only_gold_rows": {
+            "k": 0,
+            "n": 19,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "citation_precision": null,
+          "cites_gold": null,
+          "language_ok": null,
+          "json_valid": null,
+          "downgraded": 0,
+          "contract_problems": 0,
+          "latency_s": {
+            "mean": 1.87,
+            "median": 2.27,
+            "p90": 3.47
+          },
+          "failure_stages": {
+            "generation": 28,
+            "retrieval": 8,
+            "other": 10,
+            "gate": 4,
+            "schedule_tool": 19,
+            "router": 1
+          }
+        },
+        "by_slice": {
+          "ambiguous_location": {
+            "cases": 4,
+            "case_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "gate": 4
+            }
+          },
+          "combined": {
+            "cases": 8,
+            "case_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 8,
+              "n": 8,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 3,
+              "n": 4,
+              "rate": 0.75,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 8,
+              "recall@5": 1.0,
+              "mrr": 0.729,
+              "ndcg@5": 0.705,
+              "precision@5": 0.35
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.98,
+              "median": 3.35,
+              "p90": 3.44
+            },
+            "failure_stages": {
+              "schedule_tool": 8
+            }
+          },
+          "conflict": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 6,
+              "recall@5": 0.667,
+              "mrr": 0.542,
+              "ndcg@5": 0.464,
+              "precision@5": 0.267
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.96,
+              "median": 3.45,
+              "p90": 3.47
+            },
+            "failure_stages": {
+              "generation": 4,
+              "retrieval": 2
+            }
+          },
+          "false_premise": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 6,
+              "recall@5": 0.833,
+              "mrr": 0.765,
+              "ndcg@5": 0.738,
+              "precision@5": 0.433
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.13,
+              "median": 3.4,
+              "p90": 3.44
+            },
+            "failure_stages": {
+              "retrieval": 1,
+              "generation": 5
+            }
+          },
+          "item_direct": {
+            "cases": 14,
+            "case_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 13,
+              "n": 14,
+              "rate": 0.929,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 13,
+              "recall@5": 0.615,
+              "mrr": 0.59,
+              "ndcg@5": 0.433,
+              "precision@5": 0.138
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.39,
+              "median": 3.37,
+              "p90": 3.43
+            },
+            "failure_stages": {
+              "generation": 8,
+              "router": 1,
+              "retrieval": 5
+            }
+          },
+          "item_tricky": {
+            "cases": 11,
+            "case_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 11,
+              "n": 11,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 11,
+              "recall@5": 1.0,
+              "mrr": 0.894,
+              "ndcg@5": 0.815,
+              "precision@5": 0.309
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.73,
+              "median": 2.5,
+              "p90": 3.52
+            },
+            "failure_stages": {
+              "generation": 11
+            }
+          },
+          "no_evidence": {
+            "cases": 7,
+            "case_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": null,
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.98,
+              "median": 0.0,
+              "p90": 3.41
+            },
+            "failure_stages": {
+              "other": 7
+            }
+          },
+          "out_of_scope": {
+            "cases": 3,
+            "case_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 3,
+              "n": 3,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "other": 3
+            }
+          },
+          "schedule": {
+            "cases": 11,
+            "case_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 11,
+              "n": 11,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "schedule_tool": 11
+            }
+          }
+        },
+        "by_lang": {
+          "en": {
+            "cases": 25,
+            "case_ok": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 19,
+              "rate": 0.0,
+              "undefined": 2
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 21,
+              "n": 22,
+              "rate": 0.955,
+              "undefined": 3
+            },
+            "district_ok": {
+              "k": 3,
+              "n": 3,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 2,
+              "n": 3,
+              "rate": 0.667,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 18,
+              "recall@5": 0.778,
+              "mrr": 0.644,
+              "ndcg@5": 0.553,
+              "precision@5": 0.256
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.28,
+              "median": 3.3,
+              "p90": 3.48
+            },
+            "failure_stages": {
+              "generation": 9,
+              "retrieval": 4,
+              "other": 3,
+              "gate": 1,
+              "schedule_tool": 7,
+              "router": 1
+            }
+          },
+          "ko": {
+            "cases": 22,
+            "case_ok": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 12,
+              "rate": 0.0,
+              "undefined": 8
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 21,
+              "n": 21,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": {
+              "k": 1,
+              "n": 1,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 1,
+              "n": 1,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 12,
+              "recall@5": 1.0,
+              "mrr": 0.917,
+              "ndcg@5": 0.806,
+              "precision@5": 0.333
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 10,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 10,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 1.61,
+              "median": 1.87,
+              "p90": 3.42
+            },
+            "failure_stages": {
+              "generation": 10,
+              "other": 1,
+              "gate": 1,
+              "schedule_tool": 10
+            }
+          },
+          "ru": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 2,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 3,
+              "recall@5": 0.667,
+              "mrr": 0.667,
+              "ndcg@5": 0.599,
+              "precision@5": 0.333
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.02,
+              "median": 2.57,
+              "p90": 3.41
+            },
+            "failure_stages": {
+              "retrieval": 1,
+              "generation": 1,
+              "other": 2,
+              "gate": 1,
+              "schedule_tool": 1
+            }
+          },
+          "uz": {
+            "cases": 7,
+            "case_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 1
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 4,
+              "recall@5": 0.5,
+              "mrr": 0.5,
+              "ndcg@5": 0.413,
+              "precision@5": 0.15
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 1.33,
+              "median": 1.21,
+              "p90": 3.41
+            },
+            "failure_stages": {
+              "generation": 2,
+              "retrieval": 2,
+              "other": 1,
+              "gate": 1,
+              "schedule_tool": 1
+            }
+          },
+          "vi": {
+            "cases": 4,
+            "case_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 3,
+              "recall@5": 0.667,
+              "mrr": 0.444,
+              "ndcg@5": 0.371,
+              "precision@5": 0.133
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 1.67,
+              "median": 1.61,
+              "p90": 2.37
+            },
+            "failure_stages": {
+              "generation": 2,
+              "other": 1,
+              "retrieval": 1
+            }
+          },
+          "zh": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 2,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 4,
+              "recall@5": 1.0,
+              "mrr": 0.812,
+              "ndcg@5": 0.816,
+              "precision@5": 0.4
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 1.7,
+              "median": 2.11,
+              "p90": 2.49
+            },
+            "failure_stages": {
+              "generation": 4,
+              "other": 2
+            }
+          }
+        },
+        "failure_heatmap": {
+          "ambiguous_location": {
+            "gate": 4
+          },
+          "combined": {
+            "schedule_tool": 8
+          },
+          "conflict": {
+            "generation": 4,
+            "retrieval": 2
+          },
+          "false_premise": {
+            "retrieval": 1,
+            "generation": 5
+          },
+          "item_direct": {
+            "generation": 8,
+            "router": 1,
+            "retrieval": 5
+          },
+          "item_tricky": {
+            "generation": 11
+          },
+          "no_evidence": {
+            "other": 7
+          },
+          "out_of_scope": {
+            "other": 3
+          },
+          "schedule": {
+            "schedule_tool": 11
+          }
+        },
+        "stage_latency_s": {
+          "rerank_s": {
+            "median": 3.289,
+            "mean": 2.73
+          },
+          "retrieve_s": {
+            "median": 0.104,
+            "mean": 0.109
+          },
+          "route_s": {
+            "median": 0.001,
+            "mean": 0.001
+          },
+          "total_s": {
+            "median": 2.273,
+            "mean": 1.867
+          }
+        },
+        "missing_cases": []
+      },
+      "git_commit": "2d7b521b8c45fb74a32634f429350a8cb402bb9c"
+    },
+    "names+rerank-item": {
+      "config": {
+        "embedding": "bge-m3",
+        "retrieval": "hybrid",
+        "bm25_tokenizer": "kiwi",
+        "query_mode": "both",
+        "rerank": true,
+        "rerank_query": "max",
+        "name_search": true,
+        "rerank_item": true,
+        "k_retrieve": 20,
+        "k_final": 5,
+        "rrf_k": 60,
+        "router": true,
+        "gate_tau": 0.15,
+        "llm_model": "qwen2.5:7b",
+        "router_model": null,
+        "prompt_version": "v2",
+        "conflict_policy": "prefer_2026",
+        "validation": "enforce",
+        "schedule_retrieval": "structured",
+        "schedule_text": "code",
+        "temperature": 0.0,
+        "seed": 7
+      },
+      "settings": {
+        "pipeline_version": "v2",
+        "config": {
+          "embedding": "bge-m3",
+          "retrieval": "hybrid",
+          "bm25_tokenizer": "kiwi",
+          "query_mode": "both",
+          "rerank": true,
+          "rerank_query": "max",
+          "name_search": true,
+          "rerank_item": true,
+          "k_retrieve": 20,
+          "k_final": 5,
+          "rrf_k": 60,
+          "router": true,
+          "gate_tau": 0.15,
+          "llm_model": "qwen2.5:7b",
+          "router_model": null,
+          "prompt_version": "v2",
+          "conflict_policy": "prefer_2026",
+          "validation": "enforce",
+          "schedule_retrieval": "structured",
+          "schedule_text": "code",
+          "temperature": 0.0,
+          "seed": 7
+        },
+        "retriever": "dense:bge-m3@5617a9f6 | bm25:kiwi | names:bge-m3@5617a9f6 | rerank:bge-reranker-v2-m3@953dc6f6",
+        "collection": "items_bge-m3_5617a9f6_c7d19676",
+        "router": "router_v1:qwen2.5:7b",
+        "llm": "qwen2.5:7b",
+        "schedule_source": "data/processed/schedule.csv",
+        "schedule_retriever": "structured lookup"
+      },
+      "traces": "experiments/results/dev/E9/names+rerank-item.jsonl",
+      "quick_summary": {
+        "cases": 70,
+        "gold_cases": 45,
+        "recall@5": 0.822,
+        "mrr": 0.714,
+        "statuses": {
+          "retrieval-only": 70
+        },
+        "mean_total_s": 3.55,
+        "schedule": {
+          "cases": 19,
+          "behaviour_ok": 0,
+          "wrong_place": 0,
+          "answerable": 19,
+          "empty": 19,
+          "row_found": 0,
+          "top_row": 0,
+          "only_correct_rows": 0,
+          "day_time_match": 0
+        }
+      },
+      "llm_replayed": 70,
+      "metrics": {
+        "overall": {
+          "cases": 70,
+          "case_ok": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "behaviour_ok": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "bin_ok": {
+            "k": 0,
+            "n": 45,
+            "rate": 0.0,
+            "undefined": 11
+          },
+          "false_answer": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "abstain_ok": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "clarify_ok": {
+            "k": 0,
+            "n": 4,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "intent_ok": {
+            "k": 62,
+            "n": 63,
+            "rate": 0.984,
+            "undefined": 7
+          },
+          "district_ok": {
+            "k": 4,
+            "n": 4,
+            "rate": 1.0,
+            "undefined": 0
+          },
+          "dong_ok": {
+            "k": 3,
+            "n": 4,
+            "rate": 0.75,
+            "undefined": 0
+          },
+          "retrieval": {
+            "n": 44,
+            "recall@5": 0.841,
+            "mrr": 0.73,
+            "ndcg@5": 0.646,
+            "precision@5": 0.282
+          },
+          "gate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "n": 0,
+            "accuracy": null,
+            "fp_rate": null,
+            "fn_rate": null
+          },
+          "rows_found": {
+            "k": 0,
+            "n": 19,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "only_gold_rows": {
+            "k": 0,
+            "n": 19,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "citation_precision": null,
+          "cites_gold": null,
+          "language_ok": null,
+          "json_valid": null,
+          "downgraded": 0,
+          "contract_problems": 0,
+          "latency_s": {
+            "mean": 3.55,
+            "median": 4.63,
+            "p90": 6.71
+          },
+          "failure_stages": {
+            "generation": 29,
+            "retrieval": 7,
+            "other": 10,
+            "gate": 4,
+            "schedule_tool": 19,
+            "router": 1
+          }
+        },
+        "by_slice": {
+          "ambiguous_location": {
+            "cases": 4,
+            "case_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "gate": 4
+            }
+          },
+          "combined": {
+            "cases": 8,
+            "case_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 8,
+              "n": 8,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 3,
+              "n": 4,
+              "rate": 0.75,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 8,
+              "recall@5": 1.0,
+              "mrr": 0.812,
+              "ndcg@5": 0.74,
+              "precision@5": 0.35
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 5.95,
+              "median": 6.47,
+              "p90": 6.73
+            },
+            "failure_stages": {
+              "schedule_tool": 8
+            }
+          },
+          "conflict": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 6,
+              "recall@5": 0.667,
+              "mrr": 0.542,
+              "ndcg@5": 0.464,
+              "precision@5": 0.267
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 5.69,
+              "median": 6.69,
+              "p90": 6.75
+            },
+            "failure_stages": {
+              "generation": 4,
+              "retrieval": 2
+            }
+          },
+          "false_premise": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 6,
+              "recall@5": 1.0,
+              "mrr": 0.833,
+              "ndcg@5": 0.787,
+              "precision@5": 0.467
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 5.81,
+              "median": 6.62,
+              "p90": 6.62
+            },
+            "failure_stages": {
+              "generation": 6
+            }
+          },
+          "item_direct": {
+            "cases": 14,
+            "case_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 13,
+              "n": 14,
+              "rate": 0.929,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 13,
+              "recall@5": 0.615,
+              "mrr": 0.59,
+              "ndcg@5": 0.433,
+              "precision@5": 0.138
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 4.59,
+              "median": 5.82,
+              "p90": 6.66
+            },
+            "failure_stages": {
+              "generation": 8,
+              "router": 1,
+              "retrieval": 5
+            }
+          },
+          "item_tricky": {
+            "cases": 11,
+            "case_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 11,
+              "n": 11,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 11,
+              "recall@5": 1.0,
+              "mrr": 0.882,
+              "ndcg@5": 0.853,
+              "precision@5": 0.309
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 5.23,
+              "median": 4.83,
+              "p90": 6.77
+            },
+            "failure_stages": {
+              "generation": 11
+            }
+          },
+          "no_evidence": {
+            "cases": 7,
+            "case_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": null,
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 1.43,
+              "median": 0.0,
+              "p90": 5.0
+            },
+            "failure_stages": {
+              "other": 7
+            }
+          },
+          "out_of_scope": {
+            "cases": 3,
+            "case_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 3,
+              "n": 3,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "other": 3
+            }
+          },
+          "schedule": {
+            "cases": 11,
+            "case_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 11,
+              "n": 11,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "schedule_tool": 11
+            }
+          }
+        },
+        "by_lang": {
+          "en": {
+            "cases": 25,
+            "case_ok": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 19,
+              "rate": 0.0,
+              "undefined": 2
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 21,
+              "n": 22,
+              "rate": 0.955,
+              "undefined": 3
+            },
+            "district_ok": {
+              "k": 3,
+              "n": 3,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 2,
+              "n": 3,
+              "rate": 0.667,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 18,
+              "recall@5": 0.833,
+              "mrr": 0.704,
+              "ndcg@5": 0.606,
+              "precision@5": 0.278
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 4.38,
+              "median": 5.28,
+              "p90": 6.71
+            },
+            "failure_stages": {
+              "generation": 10,
+              "other": 3,
+              "gate": 1,
+              "schedule_tool": 7,
+              "router": 1,
+              "retrieval": 3
+            }
+          },
+          "ko": {
+            "cases": 22,
+            "case_ok": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 12,
+              "rate": 0.0,
+              "undefined": 8
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 21,
+              "n": 21,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": {
+              "k": 1,
+              "n": 1,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 1,
+              "n": 1,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 12,
+              "recall@5": 1.0,
+              "mrr": 0.917,
+              "ndcg@5": 0.806,
+              "precision@5": 0.333
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 10,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 10,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.12,
+              "median": 3.6,
+              "p90": 6.66
+            },
+            "failure_stages": {
+              "generation": 10,
+              "other": 1,
+              "gate": 1,
+              "schedule_tool": 10
+            }
+          },
+          "ru": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 2,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 3,
+              "recall@5": 0.667,
+              "mrr": 0.667,
+              "ndcg@5": 0.599,
+              "precision@5": 0.333
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.59,
+              "median": 4.09,
+              "p90": 6.62
+            },
+            "failure_stages": {
+              "retrieval": 1,
+              "generation": 1,
+              "other": 2,
+              "gate": 1,
+              "schedule_tool": 1
+            }
+          },
+          "uz": {
+            "cases": 7,
+            "case_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 1
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 4,
+              "recall@5": 0.5,
+              "mrr": 0.3,
+              "ndcg@5": 0.295,
+              "precision@5": 0.1
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.5,
+              "median": 2.33,
+              "p90": 5.06
+            },
+            "failure_stages": {
+              "generation": 2,
+              "retrieval": 2,
+              "other": 1,
+              "gate": 1,
+              "schedule_tool": 1
+            }
+          },
+          "vi": {
+            "cases": 4,
+            "case_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 3,
+              "recall@5": 0.667,
+              "mrr": 0.667,
+              "ndcg@5": 0.538,
+              "precision@5": 0.133
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.2,
+              "median": 3.06,
+              "p90": 4.61
+            },
+            "failure_stages": {
+              "generation": 2,
+              "other": 1,
+              "retrieval": 1
+            }
+          },
+          "zh": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 2,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 4,
+              "recall@5": 1.0,
+              "mrr": 0.812,
+              "ndcg@5": 0.816,
+              "precision@5": 0.4
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.07,
+              "median": 3.49,
+              "p90": 4.69
+            },
+            "failure_stages": {
+              "generation": 4,
+              "other": 2
+            }
+          }
+        },
+        "failure_heatmap": {
+          "ambiguous_location": {
+            "gate": 4
+          },
+          "combined": {
+            "schedule_tool": 8
+          },
+          "conflict": {
+            "generation": 4,
+            "retrieval": 2
+          },
+          "false_premise": {
+            "generation": 6
+          },
+          "item_direct": {
+            "generation": 8,
+            "router": 1,
+            "retrieval": 5
+          },
+          "item_tricky": {
+            "generation": 11
+          },
+          "no_evidence": {
+            "other": 7
+          },
+          "out_of_scope": {
+            "other": 3
+          },
+          "schedule": {
+            "schedule_tool": 11
+          }
+        },
+        "stage_latency_s": {
+          "rerank_s": {
+            "median": 6.328,
+            "mean": 5.294
+          },
+          "retrieve_s": {
+            "median": 0.108,
+            "mean": 0.107
+          },
+          "route_s": {
+            "median": 0.001,
+            "mean": 0.001
+          },
+          "total_s": {
+            "median": 4.633,
+            "mean": 3.55
+          }
+        },
+        "missing_cases": []
+      },
+      "git_commit": "2d7b521b8c45fb74a32634f429350a8cb402bb9c"
+    },
+    "dense": {
+      "config": {
+        "embedding": "bge-m3",
+        "retrieval": "dense",
+        "bm25_tokenizer": "kiwi",
+        "query_mode": "both",
+        "rerank": true,
+        "rerank_query": "max",
+        "name_search": false,
+        "rerank_item": false,
+        "k_retrieve": 20,
+        "k_final": 5,
+        "rrf_k": 60,
+        "router": true,
+        "gate_tau": 0.15,
+        "llm_model": "qwen2.5:7b",
+        "router_model": null,
+        "prompt_version": "v2",
+        "conflict_policy": "prefer_2026",
+        "validation": "enforce",
+        "schedule_retrieval": "structured",
+        "schedule_text": "code",
+        "temperature": 0.0,
+        "seed": 7
+      },
+      "settings": {
+        "pipeline_version": "v2",
+        "config": {
+          "embedding": "bge-m3",
+          "retrieval": "dense",
+          "bm25_tokenizer": "kiwi",
+          "query_mode": "both",
+          "rerank": true,
+          "rerank_query": "max",
+          "name_search": false,
+          "rerank_item": false,
+          "k_retrieve": 20,
+          "k_final": 5,
+          "rrf_k": 60,
+          "router": true,
+          "gate_tau": 0.15,
+          "llm_model": "qwen2.5:7b",
+          "router_model": null,
+          "prompt_version": "v2",
+          "conflict_policy": "prefer_2026",
+          "validation": "enforce",
+          "schedule_retrieval": "structured",
+          "schedule_text": "code",
+          "temperature": 0.0,
+          "seed": 7
+        },
+        "retriever": "dense:bge-m3@5617a9f6 | rerank:bge-reranker-v2-m3@953dc6f6",
+        "collection": "items_bge-m3_5617a9f6_c7d19676",
+        "router": "router_v1:qwen2.5:7b",
+        "llm": "qwen2.5:7b",
+        "schedule_source": "data/processed/schedule.csv",
+        "schedule_retriever": "structured lookup"
+      },
+      "traces": "experiments/results/dev/E9/dense.jsonl",
+      "quick_summary": {
+        "cases": 70,
+        "gold_cases": 45,
+        "recall@5": 0.8,
+        "mrr": 0.678,
+        "statuses": {
+          "retrieval-only": 70
+        },
+        "mean_total_s": 1.94,
+        "schedule": {
+          "cases": 19,
+          "behaviour_ok": 0,
+          "wrong_place": 0,
+          "answerable": 19,
+          "empty": 19,
+          "row_found": 0,
+          "top_row": 0,
+          "only_correct_rows": 0,
+          "day_time_match": 0
+        }
+      },
+      "llm_replayed": 70,
+      "metrics": {
+        "overall": {
+          "cases": 70,
+          "case_ok": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "behaviour_ok": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "bin_ok": {
+            "k": 0,
+            "n": 45,
+            "rate": 0.0,
+            "undefined": 11
+          },
+          "false_answer": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "abstain_ok": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "clarify_ok": {
+            "k": 0,
+            "n": 4,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "intent_ok": {
+            "k": 62,
+            "n": 63,
+            "rate": 0.984,
+            "undefined": 7
+          },
+          "district_ok": {
+            "k": 4,
+            "n": 4,
+            "rate": 1.0,
+            "undefined": 0
+          },
+          "dong_ok": {
+            "k": 3,
+            "n": 4,
+            "rate": 0.75,
+            "undefined": 0
+          },
+          "retrieval": {
+            "n": 44,
+            "recall@5": 0.818,
+            "mrr": 0.693,
+            "ndcg@5": 0.613,
+            "precision@5": 0.282
+          },
+          "gate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "n": 0,
+            "accuracy": null,
+            "fp_rate": null,
+            "fn_rate": null
+          },
+          "rows_found": {
+            "k": 0,
+            "n": 19,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "only_gold_rows": {
+            "k": 0,
+            "n": 19,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "citation_precision": null,
+          "cites_gold": null,
+          "language_ok": null,
+          "json_valid": null,
+          "downgraded": 0,
+          "contract_problems": 0,
+          "latency_s": {
+            "mean": 1.94,
+            "median": 2.59,
+            "p90": 3.44
+          },
+          "failure_stages": {
+            "generation": 28,
+            "retrieval": 8,
+            "other": 10,
+            "gate": 4,
+            "schedule_tool": 19,
+            "router": 1
+          }
+        },
+        "by_slice": {
+          "ambiguous_location": {
+            "cases": 4,
+            "case_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "gate": 4
+            }
+          },
+          "combined": {
+            "cases": 8,
+            "case_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 8,
+              "n": 8,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 3,
+              "n": 4,
+              "rate": 0.75,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 8,
+              "recall@5": 1.0,
+              "mrr": 0.719,
+              "ndcg@5": 0.701,
+              "precision@5": 0.35
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.16,
+              "median": 3.42,
+              "p90": 3.49
+            },
+            "failure_stages": {
+              "schedule_tool": 8
+            }
+          },
+          "conflict": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 6,
+              "recall@5": 0.833,
+              "mrr": 0.625,
+              "ndcg@5": 0.529,
+              "precision@5": 0.3
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.12,
+              "median": 3.39,
+              "p90": 3.42
+            },
+            "failure_stages": {
+              "generation": 5,
+              "retrieval": 1
+            }
+          },
+          "false_premise": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 6,
+              "recall@5": 0.833,
+              "mrr": 0.761,
+              "ndcg@5": 0.738,
+              "precision@5": 0.433
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.15,
+              "median": 3.41,
+              "p90": 3.41
+            },
+            "failure_stages": {
+              "retrieval": 1,
+              "generation": 5
+            }
+          },
+          "item_direct": {
+            "cases": 14,
+            "case_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 13,
+              "n": 14,
+              "rate": 0.929,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 13,
+              "recall@5": 0.538,
+              "mrr": 0.514,
+              "ndcg@5": 0.356,
+              "precision@5": 0.123
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.44,
+              "median": 3.38,
+              "p90": 3.44
+            },
+            "failure_stages": {
+              "generation": 7,
+              "router": 1,
+              "retrieval": 6
+            }
+          },
+          "item_tricky": {
+            "cases": 11,
+            "case_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 11,
+              "n": 11,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 11,
+              "recall@5": 1.0,
+              "mrr": 0.886,
+              "ndcg@5": 0.829,
+              "precision@5": 0.327
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.92,
+              "median": 2.79,
+              "p90": 3.46
+            },
+            "failure_stages": {
+              "generation": 11
+            }
+          },
+          "no_evidence": {
+            "cases": 7,
+            "case_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": null,
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.97,
+              "median": 0.0,
+              "p90": 3.38
+            },
+            "failure_stages": {
+              "other": 7
+            }
+          },
+          "out_of_scope": {
+            "cases": 3,
+            "case_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 3,
+              "n": 3,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "other": 3
+            }
+          },
+          "schedule": {
+            "cases": 11,
+            "case_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 11,
+              "n": 11,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "schedule_tool": 11
+            }
+          }
+        },
+        "by_lang": {
+          "en": {
+            "cases": 25,
+            "case_ok": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 19,
+              "rate": 0.0,
+              "undefined": 2
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 21,
+              "n": 22,
+              "rate": 0.955,
+              "undefined": 3
+            },
+            "district_ok": {
+              "k": 3,
+              "n": 3,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 2,
+              "n": 3,
+              "rate": 0.667,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 18,
+              "recall@5": 0.778,
+              "mrr": 0.639,
+              "ndcg@5": 0.567,
+              "precision@5": 0.267
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.26,
+              "median": 2.79,
+              "p90": 3.46
+            },
+            "failure_stages": {
+              "generation": 9,
+              "retrieval": 4,
+              "other": 3,
+              "gate": 1,
+              "schedule_tool": 7,
+              "router": 1
+            }
+          },
+          "ko": {
+            "cases": 22,
+            "case_ok": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 12,
+              "rate": 0.0,
+              "undefined": 8
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 21,
+              "n": 21,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": {
+              "k": 1,
+              "n": 1,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 1,
+              "n": 1,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 12,
+              "recall@5": 1.0,
+              "mrr": 0.917,
+              "ndcg@5": 0.806,
+              "precision@5": 0.333
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 10,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 10,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 1.7,
+              "median": 1.92,
+              "p90": 3.42
+            },
+            "failure_stages": {
+              "generation": 10,
+              "other": 1,
+              "gate": 1,
+              "schedule_tool": 10
+            }
+          },
+          "ru": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 2,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 3,
+              "recall@5": 0.667,
+              "mrr": 0.667,
+              "ndcg@5": 0.599,
+              "precision@5": 0.333
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 1.99,
+              "median": 2.55,
+              "p90": 3.42
+            },
+            "failure_stages": {
+              "retrieval": 1,
+              "generation": 1,
+              "other": 2,
+              "gate": 1,
+              "schedule_tool": 1
+            }
+          },
+          "uz": {
+            "cases": 7,
+            "case_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 1
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 4,
+              "recall@5": 0.5,
+              "mrr": 0.375,
+              "ndcg@5": 0.242,
+              "precision@5": 0.15
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 1.39,
+              "median": 1.19,
+              "p90": 3.37
+            },
+            "failure_stages": {
+              "generation": 2,
+              "other": 1,
+              "gate": 1,
+              "retrieval": 2,
+              "schedule_tool": 1
+            }
+          },
+          "vi": {
+            "cases": 4,
+            "case_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 3,
+              "recall@5": 0.667,
+              "mrr": 0.417,
+              "ndcg@5": 0.348,
+              "precision@5": 0.133
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 1.92,
+              "median": 2.13,
+              "p90": 3.39
+            },
+            "failure_stages": {
+              "generation": 2,
+              "other": 1,
+              "retrieval": 1
+            }
+          },
+          "zh": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 2,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 4,
+              "recall@5": 1.0,
+              "mrr": 0.812,
+              "ndcg@5": 0.816,
+              "precision@5": 0.4
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.11,
+              "median": 2.9,
+              "p90": 3.41
+            },
+            "failure_stages": {
+              "generation": 4,
+              "other": 2
+            }
+          }
+        },
+        "failure_heatmap": {
+          "ambiguous_location": {
+            "gate": 4
+          },
+          "combined": {
+            "schedule_tool": 8
+          },
+          "conflict": {
+            "generation": 5,
+            "retrieval": 1
+          },
+          "false_premise": {
+            "retrieval": 1,
+            "generation": 5
+          },
+          "item_direct": {
+            "generation": 7,
+            "router": 1,
+            "retrieval": 6
+          },
+          "item_tricky": {
+            "generation": 11
+          },
+          "no_evidence": {
+            "other": 7
+          },
+          "out_of_scope": {
+            "other": 3
+          },
+          "schedule": {
+            "schedule_tool": 11
+          }
+        },
+        "stage_latency_s": {
+          "rerank_s": {
+            "median": 3.333,
+            "mean": 2.89
+          },
+          "retrieve_s": {
+            "median": 0.062,
+            "mean": 0.064
+          },
+          "route_s": {
+            "median": 0.001,
+            "mean": 0.001
+          },
+          "total_s": {
+            "median": 2.591,
+            "mean": 1.942
+          }
+        },
+        "missing_cases": []
+      },
+      "git_commit": "3a4d287c1f6a8cbe84a5ac0745f01d91273487de"
+    },
+    "dense+names+rerank-item": {
+      "config": {
+        "embedding": "bge-m3",
+        "retrieval": "dense",
+        "bm25_tokenizer": "kiwi",
+        "query_mode": "both",
+        "rerank": true,
+        "rerank_query": "max",
+        "name_search": true,
+        "rerank_item": true,
+        "k_retrieve": 20,
+        "k_final": 5,
+        "rrf_k": 60,
+        "router": true,
+        "gate_tau": 0.15,
+        "llm_model": "qwen2.5:7b",
+        "router_model": null,
+        "prompt_version": "v2",
+        "conflict_policy": "prefer_2026",
+        "validation": "enforce",
+        "schedule_retrieval": "structured",
+        "schedule_text": "code",
+        "temperature": 0.0,
+        "seed": 7
+      },
+      "settings": {
+        "pipeline_version": "v2",
+        "config": {
+          "embedding": "bge-m3",
+          "retrieval": "dense",
+          "bm25_tokenizer": "kiwi",
+          "query_mode": "both",
+          "rerank": true,
+          "rerank_query": "max",
+          "name_search": true,
+          "rerank_item": true,
+          "k_retrieve": 20,
+          "k_final": 5,
+          "rrf_k": 60,
+          "router": true,
+          "gate_tau": 0.15,
+          "llm_model": "qwen2.5:7b",
+          "router_model": null,
+          "prompt_version": "v2",
+          "conflict_policy": "prefer_2026",
+          "validation": "enforce",
+          "schedule_retrieval": "structured",
+          "schedule_text": "code",
+          "temperature": 0.0,
+          "seed": 7
+        },
+        "retriever": "dense:bge-m3@5617a9f6 | names:bge-m3@5617a9f6 | rerank:bge-reranker-v2-m3@953dc6f6",
+        "collection": "items_bge-m3_5617a9f6_c7d19676",
+        "router": "router_v1:qwen2.5:7b",
+        "llm": "qwen2.5:7b",
+        "schedule_source": "data/processed/schedule.csv",
+        "schedule_retriever": "structured lookup"
+      },
+      "traces": "experiments/results/dev/E9/dense+names+rerank-item.jsonl",
+      "quick_summary": {
+        "cases": 70,
+        "gold_cases": 45,
+        "recall@5": 0.8,
+        "mrr": 0.698,
+        "statuses": {
+          "retrieval-only": 70
+        },
+        "mean_total_s": 3.61,
+        "schedule": {
+          "cases": 19,
+          "behaviour_ok": 0,
+          "wrong_place": 0,
+          "answerable": 19,
+          "empty": 19,
+          "row_found": 0,
+          "top_row": 0,
+          "only_correct_rows": 0,
+          "day_time_match": 0
+        }
+      },
+      "llm_replayed": 70,
+      "metrics": {
+        "overall": {
+          "cases": 70,
+          "case_ok": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "behaviour_ok": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "bin_ok": {
+            "k": 0,
+            "n": 45,
+            "rate": 0.0,
+            "undefined": 11
+          },
+          "false_answer": {
+            "k": 0,
+            "n": 70,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "abstain_ok": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "clarify_ok": {
+            "k": 0,
+            "n": 4,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "intent_ok": {
+            "k": 62,
+            "n": 63,
+            "rate": 0.984,
+            "undefined": 7
+          },
+          "district_ok": {
+            "k": 4,
+            "n": 4,
+            "rate": 1.0,
+            "undefined": 0
+          },
+          "dong_ok": {
+            "k": 3,
+            "n": 4,
+            "rate": 0.75,
+            "undefined": 0
+          },
+          "retrieval": {
+            "n": 44,
+            "recall@5": 0.818,
+            "mrr": 0.713,
+            "ndcg@5": 0.64,
+            "precision@5": 0.282
+          },
+          "gate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "n": 0,
+            "accuracy": null,
+            "fp_rate": null,
+            "fn_rate": null
+          },
+          "rows_found": {
+            "k": 0,
+            "n": 19,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "only_gold_rows": {
+            "k": 0,
+            "n": 19,
+            "rate": 0.0,
+            "undefined": 0
+          },
+          "citation_precision": null,
+          "cites_gold": null,
+          "language_ok": null,
+          "json_valid": null,
+          "downgraded": 0,
+          "contract_problems": 0,
+          "latency_s": {
+            "mean": 3.61,
+            "median": 4.74,
+            "p90": 6.83
+          },
+          "failure_stages": {
+            "generation": 28,
+            "retrieval": 8,
+            "other": 10,
+            "gate": 4,
+            "schedule_tool": 19,
+            "router": 1
+          }
+        },
+        "by_slice": {
+          "ambiguous_location": {
+            "cases": 4,
+            "case_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "gate": 4
+            }
+          },
+          "combined": {
+            "cases": 8,
+            "case_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 8,
+              "n": 8,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 3,
+              "n": 4,
+              "rate": 0.75,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 8,
+              "recall@5": 1.0,
+              "mrr": 0.812,
+              "ndcg@5": 0.74,
+              "precision@5": 0.35
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 8,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 6.16,
+              "median": 6.69,
+              "p90": 6.79
+            },
+            "failure_stages": {
+              "schedule_tool": 8
+            }
+          },
+          "conflict": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 6,
+              "recall@5": 0.5,
+              "mrr": 0.417,
+              "ndcg@5": 0.382,
+              "precision@5": 0.233
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 5.99,
+              "median": 6.88,
+              "p90": 7.06
+            },
+            "failure_stages": {
+              "generation": 3,
+              "retrieval": 3
+            }
+          },
+          "false_premise": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 6,
+              "recall@5": 1.0,
+              "mrr": 0.833,
+              "ndcg@5": 0.787,
+              "precision@5": 0.467
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 5.83,
+              "median": 5.88,
+              "p90": 6.77
+            },
+            "failure_stages": {
+              "generation": 6
+            }
+          },
+          "item_direct": {
+            "cases": 14,
+            "case_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 14,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 13,
+              "n": 14,
+              "rate": 0.929,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 13,
+              "recall@5": 0.615,
+              "mrr": 0.592,
+              "ndcg@5": 0.433,
+              "precision@5": 0.138
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 4.61,
+              "median": 5.88,
+              "p90": 6.76
+            },
+            "failure_stages": {
+              "generation": 8,
+              "router": 1,
+              "retrieval": 5
+            }
+          },
+          "item_tricky": {
+            "cases": 11,
+            "case_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 11,
+              "n": 11,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 11,
+              "recall@5": 1.0,
+              "mrr": 0.882,
+              "ndcg@5": 0.871,
+              "precision@5": 0.327
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 5.26,
+              "median": 5.27,
+              "p90": 6.82
+            },
+            "failure_stages": {
+              "generation": 11
+            }
+          },
+          "no_evidence": {
+            "cases": 7,
+            "case_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": null,
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 1.45,
+              "median": 0.0,
+              "p90": 5.03
+            },
+            "failure_stages": {
+              "other": 7
+            }
+          },
+          "out_of_scope": {
+            "cases": 3,
+            "case_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 3,
+              "n": 3,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "other": 3
+            }
+          },
+          "schedule": {
+            "cases": 11,
+            "case_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": null,
+            "false_answer": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": null,
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 11,
+              "n": 11,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 0,
+              "recall@5": null,
+              "mrr": null,
+              "ndcg@5": null,
+              "precision@5": null
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 11,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 0.0,
+              "median": 0.0,
+              "p90": 0.0
+            },
+            "failure_stages": {
+              "schedule_tool": 11
+            }
+          }
+        },
+        "by_lang": {
+          "en": {
+            "cases": 25,
+            "case_ok": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 19,
+              "rate": 0.0,
+              "undefined": 2
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 25,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 21,
+              "n": 22,
+              "rate": 0.955,
+              "undefined": 3
+            },
+            "district_ok": {
+              "k": 3,
+              "n": 3,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 2,
+              "n": 3,
+              "rate": 0.667,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 18,
+              "recall@5": 0.833,
+              "mrr": 0.677,
+              "ndcg@5": 0.605,
+              "precision@5": 0.289
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 4.36,
+              "median": 5.27,
+              "p90": 6.83
+            },
+            "failure_stages": {
+              "generation": 10,
+              "other": 3,
+              "gate": 1,
+              "schedule_tool": 7,
+              "router": 1,
+              "retrieval": 3
+            }
+          },
+          "ko": {
+            "cases": 22,
+            "case_ok": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 12,
+              "rate": 0.0,
+              "undefined": 8
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 22,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 21,
+              "n": 21,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": {
+              "k": 1,
+              "n": 1,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "dong_ok": {
+              "k": 1,
+              "n": 1,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "retrieval": {
+              "n": 12,
+              "recall@5": 1.0,
+              "mrr": 0.917,
+              "ndcg@5": 0.806,
+              "precision@5": 0.333
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 10,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 10,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.95,
+              "median": 2.7,
+              "p90": 6.72
+            },
+            "failure_stages": {
+              "generation": 10,
+              "other": 1,
+              "gate": 1,
+              "schedule_tool": 10
+            }
+          },
+          "ru": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 2,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 3,
+              "recall@5": 0.667,
+              "mrr": 0.667,
+              "ndcg@5": 0.599,
+              "precision@5": 0.333
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.67,
+              "median": 4.13,
+              "p90": 6.79
+            },
+            "failure_stages": {
+              "retrieval": 1,
+              "generation": 1,
+              "other": 2,
+              "gate": 1,
+              "schedule_tool": 1
+            }
+          },
+          "uz": {
+            "cases": 7,
+            "case_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 1
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 7,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "intent_ok": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 4,
+              "recall@5": 0.5,
+              "mrr": 0.3,
+              "ndcg@5": 0.295,
+              "precision@5": 0.1
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "only_gold_rows": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 2.52,
+              "median": 2.33,
+              "p90": 5.11
+            },
+            "failure_stages": {
+              "generation": 2,
+              "retrieval": 2,
+              "other": 1,
+              "gate": 1,
+              "schedule_tool": 1
+            }
+          },
+          "vi": {
+            "cases": 4,
+            "case_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 3,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 1,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "undefined": 0
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 3,
+              "recall@5": 0.667,
+              "mrr": 0.667,
+              "ndcg@5": 0.538,
+              "precision@5": 0.133
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.86,
+              "median": 4.18,
+              "p90": 6.77
+            },
+            "failure_stages": {
+              "generation": 2,
+              "other": 1,
+              "retrieval": 1
+            }
+          },
+          "zh": {
+            "cases": 6,
+            "case_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "behaviour_ok": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "bin_ok": {
+              "k": 0,
+              "n": 4,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "false_answer": {
+              "k": 0,
+              "n": 6,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "abstain_ok": {
+              "k": 0,
+              "n": 2,
+              "rate": 0.0,
+              "undefined": 0
+            },
+            "clarify_ok": null,
+            "intent_ok": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "undefined": 1
+            },
+            "district_ok": null,
+            "dong_ok": null,
+            "retrieval": {
+              "n": 4,
+              "recall@5": 0.75,
+              "mrr": 0.75,
+              "ndcg@5": 0.75,
+              "precision@5": 0.35
+            },
+            "gate": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0,
+              "n": 0,
+              "accuracy": null,
+              "fp_rate": null,
+              "fn_rate": null
+            },
+            "rows_found": null,
+            "only_gold_rows": null,
+            "citation_precision": null,
+            "cites_gold": null,
+            "language_ok": null,
+            "json_valid": null,
+            "downgraded": 0,
+            "contract_problems": 0,
+            "latency_s": {
+              "mean": 3.93,
+              "median": 4.87,
+              "p90": 6.79
+            },
+            "failure_stages": {
+              "generation": 3,
+              "retrieval": 1,
+              "other": 2
+            }
+          }
+        },
+        "failure_heatmap": {
+          "ambiguous_location": {
+            "gate": 4
+          },
+          "combined": {
+            "schedule_tool": 8
+          },
+          "conflict": {
+            "generation": 3,
+            "retrieval": 3
+          },
+          "false_premise": {
+            "generation": 6
+          },
+          "item_direct": {
+            "generation": 8,
+            "router": 1,
+            "retrieval": 5
+          },
+          "item_tricky": {
+            "generation": 11
+          },
+          "no_evidence": {
+            "other": 7
+          },
+          "out_of_scope": {
+            "other": 3
+          },
+          "schedule": {
+            "schedule_tool": 11
+          }
+        },
+        "stage_latency_s": {
+          "rerank_s": {
+            "median": 5.893,
+            "mean": 5.389
+          },
+          "retrieve_s": {
+            "median": 0.108,
+            "mean": 0.106
+          },
+          "route_s": {
+            "median": 0.0,
+            "mean": 0.0
+          },
+          "total_s": {
+            "median": 4.741,
+            "mean": 3.611
+          }
+        },
+        "missing_cases": []
+      },
+      "git_commit": "3a4d287c1f6a8cbe84a5ac0745f01d91273487de"
+    }
+  },
+  "finished": "2026-11-08T21:37:44"
+}

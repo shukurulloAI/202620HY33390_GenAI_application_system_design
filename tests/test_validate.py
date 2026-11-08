@@ -80,3 +80,16 @@ def test_empty_bin_is_filled_from_korean_text():
               "answer_text": "고장 난 비데는 폐가전제품으로 배출합니다 [1]."}
     out, checks = validate(answer, evidence, None, "enforce")
     assert checks["bin_filled_from_text"] == "가전제품" and out["status"] == "ANSWER"
+
+
+def test_item_answer_day_check_ignores_words_that_look_like_day_abbreviations():
+    """dev h28: Vietnamese 'thu gom' (collect) was read as 'Thu' and the answer refused."""
+    from rag.validate import weekdays_named
+    assert weekdays_named("bỏ vào thùng thu gom") == set()
+    assert weekdays_named("lần thứ hai") == set()                 # ordinal, not Monday
+    assert weekdays_named("охраны окружающей среды") == set()     # environment
+    assert weekdays_named("vào Thứ Ba, 周四, во вторник, Sundays") == {1, 3, 6}
+    evidence = [EvidenceItem(1, "item", "c1", "rule", "소형 전기·전자제품", {})]
+    answer = {"status": "ANSWER", "bin": "가전제품", "citations": [1],
+              "answer_text": "Bỏ vào thùng thu gom sản phẩm điện tử nhỏ (가전제품) [1]."}
+    assert validate(answer, evidence, None, "enforce")[0]["status"] == "ANSWER"

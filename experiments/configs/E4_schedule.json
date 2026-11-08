@@ -5,11 +5,33 @@
   "base": "default",
   "fixed": {},
   "variants": {
-    "structured-lookup": {"schedule_retrieval": "structured"},
-    "vector": {"schedule_retrieval": "vector"},
-    "postfilter": {"schedule_retrieval": "postfilter"},
-    "prefilter": {"schedule_retrieval": "prefilter"}
+    "structured-lookup": {
+      "schedule_retrieval": "structured"
+    },
+    "vector": {
+      "schedule_retrieval": "vector"
+    },
+    "postfilter": {
+      "schedule_retrieval": "postfilter"
+    },
+    "prefilter": {
+      "schedule_retrieval": "prefilter"
+    }
   },
-  "metrics": ["correct row found", "top row correct", "only correct rows shown", "exact day/time match", "empty-result rate", "wrong-place rate", "expected behaviour"],
-  "notes": "Needs the schedule index: python -m ingest.build_index --corpus schedule. Until the dev set exists, run with --cases experiments/probes_schedule.jsonl."
+  "metrics": [
+    "correct row found",
+    "top row correct",
+    "only correct rows shown",
+    "exact day/time match",
+    "empty-result rate",
+    "wrong-place rate",
+    "expected behaviour"
+  ],
+  "notes": "Needs the schedule index: python -m ingest.build_index --corpus schedule. Until the dev set exists, run with --cases experiments/probes_schedule.jsonl. On dev: run on the schedule, combined and ambiguous_location slices only (spec 'slices').",
+  "slices": [
+    "schedule",
+    "combined",
+    "ambiguous_location"
+  ],
+  "reference": "structured-lookup"
 }

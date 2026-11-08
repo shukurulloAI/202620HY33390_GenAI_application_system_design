@@ -37,6 +37,30 @@ _DAY_PATTERNS = {
 
 _CLOCK_TIME = re.compile(r"\b\d{1,2}:\d{2}\b")
 
+# Full weekday names in the six answer languages, for the item-only check. Abbreviations
+# are left out on purpose: "Thu" matches Vietnamese "thu gom" (collect) and "mon", "sat"
+# are words too (dev h28). Vietnamese ordinals ("thứ hai" = second) are lower case, day
+# names are capitalised; Russian "среда" also means "environment", so only "в среду" /
+# "по средам" count.
+_DAY_WORDS = [   # (case-insensitive patterns, Vietnamese day name: capitalised, case kept)
+    (r"\bmondays?\b|월요일|周一|星期一|礼拜一|\bdushanba\b|понедельник", r"[Tt]hứ Hai\b"),
+    (r"\btuesdays?\b|화요일|周二|星期二|礼拜二|\bseshanba\b|вторник", r"[Tt]hứ Ba\b"),
+    (r"\bwednesdays?\b|수요일|周三|星期三|礼拜三|\bchorshanba\b|в среду|по средам",
+     r"[Tt]hứ Tư\b"),
+    (r"\bthursdays?\b|목요일|周四|星期四|礼拜四|\bpayshanba\b|четверг", r"[Tt]hứ Năm\b"),
+    (r"\bfridays?\b|금요일|周五|星期五|礼拜五|\bjuma\b|пятниц", r"[Tt]hứ Sáu\b"),
+    (r"\bsaturdays?\b|토요일|周六|星期六|礼拜六|\bshanba\b|суббот", r"[Tt]hứ Bảy\b"),
+    (r"\bsundays?\b|일요일|周日|星期日|星期天|礼拜天|\byakshanba\b|воскресень",
+     r"[Cc]hủ [Nn]hật"),
+]
+
+
+def weekdays_named(text: str) -> set[int]:
+    """Weekdays written out in full in any of the six languages."""
+    text = text or ""
+    return {d for d, (words, vi) in enumerate(_DAY_WORDS)
+            if re.search(words, text, re.IGNORECASE) or re.search(vi, text)}
+
 
 def text_bins(text: str) -> set[str]:
     """Canonical bins named in parentheses in the answer, e.g. 'general waste bag (종량제봉투)'."""
@@ -120,7 +144,7 @@ def validate(answer: dict, evidence: list, schedule_days: set[int] | None,
         # model has added "Tuesdays, Thursdays, Saturdays 19:00-23:00" to a food answer).
         text = answer.get("answer_text", "")
         source = " ".join(e.text for e in cited)
-        extra_days = days_mentioned(text) - days_mentioned(source)
+        extra_days = weekdays_named(text) - weekdays_named(source)
         extra_times = set(_CLOCK_TIME.findall(text)) - set(_CLOCK_TIME.findall(source))
         if extra_days or extra_times:
             checks["schedule_invented"] = True

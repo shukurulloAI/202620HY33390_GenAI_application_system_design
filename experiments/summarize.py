@@ -113,6 +113,9 @@ def main() -> None:
     manifest = json.loads((args.results_dir / "manifest.json").read_text(encoding="utf-8"))
     spec = json.loads((paths.ROOT / manifest["spec_file"]).read_text(encoding="utf-8"))
     cases = load_cases(paths.ROOT / manifest["cases"])
+    if manifest.get("slices"):
+        cases = [c for c in cases if c.get("slice") in manifest["slices"]]
+    cases = cases[:manifest["limit"]] if manifest.get("limit") else cases
     print(write_summary(spec, manifest, cases, args.results_dir))
 
 

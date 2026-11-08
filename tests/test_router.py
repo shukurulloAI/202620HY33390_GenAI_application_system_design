@@ -13,3 +13,27 @@ def test_router_invariants():
     assert checks["item_ko_korean"] is False and checks["rewrite_usable"] is False
     assert route.lang == "en"                             # Latin script, not Korean
     assert is_korean("투명 PET병", strict=True)
+
+
+def test_a_mixed_script_rewrite_is_repaired_once():
+    from rag.llm_client import LLMResult
+    from rag.router import Router
+
+    replies = iter([
+        '{"intent": "item", "item": "yog\'", "item_ko": "기름occo散布的纸张", '
+        '"ko_query": "기름occo散布的纸张 분리배출", "district": "", "dong": "", '
+        '"waste_type": "none", "day_ref": "none", "negation": false, "lang": "uz"}',
+        '{"intent": "item", "item": "yog\'", "item_ko": "폐식용유", '
+        '"ko_query": "폐식용유 분리배출 방법", "district": "", "dong": "", '
+        '"waste_type": "none", "day_ref": "none", "negation": false, "lang": "uz"}'])
+
+    class Scripted:
+        model_id = "scripted"
+
+        def generate(self, **kwargs):
+            return LLMResult(text=next(replies), model_id="scripted")
+
+    question = "Qovurishda ishlatilgan yog'ni qayerga to'kaman?"
+    route = Router(Scripted(), repair=True).route(question)
+    assert route.item_ko == "폐식용유" and route.checks["rewrite_usable"]
+    assert "repaired" in route.checks["repair"] and len(route.attempts) == 2
