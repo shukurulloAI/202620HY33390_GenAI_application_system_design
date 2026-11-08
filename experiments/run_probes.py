@@ -21,7 +21,7 @@ from datetime import datetime
 
 from eval.cases import load_cases
 from eval.metrics import gold_rank
-from experiments.provenance import git_commit, git_dirty
+from eval.provenance import git_commit, git_dirty
 from rag import paths
 from rag.config import load_config
 from rag.llm_client import make_client

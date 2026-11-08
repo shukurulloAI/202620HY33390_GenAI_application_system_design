@@ -1,0 +1,614 @@
+{
+  "$defs": {
+    "Citation": {
+      "additionalProperties": false,
+      "description": "One source the answer cites: a guide chunk (kind=item) or a district row (schedule).",
+      "properties": {
+        "n": {
+          "description": "The number used in answer_text, e.g. [1]",
+          "title": "N",
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "item",
+            "schedule"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "ref": {
+          "description": "chunk_id (item) or 관리번호 (schedule)",
+          "title": "Ref",
+          "type": "string"
+        },
+        "source": {
+          "description": "Readable source, e.g. '환경부 ... (2018) p.28'",
+          "title": "Source",
+          "type": "string"
+        },
+        "page": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Guide page, for items",
+          "title": "Page"
+        },
+        "year": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Year of the guide (2018 or 2026), for items",
+          "title": "Year"
+        },
+        "data_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Date of the district row, for schedules",
+          "title": "Data Date"
+        },
+        "text": {
+          "description": "The evidence text the model read, for the source card",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "n",
+        "kind",
+        "ref",
+        "source",
+        "text"
+      ],
+      "title": "Citation",
+      "type": "object"
+    },
+    "Clarify": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "district",
+            "province",
+            "zones",
+            "names"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "question": {
+          "description": "In the user's language",
+          "title": "Question",
+          "type": "string"
+        },
+        "options": {
+          "description": "Choices to offer, at most 30 (Korean names)",
+          "items": {
+            "type": "string"
+          },
+          "title": "Options",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "question",
+        "options"
+      ],
+      "title": "Clarify",
+      "type": "object"
+    },
+    "DayCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "waste_type": {
+          "enum": [
+            "general",
+            "food",
+            "recycling",
+            "bulky"
+          ],
+          "title": "Waste Type",
+          "type": "string"
+        },
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "weekday": {
+          "title": "Weekday",
+          "type": "string"
+        },
+        "allowed": {
+          "title": "Allowed",
+          "type": "boolean"
+        },
+        "start": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Start"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "End"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "waste_type",
+        "date",
+        "weekday",
+        "allowed",
+        "start",
+        "end",
+        "text"
+      ],
+      "title": "DayCheck",
+      "type": "object"
+    },
+    "Handoff": {
+      "additionalProperties": false,
+      "properties": {
+        "office": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Office"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Phone"
+        },
+        "contact": {
+          "description": "Who to call or visit, in the user's language",
+          "title": "Contact",
+          "type": "string"
+        },
+        "korean_sentence": {
+          "description": "Always Korean: to show at the office",
+          "title": "Korean Sentence",
+          "type": "string"
+        },
+        "checked": {
+          "description": "What the assistant already checked",
+          "items": {
+            "type": "string"
+          },
+          "title": "Checked",
+          "type": "array"
+        }
+      },
+      "required": [
+        "office",
+        "phone",
+        "contact",
+        "korean_sentence",
+        "checked"
+      ],
+      "title": "Handoff",
+      "type": "object"
+    },
+    "Schedule": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "OK",
+            "CLARIFY",
+            "NO_DATA"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "message": {
+          "description": "The tool's own note, English (for debugging)",
+          "title": "Message",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Options",
+          "type": "array"
+        },
+        "zones": {
+          "description": "Rows shown to the user (at most 4)",
+          "items": {
+            "$ref": "#/$defs/Zone"
+          },
+          "title": "Zones",
+          "type": "array"
+        },
+        "days": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Days"
+        },
+        "time": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Time"
+        },
+        "place": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Place"
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "options",
+        "zones",
+        "days",
+        "time",
+        "place"
+      ],
+      "title": "Schedule",
+      "type": "object"
+    },
+    "TypeRule": {
+      "additionalProperties": false,
+      "properties": {
+        "days": {
+          "description": "English day list, e.g. 'Sun, Tue, Thu'",
+          "title": "Days",
+          "type": "string"
+        },
+        "start": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Start"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "End"
+        },
+        "next_dates": {
+          "description": "ISO dates in the next 7 days (KST)",
+          "items": {
+            "type": "string"
+          },
+          "title": "Next Dates",
+          "type": "array"
+        }
+      },
+      "required": [
+        "days",
+        "start",
+        "end",
+        "next_dates"
+      ],
+      "title": "TypeRule",
+      "type": "object"
+    },
+    "Zone": {
+      "additionalProperties": false,
+      "description": "One collection zone (one row of the district table), in full.",
+      "properties": {
+        "province": {
+          "title": "Province",
+          "type": "string"
+        },
+        "district": {
+          "title": "District",
+          "type": "string"
+        },
+        "zone": {
+          "title": "Zone",
+          "type": "string"
+        },
+        "areas": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Areas",
+          "type": "array"
+        },
+        "place": {
+          "title": "Place",
+          "type": "string"
+        },
+        "by_type": {
+          "additionalProperties": {
+            "$ref": "#/$defs/TypeRule"
+          },
+          "propertyNames": {
+            "enum": [
+              "general",
+              "food",
+              "recycling",
+              "bulky"
+            ]
+          },
+          "title": "By Type",
+          "type": "object"
+        },
+        "day_check": {
+          "items": {
+            "$ref": "#/$defs/DayCheck"
+          },
+          "title": "Day Check",
+          "type": "array"
+        },
+        "no_collection": {
+          "description": "미수거일 as the source writes it (Korean)",
+          "title": "No Collection",
+          "type": "string"
+        },
+        "office": {
+          "title": "Office",
+          "type": "string"
+        },
+        "phone": {
+          "title": "Phone",
+          "type": "string"
+        },
+        "data_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Data Date"
+        },
+        "stale": {
+          "description": "Data more than a year old",
+          "title": "Stale",
+          "type": "boolean"
+        },
+        "row_id": {
+          "description": "관리번호",
+          "title": "Row Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "province",
+        "district",
+        "zone",
+        "areas",
+        "place",
+        "by_type",
+        "day_check",
+        "no_collection",
+        "office",
+        "phone",
+        "data_date",
+        "stale",
+        "row_id"
+      ],
+      "title": "Zone",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "ANSWER",
+        "CLARIFY",
+        "INSUFFICIENT_CONTEXT",
+        "OUT_OF_SCOPE"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "lang": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Lang"
+    },
+    "bin": {
+      "description": "Canonical bin (rag/bins.py) or ''",
+      "title": "Bin",
+      "type": "string"
+    },
+    "bin_en": {
+      "title": "Bin En",
+      "type": "string"
+    },
+    "how_to_prepare": {
+      "items": {
+        "type": "string"
+      },
+      "title": "How To Prepare",
+      "type": "array"
+    },
+    "answer_text": {
+      "description": "In the user's language; several lines; [n] cites",
+      "title": "Answer Text",
+      "type": "string"
+    },
+    "citations": {
+      "items": {
+        "$ref": "#/$defs/Citation"
+      },
+      "title": "Citations",
+      "type": "array"
+    },
+    "missing": {
+      "description": "What could not be answered (diagnostic, English)",
+      "title": "Missing",
+      "type": "string"
+    },
+    "schedule": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Schedule"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "data_date": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Data Date"
+    },
+    "office_phone": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Office Phone"
+    },
+    "clarify": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Clarify"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "notes": {
+      "description": "Source-year and data-age warnings, user's language",
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "handoff": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Handoff"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "trace_id": {
+      "title": "Trace Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "lang",
+    "bin",
+    "bin_en",
+    "how_to_prepare",
+    "answer_text",
+    "citations",
+    "missing",
+    "schedule",
+    "data_date",
+    "office_phone",
+    "clarify",
+    "notes",
+    "handoff",
+    "trace_id"
+  ],
+  "title": "Answer",
+  "type": "object",
+  "$id": "answer-contract-v1.0"
+}

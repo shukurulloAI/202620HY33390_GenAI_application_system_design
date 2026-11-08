@@ -1,13 +1,16 @@
 """
 The answer dict the website shows and evaluation scores (PLAN.md §4.8).
 
-Takes what the pipeline produced and fills the fields of the contract. Facts that decide what
-someone does (days, times, places, phones, dates) come from the tool's rows, never the LLM.
+Takes what the pipeline produced and fills the fields of the contract (rag/contract.py, which
+checks every answer). Facts that decide what someone does (days, times, places, phones, dates)
+come from the tool's rows, never the LLM. Every fixed sentence is in the user's language
+(rag/texts.py).
 """
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from rag.contract import CONTRACT_VERSION
 from rag.gate import GateDecision
 from rag.handoff import build_handoff, message
 from rag.korean import fit_to_show
@@ -21,6 +24,7 @@ from rag.schedule_tool import (
     put_out_days,
     waste_types,
 )
+from rag.texts import text
 
 if TYPE_CHECKING:
     from rag.pipeline import Request
@@ -34,40 +38,68 @@ def build_answer(draft: dict, evidence: list, *, request: Request, route: Route,
     by_number = {e.n: e for e in evidence}
     cited = [by_number[n] for n in draft.get("citations", []) if n in by_number]
     answer = {
+        "contract_version": CONTRACT_VERSION,
         "status": draft.get("status"),
         "lang": request.lang,
         "bin": draft.get("bin", ""),
         "bin_en": draft.get("bin_en", ""),
         "how_to_prepare": draft.get("how_to_prepare", []),
         "answer_text": draft.get("answer_text", ""),
-        "citations": [e.to_citation() for e in cited],
+        "citations": [citation(e) for e in cited],
         "missing": draft.get("missing", ""),
         "schedule": None,
         "data_date": None,
         "office_phone": None,
-        "clarify": gate.clarify,
-        "notes": source_notes(cited),
+        "clarify": clarify(gate.clarify, request.lang),
+        "notes": source_notes(cited, request.lang),
         "handoff": None,
         "trace_id": trace_id,
     }
     if schedule is not None:
         add_schedule(answer, schedule, rows, gate, request, day)
+    if answer["status"] == "ANSWER":
+        say_what_failed(answer, gate, request.lang)
     if needs_handoff(answer["status"], gate):
         answer["handoff"] = handoff(request, route, gate, schedule)
         answer["office_phone"] = answer["office_phone"] or answer["handoff"]["phone"]
     return answer
 
 
-def source_notes(cited: list) -> list[str]:
+def citation(evidence) -> dict:
+    """What a source card needs: the reference, where it is, and the text the model read."""
+    meta = evidence.metadata
+    return {**evidence.to_citation(), "page": meta.get("page"),
+            "year": meta.get("source_year"), "data_date": meta.get("data_date"),
+            "text": evidence.text}
+
+
+def clarify(question: dict | None, lang: str | None) -> dict | None:
+    """The gate's question, written in the user's language."""
+    if not question:
+        return None
+    return {"kind": question["kind"], "options": question["options"],
+            "question": text(f"clarify_{question['kind']}", lang, **question["args"])}
+
+
+def source_notes(cited: list, lang: str | None) -> list[str]:
     """Which rules the answer rests on, so the user can judge how far to trust it."""
     years = {e.metadata.get("source_year") for e in cited if e.kind == "item"}
     notes = []
     if years == {2018}:
-        notes.append("Based on the 2018 national guideline; your district may have newer "
-                     "local rules.")
+        notes.append(text("note_2018", lang))
     if 2026 in years:
-        notes.append("Uses the 2026 national rule (분리수거 등에 관한 지침, effective 2026-01-01).")
+        notes.append(text("note_2026", lang))
     return notes
+
+
+def say_what_failed(answer: dict, gate: GateDecision, lang: str | None) -> None:
+    """An ANSWER can cover one part of a two-part question. Say so in the text the user
+    reads, not only in `missing`."""
+    if gate.item == "abstain":
+        answer["answer_text"] = f"{text('ITEM_FAILED', lang)}\n\n{answer['answer_text']}"
+    if gate.schedule == "abstain":
+        key = "SCHEDULE_VARIES" if gate.schedule_varies else "SCHEDULE_FAILED"
+        answer["answer_text"] = f"{answer['answer_text'].rstrip()}\n\n{message(key, lang)}"
 
 
 def add_schedule(answer: dict, schedule: ScheduleResult, rows: list[ScheduleRow],
@@ -80,15 +112,12 @@ def add_schedule(answer: dict, schedule: ScheduleResult, rows: list[ScheduleRow]
                           "options": schedule.options,
                           "zones": [zone_detail(r, types, day) for r in rows], **flat}
     if any(r.is_stale() for r in rows):
-        answer["notes"].append(f"The district data is dated {rows[0].data_date} "
-                               "(more than a year old). Please confirm with the office.")
-    if schedule.message and rows:
-        answer["notes"].append(schedule.message)
-    if answer["status"] == "ANSWER":
-        if gate.schedule_varies:
-            answer["notes"].append(message("SCHEDULE_VARIES", request.lang))
-        if gate.schedule == "abstain":             # say what was left out
-            answer["missing"] = answer["missing"] or schedule.message
+        answer["notes"].append(text("note_stale", request.lang, date=rows[0].data_date))
+    if schedule.note and rows:
+        answer["notes"].append(text(schedule.note["key"], request.lang,
+                                    **schedule.note["args"]))
+    if answer["status"] == "ANSWER" and gate.schedule == "abstain":   # say what was left out
+        answer["missing"] = answer["missing"] or schedule.message
 
 
 def zone_detail(row: ScheduleRow, types: list[str], day: DayRef | None) -> dict:
@@ -144,11 +173,11 @@ def handoff(request: Request, route: Route, gate: GateDecision,
             schedule: ScheduleResult | None) -> dict:
     checked = []
     if gate.item != "skip":
-        checked.append("national sorting guides (2018 guideline, 2026 rules)")
+        checked.append(text("checked_guides", request.lang))
     if schedule is not None:
         place = " ".join(p for p in (request.district, request.dong) if p)
-        checked.append(f"district collection data for {place}")
-    return build_handoff(
+        checked.append(text("checked_district", request.lang, place=place))
+    return build_handoff(lang=request.lang,
         item_ko=route.item_ko if fit_to_show(route.item_ko) else "",
         item_asked=route.item if route.checks.get("item_in_question") else "",
         waste_type=request.waste_type, district=request.district, dong=request.dong,

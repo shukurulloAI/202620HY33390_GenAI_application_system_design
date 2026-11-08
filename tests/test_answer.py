@@ -26,7 +26,21 @@ def test_answer_schedule_fields():
 def test_handoff_keeps_broken_korean_away_from_the_user():
     route = Route(valid=True, item="nail polish bottles", item_ko="네일 pol리스 병",
                   checks={"item_in_question": True})
-    request = SimpleNamespace(district=None, dong=None, waste_type=None)
+    request = SimpleNamespace(district=None, dong=None, waste_type=None, lang=None)
     gate = GateDecision("INSUFFICIENT_CONTEXT", "abstain", "skip")
     sentence = handoff(request, route, gate, None)["korean_sentence"]
     assert "pol리스" not in sentence and "nail polish bottles" in sentence
+
+
+def test_a_partial_answer_says_what_failed():
+    from rag.answer import clarify, say_what_failed
+    from rag.texts import TEXTS
+    answer = {"answer_text": "Food waste: Mon, Wed, Fri [1]"}
+    say_what_failed(answer, GateDecision("ANSWER", "abstain", "answer"), "zh")
+    assert answer["answer_text"].startswith(TEXTS["zh"]["ITEM_FAILED"])
+    answer = {"answer_text": "Paper (종이) [1]"}
+    say_what_failed(answer, GateDecision("ANSWER", "answer", "abstain"), "en")
+    assert answer["answer_text"].endswith(TEXTS["en"]["SCHEDULE_FAILED"])
+    question = {"kind": "province", "args": {"district": "중구", "n": 5}, "question": "...",
+                "options": ["서울특별시 중구"]}
+    assert clarify(question, "ko")["question"] == "'중구'은(는) 5개 시·도에 있습니다. 어느 지역인가요?"

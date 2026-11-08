@@ -27,6 +27,8 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 
+from rag.texts import text
+
 MAX_ZONES = 4          # more zones than this and no neighbourhood -> ask for it
 
 
@@ -40,7 +42,8 @@ class GateDecision:
     tau: float | None = None
     item_match: bool | None = None
     source_years: list = field(default_factory=list)
-    clarify: dict | None = None    # {"question": ..., "options": [...]}
+    clarify: dict | None = None    # {"kind", "args", "question" (English), "options"}:
+                                   # rag/answer.py writes the question in the user's language
     schedule_varies: bool = False  # days differ between collection points, no name separates them
 
     def to_trace(self) -> dict:
@@ -85,31 +88,27 @@ def decide(intent: str, selected: list, schedule, district: str | None,
         sched = "skip"
     elif not district:
         sched = "clarify"
-        clarify = {"question": "Which district (구) and neighbourhood (동) do you live in? "
-                               "Collection days depend on the area.", "options": []}
+        clarify = clarify_question("district", [])
         reasons.append("schedule asked but no district given")
     elif schedule is None or schedule.status == "NO_DATA":
         sched = "abstain"
         reasons.append(f"schedule tool: {schedule.message if schedule else 'not run'}")
     elif schedule.status == "CLARIFY":
         sched = "clarify"
-        clarify = {"question": f"{schedule.message}. Which one do you mean?",
-                   "options": schedule.options}
+        clarify = clarify_question("province", schedule.options, **schedule.note["args"])
         reasons.append(f"schedule tool: {schedule.message}")
     elif len(schedule.rows) > MAX_ZONES and not (dong and schedule.matched_on == "area"):
         sched = "clarify"
         areas = sorted({a for r in schedule.rows for a in r.area_names})
-        clarify = {"question": f"{schedule.rows[0].district} has {len(schedule.rows)} "
-                               "collection zones. Which neighbourhood (동) do you live in?",
-                   "options": areas[:30]}
+        clarify = clarify_question("zones", areas[:30], district=schedule.rows[0].district,
+                                   n=len(schedule.rows))
         reasons.append(f"{len(schedule.rows)} zones and no neighbourhood")
     elif len(schedule.rows) > MAX_ZONES and schedule.schedules_differ():
         # Only MAX_ZONES rows reach the answer, so it would state a day that many rows
         # here do not have. E.g. 고흥군 도덕면: 287 collection points, Monday to Friday.
         if schedule.options:
             sched = "clarify"
-            clarify = {"question": f"Which of these do you live in: {dong}?",
-                       "options": schedule.options[:30]}
+            clarify = clarify_question("names", schedule.options[:30], dong=dong)
             reasons.append(schedule.message)
         else:
             sched = "abstain"
@@ -126,3 +125,9 @@ def decide(intent: str, selected: list, schedule, district: str | None,
                     if c.metadata.get("source_year")}) if item == "answer" else []
     return GateDecision(status, item, sched, reasons, top, tau, item_match, years, clarify,
                         varies)
+
+
+def clarify_question(kind: str, options: list[str], **args) -> dict:
+    """kind: district | province | zones | names (the clarify_<kind> sentences in rag/texts.py)."""
+    return {"kind": kind, "args": args, "question": text(f"clarify_{kind}", "en", **args),
+            "options": options}

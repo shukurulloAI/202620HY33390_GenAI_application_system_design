@@ -12,6 +12,7 @@ pandas>=2.0                    # Vitou_EDA notebook
 sentence-transformers>=3.0     # bge-m3 embeddings, bge-reranker cross-encoder
 qdrant-client>=1.12            # local persistent vector store
 rank-bm25>=0.2.2               # lexical retrieval
+pydantic>=2.7                  # answer contract (rag/contract.py)
 kiwipiepy>=0.18                # Korean morphological tokenizer for BM25
 
 # --- Evaluation (Anar) ---

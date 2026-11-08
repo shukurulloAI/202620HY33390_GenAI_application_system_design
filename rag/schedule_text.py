@@ -51,35 +51,41 @@ TEXT = {
            "no_days": "no days listed", "no_time": "time not given", "where": "Where",
            "how": "How", "depends": "{waste} depends on your neighbourhood:",
            "yes": "yes", "no": "no",
-           "today": "Today", "tonight": "Tonight", "tomorrow": "Tomorrow"},
+           "today": "Today", "tonight": "Tonight", "tomorrow": "Tomorrow",
+           "no_collection": "No collection"},
     "ko": {"days": ("월", "화", "수", "목", "금", "토", "일"), "sep": ", ",
            "no_days": "요일 정보 없음", "no_time": "시간 정보 없음", "where": "장소",
            "how": "방법", "depends": "{waste}는 지역마다 다릅니다:",
            "yes": "배출 가능", "no": "배출 불가",
-           "today": "오늘", "tonight": "오늘 밤", "tomorrow": "내일"},
+           "today": "오늘", "tonight": "오늘 밤", "tomorrow": "내일",
+           "no_collection": "미수거일"},
     "zh": {"days": ("周一", "周二", "周三", "周四", "周五", "周六", "周日"), "sep": "、",
            "no_days": "未列出日期", "no_time": "未提供时间", "where": "地点",
            "how": "方法", "depends": "{waste}因您所在的社区而异：",
            "yes": "可以", "no": "不可以",
-           "today": "今天", "tonight": "今晚", "tomorrow": "明天"},
+           "today": "今天", "tonight": "今晚", "tomorrow": "明天",
+           "no_collection": "不收运日"},
     "vi": {"days": ("Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"),
            "sep": ", ", "no_days": "không có ngày", "no_time": "không có giờ",
            "where": "Địa điểm", "how": "Cách làm",
            "depends": "{waste} tùy theo khu phố của bạn:",
            "yes": "được", "no": "không được",
-           "today": "Hôm nay", "tonight": "Tối nay", "tomorrow": "Ngày mai"},
+           "today": "Hôm nay", "tonight": "Tối nay", "tomorrow": "Ngày mai",
+           "no_collection": "Ngày không thu gom"},
     "uz": {"days": ("dushanba", "seshanba", "chorshanba", "payshanba", "juma", "shanba",
                     "yakshanba"),
            "sep": ", ", "no_days": "kunlar ko'rsatilmagan", "no_time": "vaqt ko'rsatilmagan",
            "where": "Joy", "how": "Usul", "depends": "{waste} mahallangizga bog'liq:",
            "yes": "mumkin", "no": "mumkin emas",
-           "today": "Bugun", "tonight": "Bugun kechqurun", "tomorrow": "Ertaga"},
+           "today": "Bugun", "tonight": "Bugun kechqurun", "tomorrow": "Ertaga",
+           "no_collection": "Yig'ilmaydigan kunlar"},
     "ru": {"days": ("понедельник", "вторник", "среда", "четверг", "пятница", "суббота",
                     "воскресенье"),
            "sep": ", ", "no_days": "дни не указаны", "no_time": "время не указано",
            "where": "Где", "how": "Как", "depends": "{waste}: зависит от вашего района:",
            "yes": "можно", "no": "нельзя",
-           "today": "Сегодня", "tonight": "Сегодня вечером", "tomorrow": "Завтра"},
+           "today": "Сегодня", "tonight": "Сегодня вечером", "tomorrow": "Завтра",
+           "no_collection": "Дни без вывоза"},
 }
 
 
@@ -165,6 +171,90 @@ def write_where(rows: list[ScheduleRow], lang: str) -> str | None:
     if not parts:
         parts, detail = [places[0]], ""
     return f"{TEXT[lang]['where']}: {', '.join(parts)}" + (f" - {detail}" if detail else "")
+
+
+# --- No-collection days (미수거일). 229 distinct free-text values; the terms below cover 96% of
+# rows. A value is translated only when every part of it is known, and the Korean is kept next
+# to it; any other value is shown in Korean, as the source has it.
+_NO_COLLECTION_TERMS = {
+    "월": 0, "월요일": 0, "화": 1, "화요일": 1, "수": 2, "수요일": 2, "목": 3, "목요일": 3,
+    "금": 4, "금요일": 4, "토": 5, "토요일": 5, "매주 토요일": 5, "매주토요일": 5, "일": 6,
+    "일요일": 6, "매주 일요일": 6, "매주일요일": 6,
+    "공휴일": "holidays", "법정공휴일": "holidays", "관공서 공휴일": "holidays", "휴일": "holidays",
+    "국경일": "holidays", "대체공휴일": "substitute", "임시공휴일": "temporary",
+    "일부 공휴일": "some_holidays", "일부공휴일": "some_holidays", "법정공휴일 중 일부": "some_holidays",
+    "명절": "festive", "명절당일": "festive_day", "명절 당일": "festive_day",
+    "명절다음날": "festive_next", "명절 다음날": "festive_next",
+    "설": "seollal", "설날": "seollal", "설명절": "seollal", "설 명절": "seollal",
+    "설날 당일": "seollal_day", "설명절당일": "seollal_day", "설명절 당일": "seollal_day",
+    "추석": "chuseok", "추석날": "chuseok", "추석명절": "chuseok", "추석 명절": "chuseok",
+    "추석 당일": "chuseok_day", "추석명절당일": "chuseok_day",
+    "1월1일": "newyear", "1월 1일": "newyear", "신정": "newyear",
+    "근로자의날": "labour", "근로자의 날": "labour", "주말": "weekend",
+    "없음": "none", "연중무휴": "none",
+}
+NO_COLLECTION_WORDS = {
+    "en": {"holidays": "public holidays", "substitute": "substitute holidays",
+           "temporary": "temporary holidays", "some_holidays": "some public holidays",
+           "festive": "Seollal and Chuseok holidays", "festive_day": "the day of Seollal and Chuseok",
+           "festive_next": "the day after Seollal and Chuseok", "seollal": "Seollal (Lunar New Year)",
+           "seollal_day": "Seollal day", "chuseok": "Chuseok", "chuseok_day": "Chuseok day",
+           "newyear": "New Year's Day", "labour": "Labour Day (May 1)", "weekend": "weekends",
+           "none": "none", "may_change": "may change"},
+    "zh": {"holidays": "法定节假日", "substitute": "补休日", "temporary": "临时公休日",
+           "some_holidays": "部分节假日", "festive": "春节和中秋节假期", "festive_day": "春节和中秋节当天",
+           "festive_next": "春节和中秋节的第二天", "seollal": "春节", "seollal_day": "春节当天",
+           "chuseok": "中秋节", "chuseok_day": "中秋节当天", "newyear": "元旦",
+           "labour": "劳动节（5月1日）", "weekend": "周末", "none": "无", "may_change": "可能变动"},
+    "vi": {"holidays": "ngày lễ", "substitute": "ngày nghỉ bù", "temporary": "ngày nghỉ lễ tạm thời",
+           "some_holidays": "một số ngày lễ", "festive": "Tết Seollal và Chuseok",
+           "festive_day": "ngày Tết Seollal và Chuseok", "festive_next": "ngày sau Tết Seollal và Chuseok",
+           "seollal": "Tết Seollal (Tết Âm lịch)", "seollal_day": "ngày Tết Seollal",
+           "chuseok": "Tết Chuseok", "chuseok_day": "ngày Chuseok", "newyear": "Tết Dương lịch",
+           "labour": "Ngày Quốc tế Lao động (1/5)", "weekend": "cuối tuần", "none": "không có", "may_change": "có thể thay đổi"},
+    "uz": {"holidays": "bayram kunlari", "substitute": "ko'chirilgan dam olish kunlari",
+           "temporary": "vaqtinchalik dam olish kunlari", "some_holidays": "ba'zi bayram kunlari",
+           "festive": "Seollal va Chuseok bayramlari", "festive_day": "Seollal va Chuseok kuni",
+           "festive_next": "Seollal va Chuseokdan keyingi kun", "seollal": "Seollal (Oy yangi yili)",
+           "seollal_day": "Seollal kuni", "chuseok": "Chuseok", "chuseok_day": "Chuseok kuni",
+           "newyear": "Yangi yil", "labour": "Mehnat kuni (1-may)", "weekend": "dam olish kunlari",
+           "none": "yo'q", "may_change": "o'zgarishi mumkin"},
+    "ru": {"holidays": "праздничные дни", "substitute": "переносные выходные",
+           "temporary": "временные выходные", "some_holidays": "некоторые праздники",
+           "festive": "праздники Соллаль и Чхусок", "festive_day": "день Соллаль и Чхусок",
+           "festive_next": "день после Соллаль и Чхусок", "seollal": "Соллаль (Лунный Новый год)",
+           "seollal_day": "день Соллаль", "chuseok": "Чхусок", "chuseok_day": "день Чхусок",
+           "newyear": "Новый год", "labour": "День труда (1 мая)", "weekend": "выходные",
+           "none": "нет", "may_change": "может меняться"},
+}
+_SEPARATORS = re.compile(r"\s*(?:및|,|\+|·|/|ㆍ|、)\s*")
+
+
+def no_collection_text(raw: str, lang: str) -> str:
+    """'토+일' -> 'Sat, Sun (토+일)'. Korean, or anything not fully known, stays as written."""
+    raw = (raw or "").strip()
+    if lang == "ko" or not raw or lang not in NO_COLLECTION_WORDS:
+        return raw
+    value = re.sub(r"명절\s*\(\s*설\s*[,·]\s*추석\s*\)", "설+추석", raw)
+    may_change = bool(re.search(r"\(\s*변동\s*가능\s*\)", value))
+    value = re.sub(r"\(\s*변동\s*가능\s*\)", "", value)
+    parts = [p.strip() for p in _SEPARATORS.split(value) if p.strip()]
+    if not parts or any(p not in _NO_COLLECTION_TERMS for p in parts):
+        return raw
+    words = []
+    for part in parts:
+        key = _NO_COLLECTION_TERMS[part]
+        words.append(TEXT[lang]["days"][key] if isinstance(key, int)
+                     else NO_COLLECTION_WORDS[lang][key])
+    if may_change:
+        words.append(NO_COLLECTION_WORDS[lang]["may_change"])
+    return f"{TEXT[lang]['sep'].join(dict.fromkeys(words))} ({raw})"
+
+
+def write_no_collection(rows: list[ScheduleRow], lang: str) -> str | None:
+    values = list(dict.fromkeys(no_collection_text(r.no_collection_days, lang) for r in rows
+                                if r.no_collection_days))
+    return f"{TEXT[lang]['no_collection']}: {'; '.join(values)}" if values else None
 
 
 def method_lines(rows: list[ScheduleRow], waste_type: str | None) -> list[str]:
@@ -255,6 +345,9 @@ class ScheduleWriter:
         where = write_where(rows, lang)
         if where:
             lines.append(where)
+        no_collection = write_no_collection(rows, lang)
+        if no_collection:
+            lines.append(no_collection)
         how, record = self.translate(method_lines(rows, waste_type), lang)
         if how:
             lines.append(f"{TEXT[lang]['how']}: " + " / ".join(how))

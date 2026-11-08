@@ -16,6 +16,8 @@ select = ["E", "F", "I", "B", "UP"]
 "preprocess/*" = ["E501"]
 "rag/bins.py" = ["E501"]
 "rag/schedule_text.py" = ["E501"]
+"rag/texts.py" = ["E501"]
+"eval/make_cases.py" = ["E501"]
 # PDF layout code: its zips pair neighbouring edges and table cells of unequal length.
 "preprocess/parse_item_guides.py" = ["E501", "B905", "B023"]
 

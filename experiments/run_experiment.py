@@ -25,7 +25,7 @@ from pathlib import Path
 
 from eval.cases import default_cases, load_cases
 from eval.metrics import quick_summary, schedule_summary
-from experiments.provenance import git_commit, git_dirty
+from eval.provenance import git_commit, git_dirty
 from rag import config, paths
 from rag.config import PipelineConfig
 from rag.files import sha256_file

@@ -181,3 +181,15 @@ def test_merge_schedule():
     assert both["answer_text"] == "Paper bin [1].\n\nFood waste: Mon [2]"
     assert both["bin"] == "종이" and both["citations"] == [1, 2]
     assert both["how_to_prepare"] == ["fold it", "put it out"]
+
+
+def test_no_collection_days_are_translated_only_when_every_part_is_known():
+    from rag.schedule_text import no_collection_text, write_no_collection
+    assert no_collection_text("토+일", "en") == "Sat, Sun (토+일)"
+    assert no_collection_text("일요일, 명절(설,추석)", "en") == \
+        "Sun, Seollal (Lunar New Year), Chuseok (일요일, 명절(설,추석))"
+    assert no_collection_text("명절 및 일요일", "ru") == "праздники Соллаль и Чхусок, воскресенье (명절 및 일요일)"
+    assert no_collection_text("토+일", "ko") == "토+일"
+    assert no_collection_text("수요일 외 다른 요일", "en") == "수요일 외 다른 요일"   # not every part known
+    rows = default_table().lookup("성동구", dong="행당1동", waste_type="food").rows
+    assert write_no_collection(rows, "en").startswith("No collection: ")

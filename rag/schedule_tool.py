@@ -126,7 +126,8 @@ class ScheduleResult:
     rows: list[ScheduleRow] = field(default_factory=list)
     matched_on: str | None = None       # "area" | "district"
     options: list[str] = field(default_factory=list)
-    message: str = ""
+    message: str = ""                   # for the trace and the gate's reasons (English)
+    note: dict = field(default_factory=dict)   # {"key", "args"}: the same, for rag/texts.py
 
     def schedules_differ(self) -> bool:
         """Do the rows give more than one day or time for the asked waste type?"""
@@ -250,7 +251,8 @@ class ScheduleTable:
         if len(provinces) > 1:
             return ScheduleResult(
                 "CLARIFY", query, options=[f"{p} {rows[0].district}" for p in provinces],
-                message=f"'{rows[0].district}' exists in {len(provinces)} provinces")
+                message=f"'{rows[0].district}' exists in {len(provinces)} provinces",
+                note=_note("clarify_province", district=rows[0].district, n=len(provinces)))
 
         if dong:
             # The official name of a merged dong is '상계6·7동'; the table has 상계6동, 상계7동.
@@ -266,21 +268,32 @@ class ScheduleTable:
                 names = [] if exact or len(zone_rows) == 1 else sorted(
                     {a for r in zone_rows for a in r.area_names if area_base(a) == target})
                 options = names if len(names) > 1 else []
-                message = ""
+                message, note = "", {}
                 if options:
                     message = (f"'{dong}' matches {len(zone_rows)} zones ({', '.join(options)}); "
                                "ask for the exact neighbourhood")
+                    note = _note("note_matches", dong=dong, n=len(zone_rows),
+                                 names=", ".join(options))
                 elif len(zone_rows) > 1:
                     message = (f"'{dong}' has {len(zone_rows)} collection points; "
                                "check which is yours")
+                    note = _note("note_points", dong=dong, n=len(zone_rows))
                 return ScheduleResult("OK", query, zone_rows, matched_on="area", options=options,
-                                      message=message)
+                                      message=message, note=note)
             return ScheduleResult(
                 "OK", query, rows, matched_on="district",
-                message=f"area '{dong}' not found; showing all {len(rows)} zones")
-        message = (f"{len(rows)} zones; the schedule depends on the neighbourhood"
-                   if len(rows) > 1 else "")
-        return ScheduleResult("OK", query, rows, matched_on="district", message=message)
+                message=f"area '{dong}' not found; showing all {len(rows)} zones",
+                note=_note("note_not_found", dong=dong, n=len(rows)))
+        if len(rows) > 1:
+            return ScheduleResult("OK", query, rows, matched_on="district",
+                                  message=f"{len(rows)} zones; the schedule depends on the "
+                                          "neighbourhood",
+                                  note=_note("note_zones", n=len(rows)))
+        return ScheduleResult("OK", query, rows, matched_on="district")
+
+
+def _note(key: str, **args) -> dict:
+    return {"key": key, "args": args}
 
 
 @lru_cache(maxsize=1)

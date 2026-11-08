@@ -1,0 +1,744 @@
+{
+ "about": "Real answers from the full system, for the website's offline mode (RAG_OFFLINE=1) and docs/WEBSITE.md. Regenerate with python -m experiments.make_examples.",
+ "contract_version": "1.0",
+ "git_commit": "aceeac8c0756e1ac33de5bc2f67fd9871acc13e9",
+ "git_dirty": true,
+ "generated": "2026-11-08T16:11:03",
+ "examples": [
+  {
+   "name": "item-en",
+   "question": "Where do I throw away a pizza box?",
+   "lang": "en",
+   "district": null,
+   "dong": null,
+   "answer": {
+    "contract_version": "1.0",
+    "status": "ANSWER",
+    "lang": "en",
+    "bin": "종이",
+    "bin_en": "paper",
+    "how_to_prepare": [
+     "remove any food residue",
+     "fold it flat"
+    ],
+    "answer_text": "Fold the pizza box flat and remove any food residue. Then, put it in the paper bin (종이) [1].",
+    "citations": [
+     {
+      "n": 1,
+      "kind": "item",
+      "ref": "1308f9f6-e35f-502c-8f3b-e538e63ef393",
+      "source": "환경부 재활용품 분리배출 가이드라인 (2018) p.33",
+      "page": 33,
+      "year": 2018,
+      "data_date": null,
+      "text": "[분리배출 품목] 피자박스\n구분: 종이 (paper)\n배출방법: 기름에 오염된 내부 종이는 종량제봉투로 배출\n출처: 환경부 재활용품 분리배출 가이드라인 (2018) p.33"
+     }
+    ],
+    "missing": "",
+    "schedule": null,
+    "data_date": null,
+    "office_phone": null,
+    "clarify": null,
+    "notes": [
+     "Based on the 2018 national guideline; your district may have newer local rules."
+    ],
+    "handoff": null,
+    "trace_id": "93fa1c39-e642-42f6-8015-a5e4112724a8"
+   }
+  },
+  {
+   "name": "schedule-en",
+   "question": "When can I put out food waste?",
+   "lang": "en",
+   "district": "성동구",
+   "dong": "행당1동",
+   "answer": {
+    "contract_version": "1.0",
+    "status": "ANSWER",
+    "lang": "en",
+    "bin": "",
+    "bin_en": "",
+    "how_to_prepare": [
+     "1) general housing-food-waste pay-as-you-throw bag put into dedicated container dispose on designated day, designated time in front of your house2) apartment complex-dispose food waste in designated containers within the complex"
+    ],
+    "answer_text": "Food waste (음식물쓰레기): Mon, Wed, Fri, 20:00-24:00 [1]\nWhere: Door-to-door collection (in front of your house) (문전수거) - 집앞\nNo collection: Chuseok, Seollal (Lunar New Year), Sat, may change (추석명절+설명절+매주토요일(변동가능))\nHow: 1) general housing-food-waste pay-as-you-throw bag put into dedicated container dispose on designated day, designated time in front of your house2) apartment complex-dispose food waste in designated containers within the complex",
+    "citations": [
+     {
+      "n": 1,
+      "kind": "schedule",
+      "ref": "202030300000400002",
+      "source": "District data, 서울특별시 성동구, 관리번호 202030300000400002, data date 2020-12-08",
+      "page": null,
+      "year": null,
+      "data_date": "2020-12-08",
+      "text": "[District schedule] 서울특별시 성동구 - zone 2권역\nAreas: 사근동, 행당1동, 행당2동, 응봉동, 금호1가동, 금호2가동, 금호4가동, 옥수2동, 성수1가1동, 성수1가2동, 성수2가3동\nWhere: 문전수거 / 집앞\nFood waste (음식물쓰레기): days Mon, Wed, Fri; time 20:00-24:00; method: 1)일반주택-음식물 종량제봉투에 넣어 전용 용기에 담아 지정 요일, 지정 시간에 내 집 앞 배출2)공동주택-단지 내 음식물 전용 용기에 배출\nNo collection: 추석명절+설명절+매주토요일(변동가능)\nOffice: 청소행정과 02-2286-5525\nData date: 2020-12-08 (older than 1 year - may be outdated)"
+     }
+    ],
+    "missing": "",
+    "schedule": {
+     "status": "OK",
+     "message": "",
+     "options": [],
+     "zones": [
+      {
+       "province": "서울특별시",
+       "district": "성동구",
+       "zone": "2권역",
+       "areas": [
+        "사근동",
+        "행당1동",
+        "행당2동",
+        "응봉동",
+        "금호1가동",
+        "금호2가동",
+        "금호4가동",
+        "옥수2동",
+        "성수1가1동",
+        "성수1가2동",
+        "성수2가3동"
+       ],
+       "place": "문전수거 / 집앞",
+       "by_type": {
+        "food": {
+         "days": "Mon, Wed, Fri",
+         "start": "20:00",
+         "end": "24:00",
+         "next_dates": [
+          "2026-11-09",
+          "2026-11-11",
+          "2026-11-13"
+         ]
+        }
+       },
+       "day_check": [],
+       "no_collection": "추석명절+설명절+매주토요일(변동가능)",
+       "office": "청소행정과",
+       "phone": "02-2286-5525",
+       "data_date": "2020-12-08",
+       "stale": true,
+       "row_id": "202030300000400002"
+      }
+     ],
+     "days": "Mon, Wed, Fri",
+     "time": "20:00-24:00",
+     "place": "문전수거 / 집앞"
+    },
+    "data_date": "2020-12-08",
+    "office_phone": "02-2286-5525",
+    "clarify": null,
+    "notes": [
+     "The district data is dated 2020-12-08 (more than a year old). Please confirm with the office."
+    ],
+    "handoff": null,
+    "trace_id": "279d0844-45bc-44b3-9a68-2be3b4a78eef"
+   }
+  },
+  {
+   "name": "both-en",
+   "question": "Where do PET bottles go, and when is recycling collected?",
+   "lang": "en",
+   "district": "성동구",
+   "dong": "행당1동",
+   "answer": {
+    "contract_version": "1.0",
+    "status": "ANSWER",
+    "lang": "en",
+    "bin": "",
+    "bin_en": "",
+    "how_to_prepare": [
+     "1) Remove all foreign objects from containers2) Separate items with mixed materials as much as possible by material3) Put items in separate clear plastic bags"
+    ],
+    "answer_text": "I could not confirm how to throw away this item from the official guides, so this answer covers only the collection schedule.\n\nRecyclables (재활용품): Mon, Wed, Fri, 20:00-24:00 [1]\nWhere: Door-to-door collection (in front of your house) (문전수거) - 집앞\nNo collection: Chuseok, Seollal (Lunar New Year), Sat, may change (추석명절+설명절+매주토요일(변동가능))\nHow: 1) Remove all foreign objects from containers2) Separate items with mixed materials as much as possible by material3) Put items in separate clear plastic bags",
+    "citations": [
+     {
+      "n": 1,
+      "kind": "schedule",
+      "ref": "202030300000400002",
+      "source": "District data, 서울특별시 성동구, 관리번호 202030300000400002, data date 2020-12-08",
+      "page": null,
+      "year": null,
+      "data_date": "2020-12-08",
+      "text": "[District schedule] 서울특별시 성동구 - zone 2권역\nAreas: 사근동, 행당1동, 행당2동, 응봉동, 금호1가동, 금호2가동, 금호4가동, 옥수2동, 성수1가1동, 성수1가2동, 성수2가3동\nWhere: 문전수거 / 집앞\nRecyclables (재활용품): days Mon, Wed, Fri; time 20:00-24:00; method: 1)용기 내 각종 이물질 제거2)혼합재질로 구성된 품목은 최대한 재질별로 분리하여 배출3)투명한 비닐봉투에 넣어 품목별로 배출\nNo collection: 추석명절+설명절+매주토요일(변동가능)\nOffice: 청소행정과 02-2286-5525\nData date: 2020-12-08 (older than 1 year - may be outdated)"
+     }
+    ],
+    "missing": "the answer could not be verified against the evidence: bin '플라스틱' is not stated in the cited evidence (they state ['투명페트병'])",
+    "schedule": {
+     "status": "OK",
+     "message": "",
+     "options": [],
+     "zones": [
+      {
+       "province": "서울특별시",
+       "district": "성동구",
+       "zone": "2권역",
+       "areas": [
+        "사근동",
+        "행당1동",
+        "행당2동",
+        "응봉동",
+        "금호1가동",
+        "금호2가동",
+        "금호4가동",
+        "옥수2동",
+        "성수1가1동",
+        "성수1가2동",
+        "성수2가3동"
+       ],
+       "place": "문전수거 / 집앞",
+       "by_type": {
+        "recycling": {
+         "days": "Mon, Wed, Fri",
+         "start": "20:00",
+         "end": "24:00",
+         "next_dates": [
+          "2026-11-09",
+          "2026-11-11",
+          "2026-11-13"
+         ]
+        }
+       },
+       "day_check": [],
+       "no_collection": "추석명절+설명절+매주토요일(변동가능)",
+       "office": "청소행정과",
+       "phone": "02-2286-5525",
+       "data_date": "2020-12-08",
+       "stale": true,
+       "row_id": "202030300000400002"
+      }
+     ],
+     "days": "Mon, Wed, Fri",
+     "time": "20:00-24:00",
+     "place": "문전수거 / 집앞"
+    },
+    "data_date": "2020-12-08",
+    "office_phone": "02-2286-5525",
+    "clarify": null,
+    "notes": [
+     "The district data is dated 2020-12-08 (more than a year old). Please confirm with the office."
+    ],
+    "handoff": {
+     "office": "성동구 청소행정과",
+     "phone": "02-2286-5525",
+     "contact": "Call 성동구 청소행정과 (02-2286-5525).",
+     "korean_sentence": "안녕하세요. 페트병을 어떻게 버려야 하는지 알고 싶습니다. 재활용품 배출 요일과 시간, 장소를 알고 싶습니다. 저는 성동구 행당1동에 살고 있습니다.",
+     "checked": [
+      "national sorting guides (2018 guideline, 2026 rules)",
+      "district collection data for 성동구 행당1동"
+     ]
+    },
+    "trace_id": "3e0cbbfa-775b-4e81-a633-43893b4d483b"
+   }
+  },
+  {
+   "name": "item-ko",
+   "question": "닭뼈는 음식물쓰레기인가요?",
+   "lang": "ko",
+   "district": null,
+   "dong": null,
+   "answer": {
+    "contract_version": "1.0",
+    "status": "ANSWER",
+    "lang": "ko",
+    "bin": "종량제봉투",
+    "bin_en": "general waste (pay-as-you-throw bag)",
+    "how_to_prepare": [
+     "骨头完全排空后，在袋子上打孔"
+    ],
+    "answer_text": "닭뼈는 음식물쓰레기 아닙니다. 닭뼈는 쓰레기종량제 봉투에 넣어 배출해야 합니다 [1,5].",
+    "citations": [
+     {
+      "n": 1,
+      "kind": "item",
+      "ref": "8b1daf02-8035-59e8-a4ae-2b04a415924d",
+      "source": "환경부 재활용품 분리배출 가이드라인 (2018) p.18",
+      "page": 18,
+      "year": 2018,
+      "data_date": null,
+      "text": "[음식물류폐기물 분리배출 기준 표] 음식물류폐기물로 넣어서는 안 되는 물질 - 육류\n소·돼지·닭 등의 털 및 뼈다귀\n배출방법: 뼈(닭 등의 뼈다귀)는 쓰레기종량제 봉투로 배출 (p.17).\n검색어(편집자 추가): 닭뼈, 치킨 뼈, 돼지뼈, 소뼈, 족발 뼈, 갈비뼈\n출처: 환경부 재활용품 분리배출 가이드라인 (2018) p.18 (표를 옮겨 적음)"
+     },
+     {
+      "n": 5,
+      "kind": "item",
+      "ref": "83dec646-d0a9-5fbd-8ee8-26a0a9f1f11a",
+      "source": "환경부 재활용품 분리배출 가이드라인 (2018) p.30",
+      "page": 30,
+      "year": 2018,
+      "data_date": null,
+      "text": "[분리배출 품목] 생선 (먹고 남은)\n구분: 음식물 (food waste), 종량제봉투 (general waste (pay-as-you-throw bag))\n배출방법: 생선뼈는 쓰레기종량제 봉투에 버리고, 나머지는 음식물로 배출한다.\n출처: 환경부 재활용품 분리배출 가이드라인 (2018) p.30"
+     }
+    ],
+    "missing": "",
+    "schedule": null,
+    "data_date": null,
+    "office_phone": null,
+    "clarify": null,
+    "notes": [
+     "2018년 전국 지침에 따른 안내입니다. 거주하시는 지역에 더 새로운 규정이 있을 수 있습니다."
+    ],
+    "handoff": null,
+    "trace_id": "c8dcb094-fa19-4822-a52d-fca8c4704463"
+   }
+  },
+  {
+   "name": "item-zh",
+   "question": "用过的电池应该怎么扔？",
+   "lang": "zh",
+   "district": null,
+   "dong": null,
+   "answer": {
+    "contract_version": "1.0",
+    "status": "INSUFFICIENT_CONTEXT",
+    "lang": "zh",
+    "bin": "",
+    "bin_en": "",
+    "how_to_prepare": [
+     "将电池从设备中取出"
+    ],
+    "answer_text": "我在所使用的官方资料中没有找到相关信息，所以不会猜测。",
+    "citations": [
+     {
+      "n": 5,
+      "kind": "item",
+      "ref": "2e7aa053-956f-57c2-aedd-85fb6bbe28a8",
+      "source": "분리수거 등에 관한 지침 [별표 1] (기후에너지환경부훈령 제18호, 2026-01-01) 1. 재활용가능자원 품목별배출 시 분리수거 품목 및 배출요령",
+      "page": 2,
+      "year": 2026,
+      "data_date": null,
+      "text": "[분리배출 기준 2026] 금속캔 > 기타캔류(부탄가스, 살충 제용기 등)\n배출요령:\n- 내용물은 제거한 후 배출\n- 폐페인트, 폐광택제, 폐접착제 등 폭발성과 인화성이 있는 내용물이 남아 있는 캔류는 위험성을 표시하여 내용물이 유출되지 않도록 밀봉하여 생활계 유해폐기물 전용 수거함에 배출하거나 지자체가 정하는 방법에 따라 배출\n※ 부탄가스 등 가스용기는 통풍이 잘되는 장소에서 노즐을 눌러 내용물을 제거한 후 배출\n※ 금속재질인 폐배터리(휴대용배터리, 1차 및 충전용 2차 전지 등)는 혼입되지 않도록 전지류로 분류하여 배출\n출처: 분리수거 등에 관한 지침 [별표 1] (기후에너지환경부훈령 제18호, 2026-01-01) - 1. 재활용가능자원 품목별배출 시 분리수거 품목 및 배출요령"
+     }
+    ],
+    "missing": "the answer could not be verified against the evidence: bin '종량제봉투' is not stated in the cited evidence (they state ['금속캔'])",
+    "schedule": null,
+    "data_date": null,
+    "office_phone": null,
+    "clarify": null,
+    "notes": [
+     "采用2026年全国规定（분리수거 등에 관한 지침，2026-01-01起施行）。"
+    ],
+    "handoff": {
+     "office": null,
+     "phone": null,
+     "contact": "请咨询您所在的区政府（구청）或居民中心（주민센터）。",
+     "korean_sentence": "안녕하세요. 쓰레기 배터리를 어떻게 버려야 하는지 알고 싶습니다.",
+     "checked": [
+      "全国垃圾分类指南（2018年指南、2026年规定）"
+     ]
+    },
+    "trace_id": "fa0295c2-96ea-4280-82c6-08c24e03eba9"
+   }
+  },
+  {
+   "name": "schedule-vi",
+   "question": "Khi nào tôi có thể đổ rác thực phẩm?",
+   "lang": "vi",
+   "district": "성동구",
+   "dong": "행당1동",
+   "answer": {
+    "contract_version": "1.0",
+    "status": "ANSWER",
+    "lang": "vi",
+    "bin": "",
+    "bin_en": "",
+    "how_to_prepare": [
+     "1) general housing-food-waste pay-as-you-throw bag put into dedicated container dispose on designated day, designated time in front of your house2) apartment complex-dispose food waste in designated containers within the complex"
+    ],
+    "answer_text": "Rác thải thực phẩm (음식물쓰레기): Thứ Hai, Thứ Tư, Thứ Sáu, 20:00-24:00 [1]\nĐịa điểm: Thu gom trước cửa nhà (문전수거) - 집앞\nNgày không thu gom: Tết Chuseok, Tết Seollal (Tết Âm lịch), Thứ Bảy, có thể thay đổi (추석명절+설명절+매주토요일(변동가능))\nCách làm: 1) general housing-food-waste pay-as-you-throw bag put into dedicated container dispose on designated day, designated time in front of your house2) apartment complex-dispose food waste in designated containers within the complex",
+    "citations": [
+     {
+      "n": 1,
+      "kind": "schedule",
+      "ref": "202030300000400002",
+      "source": "District data, 서울특별시 성동구, 관리번호 202030300000400002, data date 2020-12-08",
+      "page": null,
+      "year": null,
+      "data_date": "2020-12-08",
+      "text": "[District schedule] 서울특별시 성동구 - zone 2권역\nAreas: 사근동, 행당1동, 행당2동, 응봉동, 금호1가동, 금호2가동, 금호4가동, 옥수2동, 성수1가1동, 성수1가2동, 성수2가3동\nWhere: 문전수거 / 집앞\nFood waste (음식물쓰레기): days Mon, Wed, Fri; time 20:00-24:00; method: 1)일반주택-음식물 종량제봉투에 넣어 전용 용기에 담아 지정 요일, 지정 시간에 내 집 앞 배출2)공동주택-단지 내 음식물 전용 용기에 배출\nNo collection: 추석명절+설명절+매주토요일(변동가능)\nOffice: 청소행정과 02-2286-5525\nData date: 2020-12-08 (older than 1 year - may be outdated)"
+     }
+    ],
+    "missing": "",
+    "schedule": {
+     "status": "OK",
+     "message": "",
+     "options": [],
+     "zones": [
+      {
+       "province": "서울특별시",
+       "district": "성동구",
+       "zone": "2권역",
+       "areas": [
+        "사근동",
+        "행당1동",
+        "행당2동",
+        "응봉동",
+        "금호1가동",
+        "금호2가동",
+        "금호4가동",
+        "옥수2동",
+        "성수1가1동",
+        "성수1가2동",
+        "성수2가3동"
+       ],
+       "place": "문전수거 / 집앞",
+       "by_type": {
+        "food": {
+         "days": "Mon, Wed, Fri",
+         "start": "20:00",
+         "end": "24:00",
+         "next_dates": [
+          "2026-11-09",
+          "2026-11-11",
+          "2026-11-13"
+         ]
+        }
+       },
+       "day_check": [],
+       "no_collection": "추석명절+설명절+매주토요일(변동가능)",
+       "office": "청소행정과",
+       "phone": "02-2286-5525",
+       "data_date": "2020-12-08",
+       "stale": true,
+       "row_id": "202030300000400002"
+      }
+     ],
+     "days": "Mon, Wed, Fri",
+     "time": "20:00-24:00",
+     "place": "문전수거 / 집앞"
+    },
+    "data_date": "2020-12-08",
+    "office_phone": "02-2286-5525",
+    "clarify": null,
+    "notes": [
+     "Dữ liệu của quận có ngày 2020-12-08 (đã hơn một năm). Vui lòng xác nhận lại với văn phòng."
+    ],
+    "handoff": null,
+    "trace_id": "1bbdd27b-f0c5-4619-863b-87d546584f98"
+   }
+  },
+  {
+   "name": "item-uz",
+   "question": "Plastik shishalarni qayerga tashlayman?",
+   "lang": "uz",
+   "district": null,
+   "dong": null,
+   "answer": {
+    "contract_version": "1.0",
+    "status": "ANSWER",
+    "lang": "uz",
+    "bin": "플라스틱",
+    "bin_en": "plastics",
+    "how_to_prepare": [
+     "bottle body and lid should be separated",
+     "clean the inside thoroughly"
+    ],
+    "answer_text": "Plastik shishalarni (플라스틱) келишикча чирикка иччилиги талаб bo'lib, бутылкининг тақсатилган буруштарин жана утуштарин ачقашка айтиш керек [1-4].",
+    "citations": [
+     {
+      "n": 1,
+      "kind": "item",
+      "ref": "fd3fb9c3-e8ab-52bf-a1ea-b26fdc5a01ba",
+      "source": "환경부 재활용품 분리배출 가이드라인 (2018) p.32",
+      "page": 32,
+      "year": 2018,
+      "data_date": null,
+      "text": "[분리배출 품목] 젖병 (아기용품)\n구분: 플라스틱 (plastics), 재질별분리 (separate by material)\n배출방법: 젖병의 몸체와 윗부분의 젖꼭지는 분리하여 재질에 맞게 배출\n출처: 환경부 재활용품 분리배출 가이드라인 (2018) p.32"
+     },
+     {
+      "n": 2,
+      "kind": "item",
+      "ref": "416a5f20-48a2-50c4-9857-4b62ab8b88e7",
+      "source": "환경부 재활용품 분리배출 가이드라인 (2018) p.29",
+      "page": 29,
+      "year": 2018,
+      "data_date": null,
+      "text": "[분리배출 품목] 마요네즈용기\n구분: 플라스틱 (plastics), 재질별분리 (separate by material)\n배출방법: 내부를 헹구고 플라스틱 또는 재질에 맞는 분리수거함으로 배출\n출처: 환경부 재활용품 분리배출 가이드라인 (2018) p.29"
+     },
+     {
+      "n": 3,
+      "kind": "item",
+      "ref": "b7bcf986-d915-5407-8368-b5954f94db6e",
+      "source": "환경부 재활용품 분리배출 가이드라인 (2018) p.33",
+      "page": 33,
+      "year": 2018,
+      "data_date": null,
+      "text": "[분리배출 품목] 케찹용기\n구분: 플라스틱 (plastics), 재질별분리 (separate by material)\n배출방법: 내부를 헹구고 플라스틱 또는 재질에 맞는 분리수거함으로 배출\n출처: 환경부 재활용품 분리배출 가이드라인 (2018) p.33"
+     },
+     {
+      "n": 4,
+      "kind": "item",
+      "ref": "dbbe9e51-5386-5baf-a6d4-4518b4d88864",
+      "source": "환경부 재활용품 분리배출 가이드라인 (2018) p.33",
+      "page": 33,
+      "year": 2018,
+      "data_date": null,
+      "text": "[분리배출 품목] 치약용기\n구분: 플라스틱 (plastics), 재질별분리 (separate by material)\n배출방법: 플라스틱류 또는 재질에 맞게 배출\n출처: 환경부 재활용품 분리배출 가이드라인 (2018) p.33"
+     }
+    ],
+    "missing": "",
+    "schedule": null,
+    "data_date": null,
+    "office_phone": null,
+    "clarify": null,
+    "notes": [
+     "2018-yilgi umummilliy qo'llanmaga asoslangan; tumaningizda yangiroq mahalliy qoidalar bo'lishi mumkin."
+    ],
+    "handoff": null,
+    "trace_id": "bb06ba5d-6dac-40a3-927b-a68b98ab6d65"
+   }
+  },
+  {
+   "name": "item-ru",
+   "question": "Куда выбрасывать стеклянные бутылки?",
+   "lang": "ru",
+   "district": null,
+   "dong": null,
+   "answer": {
+    "contract_version": "1.0",
+    "status": "ANSWER",
+    "lang": "ru",
+    "bin": "유리병",
+    "bin_en": "glass bottles",
+    "how_to_prepare": [
+     "clean the bottle thoroughly and remove any residue",
+     "be careful not to break it"
+    ],
+    "answer_text": "Стеклянные бутылки следует выбрасывать в специальный контейнер для стекла (유리병), очистив их от содержимого и оставив без загрязнений [1,5]. Не забудьте быть осторожными при выгрузке, чтобы они не сломались.",
+    "citations": [
+     {
+      "n": 1,
+      "kind": "item",
+      "ref": "f11913da-e648-5709-8b77-412240226203",
+      "source": "분리수거 등에 관한 지침 [별표 1] (기후에너지환경부훈령 제18호, 2026-01-01) 1. 재활용가능자원 품목별배출 시 분리수거 품목 및 배출요령",
+      "page": 2,
+      "year": 2026,
+      "data_date": null,
+      "text": "[분리배출 기준 2026] 유리병 > 음료수병, 기타 병류\n배출요령:\n- 내용물을 비우고 물로 헹구는 등 이물질을 제거하여 배출\n- 유리병이 깨지지 않도록 주의하여 배출\n- 소주, 맥주등빈용기보증금대상유리병은 소매점 등으로 반납하여 보증금 환급\n※ 비해당품목 : 깨진 유리제품(신문지 등에 싸서 종량제 봉투에 배출), 코팅 및 다양한 색상이 들어간유리제품, 내열 유리제품, 크리스탈 유리제품, 판유리, 조명기구용 유리류, 사기·도자기류(화분, 그릇 등) 등은 특수규격마대 또는 대형폐기물 처 리 등 지자체 조례에 따라 배출\n출처: 분리수거 등에 관한 지침 [별표 1] (기후에너지환경부훈령 제18호, 2026-01-01) - 1. 재활용가능자원 품목별배출 시 분리수거 품목 및 배출요령"
+     },
+     {
+      "n": 5,
+      "kind": "item",
+      "ref": "f6d6a9e9-ffb7-5b34-b1b1-af3612b0d960",
+      "source": "분리수거 등에 관한 지침 [별표 1] (기후에너지환경부훈령 제18호, 2026-01-01) 2. 재활용가능자원 통합배출 시 분리수거 품목 및 배출요령",
+      "page": 6,
+      "year": 2026,
+      "data_date": null,
+      "text": "[분리배출 기준 2026] 유리병 > 음료수병, 기타병류\n구분: 따로 배출\n배출요령:\n- 내용물을 깨끗이 비우고 색상 구분 없이 깨지지 않도록 주의하여 배출\n출처: 분리수거 등에 관한 지침 [별표 1] (기후에너지환경부훈령 제18호, 2026-01-01) - 2. 재활용가능자원 통합배출 시 분리수거 품목 및 배출요령"
+     }
+    ],
+    "missing": "",
+    "schedule": null,
+    "data_date": null,
+    "office_phone": null,
+    "clarify": null,
+    "notes": [
+     "По национальному правилу 2026 года (분리수거 등에 관한 지침, действует с 2026-01-01)."
+    ],
+    "handoff": null,
+    "trace_id": "e72a9b8f-908d-4b7a-9009-84ae7160fb4c"
+   }
+  },
+  {
+   "name": "partial-schedule-missing",
+   "question": "Where does a pizza box go, and when is paper collected?",
+   "lang": "en",
+   "district": "강동구",
+   "dong": null,
+   "answer": {
+    "contract_version": "1.0",
+    "status": "ANSWER",
+    "lang": "en",
+    "bin": "종이",
+    "bin_en": "paper",
+    "how_to_prepare": [
+     "lay it flat and stack neatly",
+     "remove any non-paper parts like tape or aluminum foil"
+    ],
+    "answer_text": "For a pizza box, lay it flat and stack neatly. Remove any non-paper parts like tape or aluminum foil before putting it in the paper bin (종이) [1][2].\n\nI could not find the collection schedule for your area in the district data.",
+    "citations": [
+     {
+      "n": 1,
+      "kind": "item",
+      "ref": "1308f9f6-e35f-502c-8f3b-e538e63ef393",
+      "source": "환경부 재활용품 분리배출 가이드라인 (2018) p.33",
+      "page": 33,
+      "year": 2018,
+      "data_date": null,
+      "text": "[분리배출 품목] 피자박스\n구분: 종이 (paper)\n배출방법: 기름에 오염된 내부 종이는 종량제봉투로 배출\n출처: 환경부 재활용품 분리배출 가이드라인 (2018) p.33"
+     },
+     {
+      "n": 2,
+      "kind": "item",
+      "ref": "ade2d020-55f9-58f8-971d-3dea27239f2a",
+      "source": "분리수거 등에 관한 지침 [별표 1] (기후에너지환경부훈령 제18호, 2026-01-01) 2. 재활용가능자원 통합배출 시 분리수거 품목 및 배출요령",
+      "page": 6,
+      "year": 2026,
+      "data_date": null,
+      "text": "[분리배출 기준 2026] 종이류 > 책, 신문지, 상자 등\n구분: 따로 배출\n배출요령:\n- 반듯하게펴서차곡차곡쌓은후배출량이많고 부피가 큰 것은 묶어서 배출\n- 골판지상자는 비닐코팅 부분, 상자에 붙어 있는 테이프ㆍ철핀 등을 제거하고 압착 후 끈으로 묶는 등 다른 종이류와 섞이지 않게 배출\n출처: 분리수거 등에 관한 지침 [별표 1] (기후에너지환경부훈령 제18호, 2026-01-01) - 2. 재활용가능자원 통합배출 시 분리수거 품목 및 배출요령"
+     }
+    ],
+    "missing": "no schedule data for district '강동구'",
+    "schedule": {
+     "status": "NO_DATA",
+     "message": "no schedule data for district '강동구'",
+     "options": [],
+     "zones": [],
+     "days": null,
+     "time": null,
+     "place": null
+    },
+    "data_date": null,
+    "office_phone": null,
+    "clarify": null,
+    "notes": [
+     "Uses the 2026 national rule (분리수거 등에 관한 지침, effective 2026-01-01)."
+    ],
+    "handoff": {
+     "office": null,
+     "phone": null,
+     "contact": "Ask your district office (구청) or community service centre (주민센터).",
+     "korean_sentence": "안녕하세요. 피자 상자를 어떻게 버려야 하는지 알고 싶습니다. 재활용품 배출 요일과 시간, 장소를 알고 싶습니다. 저는 강동구에 살고 있습니다.",
+     "checked": [
+      "national sorting guides (2018 guideline, 2026 rules)",
+      "district collection data for 강동구"
+     ]
+    },
+    "trace_id": "a757aa50-c7ee-467d-ab1c-0aa0b6f14cfd"
+   }
+  },
+  {
+   "name": "clarify-no-district",
+   "question": "When can I put out recycling?",
+   "lang": "en",
+   "district": null,
+   "dong": null,
+   "answer": {
+    "contract_version": "1.0",
+    "status": "CLARIFY",
+    "lang": "en",
+    "bin": "",
+    "bin_en": "",
+    "how_to_prepare": [],
+    "answer_text": "I need one more detail to answer.",
+    "citations": [],
+    "missing": "schedule asked but no district given",
+    "schedule": null,
+    "data_date": null,
+    "office_phone": null,
+    "clarify": {
+     "kind": "district",
+     "options": [],
+     "question": "Which district (구) and neighbourhood (동) do you live in? Collection days depend on the area."
+    },
+    "notes": [],
+    "handoff": null,
+    "trace_id": "e6d986a4-5b4d-4ee2-a899-67e7f93aeba6"
+   }
+  },
+  {
+   "name": "clarify-province",
+   "question": "When is general waste collected in Jung-gu?",
+   "lang": "en",
+   "district": null,
+   "dong": null,
+   "answer": {
+    "contract_version": "1.0",
+    "status": "CLARIFY",
+    "lang": "en",
+    "bin": "",
+    "bin_en": "",
+    "how_to_prepare": [],
+    "answer_text": "I need one more detail to answer.",
+    "citations": [],
+    "missing": "schedule tool: '중구' exists in 5 provinces",
+    "schedule": {
+     "status": "CLARIFY",
+     "message": "'중구' exists in 5 provinces",
+     "options": [
+      "대구광역시 중구",
+      "대전광역시 중구",
+      "부산광역시 중구",
+      "서울특별시 중구",
+      "울산광역시 중구"
+     ],
+     "zones": [],
+     "days": null,
+     "time": null,
+     "place": null
+    },
+    "data_date": null,
+    "office_phone": null,
+    "clarify": {
+     "kind": "province",
+     "options": [
+      "대구광역시 중구",
+      "대전광역시 중구",
+      "부산광역시 중구",
+      "서울특별시 중구",
+      "울산광역시 중구"
+     ],
+     "question": "'중구' exists in 5 provinces. Which one do you mean?"
+    },
+    "notes": [],
+    "handoff": null,
+    "trace_id": "cb21a8cb-44cf-4d4e-8097-ae5dee6104c4"
+   }
+  },
+  {
+   "name": "abstain",
+   "question": "How do I dispose of a dead hamster?",
+   "lang": "en",
+   "district": null,
+   "dong": null,
+   "answer": {
+    "contract_version": "1.0",
+    "status": "INSUFFICIENT_CONTEXT",
+    "lang": "en",
+    "bin": "",
+    "bin_en": "",
+    "how_to_prepare": [],
+    "answer_text": "I could not find this in the official sources I use, so I will not guess.",
+    "citations": [],
+    "missing": "top rerank score 0.001 < tau 0.15",
+    "schedule": null,
+    "data_date": null,
+    "office_phone": null,
+    "clarify": null,
+    "notes": [],
+    "handoff": {
+     "office": null,
+     "phone": null,
+     "contact": "Ask your district office (구청) or community service centre (주민센터).",
+     "korean_sentence": "안녕하세요. 이 물건을 어떻게 버려야 하는지 알고 싶습니다: dead hamster.",
+     "checked": [
+      "national sorting guides (2018 guideline, 2026 rules)"
+     ]
+    },
+    "trace_id": "4f00e2c3-c965-430d-9af6-1410e381ad8f"
+   }
+  },
+  {
+   "name": "out-of-scope",
+   "question": "Can you recommend a good restaurant near Hanyang University?",
+   "lang": "en",
+   "district": null,
+   "dong": null,
+   "answer": {
+    "contract_version": "1.0",
+    "status": "OUT_OF_SCOPE",
+    "lang": "en",
+    "bin": "",
+    "bin_en": "",
+    "how_to_prepare": [],
+    "answer_text": "I can only help with household waste in Korea: which bin an item goes in, and when and where to put waste out in your district.",
+    "citations": [],
+    "missing": "router: question is outside household waste in Korea",
+    "schedule": null,
+    "data_date": null,
+    "office_phone": null,
+    "clarify": null,
+    "notes": [],
+    "handoff": null,
+    "trace_id": "2d50cb01-8c0f-4a43-bd19-5ce42a454eb7"
+   }
+  }
+ ]
+}

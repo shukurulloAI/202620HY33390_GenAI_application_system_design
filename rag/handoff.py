@@ -7,40 +7,19 @@ When the answer is not a full ANSWER, the user gets:
     - a short Korean sentence to show or say at the office / 주민센터
     - what was already checked, so they do not start from zero
 
-Messages are deterministic (no LLM), in English, or Korean when lang = "ko".
+Everything here is written by code (no LLM), in the user's language (rag/texts.py). The
+Korean sentence is always Korean: it is for the person at the office.
 """
 from __future__ import annotations
 
 from rag.korean import object_particle
 from rag.schedule_tool import WASTE_TYPES
-
-MESSAGES = {
-    "OUT_OF_SCOPE": {
-        "en": "I can only help with household waste in Korea: which bin an item goes in, "
-              "and when and where to put waste out in your district.",
-        "ko": "저는 한국의 생활폐기물 분리배출(품목별 배출 방법, 지역별 배출 요일·시간·장소)만 "
-              "안내할 수 있습니다.",
-    },
-    "INSUFFICIENT_CONTEXT": {
-        "en": "I could not find this in the official sources I use, so I will not guess.",
-        "ko": "제가 사용하는 공식 자료에서 이 내용을 찾지 못해 추측하지 않겠습니다.",
-    },
-    "CLARIFY": {
-        "en": "I need one more detail to answer.",
-        "ko": "답변을 위해 정보가 하나 더 필요합니다.",
-    },
-    "SCHEDULE_VARIES": {
-        "en": "Collection days differ between collection points in this area, so I will not "
-              "give you one day. Your district office can tell you which point is yours.",
-        "ko": "이 지역은 배출 장소마다 수거 요일이 달라 한 가지 요일로 안내하지 않겠습니다. "
-              "이용하시는 배출 장소는 구청이나 군청에 문의해 주세요.",
-    },
-}
+from rag.texts import TEXTS, text
 
 
 def message(status: str, lang: str | None) -> str:
-    texts = MESSAGES.get(status, MESSAGES["INSUFFICIENT_CONTEXT"])
-    return texts["ko"] if lang == "ko" else texts["en"]
+    """The fixed answer for a status (OUT_OF_SCOPE, CLARIFY, ...), in the user's language."""
+    return text(status if status in TEXTS["en"] else "INSUFFICIENT_CONTEXT", lang)
 
 
 def korean_sentence(item_ko: str, waste_type: str | None, district: str | None,
@@ -65,13 +44,13 @@ def korean_sentence(item_ko: str, waste_type: str | None, district: str | None,
 
 def build_handoff(*, item_ko: str, item_asked: str, waste_type: str | None,
                   district: str | None, dong: str | None, schedule, asks_schedule: bool,
-                  checked: list[str]) -> dict:
+                  checked: list[str], lang: str | None = None) -> dict:
     office = phone = None
     if schedule is not None and schedule.rows:
         row = schedule.rows[0]
         office, phone = f"{row.district} {row.office}".strip(), row.phone or None
-    contact = (f"Call {office} ({phone})." if phone else
-               "Ask your district office (구청) or community service centre (주민센터).")
+    contact = (text("contact_phone", lang, office=office, phone=phone) if phone else
+               text("contact_none", lang))
     return {"office": office, "phone": phone, "contact": contact,
             "korean_sentence": korean_sentence(item_ko, waste_type, district, dong,
                                                asks_schedule, item_asked),

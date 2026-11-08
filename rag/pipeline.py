@@ -31,6 +31,7 @@ from rag import config
 from rag.answer import build_answer
 from rag.config import PipelineConfig
 from rag.context import ContextBudget, default_counter, pack_evidence, schedule_evidence
+from rag.contract import problems
 from rag.gate import MAX_ZONES, GateDecision, decide
 from rag.generate import ANSWER_SCHEMA, build_prompt, parse_answer
 from rag.handoff import message
@@ -176,6 +177,7 @@ class Pipeline:
         trace["answer"] = build_answer(draft, evidence, request=request, route=route, gate=gate,
                                        schedule=schedule, rows=rows, day=day,
                                        trace_id=trace["trace_id"])
+        trace["contract_problems"] = problems(trace["answer"])
         if self.write_traces:
             write_trace(trace)
         return trace
@@ -277,6 +279,12 @@ class Pipeline:
                 else set() if gate.schedule != "skip" else None)
         draft, validation = validate(draft, evidence, days, self.cfg.validation,
                                      item_question=gate.item == "answer")
+        if draft.get("status") not in ("ANSWER", "INSUFFICIENT_CONTEXT"):
+            # Not JSON, or a status outside the schema: say nothing rather than guess.
+            validation["unusable_output"] = draft.get("status")
+            draft.update(status="INSUFFICIENT_CONTEXT", bin="", bin_en="", citations=[],
+                         missing=draft.get("missing") or "model output was unusable")
+            validation["downgraded"] = True
         if validation.get("downgraded"):
             draft["answer_text"] = message("INSUFFICIENT_CONTEXT", request.lang)
         trace["checks"] = {**checks, "validation": validation}
