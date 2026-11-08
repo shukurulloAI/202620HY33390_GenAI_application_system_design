@@ -18,6 +18,7 @@ traces/
 
 # Secrets
 .env
+.streamlit/secrets.toml
 
 # Rebuilt by python -m preprocess.build_all (9 MB, only for E4)
 data/processed/schedule_chunks.jsonl
