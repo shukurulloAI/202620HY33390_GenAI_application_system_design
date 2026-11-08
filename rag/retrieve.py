@@ -5,6 +5,7 @@ Stages, each switchable so it can be measured on its own:
 
     queries (original question and/or the router's Korean rewrite)
       -> dense (bge-m3 + Qdrant)  and/or  BM25 (kiwi morphemes | character bigrams)
+      [+ name search: the router's item name against item names only, optional]
       -> Reciprocal Rank Fusion of all lists           = candidate set R (k_retrieve)
       -> cross-encoder rerank of R (bge-reranker-v2-m3) [optional]
       -> top k_final                                   = evidence set E
@@ -97,6 +98,51 @@ class DenseRetriever:
 
     def close(self) -> None:
         pass   # the Qdrant client is shared (local mode allows one client per folder)
+
+
+class NameIndex:
+    """The item name of every chunk (item + sub-item; an FAQ's question; else its first
+    line), embedded with the collection's own model. A short name in any language is
+    matched to short Korean names, which works better than to whole chunks: on dev,
+    "pineapple peels" finds 파인애플껍질 and "batteries" finds 전지, but neither chunk is in
+    the question's own top 20. Built in memory at start (394 names, about 2 s)."""
+
+    def __init__(self, dense: DenseRetriever):
+        import numpy as np
+        self.dense, self.np = dense, np
+        self.chunks = read_jsonl(corpus_path("items"))
+        self.names = [self.name_of(c) for c in self.chunks]
+        self.vectors = np.array(dense.embedder.encode_passages(self.names))
+        self.name = f"names:{dense.spec.key}@{dense.revision[:8]}"
+
+    @staticmethod
+    def name_of(chunk: dict) -> str:
+        meta = chunk["metadata"]
+        if meta.get("item"):
+            return f"{meta['item']} {meta.get('sub_item') or ''}".strip()
+        lines = chunk["text"].split("\n")
+        return next((line for line in lines if line.startswith("Q:")), lines[0])
+
+    def search(self, names: list[str], k: int = config.K_RETRIEVE,
+               doc_types: list[str] | None = None) -> list[Candidate]:
+        """Best cosine over the given names (e.g. the item in the question's language and
+        its Korean rewrite)."""
+        names = [n for n in names if n]
+        if not names:
+            return []
+        queries = self.np.array([self.dense.embedder.encode_query(n) for n in names])
+        scores = (self.vectors @ queries.T).max(axis=1)
+        order = [i for i in self.np.argsort(-scores)
+                 if not doc_types or self.chunks[i]["metadata"]["doc_type"] in doc_types][:k]
+        return [Candidate(chunk_id=self.chunks[i]["id"], text=self.chunks[i]["text"],
+                          metadata=dict(self.chunks[i]["metadata"]),
+                          score=round(float(scores[i]), 4), rank=r, retriever=self.name)
+                for r, i in enumerate(order, 1)]
+
+
+@lru_cache(maxsize=2)
+def _name_index(embedding_key: str) -> NameIndex:
+    return NameIndex(DenseRetriever(embedding_key))
 
 
 @lru_cache(maxsize=2)
@@ -265,13 +311,17 @@ class ItemRetriever:
         self.bm25 = (_bm25(cfg.bm25_tokenizer, expected)
                      if cfg.retrieval in ("bm25", "hybrid") else None)
         self.reranker = default_reranker() if cfg.rerank else None
-        parts = [p.name for p in (self.dense, self.bm25, self.reranker) if p]
+        self.names = (_name_index(cfg.embedding)
+                      if cfg.name_search and cfg.retrieval in ("dense", "hybrid") else None)
+        parts = [p.name for p in (self.dense, self.bm25, self.names, self.reranker) if p]
         self.name = " | ".join(parts)
         self.collection = self.dense.collection if self.dense else None
 
     def search(self, queries: dict[str, str], rerank_queries: list[str] | None = None,
-               doc_types: list[str] | None = None) -> tuple[list[Candidate], list[Candidate], dict]:
-        """queries: {"original": ..., "rewrite": ...} (empty values skipped).
+               doc_types: list[str] | None = None, item_names: list[str] | None = None
+               ) -> tuple[list[Candidate], list[Candidate], dict]:
+        """queries: {"original": ..., "rewrite": ...} (empty values skipped); item_names:
+        the router's item name(s), searched against chunk names when name_search is on.
         Returns (candidate set R, evidence set E, trace record)."""
         timings, lists = {}, {}
         queries = {name: q for name, q in queries.items() if q}
@@ -281,6 +331,9 @@ class ItemRetriever:
                 lists[f"dense/{qname}"] = self.dense.search(query, self.cfg.k_retrieve, doc_types)
             if self.bm25:
                 lists[f"bm25/{qname}"] = self.bm25.search(query, self.cfg.k_retrieve, doc_types)
+        item_names = [n for n in (item_names or []) if n]
+        if self.names and item_names:
+            lists["names"] = self.names.search(item_names, self.cfg.k_retrieve, doc_types)
         timings["retrieve_s"] = round(time.perf_counter() - t, 3)
 
         fused = rrf(lists, self.cfg.rrf_k)[:self.cfg.k_retrieve]
@@ -294,7 +347,7 @@ class ItemRetriever:
             candidates = self.reranker.rerank(rerank_queries, fused)
             timings["rerank_s"] = round(time.perf_counter() - t, 3)
         selected = candidates[:self.cfg.k_final]
-        record = {"queries": queries,
+        record = {"queries": queries, "item_names": item_names if self.names else None,
                   "rerank_queries": rerank_queries if self.reranker else None,
                   "lists": {name: [c.chunk_id for c in cands] for name, cands in lists.items()},
                   "timings": timings}

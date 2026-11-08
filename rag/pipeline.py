@@ -198,7 +198,14 @@ class Pipeline:
         mode = self.cfg.rerank_query if rewrite_ok else "original"
         rerank_queries = {"original": [question], "rewrite": [route.ko_query],
                           "max": [question, route.ko_query]}[mode]
-        return self.retriever.search(queries, rerank_queries)
+        names = []
+        if route.valid and route.item:                 # the item as the user named it
+            names.append(route.item)
+            if route.item_ko and route.checks.get("item_ko_korean"):
+                names.append(route.item_ko)
+        if self.cfg.rerank_item and names:
+            rerank_queries = [*rerank_queries, *names]
+        return self.retriever.search(queries, rerank_queries, item_names=names)
 
     def _retrieve_items(self, request: Request, route: Route, trace: dict,
                         timings: dict[str, float]) -> list:

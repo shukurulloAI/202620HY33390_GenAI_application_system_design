@@ -83,3 +83,14 @@ def test_language_check_reads_the_script():
     assert not written_in("Plastik (플라스틱) келишикча чирикка", "uz")
     assert written_in("Положите в контейнер (유리병) [1].", "ru")
     assert not written_in("Put it in the paper bin.", "ko")
+
+
+def test_audit_kappa_and_pick():
+    from eval.audit import kappa, pick
+    assert kappa([True, True, False, False], [True, True, False, False]) == 1.0
+    assert kappa([True, False, True, False], [False, True, False, True]) == -1.0
+    assert kappa([True, None], [True, False]) == 1.0          # unlabelled pairs are skipped
+    rows = [{"slice": s, "i": i} for s in ("a", "b", "c") for i in range(5)]
+    picked = pick(rows, 6)
+    assert len(picked) == 6 and {r["slice"] for r in picked} == {"a", "b", "c"}
+    assert pick(rows, 6) == picked                             # fixed seed

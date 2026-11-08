@@ -1,0 +1,15 @@
+{
+  "id": "E9",
+  "question": "Does searching the router's item name against chunk names help retrieval?",
+  "stage": "retrieval",
+  "base": "default",
+  "fixed": {},
+  "reference": "off",
+  "variants": {
+    "off": {"name_search": false, "rerank_item": false},
+    "names": {"name_search": true, "rerank_item": false},
+    "names+rerank-item": {"name_search": true, "rerank_item": true}
+  },
+  "metrics": ["Recall@5", "MRR", "nDCG@5", "by language"],
+  "notes": "Added in Stage 3 after the dev failure analysis: 11 of the 22 failed dev cases had a wrong or unusable Korean rewrite (퍼플라이트 for fluorescent tube, 참외 for pineapple, mixed scripts). The name list adds one ranked list to RRF: max cosine between the item name(s) (as asked, and the Korean rewrite if it passed the Korean check) and each chunk's item name (rag/retrieve.NameIndex). rerank-item adds the item names to the rerank queries (max over queries)."
+}

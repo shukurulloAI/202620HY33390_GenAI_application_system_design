@@ -81,13 +81,29 @@ def evidence_bins(metadata: dict) -> set[str]:
             found.add(canonical_bin(part))
     if metadata.get("doc_type") == "rule":
         sub = re.sub(r"\s+", "", metadata.get("sub_item", ""))
-        # The 2026 integrated-collection table files styrofoam under 합성 수지류, but it
-        # is still put out separately (발포합성수지), so the sub-item decides.
+        # The 2026 tables file some items under a wider group that are still put out
+        # separately: styrofoam under 합성 수지류 (발포합성수지), paper cartons under
+        # 골판지 외 종이류 ("종이팩 전용 수거함"). A sub-item that is itself a bin decides.
         group = ("발포합성수지" if "스티로폼" in sub else None) \
+            or canonical_bin(metadata.get("sub_item", "")) \
             or canonical_bin(metadata.get("item", "")) \
             or canonical_bin(f"{metadata.get('item', '')} {metadata.get('sub_item', '')}")
         if group:
             found.add(group)
+    return found
+
+
+def bins_named_in(text: str) -> set[str]:
+    """Bins whose Korean name or alias appears anywhere in `text`, longest names first, so
+    '종이팩' is not also read as '종이' and '폐가전제품' is one bin. Used only to fill an
+    empty bin field from the answer the user reads."""
+    names = sorted({*BINS, *ALIASES}, key=len, reverse=True)
+    rest, found = re.sub(r"\s+", "", text or "").lower(), set()
+    for name in names:
+        key = re.sub(r"\s+", "", name).lower()
+        if re.search(r"[가-힣]", key) and len(key) >= 2 and key in rest:
+            found.add(canonical_bin(name))
+            rest = rest.replace(key, "|")
     return found
 
 

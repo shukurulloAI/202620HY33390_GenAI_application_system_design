@@ -4,14 +4,16 @@ Output validation (PLAN.md §4.9; Lesson 7, Siemens: validate generated output b
 Checks on the parsed answer, after the JSON/citation checks in generate.parse_answer:
 
     bin_known        `bin` is in the canonical vocabulary (rag/bins.py) or empty
-    bin filled       an item ANSWER with an empty bin gets the one bin its text names, or
-                     else the one bin the cited chunks state (never one the text contradicts)
+    bin filled       an item ANSWER with an empty bin gets the one bin its text names (in
+                     parentheses, else anywhere in Korean), or else the one bin the cited
+                     chunks state (never one the text contradicts)
     bin_text_conflict  the bin field differs from the bin(s) named in answer_text
     bin_supported    the bin is one the cited chunks state (categories / 2026 group); only
                      if they state none, one of its names must appear in their text
     cited            an ANSWER cites at least one evidence block
     schedule_days    weekdays named in answer_text are days the tool returned
-    schedule_invented  days or clock times in an answer that was shown no schedule
+    schedule_invented  days or clock times in an answer that was shown no schedule, or, for
+                     an item-only question, days or times its cited chunks do not contain
 
 Modes (PipelineConfig.validation):
     off      no checks
@@ -24,7 +26,7 @@ from __future__ import annotations
 
 import re
 
-from rag.bins import BINS, canonical_bin, evidence_bins, names_for
+from rag.bins import BINS, bins_named_in, canonical_bin, evidence_bins, names_for
 
 _DAY_PATTERNS = {
     0: r"\bmon(day)?\b|월요일", 1: r"\btue(s|sday)?\b|화요일", 2: r"\bwed(nesday)?\b|수요일",
@@ -70,8 +72,9 @@ def validate(answer: dict, evidence: list, schedule_days: set[int] | None,
         # The model left the bin empty. The user reads the text, so use the one bin the
         # text names; else the one bin the cited chunks state, if the text does not
         # name a different one.
-        if len(named) == 1:
-            bin_key = next(iter(named))
+        bare = named or bins_named_in(answer.get("answer_text", ""))
+        if len(bare) == 1:
+            bin_key = next(iter(bare))
             checks["bin_filled_from_text"] = bin_key
         elif len(stated) == 1 and (not named or stated <= named):
             bin_key = next(iter(stated))
@@ -111,6 +114,18 @@ def validate(answer: dict, evidence: list, schedule_days: set[int] | None,
         if not schedule_days and (named or _CLOCK_TIME.search(answer.get("answer_text", ""))):
             checks["schedule_invented"] = True
             checks["reasons"].append("answer states days or times but was shown no schedule")
+
+    if schedule_days is None and status == "ANSWER":
+        # Item-only answer: weekdays or clock times must come from the cited chunks (the
+        # model has added "Tuesdays, Thursdays, Saturdays 19:00-23:00" to a food answer).
+        text = answer.get("answer_text", "")
+        source = " ".join(e.text for e in cited)
+        extra_days = days_mentioned(text) - days_mentioned(source)
+        extra_times = set(_CLOCK_TIME.findall(text)) - set(_CLOCK_TIME.findall(source))
+        if extra_days or extra_times:
+            checks["schedule_invented"] = True
+            checks["reasons"].append("answer states collection days or times that its "
+                                     "sources do not contain")
 
     answer = dict(answer)
     if bin_key:

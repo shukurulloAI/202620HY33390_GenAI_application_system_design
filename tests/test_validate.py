@@ -62,7 +62,21 @@ def test_invented_schedule_is_refused():
     assert checks["schedule_invented"]                  # a clock time alone counts
     clean = {**answer, "answer_text": "Paper bin (종이) [1]."}
     assert validate(clean, evidence, set(), "enforce")[0]["status"] == "ANSWER"
-    # An item-only question is not checked: None means no schedule was asked for.
-    assert validate(answer, evidence, None, "enforce")[0]["status"] == "ANSWER"
     # With rows shown, a day they contain is fine.
     assert validate(answer, evidence, {1, 3, 5}, "enforce")[0]["status"] == "ANSWER"
+    # An item-only question (None: no schedule asked) may only repeat days or times its
+    # cited chunks contain (dev item10 added "Tue, Thu, Sat 19:00-23:00" to food waste).
+    out, checks = validate(answer, evidence, None, "enforce")
+    assert checks["schedule_invented"] and out["status"] == "INSUFFICIENT_CONTEXT"
+    timed = [EvidenceItem(1, "item", "c1", "guide", "종이 구분: 종이. 화요일 19:00 배출",
+                          {"categories": "종이"})]
+    ok = {**answer, "answer_text": "Paper bin (종이) [1], on Tuesday after 19:00."}
+    assert validate(ok, timed, None, "enforce")[0]["status"] == "ANSWER"
+
+
+def test_empty_bin_is_filled_from_korean_text():
+    evidence = [EvidenceItem(1, "item", "c1", "faq", "폐가전제품 무상방문수거", {})]
+    answer = {"status": "ANSWER", "bin": "", "citations": [1],
+              "answer_text": "고장 난 비데는 폐가전제품으로 배출합니다 [1]."}
+    out, checks = validate(answer, evidence, None, "enforce")
+    assert checks["bin_filled_from_text"] == "가전제품" and out["status"] == "ANSWER"

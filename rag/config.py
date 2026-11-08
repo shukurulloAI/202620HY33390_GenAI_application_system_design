@@ -74,6 +74,9 @@ class PipelineConfig:
     query_mode: str = "both"            # original | rewrite | both  (rewrite needs router)
     rerank: bool = True                 # cross-encoder over the candidate set R
     rerank_query: str = "max"           # original | rewrite | max (best score of both)
+    name_search: bool = False           # add a list: the router's item name against chunk
+                                        # names only (rag/retrieve.NameIndex); Stage 3, E9
+    rerank_item: bool = False           # also rerank with the item name alone (E9)
     k_retrieve: int = K_RETRIEVE
     k_final: int = K_FINAL
     rrf_k: int = RRF_K
@@ -85,7 +88,7 @@ class PipelineConfig:
                                         # dev (E5) once eval/cases/dev.jsonl exists.
     llm_model: str = LLM_MODEL
     router_model: str | None = None     # None = same model as the generator
-    prompt_version: str = "v2"          # v0 minimal | v1 zero-shot contract | v2 few-shot
+    prompt_version: str = "v2"          # v0 minimal | v1 zero-shot | v2 few-shot | v3, v4 fixes
     conflict_policy: str = "prefer_2026"  # prefer_2026 | none   (E8)
     validation: str = "enforce"         # off | flag | enforce   (PLAN.md §4.9)
     schedule_retrieval: str = "structured"  # structured (typed lookup) | vector | postfilter |
@@ -100,7 +103,7 @@ class PipelineConfig:
                "bm25_tokenizer": ("kiwi", "bigram"),
                "query_mode": ("original", "rewrite", "both"),
                "rerank_query": ("original", "rewrite", "max"),
-               "prompt_version": ("v0", "v1", "v2", "v3"),
+               "prompt_version": ("v0", "v1", "v2", "v3", "v4"),
                "conflict_policy": ("prefer_2026", "none"),
                "validation": ("off", "flag", "enforce"),
                "schedule_retrieval": ("structured", "vector", "postfilter", "prefilter"),
