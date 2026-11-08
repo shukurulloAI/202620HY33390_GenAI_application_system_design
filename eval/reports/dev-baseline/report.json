@@ -40,7 +40,12 @@
   "overrides": [],
   "git_commit": "375e7d22f3d2738b7f12062d87e720cf326a41a7",
   "git_dirty": true,
-  "time": "2026-11-08T18:01:15"
+  "time": "2026-11-08T18:01:15",
+  "rescored": {
+   "time": "2026-11-08T23:44:10",
+   "git_commit": "5e9159e722fb653874dec07cdeb1b0ac4878e7b4",
+   "git_dirty": true
+  }
  },
  "overall": {
   "cases": 70,
@@ -63,9 +68,9 @@
    "undefined": 11
   },
   "false_answer": {
-   "k": 21,
+   "k": 13,
    "n": 70,
-   "rate": 0.3,
+   "rate": 0.186,
    "undefined": 0
   },
   "abstain_ok": {
@@ -132,6 +137,7 @@
    "undefined": 0
   },
   "downgraded": 1,
+  "item_withheld": 8,
   "contract_problems": 0,
   "latency_s": {
    "mean": 10.63,
@@ -211,6 +217,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 0,
    "contract_problems": 0,
    "latency_s": {
     "mean": 10.82,
@@ -301,6 +308,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 0,
    "contract_problems": 0,
    "latency_s": {
     "mean": 11.79,
@@ -333,9 +341,9 @@
     "undefined": 0
    },
    "false_answer": {
-    "k": 5,
+    "k": 4,
     "n": 6,
-    "rate": 0.833,
+    "rate": 0.667,
     "undefined": 0
    },
    "abstain_ok": null,
@@ -382,6 +390,7 @@
     "undefined": 0
    },
    "downgraded": 1,
+   "item_withheld": 1,
    "contract_problems": 0,
    "latency_s": {
     "mean": 15.2,
@@ -463,6 +472,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 0,
    "contract_problems": 0,
    "latency_s": {
     "mean": 9.05,
@@ -495,9 +505,9 @@
     "undefined": 0
    },
    "false_answer": {
-    "k": 6,
+    "k": 1,
     "n": 14,
-    "rate": 0.429,
+    "rate": 0.071,
     "undefined": 0
    },
    "abstain_ok": null,
@@ -544,6 +554,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 5,
    "contract_problems": 0,
    "latency_s": {
     "mean": 8.85,
@@ -576,9 +587,9 @@
     "undefined": 0
    },
    "false_answer": {
-    "k": 5,
+    "k": 3,
     "n": 11,
-    "rate": 0.455,
+    "rate": 0.273,
     "undefined": 0
    },
    "abstain_ok": null,
@@ -625,6 +636,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 2,
    "contract_problems": 0,
    "latency_s": {
     "mean": 9.62,
@@ -701,6 +713,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 0,
    "contract_problems": 0,
    "latency_s": {
     "mean": 9.81,
@@ -771,6 +784,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 0,
    "contract_problems": 0,
    "latency_s": {
     "mean": 10.03,
@@ -851,6 +865,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 0,
    "contract_problems": 0,
    "latency_s": {
     "mean": 12.07,
@@ -882,9 +897,9 @@
     "undefined": 2
    },
    "false_answer": {
-    "k": 8,
+    "k": 4,
     "n": 25,
-    "rate": 0.32,
+    "rate": 0.16,
     "undefined": 0
    },
    "abstain_ok": {
@@ -951,6 +966,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 4,
    "contract_problems": 0,
    "latency_s": {
     "mean": 9.73,
@@ -985,9 +1001,9 @@
     "undefined": 8
    },
    "false_answer": {
-    "k": 4,
+    "k": 1,
     "n": 22,
-    "rate": 0.182,
+    "rate": 0.045,
     "undefined": 0
    },
    "abstain_ok": {
@@ -1054,6 +1070,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 3,
    "contract_problems": 0,
    "latency_s": {
     "mean": 10.45,
@@ -1156,6 +1173,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 0,
    "contract_problems": 0,
    "latency_s": {
     "mean": 10.6,
@@ -1258,6 +1276,7 @@
     "undefined": 0
    },
    "downgraded": 1,
+   "item_withheld": 0,
    "contract_problems": 0,
    "latency_s": {
     "mean": 16.55,
@@ -1291,9 +1310,9 @@
     "undefined": 0
    },
    "false_answer": {
-    "k": 1,
+    "k": 0,
     "n": 4,
-    "rate": 0.25,
+    "rate": 0.0,
     "undefined": 0
    },
    "abstain_ok": {
@@ -1345,6 +1364,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 1,
    "contract_problems": 0,
    "latency_s": {
     "mean": 9.76,
@@ -1431,6 +1451,7 @@
     "undefined": 0
    },
    "downgraded": 0,
+   "item_withheld": 0,
    "contract_problems": 0,
    "latency_s": {
     "mean": 8.74,
@@ -1517,6 +1538,7 @@
    "bin": "종이",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": true,
    "retrieval": {
     "gold_rank": 6,
@@ -1552,7 +1574,8 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
-   "false_answer": true,
+   "item_withheld": true,
+   "false_answer": false,
    "retrieval": {
     "gold_rank": 2,
     "hit": true,
@@ -1587,7 +1610,8 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
-   "false_answer": true,
+   "item_withheld": true,
+   "false_answer": false,
    "retrieval": {
     "gold_rank": 7,
     "hit": false,
@@ -1622,6 +1646,7 @@
    "bin": "종량제봉투",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -1657,6 +1682,7 @@
    "bin": "종량제봉투",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -1692,6 +1718,7 @@
    "bin": "음식물",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": true,
    "retrieval": {
     "gold_rank": 1,
@@ -1727,6 +1754,7 @@
    "bin": "종량제봉투",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": true,
    "retrieval": {
     "gold_rank": 1,
@@ -1762,6 +1790,7 @@
    "bin": "종이",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -1797,6 +1826,7 @@
    "bin": "종량제봉투",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 5,
@@ -1832,6 +1862,7 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 13,
@@ -1864,6 +1895,7 @@
    "bin": "종이",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -1899,6 +1931,7 @@
    "bin": "종량제봉투",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": true,
    "retrieval": {
     "gold_rank": 6,
@@ -1934,6 +1967,7 @@
    "bin": "플라스틱",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": true,
    "retrieval": {
     "gold_rank": 2,
@@ -1969,6 +2003,7 @@
    "bin": "플라스틱",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": true,
    "retrieval": {
     "gold_rank": null,
@@ -2004,6 +2039,7 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": null,
@@ -2036,6 +2072,7 @@
    "bin": "종량제봉투",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": true,
    "retrieval": {
     "gold_rank": 12,
@@ -2071,7 +2108,8 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
-   "false_answer": true,
+   "item_withheld": true,
+   "false_answer": false,
    "retrieval": {
     "gold_rank": 10,
     "hit": false,
@@ -2106,6 +2144,7 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": null,
@@ -2138,6 +2177,7 @@
    "bin": "종량제봉투",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -2173,6 +2213,7 @@
    "bin": "종량제봉투",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": true,
    "retrieval": {
     "gold_rank": null,
@@ -2208,6 +2249,7 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -2240,6 +2282,7 @@
    "bin": "종이팩",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -2275,6 +2318,7 @@
    "bin": "종량제봉투",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": true,
    "retrieval": {
     "gold_rank": 2,
@@ -2307,6 +2351,7 @@
    "downgraded": false,
    "total_s": 7.934,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2329,6 +2374,7 @@
    "downgraded": false,
    "total_s": 11.249,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2351,6 +2397,7 @@
    "downgraded": false,
    "total_s": 11.59,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2373,6 +2420,7 @@
    "downgraded": false,
    "total_s": 6.406,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2395,6 +2443,7 @@
    "downgraded": false,
    "total_s": 8.826,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2417,6 +2466,7 @@
    "downgraded": false,
    "total_s": 13.193,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": true,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2440,6 +2490,7 @@
    "downgraded": false,
    "total_s": 9.461,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2462,6 +2513,7 @@
    "downgraded": false,
    "total_s": 9.566,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2484,6 +2536,7 @@
    "downgraded": false,
    "total_s": 7.68,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2506,6 +2559,7 @@
    "downgraded": false,
    "total_s": 15.7,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": true,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2529,6 +2583,7 @@
    "downgraded": false,
    "total_s": 10.335,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": true,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2552,6 +2607,7 @@
    "downgraded": false,
    "total_s": 8.584,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2574,6 +2630,7 @@
    "downgraded": false,
    "total_s": 12.66,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2596,6 +2653,7 @@
    "downgraded": false,
    "total_s": 8.849,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -2621,6 +2679,7 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 16,
@@ -2656,6 +2715,7 @@
    "bin": "종이팩",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 2,
@@ -2694,6 +2754,7 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": null,
@@ -2729,6 +2790,7 @@
    "bin": "음식물",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 4,
@@ -2767,6 +2829,7 @@
    "bin": "종량제봉투",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -2805,6 +2868,7 @@
    "bin": "플라스틱",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 2,
@@ -2843,6 +2907,7 @@
    "bin": "금속캔",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": null,
@@ -2879,6 +2944,7 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": null,
@@ -2914,7 +2980,8 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
-   "false_answer": true,
+   "item_withheld": true,
+   "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
     "hit": true,
@@ -2949,6 +3016,7 @@
    "bin": "고철",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -2984,7 +3052,8 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
-   "false_answer": true,
+   "item_withheld": true,
+   "false_answer": false,
    "retrieval": {
     "gold_rank": 10,
     "hit": false,
@@ -3019,6 +3088,7 @@
    "bin": "유리병",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": true,
    "retrieval": {
     "gold_rank": null,
@@ -3054,6 +3124,7 @@
    "bin": "비닐",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": null,
@@ -3089,6 +3160,7 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 8,
@@ -3121,6 +3193,7 @@
    "bin": "음식물",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -3156,7 +3229,8 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
-   "false_answer": true,
+   "item_withheld": true,
+   "false_answer": false,
    "retrieval": {
     "gold_rank": 2,
     "hit": true,
@@ -3191,6 +3265,7 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": null,
@@ -3223,6 +3298,7 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": null,
@@ -3255,6 +3331,7 @@
    "bin": "플라스틱",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -3290,6 +3367,7 @@
    "bin": "플라스틱",
    "bin_ok": true,
    "raw_bin_ok": false,
+   "item_withheld": false,
    "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
@@ -3325,7 +3403,8 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
-   "false_answer": true,
+   "item_withheld": true,
+   "false_answer": false,
    "retrieval": {
     "gold_rank": 1,
     "hit": true,
@@ -3360,7 +3439,8 @@
    "bin": "",
    "bin_ok": false,
    "raw_bin_ok": false,
-   "false_answer": true,
+   "item_withheld": true,
+   "false_answer": false,
    "retrieval": {
     "gold_rank": 2,
     "hit": true,
@@ -3392,6 +3472,7 @@
    "downgraded": false,
    "total_s": 12.563,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -3418,6 +3499,7 @@
    "downgraded": false,
    "total_s": 13.544,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -3444,6 +3526,7 @@
    "downgraded": false,
    "total_s": 9.167,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -3470,6 +3553,7 @@
    "downgraded": false,
    "total_s": 8.366,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -3496,6 +3580,7 @@
    "downgraded": false,
    "total_s": 10.857,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -3522,6 +3607,7 @@
    "downgraded": false,
    "total_s": 8.349,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -3548,6 +3634,7 @@
    "downgraded": false,
    "total_s": 11.446,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -3574,6 +3661,7 @@
    "downgraded": false,
    "total_s": 11.867,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -3600,6 +3688,7 @@
    "downgraded": false,
    "total_s": 14.32,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -3626,6 +3715,7 @@
    "downgraded": false,
    "total_s": 20.316,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,
@@ -3652,6 +3742,7 @@
    "downgraded": false,
    "total_s": 11.996,
    "intent_ok": null,
+   "item_withheld": false,
    "false_answer": false,
    "gate_item": "answer",
    "gate_should_answer": false,

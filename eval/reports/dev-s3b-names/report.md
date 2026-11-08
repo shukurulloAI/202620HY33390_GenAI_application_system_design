@@ -9,7 +9,7 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `3a4d287
 | Case correct | 51/70 (73%) |
 | Expected behaviour (answer / abstain / clarify / out of scope) | 56/70 (80%) |
 | Bin correct (answerable item cases) | 27/45 (60%) |
-| **False answers** (answered when it should not, or wrong bin) | 5/70 (7%) |
+| **False answers** (answered when it should not, or wrong bin) | 4/70 (6%) |
 | Abstained when it should | 9/10 (90%) |
 | Asked back when it should | 4/4 (100%) |
 | Gold schedule row shown | 19/19 (100%) |
@@ -22,6 +22,7 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `3a4d287
 | Answer in the asked language (script) | 32/32 (100%) |
 | JSON valid | 40/40 (100%) |
 | Downgraded by validation | 7 |
+| Item part withheld, schedule only (not a false answer) | 1 |
 | Contract problems | 0 |
 | Latency mean / median / p90 (s) | 3.6 / 4.63 / 6.84 (not valid: some LLM replies were replayed from the cache) |
 
@@ -30,7 +31,7 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `3a4d287
 | | Cases | Correct | Behaviour | Bin | False answers | Recall@5 |
 |---|---|---|---|---|---|---|
 | ambiguous_location | 4 | 4/4 (100%) | 4/4 (100%) | – | 0/4 (0%) | None |
-| combined | 8 | 7/8 (88%) | 8/8 (100%) | 7/8 (88%) | 1/8 (12%) | 1.0 |
+| combined | 8 | 7/8 (88%) | 8/8 (100%) | 7/8 (88%) | 0/8 (0%) | 1.0 |
 | conflict | 6 | 0/6 (0%) | 2/6 (33%) | 0/6 (0%) | 2/6 (33%) | 0.667 |
 | false_premise | 6 | 3/6 (50%) | 3/6 (50%) | 3/6 (50%) | 0/6 (0%) | 1.0 |
 | item_direct | 14 | 8/14 (57%) | 9/14 (64%) | 8/14 (57%) | 1/14 (7%) | 0.615 |
@@ -43,7 +44,7 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `3a4d287
 
 | | Cases | Correct | Behaviour | Bin | False answers | Recall@5 |
 |---|---|---|---|---|---|---|
-| en | 25 | 16/25 (64%) | 18/25 (72%) | 11/19 (58%) | 2/25 (8%) | 0.833 |
+| en | 25 | 16/25 (64%) | 18/25 (72%) | 11/19 (58%) | 1/25 (4%) | 0.833 |
 | ko | 22 | 21/22 (96%) | 21/22 (96%) | 11/12 (92%) | 0/22 (0%) | 1.0 |
 | ru | 6 | 4/6 (67%) | 4/6 (67%) | 1/3 (33%) | 0/6 (0%) | 0.667 |
 | uz | 7 | 3/7 (43%) | 5/7 (71%) | 0/4 (0%) | 2/7 (29%) | 0.5 |

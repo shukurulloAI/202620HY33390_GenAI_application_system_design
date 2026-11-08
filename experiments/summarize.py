@@ -39,6 +39,29 @@ def _ok(row: dict, stage: str) -> bool | None:
     return row["case_ok"]
 
 
+def stability(manifest: dict) -> list[str]:
+    """E7: per temperature, how often all seeds give the same outcome for a case."""
+    by_temp: dict[float, dict[str, list[tuple]]] = {}
+    for v in manifest["variants"].values():
+        temp = v["config"]["temperature"]
+        for t in read_jsonl(paths.ROOT / v["traces"]):
+            a = t.get("answer") or {}
+            by_temp.setdefault(temp, {}).setdefault(t["case_id"], []).append(
+                (a.get("status"), a.get("bin") or ""))
+    lines = ["Stability across seeds (a case agrees when every seed gives the same status "
+             "and bin; a flip is a case answered under some seeds and not under others):", "",
+             "| Temperature | Seeds | Cases | Same status and bin | Abstention flips | "
+             "Bin changes among answers |", "|---|---|---|---|---|---|"]
+    for temp, cases in sorted(by_temp.items()):
+        seeds = max(len(o) for o in cases.values())
+        same = sum(len(set(o)) == 1 for o in cases.values())
+        flips = sum(len({s == "ANSWER" for s, _ in o}) > 1 for o in cases.values())
+        bins = sum(len({b for s, b in o if s == "ANSWER"}) > 1 for o in cases.values())
+        lines.append(f"| {temp} | {seeds} | {len(cases)} | {same}/{len(cases)} | "
+                     f"{flips}/{len(cases)} | {bins}/{len(cases)} |")
+    return lines
+
+
 def write_summary(spec: dict, manifest: dict, cases: list[dict], out_dir: Path) -> Path:
     stage = spec["stage"]
     results = {name: score(read_jsonl(paths.ROOT / v["traces"]), cases)
@@ -65,7 +88,7 @@ def write_summary(spec: dict, manifest: dict, cases: list[dict], out_dir: Path) 
     else:
         lines += ["| Variant | Correct | False answers | Bin | Behaviour | Abstain ok | "
                   "Clarify ok | Cites gold | Cit. precision | Language ok | JSON valid | "
-                  "Downgraded | Median s |", "|---|" + "---|" * 12]
+                  "Downgraded | Item withheld | Median s |", "|---|" + "---|" * 13]
         for name, result in results.items():
             o = result["overall"]
             lines.append(
@@ -73,7 +96,8 @@ def write_summary(spec: dict, manifest: dict, cases: list[dict], out_dir: Path) 
                 f"{_pct(o['bin_ok'])} | {_pct(o['behaviour_ok'])} | {_pct(o['abstain_ok'])} | "
                 f"{_pct(o['clarify_ok'])} | {_pct(o['cites_gold'])} | "
                 f"{o['citation_precision']} | {_pct(o['language_ok'])} | "
-                f"{_pct(o['json_valid'])} | {o['downgraded']} | {o['latency_s']['median']} |")
+                f"{_pct(o['json_valid'])} | {o['downgraded']} | {o.get('item_withheld', 0)} | "
+                f"{o['latency_s']['median']} |")
         slices = sorted({c["slice"] for c in cases})
         lines += ["", "Correct by slice:", "", "| Variant | " + " | ".join(slices) + " |",
                   "|---|" + "---|" * len(slices)]
@@ -89,6 +113,9 @@ def write_summary(spec: dict, manifest: dict, cases: list[dict], out_dir: Path) 
                   "|---|" + "---|" * len(keys)]
         for name, counts in schedule.items():
             lines.append(f"| {name} | " + " | ".join(str(counts.get(k, 0)) for k in keys) + " |")
+
+    if "temperature" in spec.get("grid", {}) and "seed" in spec.get("grid", {}):
+        lines += ["", *stability(manifest)]
 
     ref_ok = {r["case_id"]: _ok(r, stage) for r in results[ref]["rows"]}
     lines += ["", f"## Changes against `{ref}`", ""]

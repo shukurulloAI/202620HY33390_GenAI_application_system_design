@@ -84,15 +84,14 @@ class PipelineConfig:
     rrf_k: int = RRF_K
     router: bool = True                 # LLM router / rewriter (PLAN.md §4.3)
     gate_tau: float | None = 0.15       # min rerank score to answer; None = gate off.
-                                        # Provisional: middle of the gap between the highest
-                                        # negative (0.039) and the next positive (0.264) on
-                                        # the 22 probes (experiments/tau_sweep.py). Re-pick on
-                                        # dev (E5) once eval/cases/dev.jsonl exists.
+                                        # E5 on dev: every tau in 0.03-0.65 gives 0 false
+                                        # positives; kept 0.15 (docs/REPORT.md §5)
     llm_model: str = LLM_MODEL
     router_model: str | None = None     # None = same model as the generator
-    router_repair: bool = False         # one retry when the Korean rewrite fails the script
-                                        # check (Stage 3; rag/router.Router._repair)
-    prompt_version: str = "v2"          # v0 minimal | v1 zero-shot | v2 few-shot | v3, v4 fixes
+    router_repair: bool = True          # one retry when the Korean rewrite fails the script
+                                        # check (rag/router.Router._repair). Dev, with v4:
+                                        # 51 -> 53/70 correct (h08, item14), none worse
+    prompt_version: str = "v5"          # E1 on dev: v5 54/70 correct, v4 51, v2 51
     conflict_policy: str = "prefer_2026"  # prefer_2026 | none   (E8)
     validation: str = "enforce"         # off | flag | enforce   (PLAN.md §4.9)
     schedule_retrieval: str = "structured"  # structured (typed lookup) | vector | postfilter |
@@ -107,7 +106,7 @@ class PipelineConfig:
                "bm25_tokenizer": ("kiwi", "bigram"),
                "query_mode": ("original", "rewrite", "both"),
                "rerank_query": ("original", "rewrite", "max"),
-               "prompt_version": ("v0", "v1", "v2", "v3", "v4"),
+               "prompt_version": ("v0", "v1", "v2", "v3", "v4", "v5"),
                "conflict_policy": ("prefer_2026", "none"),
                "validation": ("off", "flag", "enforce"),
                "schedule_retrieval": ("structured", "vector", "postfilter", "prefilter"),

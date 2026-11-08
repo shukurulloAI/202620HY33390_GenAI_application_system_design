@@ -193,8 +193,14 @@ def score_case(trace: dict, case: dict) -> dict:
         raw = validation.get("bin_raw") or ""
         from rag.bins import canonical_bin
         out["raw_bin_ok"] = bool(raw) and canonical_bin(raw) in expected_bins
+    # A false answer names a bin the case does not accept, or answers a case that should not
+    # be answered. An ANSWER with no bin (a combined question whose item part was withheld, so
+    # only the schedule is given, with a note saying so) names no wrong bin: it is not correct,
+    # and it is counted apart as item_withheld.
+    out["item_withheld"] = answered and bool(expected_bins) and not out["bin"]
     out["false_answer"] = answered and (behaviour != "answer"
-                                        or (bool(expected_bins) and not out.get("bin_ok")))
+                                        or (bool(expected_bins) and bool(out["bin"])
+                                            and not out["bin_ok"]))
     gold = gold_chunks(case)
     if gold and trace.get("candidates"):
         out["retrieval"] = _retrieval(gold, trace)
@@ -314,6 +320,7 @@ def aggregate(rows: list[dict]) -> dict:
         "language_ok": _rate([r.get("language_ok") for r in rows if "language_ok" in r]),
         "json_valid": _rate([r.get("json_valid") for r in rows if r.get("json_valid") is not None]),
         "downgraded": sum(r["downgraded"] for r in rows),
+        "item_withheld": sum(bool(r.get("item_withheld")) for r in rows),
         "contract_problems": sum(r["contract_problems"] for r in rows),
         "latency_s": {"mean": round(statistics.mean(totals), 2) if totals else None,
                       "median": round(statistics.median(totals), 2) if totals else None,

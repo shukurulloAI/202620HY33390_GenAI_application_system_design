@@ -9,7 +9,7 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `3a4d287
 | Case correct | 51/70 (73%) |
 | Expected behaviour (answer / abstain / clarify / out of scope) | 54/70 (77%) |
 | Bin correct (answerable item cases) | 27/45 (60%) |
-| **False answers** (answered when it should not, or wrong bin) | 3/70 (4%) |
+| **False answers** (answered when it should not, or wrong bin) | 2/70 (3%) |
 | Abstained when it should | 9/10 (90%) |
 | Asked back when it should | 4/4 (100%) |
 | Gold schedule row shown | 19/19 (100%) |
@@ -22,6 +22,7 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `3a4d287
 | Answer in the asked language (script) | 30/30 (100%) |
 | JSON valid | 40/40 (100%) |
 | Downgraded by validation | 10 |
+| Item part withheld, schedule only (not a false answer) | 1 |
 | Contract problems | 0 |
 | Latency mean / median / p90 (s) | 4.41 / 4.7 / 8.26 (not valid: some LLM replies were replayed from the cache) |
 
@@ -30,7 +31,7 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `3a4d287
 | | Cases | Correct | Behaviour | Bin | False answers | Recall@5 |
 |---|---|---|---|---|---|---|
 | ambiguous_location | 4 | 4/4 (100%) | 4/4 (100%) | – | 0/4 (0%) | None |
-| combined | 8 | 7/8 (88%) | 8/8 (100%) | 7/8 (88%) | 1/8 (12%) | 1.0 |
+| combined | 8 | 7/8 (88%) | 8/8 (100%) | 7/8 (88%) | 0/8 (0%) | 1.0 |
 | conflict | 6 | 0/6 (0%) | 1/6 (17%) | 0/6 (0%) | 1/6 (17%) | 0.667 |
 | false_premise | 6 | 3/6 (50%) | 3/6 (50%) | 3/6 (50%) | 0/6 (0%) | 1.0 |
 | item_direct | 14 | 7/14 (50%) | 8/14 (57%) | 7/14 (50%) | 1/14 (7%) | 0.615 |
@@ -45,7 +46,7 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `3a4d287
 |---|---|---|---|---|---|---|
 | en | 25 | 17/25 (68%) | 18/25 (72%) | 12/19 (63%) | 1/25 (4%) | 0.833 |
 | ko | 22 | 21/22 (96%) | 21/22 (96%) | 11/12 (92%) | 0/22 (0%) | 1.0 |
-| ru | 6 | 3/6 (50%) | 4/6 (67%) | 0/3 (0%) | 1/6 (17%) | 0.667 |
+| ru | 6 | 3/6 (50%) | 4/6 (67%) | 0/3 (0%) | 0/6 (0%) | 0.667 |
 | uz | 7 | 3/7 (43%) | 3/7 (43%) | 0/4 (0%) | 0/7 (0%) | 0.5 |
 | vi | 4 | 2/4 (50%) | 2/4 (50%) | 1/3 (33%) | 0/4 (0%) | 0.667 |
 | zh | 6 | 5/6 (83%) | 6/6 (100%) | 3/4 (75%) | 1/6 (17%) | 1.0 |

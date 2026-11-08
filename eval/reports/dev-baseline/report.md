@@ -9,7 +9,7 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `375e7d2
 | Case correct | 32/70 (46%) |
 | Expected behaviour (answer / abstain / clarify / out of scope) | 52/70 (74%) |
 | Bin correct (answerable item cases) | 17/45 (38%) |
-| **False answers** (answered when it should not, or wrong bin) | 21/70 (30%) |
+| **False answers** (answered when it should not, or wrong bin) | 13/70 (19%) |
 | Abstained when it should | 6/10 (60%) |
 | Asked back when it should | 0/4 (0%) |
 | Gold schedule row shown | 14/19 (74%) |
@@ -22,6 +22,7 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `375e7d2
 | Answer in the asked language (script) | 45/49 (92%) |
 | JSON valid | 69/70 (99%) |
 | Downgraded by validation | 1 |
+| Item part withheld, schedule only (not a false answer) | 8 |
 | Contract problems | 0 |
 | Latency mean / median / p90 (s) | 10.63 / 10.31 / 13.46 |
 
@@ -31,10 +32,10 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `375e7d2
 |---|---|---|---|---|---|---|
 | ambiguous_location | 4 | 0/4 (0%) | 0/4 (0%) | – | 2/4 (50%) | None |
 | combined | 8 | 3/8 (38%) | 5/8 (62%) | 5/8 (62%) | 0/8 (0%) | 0.5 |
-| conflict | 6 | 0/6 (0%) | 5/6 (83%) | 0/6 (0%) | 5/6 (83%) | 0.167 |
+| conflict | 6 | 0/6 (0%) | 5/6 (83%) | 0/6 (0%) | 4/6 (67%) | 0.167 |
 | false_premise | 6 | 2/6 (33%) | 4/6 (67%) | 2/6 (33%) | 2/6 (33%) | 0.667 |
-| item_direct | 14 | 5/14 (36%) | 11/14 (79%) | 5/14 (36%) | 6/14 (43%) | 0.571 |
-| item_tricky | 11 | 5/11 (46%) | 10/11 (91%) | 5/11 (46%) | 5/11 (46%) | 0.727 |
+| item_direct | 14 | 5/14 (36%) | 11/14 (79%) | 5/14 (36%) | 1/14 (7%) | 0.571 |
+| item_tricky | 11 | 5/11 (46%) | 10/11 (91%) | 5/11 (46%) | 3/11 (27%) | 0.727 |
 | no_evidence | 7 | 6/7 (86%) | 6/7 (86%) | – | 1/7 (14%) | None |
 | out_of_scope | 3 | 0/3 (0%) | 0/3 (0%) | – | 0/3 (0%) | None |
 | schedule | 11 | 11/11 (100%) | 11/11 (100%) | – | 0/11 (0%) | None |
@@ -43,11 +44,11 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `375e7d2
 
 | | Cases | Correct | Behaviour | Bin | False answers | Recall@5 |
 |---|---|---|---|---|---|---|
-| en | 25 | 10/25 (40%) | 19/25 (76%) | 6/19 (32%) | 8/25 (32%) | 0.421 |
-| ko | 22 | 16/22 (73%) | 21/22 (96%) | 8/12 (67%) | 4/22 (18%) | 1.0 |
+| en | 25 | 10/25 (40%) | 19/25 (76%) | 6/19 (32%) | 4/25 (16%) | 0.421 |
+| ko | 22 | 16/22 (73%) | 21/22 (96%) | 8/12 (67%) | 1/22 (4%) | 1.0 |
 | ru | 6 | 1/6 (17%) | 3/6 (50%) | 1/3 (33%) | 4/6 (67%) | 0.333 |
 | uz | 7 | 2/7 (29%) | 4/7 (57%) | 0/4 (0%) | 3/7 (43%) | 0.25 |
-| vi | 4 | 1/4 (25%) | 2/4 (50%) | 1/3 (33%) | 1/4 (25%) | 0.333 |
+| vi | 4 | 1/4 (25%) | 2/4 (50%) | 1/3 (33%) | 0/4 (0%) | 0.333 |
 | zh | 6 | 2/6 (33%) | 3/6 (50%) | 1/4 (25%) | 1/6 (17%) | 0.5 |
 
 ## Earliest failed stage (slice × stage)

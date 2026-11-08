@@ -62,6 +62,8 @@ def test_score_case_bins_retrieval_and_failure_stage():
     downgraded = _trace("INSUFFICIENT_CONTEXT", "", ["g"], raw_bin="종량제봉투")
     downgraded["checks"]["validation"]["downgraded"] = True
     assert score_case(downgraded, case)["failure_stage"] == "validation"
+    withheld = score_case(_trace("ANSWER", "", ["g"]), case)   # schedule only, item withheld
+    assert not withheld["case_ok"] and not withheld["false_answer"] and withheld["item_withheld"]
     misrouted = score_case(_trace("OUT_OF_SCOPE", intent="out_of_scope"), case)
     assert misrouted["failure_stage"] == "router"
 

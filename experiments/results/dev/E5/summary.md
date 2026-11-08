@@ -1,6 +1,6 @@
 # E5: Does reranking help (for dense and for hybrid retrieval), and what gate threshold?
 
-Cases `eval/cases/dev.jsonl` (70, sha256 `5a62a1c6b684`), commit `3a4d287`. Reference variant: `rerank-on`.
+Cases `eval/cases/dev.jsonl` (70, sha256 `5a62a1c6b684`), commit `3a4d287`. Reference variant: `rerank-off`.
 
 | Variant | Recall@5 | MRR | nDCG@5 | P@5 | R@5 en | R@5 ko | R@5 ru | R@5 uz | R@5 vi | R@5 zh | Retrieve s (median) |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -11,8 +11,8 @@ Cases `eval/cases/dev.jsonl` (70, sha256 `5a62a1c6b684`), commit `3a4d287`. Refe
 
 n = 44 cases with gold chunks.
 
-## Changes against `rerank-on`
+## Changes against `rerank-off`
 
-- `rerank-off`: worse on 2 (h33, h73); better on 1 (item10)
-- `dense-rerank-off`: worse on 5 (h26, h33, h73, h79, h81); better on 1 (item10)
-- `dense-rerank-on`: worse on 0 (–); better on 1 (h24)
+- `rerank-on`: worse on 1 (item10); better on 2 (h33, h73)
+- `dense-rerank-off`: worse on 3 (h26, h79, h81); better on 0 (–)
+- `dense-rerank-on`: worse on 1 (item10); better on 3 (h24, h33, h73)

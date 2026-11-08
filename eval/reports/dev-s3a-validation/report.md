@@ -22,6 +22,7 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `3a4d287
 | Answer in the asked language (script) | 30/31 (97%) |
 | JSON valid | 40/40 (100%) |
 | Downgraded by validation | 6 |
+| Item part withheld, schedule only (not a false answer) | 0 |
 | Contract problems | 0 |
 | Latency mean / median / p90 (s) | 1.97 / 2.47 / 3.46 (not valid: some LLM replies were replayed from the cache) |
 

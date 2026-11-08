@@ -91,6 +91,8 @@ def markdown(name: str, result: dict, meta: dict, show_rows: bool) -> str:
              f"| Answer in the asked language (script) | {fmt(o['language_ok'])} |",
              f"| JSON valid | {fmt(o['json_valid'])} |",
              f"| Downgraded by validation | {o['downgraded']} |",
+             f"| Item part withheld, schedule only (not a false answer) | "
+             f"{o.get('item_withheld', 0)} |",
              f"| Contract problems | {o['contract_problems']} |",
              f"| Latency mean / median / p90 (s) | {lat['mean']} / {lat['median']} / "
              f"{lat['p90']}{REPLAYED if meta.get('llm_replayed') else ''} |",
@@ -128,6 +130,22 @@ def markdown(name: str, result: dict, meta: dict, show_rows: bool) -> str:
     return "\n".join(lines)
 
 
+def rescore(name: str) -> None:
+    out = REPORT_DIR / name
+    meta = json.loads((out / "report.json").read_text(encoding="utf-8"))["meta"]
+    cases = load_cases(paths.ROOT / meta["cases_file"])[:meta["n_cases"]]
+    result = score(read_jsonl(paths.ROOT / meta["traces_file"]), cases)
+    meta["rescored"] = {"time": datetime.now().isoformat(timespec="seconds"),
+                        "git_commit": git_commit(), "git_dirty": git_dirty()}
+    (out / "report.json").write_text(json.dumps({"meta": meta, **result}, ensure_ascii=False,
+                                                indent=1), encoding="utf-8")
+    (out / "report.md").write_text(markdown(name, result, meta, "test" not in meta["cases_file"]),
+                                   encoding="utf-8")
+    o = result["overall"]
+    print(f"{name} (rescored): correct {fmt(o['case_ok'])}, false answers "
+          f"{fmt(o['false_answer'])}, item withheld {o['item_withheld']}, bin {fmt(o['bin_ok'])}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -139,11 +157,17 @@ def main() -> None:
     parser.add_argument("--llm", default="ollama", choices=["ollama", "fixture"])
     parser.add_argument("--allow-test", action="store_true")
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--rescore", action="store_true",
+                        help="score the report's own traces again with the current metrics, "
+                             "keeping its metadata (after a metric fix)")
     parser.add_argument("--cache", action="store_true",
                         help="replay identical temperature-0 LLM requests from .cache/llm "
                              "(tuning runs; latency is then not valid)")
     args = parser.parse_args()
 
+    if args.rescore:
+        rescore(args.name)
+        return
     if "test" in args.cases.name and not args.allow_test:
         raise SystemExit("refusing to run on the test split without --allow-test")
     cases = load_cases(args.cases)[:args.limit] if args.limit else load_cases(args.cases)
