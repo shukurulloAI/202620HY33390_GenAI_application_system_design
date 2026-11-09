@@ -29,7 +29,7 @@ python -m rag "Where do I throw away a pizza box?" --lang en
 python -m rag "I live in Seongdong-gu Haengdang-dong. Can I put food waste out tonight?"
 python -m rag "When can I put out food waste?" --district 성동구 --dong 행당동
 
-# 5. Check your setup (no models or Ollama needed, about 1 second)
+# 5. Check your setup (no models or Ollama needed, a few seconds)
 python -m pytest
 ruff check .
 ```
@@ -61,10 +61,13 @@ eval/             evaluation: cases (frozen dev/test split), metrics, runner, LL
 experiments/
   configs/        one JSON file per experiment, E1-E9
   probes/         developer regression questions (not an evaluation set)
-  results/        raw output: dev/<id>/ (evaluation cases), <id>/ and probes/ (Phase 2 probes)
+  results/        raw output: dev/<id>/ (experiments on dev), test/robustness/ (Stage 4 probes),
+                  <id>/ and probes/ (Phase 2 probes)
 app/              the website (Streamlit), on rag/service.py
 tests/            fast tests with no models or Ollama, one file per module
-docs/             REPORT.md / REPORT.pdf (final report), WEBSITE.md, PHASE1/2_NOTES.md
+docs/             REPORT.md / REPORT.pdf (final report), WEBSITE.md, PHASE1/2_NOTES.md,
+                  answer_schema.json + answer_examples.json (answer contract, recorded answers),
+                  Model_and_System_Guide.pdf, COMMIT_IDS.md (old -> current commit IDs)
 notebooks/        data exploration (schedule_eda/)
 ```
 
@@ -111,6 +114,22 @@ python -m rag "..." --llm fixture                       # offline, no Ollama
 
 ## Using it from code
 
+An app (the website, a chatbot, a script) should use `rag/service.py`: it creates the pipeline
+once, never raises for a question (on any failure the user gets an abstention with a handoff),
+and has an offline mode. Details for the website: [docs/WEBSITE.md](docs/WEBSITE.md).
+
+```python
+from rag import service
+answer = service.ask("Where do I throw away a pizza box?", lang="en",
+                     district="성동구", dong="행당1동")    # province=, waste_type= optional
+service.save_feedback(answer["trace_id"], "up", "clear answer")
+service.source_text(answer["citations"][0])   # full text for a source card
+service.locations(); service.glossary(); service.languages(); service.health()
+# RAG_OFFLINE=1 (or service.configure(offline=True)): recorded answers, no models
+```
+
+The pipeline itself, for evaluation and experiments:
+
 ```python
 from rag.pipeline import Pipeline
 from rag import config
@@ -140,6 +159,7 @@ Answer dict:
 | `handoff` | When it cannot answer: office, phone, a Korean sentence to show, what was checked |
 | `notes` | Source-year and data-age warnings |
 | `trace_id` | ID of the trace behind this answer |
+| `contract_version` | `1.0`; the full schema is `docs/answer_schema.json` (`rag/contract.py`) |
 
 Schedule tool on its own (no models needed):
 ```bash
@@ -176,13 +196,22 @@ python -m experiments.run_probes --retrieval-only   # router + retrieval only (f
 
 python -m experiments.run_experiment experiments/configs/E3_lexical_dense_hybrid.json \
        --cases eval/cases/dev.jsonl                 # one variant per config, traces per case
-python -m experiments.tau_sweep experiments/results/E5/rerank-on.jsonl --cases eval/cases/dev.jsonl
+python -m experiments.summarize experiments/results/dev/E3        # rewrite its summary.md
+python -m experiments.tau_sweep experiments/results/dev/E5/rerank-on.jsonl --cases eval/cases/dev.jsonl
+
+python -m experiments.check_contract                # every probe fits the answer contract (Ollama)
+python -m experiments.make_examples                 # re-record docs/answer_examples.json (Ollama)
+python -m eval.label_helper item 피자 건전지          # candidate gold chunks for a new case
+python -m eval.label_helper rows 성동구 --dong 행당1동  # candidate gold rows
 ```
 
-`run_experiment` writes `experiments/results/<id>/<variant>.jsonl` (one trace per case) and a
-`manifest.json` (configs, model revisions, cases SHA-256, git commit). It refuses a test file
-without `--allow-test`. Without `eval/cases/dev.jsonl` it falls back to the probes and says so.
-Paths inside older manifests are the paths at the time of that run.
+With `--cases eval/cases/dev.jsonl`, `run_experiment` writes
+`experiments/results/dev/<id>/<variant>.jsonl` (one trace per case), a `manifest.json` (configs,
+model revisions, cases SHA-256, git commit) and `summary.md` (one row per variant, plus the cases
+each variant gained or lost). `--cases` defaults to `eval/cases/dev.jsonl` (the developer probes
+if that file is missing; probe runs write to `experiments/results/<id>/`). It refuses a test
+file without `--allow-test`. Paths inside older
+manifests are the paths at the time of that run.
 
 ## Evaluation
 
@@ -196,17 +225,41 @@ python -m experiments.run_experiment experiments/configs/E9_item_names.json --ca
 python -m experiments.robustness                      # noise / negative / counterfactual probes
 python -m experiments.robustness --relabel            # label saved probe traces again (no model calls)
 
-# LLM judge (Ragas), in its own environment
+# LLM judge (Ragas), in its own environment, with its own Ollama model
+ollama pull exaone3.5:7.8b
 python3.12 -m venv .venv-judge && .venv-judge/bin/pip install -r requirements-judge.txt
 python -m eval.ragas_eval prepare my-run && .venv-judge/bin/python -m eval.ragas_eval score my-run
 
 python -m eval.audit export my-run                    # two blank sheets for human raters
+python -m eval.audit agree my-run                     # after both raters filled their sheet
 python -m eval.figures heatmap my-run                 # docs/figures/heatmap_my-run.png
+python -m eval.figures ablation dev-baseline=Baseline dev-s3e-final=Final --out docs/figures/x.png
 python -m eval.report_pdf                             # docs/REPORT.md -> docs/REPORT.pdf
 ```
 
-The test split is refused without `--allow-test`; it was run once, with the frozen configuration.
 `--cache` replays identical temperature-0 LLM requests (tuning only; latency is then not valid).
+
+**The test split** is refused without `--allow-test`. Stage 4 ran it once, with the configuration
+frozen at `f0faba6`; the results are in `eval/reports/test-final/`, `eval/reports/test-baseline/`
+and `experiments/results/test/robustness/`. The commands were:
+
+```bash
+python -m eval.run_eval --name test-final --cases eval/cases/test.jsonl --allow-test
+python -m eval.run_eval --name test-baseline --config baseline --cases eval/cases/test.jsonl --allow-test
+python -m experiments.robustness --cases eval/cases/test.jsonl --allow-test
+```
+
+Do not run them again to tune anything: a second look at test makes the test numbers optimistic.
+To check the numbers without models, score the saved traces again in a copy (`--rescore` rewrites
+the report in its folder):
+
+```bash
+mkdir eval/reports/check && cp eval/reports/test-final/report.json eval/reports/check/
+python -m eval.run_eval --name check --rescore   # 22/30 correct, 1 false answer, bin 11/19
+```
+
+The human audit of the test answers is still to do: the sheets are in
+`eval/reports/test-final/audit/`.
 
 ## Website
 
