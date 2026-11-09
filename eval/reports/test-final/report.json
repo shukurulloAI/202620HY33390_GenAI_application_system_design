@@ -1,0 +1,2374 @@
+{
+ "meta": {
+  "name": "test-final",
+  "cases_file": "eval/cases/test.jsonl",
+  "cases_sha256": "c3be328d06ca23ee0d0ca10d3af7ae7848786aac3383ff96463c207aaec64b4c",
+  "n_cases": 30,
+  "traces_file": "eval/reports/test-final/traces.jsonl",
+  "settings": {
+   "pipeline_version": "v2",
+   "config": {
+    "embedding": "bge-m3",
+    "retrieval": "hybrid",
+    "bm25_tokenizer": "kiwi",
+    "query_mode": "both",
+    "rerank": true,
+    "rerank_query": "max",
+    "name_search": true,
+    "rerank_item": true,
+    "k_retrieve": 20,
+    "k_final": 5,
+    "rrf_k": 60,
+    "router": true,
+    "gate_tau": 0.15,
+    "llm_model": "qwen2.5:7b",
+    "router_model": null,
+    "router_repair": true,
+    "prompt_version": "v5",
+    "conflict_policy": "prefer_2026",
+    "validation": "enforce",
+    "schedule_retrieval": "structured",
+    "schedule_text": "code",
+    "temperature": 0.0,
+    "seed": 7
+   },
+   "retriever": "dense:bge-m3@5617a9f6 | bm25:kiwi | names:bge-m3@5617a9f6 | rerank:bge-reranker-v2-m3@953dc6f6",
+   "collection": "items_bge-m3_5617a9f6_c7d19676",
+   "router": "router_v1+repair:qwen2.5:7b",
+   "llm": "qwen2.5:7b",
+   "schedule_source": "data/processed/schedule.csv",
+   "schedule_retriever": "structured lookup"
+  },
+  "config": null,
+  "overrides": [],
+  "git_commit": "cf047ff520f19b5239f7cb62e7d38420bcd1eedb",
+  "git_dirty": true,
+  "llm_replayed": 0,
+  "time": "2026-11-09T00:52:06"
+ },
+ "overall": {
+  "cases": 30,
+  "case_ok": {
+   "k": 22,
+   "n": 30,
+   "rate": 0.733,
+   "undefined": 0
+  },
+  "behaviour_ok": {
+   "k": 24,
+   "n": 30,
+   "rate": 0.8,
+   "undefined": 0
+  },
+  "bin_ok": {
+   "k": 11,
+   "n": 19,
+   "rate": 0.579,
+   "undefined": 4
+  },
+  "false_answer": {
+   "k": 1,
+   "n": 30,
+   "rate": 0.033,
+   "undefined": 0
+  },
+  "abstain_ok": {
+   "k": 5,
+   "n": 5,
+   "rate": 1.0,
+   "undefined": 0
+  },
+  "clarify_ok": {
+   "k": 2,
+   "n": 2,
+   "rate": 1.0,
+   "undefined": 0
+  },
+  "intent_ok": {
+   "k": 27,
+   "n": 27,
+   "rate": 1.0,
+   "undefined": 3
+  },
+  "district_ok": {
+   "k": 1,
+   "n": 1,
+   "rate": 1.0,
+   "undefined": 0
+  },
+  "dong_ok": {
+   "k": 1,
+   "n": 1,
+   "rate": 1.0,
+   "undefined": 0
+  },
+  "retrieval": {
+   "n": 19,
+   "recall@5": 0.684,
+   "mrr": 0.47,
+   "ndcg@5": 0.422,
+   "precision@5": 0.221
+  },
+  "gate": {
+   "tp": 15,
+   "fp": 1,
+   "fn": 4,
+   "tn": 2,
+   "n": 22,
+   "accuracy": 0.773,
+   "fp_rate": 0.333,
+   "fn_rate": 0.211
+  },
+  "rows_found": {
+   "k": 8,
+   "n": 8,
+   "rate": 1.0,
+   "undefined": 0
+  },
+  "only_gold_rows": {
+   "k": 8,
+   "n": 8,
+   "rate": 1.0,
+   "undefined": 0
+  },
+  "citation_precision": 0.583,
+  "cites_gold": {
+   "k": 7,
+   "n": 12,
+   "rate": 0.583,
+   "undefined": 0
+  },
+  "language_ok": {
+   "k": 13,
+   "n": 13,
+   "rate": 1.0,
+   "undefined": 0
+  },
+  "json_valid": {
+   "k": 17,
+   "n": 17,
+   "rate": 1.0,
+   "undefined": 0
+  },
+  "downgraded": 3,
+  "item_withheld": 1,
+  "contract_problems": 0,
+  "latency_s": {
+   "mean": 18.03,
+   "median": 21.68,
+   "p90": 28.58
+  },
+  "failure_stages": {
+   "validation": 2,
+   "retrieval": 4,
+   "gate": 2
+  }
+ },
+ "by_slice": {
+  "ambiguous_location": {
+   "cases": 2,
+   "case_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "bin_ok": null,
+   "false_answer": {
+    "k": 0,
+    "n": 2,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": null,
+   "clarify_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "intent_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 0,
+    "recall@5": null,
+    "mrr": null,
+    "ndcg@5": null,
+    "precision@5": null
+   },
+   "gate": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "tn": 0,
+    "n": 0,
+    "accuracy": null,
+    "fp_rate": null,
+    "fn_rate": null
+   },
+   "rows_found": null,
+   "only_gold_rows": null,
+   "citation_precision": null,
+   "cites_gold": null,
+   "language_ok": null,
+   "json_valid": null,
+   "downgraded": 0,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 6.6,
+    "median": 6.6,
+    "p90": 6.55
+   },
+   "failure_stages": {}
+  },
+  "combined": {
+   "cases": 4,
+   "case_ok": {
+    "k": 3,
+    "n": 4,
+    "rate": 0.75,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "bin_ok": {
+    "k": 3,
+    "n": 4,
+    "rate": 0.75,
+    "undefined": 0
+   },
+   "false_answer": {
+    "k": 0,
+    "n": 4,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": null,
+   "clarify_ok": null,
+   "intent_ok": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "district_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "dong_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "retrieval": {
+    "n": 4,
+    "recall@5": 0.75,
+    "mrr": 0.583,
+    "ndcg@5": 0.522,
+    "precision@5": 0.3
+   },
+   "gate": {
+    "tp": 3,
+    "fp": 0,
+    "fn": 1,
+    "tn": 0,
+    "n": 4,
+    "accuracy": 0.75,
+    "fp_rate": null,
+    "fn_rate": 0.25
+   },
+   "rows_found": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "only_gold_rows": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "citation_precision": 0.667,
+   "cites_gold": {
+    "k": 2,
+    "n": 3,
+    "rate": 0.667,
+    "undefined": 0
+   },
+   "language_ok": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "json_valid": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "downgraded": 0,
+   "item_withheld": 1,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 28.3,
+    "median": 28.77,
+    "p90": 29.99
+   },
+   "failure_stages": {
+    "retrieval": 1
+   }
+  },
+  "conflict": {
+   "cases": 2,
+   "case_ok": {
+    "k": 0,
+    "n": 2,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 1,
+    "n": 2,
+    "rate": 0.5,
+    "undefined": 0
+   },
+   "bin_ok": {
+    "k": 0,
+    "n": 2,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "false_answer": {
+    "k": 1,
+    "n": 2,
+    "rate": 0.5,
+    "undefined": 0
+   },
+   "abstain_ok": null,
+   "clarify_ok": null,
+   "intent_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 2,
+    "recall@5": 0.0,
+    "mrr": 0.042,
+    "ndcg@5": 0.0,
+    "precision@5": 0.0
+   },
+   "gate": {
+    "tp": 2,
+    "fp": 0,
+    "fn": 0,
+    "tn": 0,
+    "n": 2,
+    "accuracy": 1.0,
+    "fp_rate": null,
+    "fn_rate": 0.0
+   },
+   "rows_found": null,
+   "only_gold_rows": null,
+   "citation_precision": 0.0,
+   "cites_gold": {
+    "k": 0,
+    "n": 1,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "language_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "json_valid": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "downgraded": 1,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 24.8,
+    "median": 24.8,
+    "p90": 23.66
+   },
+   "failure_stages": {
+    "retrieval": 2
+   }
+  },
+  "false_premise": {
+   "cases": 2,
+   "case_ok": {
+    "k": 1,
+    "n": 2,
+    "rate": 0.5,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 1,
+    "n": 2,
+    "rate": 0.5,
+    "undefined": 0
+   },
+   "bin_ok": {
+    "k": 1,
+    "n": 2,
+    "rate": 0.5,
+    "undefined": 0
+   },
+   "false_answer": {
+    "k": 0,
+    "n": 2,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": null,
+   "clarify_ok": null,
+   "intent_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 2,
+    "recall@5": 1.0,
+    "mrr": 1.0,
+    "ndcg@5": 0.836,
+    "precision@5": 0.3
+   },
+   "gate": {
+    "tp": 1,
+    "fp": 0,
+    "fn": 1,
+    "tn": 0,
+    "n": 2,
+    "accuracy": 0.5,
+    "fp_rate": null,
+    "fn_rate": 0.5
+   },
+   "rows_found": null,
+   "only_gold_rows": null,
+   "citation_precision": 1.0,
+   "cites_gold": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "language_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "json_valid": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "downgraded": 0,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 20.35,
+    "median": 20.35,
+    "p90": 12.13
+   },
+   "failure_stages": {
+    "gate": 1
+   }
+  },
+  "item_direct": {
+   "cases": 6,
+   "case_ok": {
+    "k": 3,
+    "n": 6,
+    "rate": 0.5,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 3,
+    "n": 6,
+    "rate": 0.5,
+    "undefined": 0
+   },
+   "bin_ok": {
+    "k": 3,
+    "n": 6,
+    "rate": 0.5,
+    "undefined": 0
+   },
+   "false_answer": {
+    "k": 0,
+    "n": 6,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": null,
+   "clarify_ok": null,
+   "intent_ok": {
+    "k": 6,
+    "n": 6,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 6,
+    "recall@5": 0.833,
+    "mrr": 0.446,
+    "ndcg@5": 0.377,
+    "precision@5": 0.2
+   },
+   "gate": {
+    "tp": 4,
+    "fp": 0,
+    "fn": 2,
+    "tn": 0,
+    "n": 6,
+    "accuracy": 0.667,
+    "fp_rate": null,
+    "fn_rate": 0.333
+   },
+   "rows_found": null,
+   "only_gold_rows": null,
+   "citation_precision": 1.0,
+   "cites_gold": {
+    "k": 3,
+    "n": 3,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "language_ok": {
+    "k": 3,
+    "n": 3,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "json_valid": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "downgraded": 1,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 17.92,
+    "median": 18.64,
+    "p90": 24.05
+   },
+   "failure_stages": {
+    "validation": 1,
+    "gate": 1,
+    "retrieval": 1
+   }
+  },
+  "item_tricky": {
+   "cases": 5,
+   "case_ok": {
+    "k": 4,
+    "n": 5,
+    "rate": 0.8,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 4,
+    "n": 5,
+    "rate": 0.8,
+    "undefined": 0
+   },
+   "bin_ok": {
+    "k": 4,
+    "n": 5,
+    "rate": 0.8,
+    "undefined": 0
+   },
+   "false_answer": {
+    "k": 0,
+    "n": 5,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": null,
+   "clarify_ok": null,
+   "intent_ok": {
+    "k": 5,
+    "n": 5,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 5,
+    "recall@5": 0.6,
+    "mrr": 0.367,
+    "ndcg@5": 0.4,
+    "precision@5": 0.24
+   },
+   "gate": {
+    "tp": 5,
+    "fp": 0,
+    "fn": 0,
+    "tn": 0,
+    "n": 5,
+    "accuracy": 1.0,
+    "fp_rate": null,
+    "fn_rate": 0.0
+   },
+   "rows_found": null,
+   "only_gold_rows": null,
+   "citation_precision": 0.25,
+   "cites_gold": {
+    "k": 1,
+    "n": 4,
+    "rate": 0.25,
+    "undefined": 0
+   },
+   "language_ok": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "json_valid": {
+    "k": 5,
+    "n": 5,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "downgraded": 1,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 27.65,
+    "median": 27.37,
+    "p90": 28.58
+   },
+   "failure_stages": {
+    "validation": 1
+   }
+  },
+  "no_evidence": {
+   "cases": 3,
+   "case_ok": {
+    "k": 3,
+    "n": 3,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 3,
+    "n": 3,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "bin_ok": null,
+   "false_answer": {
+    "k": 0,
+    "n": 3,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": {
+    "k": 3,
+    "n": 3,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "clarify_ok": null,
+   "intent_ok": null,
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 0,
+    "recall@5": null,
+    "mrr": null,
+    "ndcg@5": null,
+    "precision@5": null
+   },
+   "gate": {
+    "tp": 0,
+    "fp": 1,
+    "fn": 0,
+    "tn": 2,
+    "n": 3,
+    "accuracy": 0.667,
+    "fp_rate": 0.333,
+    "fn_rate": null
+   },
+   "rows_found": null,
+   "only_gold_rows": null,
+   "citation_precision": null,
+   "cites_gold": null,
+   "language_ok": null,
+   "json_valid": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "downgraded": 0,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 14.69,
+    "median": 11.2,
+    "p90": 11.2
+   },
+   "failure_stages": {}
+  },
+  "out_of_scope": {
+   "cases": 2,
+   "case_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "bin_ok": null,
+   "false_answer": {
+    "k": 0,
+    "n": 2,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "clarify_ok": null,
+   "intent_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 0,
+    "recall@5": null,
+    "mrr": null,
+    "ndcg@5": null,
+    "precision@5": null
+   },
+   "gate": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "tn": 0,
+    "n": 0,
+    "accuracy": null,
+    "fp_rate": null,
+    "fn_rate": null
+   },
+   "rows_found": null,
+   "only_gold_rows": null,
+   "citation_precision": null,
+   "cites_gold": null,
+   "language_ok": null,
+   "json_valid": null,
+   "downgraded": 0,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 2.34,
+    "median": 2.34,
+    "p90": 2.32
+   },
+   "failure_stages": {}
+  },
+  "schedule": {
+   "cases": 4,
+   "case_ok": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "bin_ok": null,
+   "false_answer": {
+    "k": 0,
+    "n": 4,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": null,
+   "clarify_ok": null,
+   "intent_ok": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 0,
+    "recall@5": null,
+    "mrr": null,
+    "ndcg@5": null,
+    "precision@5": null
+   },
+   "gate": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "tn": 0,
+    "n": 0,
+    "accuracy": null,
+    "fp_rate": null,
+    "fn_rate": null
+   },
+   "rows_found": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "only_gold_rows": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "citation_precision": null,
+   "cites_gold": null,
+   "language_ok": null,
+   "json_valid": null,
+   "downgraded": 0,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 7.41,
+    "median": 7.7,
+    "p90": 7.81
+   },
+   "failure_stages": {}
+  }
+ },
+ "by_lang": {
+  "en": {
+   "cases": 15,
+   "case_ok": {
+    "k": 10,
+    "n": 15,
+    "rate": 0.667,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 10,
+    "n": 15,
+    "rate": 0.667,
+    "undefined": 0
+   },
+   "bin_ok": {
+    "k": 4,
+    "n": 9,
+    "rate": 0.444,
+    "undefined": 3
+   },
+   "false_answer": {
+    "k": 0,
+    "n": 15,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "clarify_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "intent_ok": {
+    "k": 14,
+    "n": 14,
+    "rate": 1.0,
+    "undefined": 1
+   },
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 9,
+    "recall@5": 0.778,
+    "mrr": 0.399,
+    "ndcg@5": 0.363,
+    "precision@5": 0.2
+   },
+   "gate": {
+    "tp": 7,
+    "fp": 0,
+    "fn": 2,
+    "tn": 1,
+    "n": 10,
+    "accuracy": 0.8,
+    "fp_rate": 0.0,
+    "fn_rate": 0.222
+   },
+   "rows_found": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "only_gold_rows": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "citation_precision": 0.75,
+   "cites_gold": {
+    "k": 3,
+    "n": 4,
+    "rate": 0.75,
+    "undefined": 0
+   },
+   "language_ok": {
+    "k": 4,
+    "n": 4,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "json_valid": {
+    "k": 7,
+    "n": 7,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "downgraded": 3,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 15.59,
+    "median": 14.38,
+    "p90": 26.67
+   },
+   "failure_stages": {
+    "validation": 2,
+    "retrieval": 2,
+    "gate": 1
+   }
+  },
+  "ko": {
+   "cases": 8,
+   "case_ok": {
+    "k": 7,
+    "n": 8,
+    "rate": 0.875,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 8,
+    "n": 8,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "bin_ok": {
+    "k": 4,
+    "n": 5,
+    "rate": 0.8,
+    "undefined": 1
+   },
+   "false_answer": {
+    "k": 1,
+    "n": 8,
+    "rate": 0.125,
+    "undefined": 0
+   },
+   "abstain_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "clarify_ok": null,
+   "intent_ok": {
+    "k": 7,
+    "n": 7,
+    "rate": 1.0,
+    "undefined": 1
+   },
+   "district_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "dong_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "retrieval": {
+    "n": 5,
+    "recall@5": 0.8,
+    "mrr": 0.8,
+    "ndcg@5": 0.694,
+    "precision@5": 0.28
+   },
+   "gate": {
+    "tp": 5,
+    "fp": 1,
+    "fn": 0,
+    "tn": 0,
+    "n": 6,
+    "accuracy": 0.833,
+    "fp_rate": 1.0,
+    "fn_rate": 0.0
+   },
+   "rows_found": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "only_gold_rows": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "citation_precision": 0.8,
+   "cites_gold": {
+    "k": 4,
+    "n": 5,
+    "rate": 0.8,
+    "undefined": 0
+   },
+   "language_ok": {
+    "k": 5,
+    "n": 5,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "json_valid": {
+    "k": 6,
+    "n": 6,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "downgraded": 0,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 21.51,
+    "median": 25.68,
+    "p90": 28.57
+   },
+   "failure_stages": {
+    "retrieval": 1
+   }
+  },
+  "ru": {
+   "cases": 2,
+   "case_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "bin_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "false_answer": {
+    "k": 0,
+    "n": 2,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": null,
+   "clarify_ok": null,
+   "intent_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 2,
+    "recall@5": 0.0,
+    "mrr": 0.0,
+    "ndcg@5": 0.0,
+    "precision@5": 0.0
+   },
+   "gate": {
+    "tp": 2,
+    "fp": 0,
+    "fn": 0,
+    "tn": 0,
+    "n": 2,
+    "accuracy": 1.0,
+    "fp_rate": null,
+    "fn_rate": 0.0
+   },
+   "rows_found": null,
+   "only_gold_rows": null,
+   "citation_precision": 0.0,
+   "cites_gold": {
+    "k": 0,
+    "n": 2,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "language_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "json_valid": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "downgraded": 0,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 26.82,
+    "median": 26.82,
+    "p90": 25.06
+   },
+   "failure_stages": {}
+  },
+  "vi": {
+   "cases": 3,
+   "case_ok": {
+    "k": 1,
+    "n": 3,
+    "rate": 0.333,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 2,
+    "n": 3,
+    "rate": 0.667,
+    "undefined": 0
+   },
+   "bin_ok": {
+    "k": 0,
+    "n": 2,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "false_answer": {
+    "k": 0,
+    "n": 3,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "clarify_ok": null,
+   "intent_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 1
+   },
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 2,
+    "recall@5": 0.5,
+    "mrr": 0.5,
+    "ndcg@5": 0.336,
+    "precision@5": 0.2
+   },
+   "gate": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 2,
+    "tn": 1,
+    "n": 3,
+    "accuracy": 0.333,
+    "fp_rate": 0.0,
+    "fn_rate": 1.0
+   },
+   "rows_found": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "only_gold_rows": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "citation_precision": null,
+   "cites_gold": null,
+   "language_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "json_valid": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "downgraded": 0,
+   "item_withheld": 1,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 16.95,
+    "median": 12.13,
+    "p90": 12.13
+   },
+   "failure_stages": {
+    "gate": 1,
+    "retrieval": 1
+   }
+  },
+  "zh": {
+   "cases": 2,
+   "case_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "behaviour_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "bin_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "false_answer": {
+    "k": 0,
+    "n": 2,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "abstain_ok": null,
+   "clarify_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "intent_ok": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "district_ok": null,
+   "dong_ok": null,
+   "retrieval": {
+    "n": 1,
+    "recall@5": 1.0,
+    "mrr": 0.333,
+    "ndcg@5": 0.618,
+    "precision@5": 0.6
+   },
+   "gate": {
+    "tp": 1,
+    "fp": 0,
+    "fn": 0,
+    "tn": 0,
+    "n": 1,
+    "accuracy": 1.0,
+    "fp_rate": null,
+    "fn_rate": 0.0
+   },
+   "rows_found": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "only_gold_rows": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "citation_precision": 0.0,
+   "cites_gold": {
+    "k": 0,
+    "n": 1,
+    "rate": 0.0,
+    "undefined": 0
+   },
+   "language_ok": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "json_valid": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "undefined": 0
+   },
+   "downgraded": 0,
+   "item_withheld": 0,
+   "contract_problems": 0,
+   "latency_s": {
+    "mean": 15.2,
+    "median": 15.2,
+    "p90": 6.65
+   },
+   "failure_stages": {}
+  }
+ },
+ "failure_heatmap": {
+  "combined": {
+   "retrieval": 1
+  },
+  "conflict": {
+   "retrieval": 2
+  },
+  "false_premise": {
+   "gate": 1
+  },
+  "item_direct": {
+   "validation": 1,
+   "gate": 1,
+   "retrieval": 1
+  },
+  "item_tricky": {
+   "validation": 1
+  }
+ },
+ "stage_latency_s": {
+  "generate_s": {
+   "median": 13.792,
+   "mean": 13.243
+  },
+  "rerank_s": {
+   "median": 5.864,
+   "mean": 5.078
+  },
+  "retrieve_s": {
+   "median": 0.143,
+   "mean": 0.139
+  },
+  "route_s": {
+   "median": 6.601,
+   "mean": 6.426
+  },
+  "schedule_s": {
+   "median": 0.0,
+   "mean": 0.0
+  },
+  "schedule_text_s": {
+   "median": 1.274,
+   "mean": 1.004
+  },
+  "total_s": {
+   "median": 21.681,
+   "mean": 18.027
+  }
+ },
+ "missing_cases": [],
+ "rows": [
+  {
+   "case_id": "h04",
+   "slice": "item_tricky",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "INSUFFICIENT_CONTEXT",
+   "behaviour_ok": false,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": true,
+   "total_s": 30.548,
+   "intent_ok": true,
+   "bin": "",
+   "bin_ok": false,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 2,
+    "hit": true,
+    "rr": 0.5,
+    "ndcg": 0.6934264036172708,
+    "precision": 0.4
+   },
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.5462,
+   "case_ok": false,
+   "failure_stage": "validation"
+  },
+  {
+   "case_id": "h09",
+   "slice": "item_tricky",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 26.671,
+   "intent_ok": true,
+   "bin": "종량제봉투",
+   "bin_ok": true,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 3,
+    "hit": true,
+    "rr": 0.3333333333333333,
+    "ndcg": 0.3065735963827292,
+    "precision": 0.2
+   },
+   "citation_precision": 0.0,
+   "cites_gold": false,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.9366,
+   "language_ok": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h10",
+   "slice": "item_tricky",
+   "lang": "ru",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 28.579,
+   "intent_ok": true,
+   "bin": "종량제봉투",
+   "bin_ok": true,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": null,
+    "hit": false,
+    "rr": 0.0,
+    "ndcg": 0.0,
+    "precision": 0.0
+   },
+   "citation_precision": 0.0,
+   "cites_gold": false,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.7323,
+   "language_ok": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h14",
+   "slice": "item_tricky",
+   "lang": "ko",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 27.37,
+   "intent_ok": true,
+   "bin": "종량제봉투",
+   "bin_ok": true,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 1,
+    "hit": true,
+    "rr": 1.0,
+    "ndcg": 1.0,
+    "precision": 0.6
+   },
+   "citation_precision": 1.0,
+   "cites_gold": true,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.991,
+   "language_ok": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h15",
+   "slice": "item_tricky",
+   "lang": "ru",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 25.06,
+   "intent_ok": true,
+   "bin": "불연성종량제",
+   "bin_ok": true,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": null,
+    "hit": false,
+    "rr": 0.0,
+    "ndcg": 0.0,
+    "precision": 0.0
+   },
+   "citation_precision": 0.0,
+   "cites_gold": false,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.7043,
+   "language_ok": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h25",
+   "slice": "conflict",
+   "lang": "ko",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 25.929,
+   "intent_ok": true,
+   "bin": "종량제봉투",
+   "bin_ok": false,
+   "raw_bin_ok": false,
+   "item_withheld": false,
+   "false_answer": true,
+   "retrieval": {
+    "gold_rank": null,
+    "hit": false,
+    "rr": 0.0,
+    "ndcg": 0.0,
+    "precision": 0.0
+   },
+   "citation_precision": 0.0,
+   "cites_gold": false,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.9967,
+   "language_ok": true,
+   "case_ok": false,
+   "failure_stage": "retrieval"
+  },
+  {
+   "case_id": "h27",
+   "slice": "conflict",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "INSUFFICIENT_CONTEXT",
+   "behaviour_ok": false,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": true,
+   "total_s": 23.663,
+   "intent_ok": true,
+   "bin": "",
+   "bin_ok": false,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 12,
+    "hit": false,
+    "rr": 0.08333333333333333,
+    "ndcg": 0.0,
+    "precision": 0.0
+   },
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.7377,
+   "case_ok": false,
+   "failure_stage": "retrieval"
+  },
+  {
+   "case_id": "h36",
+   "slice": "false_premise",
+   "lang": "vi",
+   "split": "test",
+   "expected": "answer",
+   "status": "INSUFFICIENT_CONTEXT",
+   "behaviour_ok": false,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 12.127,
+   "intent_ok": true,
+   "bin": "",
+   "bin_ok": false,
+   "raw_bin_ok": false,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 1,
+    "hit": true,
+    "rr": 1.0,
+    "ndcg": 0.6713860725233041,
+    "precision": 0.4
+   },
+   "gate_item": "abstain",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.0045,
+   "case_ok": false,
+   "failure_stage": "gate"
+  },
+  {
+   "case_id": "h38",
+   "slice": "false_premise",
+   "lang": "ko",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 28.566,
+   "intent_ok": true,
+   "bin": "종량제봉투",
+   "bin_ok": true,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 1,
+    "hit": true,
+    "rr": 1.0,
+    "ndcg": 1.0,
+    "precision": 0.2
+   },
+   "citation_precision": 1.0,
+   "cites_gold": true,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.9406,
+   "language_ok": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h44",
+   "slice": "no_evidence",
+   "lang": "en",
+   "split": "test",
+   "expected": "abstain",
+   "status": "INSUFFICIENT_CONTEXT",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": null,
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 11.196,
+   "intent_ok": null,
+   "item_withheld": false,
+   "false_answer": false,
+   "gate_item": "abstain",
+   "gate_should_answer": false,
+   "top_rerank_score": 0.1076,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h47",
+   "slice": "no_evidence",
+   "lang": "vi",
+   "split": "test",
+   "expected": "abstain",
+   "status": "INSUFFICIENT_CONTEXT",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": null,
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 8.724,
+   "intent_ok": null,
+   "item_withheld": false,
+   "false_answer": false,
+   "gate_item": "abstain",
+   "gate_should_answer": false,
+   "top_rerank_score": 0.149,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h50",
+   "slice": "no_evidence",
+   "lang": "ko",
+   "split": "test",
+   "expected": "abstain",
+   "status": "INSUFFICIENT_CONTEXT",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": null,
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 24.148,
+   "intent_ok": null,
+   "item_withheld": false,
+   "false_answer": false,
+   "gate_item": "answer",
+   "gate_should_answer": false,
+   "top_rerank_score": 0.2813,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h53",
+   "slice": "ambiguous_location",
+   "lang": "en",
+   "split": "test",
+   "expected": "clarify",
+   "status": "CLARIFY",
+   "behaviour_ok": true,
+   "intent": "schedule",
+   "intent_expected": "schedule",
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 6.553,
+   "intent_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h54",
+   "slice": "ambiguous_location",
+   "lang": "zh",
+   "split": "test",
+   "expected": "clarify",
+   "status": "CLARIFY",
+   "behaviour_ok": true,
+   "intent": "schedule",
+   "intent_expected": "schedule",
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 6.65,
+   "intent_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h61",
+   "slice": "out_of_scope",
+   "lang": "en",
+   "split": "test",
+   "expected": "out_of_scope",
+   "status": "OUT_OF_SCOPE",
+   "behaviour_ok": true,
+   "intent": "out_of_scope",
+   "intent_expected": "out_of_scope",
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 2.357,
+   "intent_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h62",
+   "slice": "out_of_scope",
+   "lang": "ko",
+   "split": "test",
+   "expected": "out_of_scope",
+   "status": "OUT_OF_SCOPE",
+   "behaviour_ok": true,
+   "intent": "out_of_scope",
+   "intent_expected": "out_of_scope",
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 2.322,
+   "intent_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h76",
+   "slice": "combined",
+   "lang": "zh",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "both",
+   "intent_expected": "both",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 23.74,
+   "intent_ok": true,
+   "bin": "종이",
+   "bin_ok": true,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 3,
+    "hit": true,
+    "rr": 0.3333333333333333,
+    "ndcg": 0.6182885020492784,
+    "precision": 0.6
+   },
+   "citation_precision": 0.0,
+   "cites_gold": false,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.9663,
+   "rows_found": true,
+   "only_gold_rows": true,
+   "tool_rows_found": true,
+   "language_ok": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h78",
+   "slice": "combined",
+   "lang": "vi",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "both",
+   "intent_expected": "both",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 29.987,
+   "intent_ok": true,
+   "bin": "",
+   "bin_ok": false,
+   "raw_bin_ok": false,
+   "item_withheld": true,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": null,
+    "hit": false,
+    "rr": 0.0,
+    "ndcg": 0.0,
+    "precision": 0.0
+   },
+   "gate_item": "abstain",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.9626,
+   "rows_found": true,
+   "only_gold_rows": true,
+   "tool_rows_found": true,
+   "language_ok": true,
+   "case_ok": false,
+   "failure_stage": "retrieval"
+  },
+  {
+   "case_id": "h80",
+   "slice": "combined",
+   "lang": "ko",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "both",
+   "intent_expected": "both",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 31.918,
+   "intent_ok": true,
+   "district_ok": true,
+   "dong_ok": true,
+   "bin": "종이",
+   "bin_ok": true,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 1,
+    "hit": true,
+    "rr": 1.0,
+    "ndcg": 1.0,
+    "precision": 0.4
+   },
+   "citation_precision": 1.0,
+   "cites_gold": true,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.8669,
+   "rows_found": true,
+   "only_gold_rows": true,
+   "tool_rows_found": true,
+   "language_ok": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "h82",
+   "slice": "combined",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "both",
+   "intent_expected": "both",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 27.544,
+   "intent_ok": true,
+   "bin": "전용함",
+   "bin_ok": true,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 1,
+    "hit": true,
+    "rr": 1.0,
+    "ndcg": 0.46927872602275644,
+    "precision": 0.2
+   },
+   "citation_precision": 1.0,
+   "cites_gold": true,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.649,
+   "rows_found": true,
+   "only_gold_rows": true,
+   "tool_rows_found": true,
+   "language_ok": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "item01",
+   "slice": "item_direct",
+   "lang": "ko",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 25.422,
+   "intent_ok": true,
+   "bin": "가전제품",
+   "bin_ok": true,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 1,
+    "hit": true,
+    "rr": 1.0,
+    "ndcg": 0.46927872602275644,
+    "precision": 0.2
+   },
+   "citation_precision": 1.0,
+   "cites_gold": true,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.9807,
+   "language_ok": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "item04",
+   "slice": "item_direct",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "INSUFFICIENT_CONTEXT",
+   "behaviour_ok": false,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": true,
+   "total_s": 24.048,
+   "intent_ok": true,
+   "bin": "",
+   "bin_ok": false,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 2,
+    "hit": true,
+    "rr": 0.5,
+    "ndcg": 0.4776237035032179,
+    "precision": 0.4
+   },
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.8279,
+   "case_ok": false,
+   "failure_stage": "validation"
+  },
+  {
+   "case_id": "item05",
+   "slice": "item_direct",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 17.591,
+   "intent_ok": true,
+   "bin": "대형폐기물",
+   "bin_ok": true,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 3,
+    "hit": true,
+    "rr": 0.3333333333333333,
+    "ndcg": 0.5,
+    "precision": 0.2
+   },
+   "citation_precision": 1.0,
+   "cites_gold": true,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.3987,
+   "language_ok": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "item07",
+   "slice": "item_direct",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "INSUFFICIENT_CONTEXT",
+   "behaviour_ok": false,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 14.375,
+   "intent_ok": true,
+   "bin": "",
+   "bin_ok": false,
+   "raw_bin_ok": false,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 4,
+    "hit": true,
+    "rr": 0.25,
+    "ndcg": 0.43067655807339306,
+    "precision": 0.2
+   },
+   "gate_item": "abstain",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.0257,
+   "case_ok": false,
+   "failure_stage": "gate"
+  },
+  {
+   "case_id": "item12",
+   "slice": "item_direct",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "INSUFFICIENT_CONTEXT",
+   "behaviour_ok": false,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 6.381,
+   "intent_ok": true,
+   "bin": "",
+   "bin_ok": false,
+   "raw_bin_ok": false,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 11,
+    "hit": false,
+    "rr": 0.09090909090909091,
+    "ndcg": 0.0,
+    "precision": 0.0
+   },
+   "gate_item": "abstain",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.0685,
+   "case_ok": false,
+   "failure_stage": "retrieval"
+  },
+  {
+   "case_id": "item15",
+   "slice": "item_direct",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "item",
+   "intent_expected": "item",
+   "contract_problems": 0,
+   "json_valid": true,
+   "downgraded": false,
+   "total_s": 19.698,
+   "intent_ok": true,
+   "bin": "종이",
+   "bin_ok": true,
+   "raw_bin_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "retrieval": {
+    "gold_rank": 2,
+    "hit": true,
+    "rr": 0.5,
+    "ndcg": 0.38685280723454163,
+    "precision": 0.2
+   },
+   "citation_precision": 1.0,
+   "cites_gold": true,
+   "gate_item": "answer",
+   "gate_should_answer": true,
+   "top_rerank_score": 0.897,
+   "language_ok": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "sched03",
+   "slice": "schedule",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "schedule",
+   "intent_expected": "schedule",
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 7.806,
+   "intent_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "rows_found": true,
+   "only_gold_rows": true,
+   "tool_rows_found": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "sched06",
+   "slice": "schedule",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "schedule",
+   "intent_expected": "schedule",
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 7.812,
+   "intent_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "rows_found": true,
+   "only_gold_rows": true,
+   "tool_rows_found": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "sched08",
+   "slice": "schedule",
+   "lang": "en",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "schedule",
+   "intent_expected": "schedule",
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 7.598,
+   "intent_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "rows_found": true,
+   "only_gold_rows": true,
+   "tool_rows_found": true,
+   "case_ok": true,
+   "failure_stage": null
+  },
+  {
+   "case_id": "sched13",
+   "slice": "schedule",
+   "lang": "ko",
+   "split": "test",
+   "expected": "answer",
+   "status": "ANSWER",
+   "behaviour_ok": true,
+   "intent": "schedule",
+   "intent_expected": "schedule",
+   "contract_problems": 0,
+   "json_valid": null,
+   "downgraded": false,
+   "total_s": 6.415,
+   "intent_ok": true,
+   "item_withheld": false,
+   "false_answer": false,
+   "rows_found": true,
+   "only_gold_rows": true,
+   "tool_rows_found": true,
+   "case_ok": true,
+   "failure_stage": null
+  }
+ ]
+}

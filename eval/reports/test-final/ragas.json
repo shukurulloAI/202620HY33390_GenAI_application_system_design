@@ -1,0 +1,217 @@
+{
+ "report": "test-final",
+ "judge": {
+  "model": "exaone3.5:7.8b",
+  "digest": "c7c4e3d1ca22fe9225f18b35eb719f67e2ca96a42e7fd17294a45b83ba8fbf03",
+  "ragas": "0.4.3",
+  "temperature": 0.0
+ },
+ "time": "2026-11-09T01:08:37",
+ "overall": {
+  "faithfulness": {
+   "mean": 0.854,
+   "n": 17,
+   "failed": 0
+  },
+  "context_relevance": {
+   "mean": 0.868,
+   "n": 17,
+   "failed": 0
+  }
+ },
+ "by_slice": {
+  "combined": {
+   "faithfulness": {
+    "mean": 0.875,
+    "n": 4,
+    "failed": 0
+   },
+   "context_relevance": {
+    "mean": 0.875,
+    "n": 4,
+    "failed": 0
+   }
+  },
+  "conflict": {
+   "faithfulness": {
+    "mean": 1.0,
+    "n": 1,
+    "failed": 0
+   },
+   "context_relevance": {
+    "mean": 1.0,
+    "n": 1,
+    "failed": 0
+   }
+  },
+  "false_premise": {
+   "faithfulness": {
+    "mean": 0.667,
+    "n": 1,
+    "failed": 0
+   },
+   "context_relevance": {
+    "mean": 0.5,
+    "n": 1,
+    "failed": 0
+   }
+  },
+  "item_direct": {
+   "faithfulness": {
+    "mean": 0.667,
+    "n": 3,
+    "failed": 0
+   },
+   "context_relevance": {
+    "mean": 0.75,
+    "n": 3,
+    "failed": 0
+   }
+  },
+  "item_tricky": {
+   "faithfulness": {
+    "mean": 0.9,
+    "n": 4,
+    "failed": 0
+   },
+   "context_relevance": {
+    "mean": 0.875,
+    "n": 4,
+    "failed": 0
+   }
+  },
+  "schedule": {
+   "faithfulness": {
+    "mean": 0.938,
+    "n": 4,
+    "failed": 0
+   },
+   "context_relevance": {
+    "mean": 1.0,
+    "n": 4,
+    "failed": 0
+   }
+  }
+ },
+ "rows": [
+  {
+   "case_id": "h09",
+   "slice": "item_tricky",
+   "lang": "en",
+   "faithfulness": 1.0,
+   "context_relevance": 1.0
+  },
+  {
+   "case_id": "h10",
+   "slice": "item_tricky",
+   "lang": "ru",
+   "faithfulness": 1.0,
+   "context_relevance": 0.5
+  },
+  {
+   "case_id": "h14",
+   "slice": "item_tricky",
+   "lang": "ko",
+   "faithfulness": 1.0,
+   "context_relevance": 1.0
+  },
+  {
+   "case_id": "h15",
+   "slice": "item_tricky",
+   "lang": "ru",
+   "faithfulness": 0.6,
+   "context_relevance": 1.0
+  },
+  {
+   "case_id": "h25",
+   "slice": "conflict",
+   "lang": "ko",
+   "faithfulness": 1.0,
+   "context_relevance": 1.0
+  },
+  {
+   "case_id": "h38",
+   "slice": "false_premise",
+   "lang": "ko",
+   "faithfulness": 0.667,
+   "context_relevance": 0.5
+  },
+  {
+   "case_id": "h76",
+   "slice": "combined",
+   "lang": "zh",
+   "faithfulness": 0.667,
+   "context_relevance": 1.0
+  },
+  {
+   "case_id": "h78",
+   "slice": "combined",
+   "lang": "vi",
+   "faithfulness": 0.833,
+   "context_relevance": 0.5
+  },
+  {
+   "case_id": "h80",
+   "slice": "combined",
+   "lang": "ko",
+   "faithfulness": 1.0,
+   "context_relevance": 1.0
+  },
+  {
+   "case_id": "h82",
+   "slice": "combined",
+   "lang": "en",
+   "faithfulness": 1.0,
+   "context_relevance": 1.0
+  },
+  {
+   "case_id": "item01",
+   "slice": "item_direct",
+   "lang": "ko",
+   "faithfulness": 1.0,
+   "context_relevance": 0.75
+  },
+  {
+   "case_id": "item05",
+   "slice": "item_direct",
+   "lang": "en",
+   "faithfulness": 0.5,
+   "context_relevance": 0.5
+  },
+  {
+   "case_id": "item15",
+   "slice": "item_direct",
+   "lang": "en",
+   "faithfulness": 0.5,
+   "context_relevance": 1.0
+  },
+  {
+   "case_id": "sched03",
+   "slice": "schedule",
+   "lang": "en",
+   "faithfulness": 0.75,
+   "context_relevance": 1.0
+  },
+  {
+   "case_id": "sched06",
+   "slice": "schedule",
+   "lang": "en",
+   "faithfulness": 1.0,
+   "context_relevance": 1.0
+  },
+  {
+   "case_id": "sched08",
+   "slice": "schedule",
+   "lang": "en",
+   "faithfulness": 1.0,
+   "context_relevance": 1.0
+  },
+  {
+   "case_id": "sched13",
+   "slice": "schedule",
+   "lang": "ko",
+   "faithfulness": 1.0,
+   "context_relevance": 1.0
+  }
+ ]
+}

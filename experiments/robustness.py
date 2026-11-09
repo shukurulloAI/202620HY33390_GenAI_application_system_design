@@ -103,20 +103,26 @@ def trace_candidates(trace: dict) -> list[Candidate]:
 
 
 def outcome(probe: str, row: dict, trace: dict, case: dict, clean_bin: str | None) -> str:
+    """An ANSWER with no bin (the item part withheld, only the schedule given) names no bin,
+    so it counts as abstaining on the item, as in eval/metrics.py."""
     answer = trace["answer"]
     answered, bin_key = answer["status"] == "ANSWER", answer.get("bin") or ""
+    named = answered and bool(bin_key)
     if probe == "negative":
-        return "abstained" if not (answered and bin_key) else (
+        return "abstained" if not named else (
             "right bin anyway" if row.get("bin_ok") else "wrong bin")
     if probe == "counterfactual":
-        if answered and bin_key == wrong_bin(case["expected_bin"]):
+        if named and bin_key == wrong_bin(case["expected_bin"]):
             return "followed the false chunk"
-        return "right bin" if row.get("bin_ok") else ("abstained" if not answered else
+        return "right bin" if row.get("bin_ok") else ("abstained" if not named else
                                                        "other wrong bin")
-    if probe == "noise":
-        return "same answer" if (answered and bin_key == clean_bin) else (
-            "abstained" if not answered else "changed bin")
-    return "right bin" if row.get("bin_ok") else ("abstained" if not answered else "wrong bin")
+    if probe == "noise":                       # compared with the clean run of the case
+        if not named:
+            return "abstained, as clean" if not clean_bin else "abstained (clean answered)"
+        if not clean_bin:
+            return "answered (clean abstained)"
+        return "same bin" if bin_key == clean_bin else "changed bin"
+    return "right bin" if row.get("bin_ok") else ("abstained" if not named else "wrong bin")
 
 
 def main() -> None:
@@ -127,9 +133,14 @@ def main() -> None:
     parser.add_argument("--limit", type=int)
     parser.add_argument("--config", help="'baseline' or a JSON file of PipelineConfig fields")
     parser.add_argument("--set", action="append", default=[], metavar="FIELD=VALUE")
+    parser.add_argument("--relabel", action="store_true",
+                        help="label the saved probe traces again; no model calls")
     args = parser.parse_args()
     if "test" in args.cases.name and not args.allow_test:
         raise SystemExit("refusing to run on the test split without --allow-test")
+    if args.relabel:
+        relabel(args.cases)
+        return
 
     from rag.llm_client import CachedClient, make_client
     from rag.pipeline import Pipeline
@@ -176,21 +187,57 @@ def main() -> None:
                       flush=True)
         print()
         results[probe] = counts
+    run = (f"Commit `{(git_commit() or '')[:7]}`{' (uncommitted changes)' if git_dirty() else ''}"
+           f". Config overrides: {args.set or 'none'}.")
+    write_summary(out, args.cases, len(cases), results, cfg.to_dict(), run)
+
+
+def write_summary(out: Path, cases_path: Path, n: int, results: dict[str, Counter],
+                  cfg: dict, run: str) -> None:
     lines = ["# Robustness probes (PLAN.md §7.6)", "",
-             f"Cases `{paths.relative(args.cases.resolve())}` (sha256 "
-             f"`{sha256_file(args.cases)[:12]}`): {len(cases)} answer cases with an expected "
-             f"bin and gold chunks. Commit `{(git_commit() or '')[:7]}`"
-             f"{' (uncommitted changes)' if git_dirty() else ''}. Config overrides: "
-             f"{args.set or 'none'}.", "", "| Probe | Outcomes |", "|---|---|"]
+             f"Cases `{paths.relative(cases_path.resolve())}` (sha256 "
+             f"`{sha256_file(cases_path)[:12]}`): {n} answer cases with an expected bin and "
+             f"gold chunks. {run}", "", "| Probe | Outcomes |", "|---|---|"]
     for probe, counts in results.items():
-        lines.append(f"| {probe} | " + ", ".join(f"{k} {v}/{len(cases)}"
+        lines.append(f"| {probe} | " + ", ".join(f"{k} {v}/{n}"
                                                  for k, v in counts.most_common()) + " |")
     (out / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     (out / "summary.json").write_text(json.dumps(
-        {"cases": len(cases), "config": cfg.to_dict(),
-         "results": {p: dict(c) for p, c in results.items()}}, ensure_ascii=False, indent=1),
-        encoding="utf-8")
+        {"cases": n, "config": cfg, "results": {p: dict(c) for p, c in results.items()}},
+        ensure_ascii=False, indent=1), encoding="utf-8")
     print("\n".join(lines))
+
+
+def relabel(cases_path: Path) -> None:
+    """Label the saved probe traces again with the current outcome() (no model calls)."""
+    from eval.cases import by_id
+    out = paths.RESULTS_DIR / cases_path.stem / "robustness"
+    cases = by_id(load_cases(cases_path))
+    old = (out / "summary.md").read_text(encoding="utf-8")
+    run_at = old.split("Commit `", 1)[1].split("`", 1)[0] if "Commit `" in old else "?"
+    results: dict[str, Counter] = {}
+    clean_bins: dict[str, str] = {}
+    n = 0
+    for probe in PROBES:
+        counts = Counter()
+        traces = read_jsonl(out / f"{probe}.jsonl")
+        for trace in traces:
+            case = cases[trace["case_id"]]
+            if probe == "clean":
+                clean_bins[case["case_id"]] = trace["answer"].get("bin") or ""
+            row = score_case(trace, case)
+            trace["probe_outcome"] = outcome(probe, row, trace, case,
+                                             clean_bins.get(case["case_id"]))
+            counts[trace["probe_outcome"]] += 1
+        with (out / f"{probe}.jsonl").open("w", encoding="utf-8") as f:
+            f.writelines(json.dumps(t, ensure_ascii=False) + "\n" for t in traces)
+        results[probe] = counts
+        n = len(traces)
+    cfg = json.loads((out / "summary.json").read_text(encoding="utf-8"))["config"]
+    write_summary(out, cases_path, n, results, cfg,
+                  f"Run at commit `{run_at}`; outcomes relabelled from the saved traces at "
+                  f"commit `{(git_commit() or '')[:7]}` (an ANSWER with no bin counts as "
+                  f"abstaining on the item).")
 
 
 if __name__ == "__main__":

@@ -725,42 +725,42 @@ No deadline is fixed in this plan. Phases are ordered by dependency, and each on
 Goal: everything except the website is finished, and connecting the website is one small, known step. The stages run in this order because each needs the one before. Stage 1 comes before evaluation because it changes what users see, and nothing is measured on inputs we already know are wrong.
 
 **Stage 1: Website-ready system.** No outside dependency.
-- [ ] Merge branches `vitou` and `naura` here, so `app/` and Vitou's README sit in the new layout. Move `main` forward by pull request: it still holds only the initial commit
-- [ ] `rag/contract.py`: the answer as typed models, with the JSON schema exported to `docs/answer_schema.json`. `answer()` checks its output against them, so a field cannot change without a failing test
-- [ ] `rag/service.py`: the one module the website imports. `ask()`, `save_feedback(trace_id, rating, comment)`, `source_text(citation)`, `locations()`, `glossary()`, `languages()`. It holds the single `Pipeline`, which takes time to load
-- [ ] Fixed text in all six languages. Today `clarify.question`, `handoff.contact` and `notes` are English only, and `message()` covers English and Korean only
-- [ ] The answer gaps in `PHASE2_NOTES.md` §10: say in `answer_text` when the item part failed, and show `no_collection_days`
-- [ ] Citations carry the page and text, for the source cards
-- [ ] Feedback saved by `trace_id` in `traces/feedback.jsonl`
-- [ ] `docs/answer_examples.json`: one real answer per status, replacing Naura's mock, and an offline mode so the website runs without Ollama
-- [ ] `docs/WEBSITE.md`: one page on what to call and what to show
+- [x] Merge branches `vitou` and `naura` here, so `app/` and Vitou's README sit in the new layout. Move `main` forward by pull request: it still holds only the initial commit *(merged, with `anar` too; the pull request into `main` is the last step)*
+- [x] `rag/contract.py`: the answer as typed models, with the JSON schema exported to `docs/answer_schema.json`. `answer()` checks its output against them, so a field cannot change without a failing test
+- [x] `rag/service.py`: the one module the website imports. `ask()`, `save_feedback(trace_id, rating, comment)`, `source_text(citation)`, `locations()`, `glossary()`, `languages()`. It holds the single `Pipeline`, which takes time to load
+- [x] Fixed text in all six languages. Today `clarify.question`, `handoff.contact` and `notes` are English only, and `message()` covers English and Korean only
+- [x] The answer gaps in `PHASE2_NOTES.md` §10: say in `answer_text` when the item part failed, and show `no_collection_days`
+- [x] Citations carry the page and text, for the source cards
+- [x] Feedback saved by `trace_id` in `traces/feedback.jsonl`
+- [x] `docs/answer_examples.json`: one real answer per status, replacing Naura's mock, and an offline mode so the website runs without Ollama
+- [x] `docs/WEBSITE.md`: one page on what to call and what to show
 
 Done when: a contract test passes on all 49 probes in every status, and the page's data needs are all answered by `rag/service.py`.
 
 **Stage 2: Evaluation tools and cases.**
-- [ ] `eval/make_cases.py` and a schema check for cases (§7.1): about 100 cases over the slices in §7.2
-- [ ] Decide the `schedule` sampling: by row, by district, or both (`PHASE2_NOTES.md` §10; 정선군 and 고흥군 are about a third of the table)
-- [ ] Stratified 70/30 split with a fixed seed, frozen with its hash **before** any tuning
-- [ ] `eval/metrics.py` complete (§7.3) and `eval/run_eval.py`, writing `eval/reports/`
-- [ ] Baseline numbers on dev
+- [x] `eval/make_cases.py` and a schema check for cases (§7.1): about 100 cases over the slices in §7.2
+- [x] Decide the `schedule` sampling: by row, by district, or both (`PHASE2_NOTES.md` §10; 정선군 and 고흥군 are about a third of the table)
+- [x] Stratified 70/30 split with a fixed seed, frozen with its hash **before** any tuning
+- [x] `eval/metrics.py` complete (§7.3) and `eval/run_eval.py`, writing `eval/reports/`
+- [x] Baseline numbers on dev
 
 **Stage 3: Tune on dev.** About 4 to 5 hours of unattended machine time, estimated from measured medians and about 70 dev cases.
-- [ ] E2, E3, E5 (rerank and τ), E1, E4, E8, E7; E6 if its chunk files are built. HyDE stays out unless a retrieval failure calls for it
-- [ ] Work through `PHASE2_NOTES.md` §9 one change at a time, each measured on dev: Uzbek abstention, fluent wrong rewrites, `is_korean`, invented steps in `how_to_prepare`, wrong citations, latency
-- [ ] Choose τ by the §4.6 objective, choose the prompt version, freeze the config in `rag/config.py`, and record the commit
+- [x] E2, E3, E5 (rerank and τ), E1, E4, E8, E7; E6 if its chunk files are built. HyDE stays out unless a retrieval failure calls for it *(all run; E6 not run, its chunk files were not built; E9 item-name search added)*
+- [x] Work through `PHASE2_NOTES.md` §9 one change at a time, each measured on dev: Uzbek abstention, fluent wrong rewrites, `is_korean`, invented steps in `how_to_prepare`, wrong citations, latency
+- [x] Choose τ by the §4.6 objective, choose the prompt version, freeze the config in `rag/config.py`, and record the commit *(τ 0.15, prompt v5, router repair; frozen at `cf047ff`)*
 
 **Stage 4: Final evaluation.**
-- [ ] One run on test with the frozen config
-- [ ] Ragas with a pinned judge; export the audit sheet of about 20 answers
-- [ ] Results by slice and language, failure heatmap, 3 to 5 case studies, robustness probes (§7.6)
+- [x] One run on test with the frozen config *(22/30 correct, 1/30 false answers; baseline 11/30, 4/30)*
+- [x] Ragas with a pinned judge; export the audit sheet of about 20 answers *(17 answers; the two raters have not filled it yet)*
+- [x] Results by slice and language, failure heatmap, 3 to 5 case studies, robustness probes (§7.6)
 
 **Stage 5: Report and slides.**
-- [ ] Figures and tables, the report following §12, and slides following §10.1
+- [x] Figures and tables, the report following §12, and slides following §10.1 *(docs/REPORT.md and .pdf; slide deck)*
 
 **Stage 6: Website (Naura).** The only stage left at this point.
-- [ ] Replace `get_mock_answer` in `app/streamlit_app.py` with `rag.service.ask()`
-- [ ] Add the page parts the mock does not have: `OUT_OF_SCOPE`, clarify options, handoff, source cards, all six languages, the full location list
-- [ ] Demo flow, backup screenshots
+- [x] Replace `get_mock_answer` in `app/streamlit_app.py` with `rag.service.ask()`
+- [x] Add the page parts the mock does not have: `OUT_OF_SCOPE`, clarify options, handoff, source cards, all six languages, the full location list
+- [ ] Demo flow, backup screenshots *(demo flow is in the slides; backup screenshots of the live page are a team task at rehearsal)*
 
 **What only people can do.** These cannot be generated, and the report must not imply they were.
 

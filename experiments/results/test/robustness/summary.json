@@ -1,0 +1,51 @@
+{
+ "cases": 19,
+ "config": {
+  "embedding": "bge-m3",
+  "retrieval": "hybrid",
+  "bm25_tokenizer": "kiwi",
+  "query_mode": "both",
+  "rerank": true,
+  "rerank_query": "max",
+  "name_search": true,
+  "rerank_item": true,
+  "k_retrieve": 20,
+  "k_final": 5,
+  "rrf_k": 60,
+  "router": true,
+  "gate_tau": 0.15,
+  "llm_model": "qwen2.5:7b",
+  "router_model": null,
+  "router_repair": true,
+  "prompt_version": "v5",
+  "conflict_policy": "prefer_2026",
+  "validation": "enforce",
+  "schedule_retrieval": "structured",
+  "schedule_text": "code",
+  "temperature": 0.0,
+  "seed": 7
+ },
+ "results": {
+  "clean": {
+   "abstained": 7,
+   "right bin": 11,
+   "wrong bin": 1
+  },
+  "noise": {
+   "answered (clean abstained)": 1,
+   "same bin": 11,
+   "abstained (clean answered)": 1,
+   "abstained, as clean": 6
+  },
+  "negative": {
+   "abstained": 9,
+   "right bin anyway": 6,
+   "wrong bin": 4
+  },
+  "counterfactual": {
+   "abstained": 4,
+   "followed the false chunk": 12,
+   "right bin": 3
+  }
+ }
+}

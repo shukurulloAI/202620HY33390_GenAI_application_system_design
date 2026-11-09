@@ -77,6 +77,12 @@ imports none of them (`tests/test_layering.py` enforces this).
 [docs/PHASE2_NOTES.md](docs/PHASE2_NOTES.md) holds the earlier developer probe results, which are
 not evaluation results.
 
+**Headline.** On the 30 test cases, which were never used for tuning and were run once with the
+configuration frozen at commit `cf047ff`, the system got 22 cases right with 1 false answer. The
+Phase 1 baseline got 11 right with 4 false answers. On dev, with the same configuration, it got 56/70
+right with 3 false answers. The cases were written by the developer, not by real users, and the human
+audit has not been done yet; see the report's §11.
+
 ## How a question is answered
 
 ```
@@ -183,9 +189,11 @@ Paths inside older manifests are the paths at the time of that run.
 python -m eval.run_eval --name my-run                 # full system on the dev split
 python -m eval.run_eval --name my-base --config baseline
 python -m eval.run_eval --name x --set gate_tau=0.3   # one field changed
+python -m eval.run_eval --name my-run --rescore       # score saved traces again after a metric fix
 python -m eval.make_cases --check                     # the frozen split is unchanged
 python -m experiments.run_experiment experiments/configs/E9_item_names.json --cases eval/cases/dev.jsonl --cache
 python -m experiments.robustness                      # noise / negative / counterfactual probes
+python -m experiments.robustness --relabel            # label saved probe traces again (no model calls)
 
 # LLM judge (Ragas), in its own environment
 python3.12 -m venv .venv-judge && .venv-judge/bin/pip install -r requirements-judge.txt
