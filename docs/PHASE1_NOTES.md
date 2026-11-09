@@ -1,4 +1,4 @@
-# Phase 1 notes: baseline pipeline (2026-11-03, Shukurullo)
+# Phase 1 notes: baseline pipeline (2026-11-03)
 
 These are developer observations from the probe set (`experiments/probes/probes.jsonl`, 12 questions). They are **not** evaluation results: the official numbers will come from Anar's dev/test set. The probe questions are too few and too hand-picked to support general claims.
 

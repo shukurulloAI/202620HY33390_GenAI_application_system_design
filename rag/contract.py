@@ -12,7 +12,7 @@ Beyond types, `Answer` checks the rules between fields that the website relies o
 CLARIFY answer always has a question, an abstention never names a bin, and a handoff is
 always there when the assistant could not answer.
 
-Changing a field means bumping CONTRACT_VERSION and telling Naura (PLAN.md §10.2).
+Changing a field means bumping CONTRACT_VERSION and updating the website (PLAN.md §10.2).
 """
 from __future__ import annotations
 

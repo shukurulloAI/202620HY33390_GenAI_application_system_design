@@ -1,5 +1,5 @@
 """
-Waste-Sorting Assistant: the website (Streamlit). Design by Naura; connected to the RAG
+Waste-Sorting Assistant: the website (Streamlit), connected to the RAG
 system through rag/service.py (docs/WEBSITE.md).
 
     streamlit run app/streamlit_app.py                  # full system (Ollama + index)

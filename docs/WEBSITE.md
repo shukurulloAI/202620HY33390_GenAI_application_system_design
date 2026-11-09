@@ -72,7 +72,7 @@ schedule is shown in English (`docs/PHASE2_NOTES.md` §10).
 
 ## The page (`app/streamlit_app.py`)
 
-Naura's design, connected to `rag.service` (Stage 6). What it does with each part of the answer:
+The page, connected to `rag.service` (Stage 6). What it does with each part of the answer:
 
 - **Form:** question, answer language (six), and an optional area: province, district (all 224,
   marked "no data" where the table has none) and neighbourhood or zone, from `locations()`.

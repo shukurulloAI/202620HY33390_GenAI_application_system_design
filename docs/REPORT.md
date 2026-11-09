@@ -1,6 +1,6 @@
 # Waste-Sorting Assistant for Foreigners in Korea
 
-<p class="subtitle">Final report · 202620HY33390 Design of Generative AI Application Systems, Hanyang University · Team: Shukurullo (system), Vitou (data), Anar (evaluation and report), Naura (website) · 2026-11-08</p>
+<p class="subtitle">Final report · 202620HY33390 Design of Generative AI Application Systems, Hanyang University · Team (equal contribution): Anar, Naura, Shukurullo, Vitou · 2026-11-08</p>
 
 > **In one paragraph.** A foreigner in Korea asks, in their own language, which bin an item goes in and when waste is collected in their neighbourhood. The assistant answers from two official sources: the national separation guides for items, and the district collection table for days and places. It cites both. When it cannot answer safely, it says so and hands off to the district office with a Korean sentence the user can show. On a frozen test split of 30 cases that the system never saw while it was tuned, it got 22 of 30 cases right, with 1 false answer (answering when it should not, or with the wrong bin). The Phase 1 baseline scored 11 correct and 4 false answers on the same cases. Every question that should have been refused or asked back was handled correctly, and every schedule shown was the right one. The main weaknesses are the router's translation of item names into Korean (the cause of 5 of the 8 test failures), outdated 2018 entries that outrank newer 2026 rules, and a 7B model that sometimes contradicts its own evidence. Validation turns most of these into abstentions with a handoff, so 7 of the 8 test failures reached the user as "I can't confirm this, ask the district office", not as a wrong bin.
 
@@ -335,7 +335,7 @@ The heatmap places each failed case at the **earliest stage whose check failed**
 
 **What was not done (and must not be read into the numbers).**
 - **No real users.** The `real_users` slice is empty: no real questions from international students were collected.
-- **The cases were written by the system's developer** (with AI assistance), not by an independent person. The paraphrases in zh, vi, uz and ru were not checked by native speakers. A developer who also wrote the system tends to write questions the system can parse. So the test score is an optimistic estimate, even though the test split was never used for tuning.
+- **The cases were written by the team that built the system** (with AI assistance), not by independent people. The paraphrases in zh, vi, uz and ru were not checked by native speakers. People who built a system tend to write questions it can parse. So the test score is an optimistic estimate, even though the test split was never used for tuning.
 - **No human audit yet.** The plan asks two people to label about 20 answers independently. The test run produced 17 answers with evidence, and blank sheets for both raters are exported (`eval/reports/test-final/audit/`). `python -m eval.audit agree test-final` computes human faithfulness, Cohen's kappa between the raters, and the judge's agreement with them, once the sheets are filled. Until then, the judge's scores are unchecked. Our own reading already found two judge errors (§8.3).
 - **No native-speaker check** of the glossary, the day and label tables, or the fixed texts in zh, vi, uz and ru.
 

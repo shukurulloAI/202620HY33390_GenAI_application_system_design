@@ -1,7 +1,7 @@
 # Waste-Sorting Assistant for Foreigners in Korea (RAG)
 
 Course project for 202620HY33390 *Design of Generative AI Application Systems*, Hanyang University.
-Team: Shukurullo, Vitou, Anar, Naura. The design, task list and roadmap are in [PLAN.md](PLAN.md).
+Team (equal contribution): Anar, Naura, Shukurullo, Vitou. The design, task list and roadmap are in [PLAN.md](PLAN.md).
 
 The assistant tells a foreigner in Korea which bin an item goes in (from the national guides) and
 when and where to put waste out (from the district table), with sources, in their language.
@@ -84,7 +84,7 @@ not evaluation results. Run records written before 2026-11-09 store older commit
 **Headline.** On the 30 test cases, which were never used for tuning and were run once with the
 configuration frozen at commit `f0faba6`, the system got 22 cases right with 1 false answer. The
 Phase 1 baseline got 11 right with 4 false answers. On dev, with the same configuration, it got 56/70
-right with 3 false answers. The cases were written by the developer, not by real users, and the human
+right with 3 false answers. The cases were written by the team (with AI assistance), not by real users, and the human
 audit has not been done yet; see the report's §11.
 
 ## How a question is answered
@@ -270,12 +270,3 @@ RAG_OFFLINE=1 streamlit run app/streamlit_app.py     # recorded answers, no mode
 ```
 
 What the page shows for each answer field: [docs/WEBSITE.md](docs/WEBSITE.md).
-
-## Team
-
-| Area | Owner |
-|---|---|
-| Data: `data/`, `preprocess/`, `notebooks/` | Vitou (`preprocess/` built by Shukurullo) |
-| System: `rag/`, `ingest/`, `tests/`, experiment runners | Shukurullo |
-| Evaluation and report: `eval/`, experiment measurement | Anar |
-| Website: `app/` (design by Naura; connected to `rag/service.py` in Stage 6) | Naura |

@@ -4,19 +4,19 @@
 # The generator LLM runs in Ollama (installed separately): https://ollama.com
 #   ollama pull qwen2.5:7b
 
-# --- Data preprocessing (Vitou) ---
+# --- Data preprocessing ---
 pdfplumber>=0.11
-pandas>=2.0                    # Vitou_EDA notebook
+pandas>=2.0                    # EDA notebook
 
-# --- RAG pipeline (Shukurullo) ---
+# --- RAG pipeline ---
 sentence-transformers>=3.0     # bge-m3 embeddings, bge-reranker cross-encoder
 qdrant-client>=1.12            # local persistent vector store
 rank-bm25>=0.2.2               # lexical retrieval
 pydantic>=2.7                  # answer contract (rag/contract.py)
 kiwipiepy>=0.18                # Korean morphological tokenizer for BM25
 
-# --- Evaluation (Anar) ---
+# --- Evaluation ---
 # ragas>=0.4,<0.5
 
-# --- Website (Naura, optional) ---
+# --- Website (optional) ---
 # streamlit>=1.40

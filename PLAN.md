@@ -1,24 +1,26 @@
 # Project Plan: Waste-Sorting Assistant for Foreigners in Korea
 
 Course: 202620HY33390 Design of Generative AI Application Systems (Hanyang University)
-Team: Shukurullo, Vitou, Anar, Naura
-Plan version: v6, 2026-11-07 (v2: team roles assigned; v3: Phase 1 baseline done; v4: Phase 2 components built; v5: preprocessing done, `preprocess/`; v6: repository restructured, road to website-ready in §10.4)
+Team (equal contribution): Anar, Naura, Shukurullo, Vitou
+Plan version: v6, 2026-11-07 (v2: work areas defined; v3: Phase 1 baseline done; v4: Phase 2 components built; v5: preprocessing done, `preprocess/`; v6: repository restructured, road to website-ready in §10.4)
 
 This file is the project's single plan. Each design choice is linked to the lesson that taught it, so the final report can show which course concepts we used and how we measured them.
 
-## Team roles
+## Work areas
 
-| Area | Owner | Plan sections |
-|---|---|---|
-| Data collection | **Vitou** | §3 |
-| Data preprocessing (cleaning, chunking, manifest) | **Vitou** | §3, §4.1 |
-| Model implementation (RAG pipeline code) | **Shukurullo** | §4.1–§4.11, §6 (making experiment variants runnable) |
-| Evaluation | **Anar** | §6 (running experiments), §7 |
-| Reports | **Anar** | §11, §12 |
-| Website (optional) | **Naura** | §4.12 |
-| Presentation | **All** | §10, Phase 4 |
+All four members contributed equally to the project.
 
-Detailed task lists per person are in §10.
+| Area | Plan sections |
+|---|---|
+| Data collection | §3 |
+| Data preprocessing (cleaning, chunking, manifest) | §3, §4.1 |
+| Model implementation (RAG pipeline code) | §4.1–§4.11, §6 (making experiment variants runnable) |
+| Evaluation | §6 (running experiments), §7 |
+| Reports | §11, §12 |
+| Website (optional) | §4.12 |
+| Presentation | §10, Phase 4 |
+
+Detailed task lists per area are in §10.
 
 > **Note on "training the model":** this is a RAG system, so we **do not train or fine-tune model weights**. We use pre-trained models (embedding model, reranker, LLM) and "training" means implementing and tuning the pipeline: indexing, retrieval, prompts and the gate threshold. Tuning uses the dev set only (§7).
 
@@ -65,7 +67,7 @@ tudents), with limited Korean |
 |---|---|---|---|
 | MoE Recycling Separation Guideline (2018), 36 pages | `data/raw/item_guides/moe_recycling_guideline_2018.pdf` | Which bin for ~290 items, FAQ, general guidance | ✅ Chunked |
 | Separation directive, Annex 1 (기후에너지환경부훈령 제18호, effective 2026-01-01), 8 pages | `data/raw/item_guides/moe_separation_directive_annex1_2026.pdf` | Current official rules by material group (incl. clear PET bottles) | ✅ Chunked |
-| National household-waste schedule data (data.go.kr), CP949, 10,187 rows, 222 districts | `data/raw/korean_waste_policies.csv` | When and where: days, times, place, method per waste type, office phone, data date | ⚠️ Chunked by Vitou, needs fixes (below) |
+| National household-waste schedule data (data.go.kr), CP949, 10,187 rows, 222 districts | `data/raw/korean_waste_policies.csv` | When and where: days, times, place, method per waste type, office phone, data date | ⚠️ Chunked, needs fixes (below) |
 | Recycling item API (data.go.kr 15156866), ~770 items | not downloaded yet | More items with sorting methods | ⏳ API key needed; take a snapshot file, never call it live |
 
 ### 3.1 Item chunks (`data/interim/parsed_item_chunks.jsonl`, 394 chunks)
@@ -89,7 +91,7 @@ CSV columns used: 시도명, 시군구명, 관리구역명, 관리구역대상�
 
 Problems found in profiling. Each needs a fix or a stated limitation:
 
-| # | Problem | Impact | Fix (owner: Vitou) |
+| # | Problem | Impact | Fix |
 |---|---|---|---|
 | 1 | `split_dongs` keeps only names ending in 동 | Neighbourhood names ending in 읍/면/리/가/로 are lost; 92% of chunks have an empty `dongs` | Keep all area names; normalise rather than filter |
 | 2 | Chunk metadata has no province (시도명) | 7 district names exist in several provinces (e.g., 중구, 동구, 서구, 남구, 북구, 강서구, 고성군) | Add `province`; filter on (province, district) |
@@ -315,14 +317,14 @@ When the assistant abstains, it gives:
 One JSON line per request in `traces/` (gitignored):
 original question, router output, rewrite validation, candidates (ID, dense rank, BM25 rank, rerank score), selected evidence, gate decision and reason, token counts, prompt version, model IDs and revisions, raw LLM output, validation result, final answer, latency per stage, user feedback.
 
-### 4.12 Website / UI (Naura, optional)
+### 4.12 Website / UI (optional)
 
 The website calls the pipeline through one function and only displays its result:
 ```python
 answer(question: str, lang: str | None = None,
        district: str | None = None, dong: str | None = None) -> dict  # Answer JSON from §4.8 + trace_id
 ```
-Streamlit is the quickest option; a custom web front end (e.g., FastAPI + HTML) is fine if Naura prefers it. If the website is not built, the demo uses the command-line interface.
+Streamlit is the quickest option; a custom web front end (e.g., FastAPI + HTML) is also fine. If the website is not built, the demo uses the command-line interface.
 
 - Chat box with a language selector, plus an optional district/neighbourhood dropdown (reduces ambiguity).
 - Answer card: bin, how to prepare, schedule, and the "data as of" date.
@@ -455,7 +457,7 @@ Undefined cases are declared, e.g., Recall@k for abstain cases = `None`, exclude
 
 ### 7.4 Judges and audits
 - **Ragas** (v0.4.x): faithfulness, context relevance and answer relevance, with a pinned judge model and recorded prompt version.
-- **Human audit:** Anar and one other member (e.g., Naura) independently label ~20 answers (supported / contradicted / missing per claim). Report agreement between the judge and the humans, and between the two humans. Every disagreement is explained.
+- **Human audit:** two members independently label ~20 answers (supported / contradicted / missing per claim). Report agreement between the judge and the humans, and between the two humans. Every disagreement is explained.
 - **Gate threshold:** sweep τ on dev, choose by the declared objective (§4.6), freeze it, then run test once.
 
 ### 7.5 Failure analysis
@@ -502,10 +504,10 @@ Undefined cases are declared, e.g., Recall@k for abstain cases = `None`, exclude
 
 ## 9. Repository structure
 
-Owner of each folder in brackets. Code folders hold code; generated files live under `data/` or `experiments/results/`. Every path is defined once, in `rag/paths.py`. Dependencies run one way: `preprocess`, `ingest`, `eval` and `experiments` import `rag`, and `rag` imports none of them (`tests/test_layering.py`).
+Code folders hold code; generated files live under `data/` or `experiments/results/`. Every path is defined once, in `rag/paths.py`. Dependencies run one way: `preprocess`, `ingest`, `eval` and `experiments` import `rag`, and `rag` imports none of them (`tests/test_layering.py`).
 
 ```
-data/                                                                   [Vitou]
+data/
   raw/                        official sources, never edited
     korean_waste_policies.csv, item_guides/*.pdf
     api_snapshot/             (later) 770-item API snapshot + fetch date
@@ -514,13 +516,13 @@ data/                                                                   [Vitou]
   processed/                  item_chunks.jsonl, schedule.csv, dong_lookup.json,
                               district_aliases.json, locations.json, manifest.json
   reports/                    data_quality.md, index/ (index verification reports)
-preprocess/                   raw → processed                           [Vitou]
+preprocess/                   raw → processed
   parse_item_guides.py        PDF → parsed chunks
   build_items.py, build_schedule.py, build_all.py, common.py
-ingest/                                                                 [Shukurullo]
+ingest/
   build_index.py              chunks → embeddings → Qdrant
   verify_index.py             verification report
-rag/                                                                    [Shukurullo]
+rag/
   paths.py, config.py         every path; every setting
   files.py                    JSONL and hash helpers
   llm_client.py               provider interface (Ollama / fixture)
@@ -541,7 +543,7 @@ rag/                                                                    [Shukuru
   tracing.py                  stage timing, trace writing
   __main__.py                 command line: python -m rag "..."
   prompts/                    versioned prompt files (router_v1.md, answer_v2.md, ...)
-eval/                                                                   [Anar]
+eval/
   cases.py, metrics.py        built; metrics still to complete (§7.3)
   cases/dev.jsonl, test.jsonl
   make_cases.py               template generation from chunks + CSV
@@ -550,30 +552,32 @@ eval/                                                                   [Anar]
   human_audit.csv
   reports/
 experiments/
-  configs/E1_*.json ... E8_*.json                                       [Shukurullo]
+  configs/E1_*.json ... E8_*.json
   probes/                     developer regression questions
-  results/                    E2/ to E5/ traces, probes/ timestamped runs [Anar]
+  results/                    E2/ to E5/ traces, probes/ timestamped runs
   run_experiment.py, run_probes.py, tau_sweep.py, provenance.py
-tests/                        one file per module, no models or Ollama  [Shukurullo]
+tests/                        one file per module, no models or Ollama
 docs/                         PHASE1_NOTES.md, PHASE2_NOTES.md
-notebooks/schedule_eda/       CSV exploration                           [Vitou]
-app/                          website (optional)                        [Naura]
-report/                       final report + figures                    [Anar]
-slides/                       presentation                              [All]
+notebooks/schedule_eda/       CSV exploration
+app/                          website (optional)
+report/                       final report + figures
+slides/                       presentation
 qdrant_data/, traces/         (gitignored)
 PLAN.md, README.md, pyproject.toml, requirements*.txt
 ```
 
-Each person works on their own branch (`vitou`, `shukurullo`, `anar`, `naura`) and merges into `main` through pull requests.
+Members work on their own branches and merge into `main` through pull requests.
 
 ---
 
-## 10. Task assignments and roadmap
+## 10. Tasks and roadmap
 
-### 10.1 Tasks per person
+### 10.1 Tasks by area
 
-#### Vitou: data collection and preprocessing
-`preprocess/` (`python -m preprocess.build_all`; report in `data/reports/data_quality.md`) was built by Shukurullo on 2026-11-04 so Phase 2 could run on clean data, without having seen Vitou's fixes for `split_dongs`, `province` and row handling, pushed to branch `vitou` on 2026-11-03 (`90ca8b9`, with `notebooks/schedule_eda/README.md`). The pipeline reads `data/processed/`; comparing the two found a real bug in it (below). Vitou: please review the outputs, especially the manual table transcription and the glossary, and take over the open collection items.
+These are the original task lists; the current status is tracked in §10.4.
+
+#### Data collection and preprocessing
+`preprocess/` (`python -m preprocess.build_all`; report in `data/reports/data_quality.md`) was built on 2026-11-04 so Phase 2 could run on clean data. The fixes for `split_dongs`, `province` and row handling in `notebooks/schedule_eda/` (`90ca8b9`, 2026-11-03, with `notebooks/schedule_eda/README.md`) were made separately. The pipeline reads `data/processed/`; comparing the two found a real bug in it (below). Still open: a review of the outputs, especially the manual table transcription and the glossary, and the open collection items.
 
 Collection:
 - [ ] Apply for the data.go.kr API key; save a snapshot of the ~770-item recycling API (`data/raw/api_snapshot/`, with fetch date)
@@ -581,7 +585,7 @@ Collection:
 - [ ] Optional: find schedules for missing Seoul districts (Gangdong-gu, Dobong-gu) on district websites, marked as a separate source
 
 Preprocessing (fixes from §3.2):
-- [x] Keep area names ending in 읍/면/리/가/로 (`preprocess/build_schedule.py`; Vitou's own fix is in `notebooks/schedule_eda/utils.py` on branch `vitou`); expand number lists with any separator (`휘경1,2동`, `상계6.7동`, `청학1·2동`, `수성1,2.3,4가동`); move `(… 제외)` to notes. The `.`/`·`/`ㆍ` lists were found by comparing with Vitou's output
+- [x] Keep area names ending in 읍/면/리/가/로 (`preprocess/build_schedule.py`; the notebook fix is in `notebooks/schedule_eda/utils.py`); expand number lists with any separator (`휘경1,2동`, `상계6.7동`, `청학1·2동`, `수성1,2.3,4가동`); move `(… 제외)` to notes. The `.`/`·`/`ㆍ` lists were found by comparing with the notebook's output
 - [x] Add `province` to every schedule record; handle the 7 duplicate district names (lookup asks which province)
 - [x] List the ambiguous neighbourhood names in `data/processed/dong_lookup.json` (228 of 6,070)
 - [x] Keep `data_date`; flag rows older than 1 year (`오래된데이터`: 56% of rows as of 2026-11-04)
@@ -594,7 +598,7 @@ Preprocessing (fixes from §3.2):
 - [x] Data checks: unique IDs, no empty text, flat metadata types; summary in `data/reports/data_quality.md`
 - [x] **Clean table chunks for guide p.17/p.18** (9 `table` chunks, `data/manual/food_waste_table_2018.json`; fixed probes p02, p03, p05, p16). (food waste: what is NOT food waste). The PDF tables lose their layout, and the 7B model reads "bones → general-waste bag" as "food waste" (Phase 2 probes p03, p16). Write one clear chunk per row, e.g. "닭 등의 뼈다귀, 생선뼈 → 음식물류폐기물 아님, 종량제봉투로 배출". Check other table pages the same way
 
-#### Shukurullo: model implementation (RAG pipeline)
+#### Model implementation (RAG pipeline)
 - [x] Repo setup: `.gitignore`, `requirements.txt`, folder structure (§9)
 - [x] `llm_client.py`: Ollama + fixture client; Korean and JSON tested (Phase 1 notes)
 - [x] `build_index.py` + `verify_index.py`: bge-m3 collection built, verification PASS
@@ -617,18 +621,18 @@ Preprocessing (fixes from §3.2):
 - [x] Gate: when an area has more than `MAX_ZONES` rows with different schedules, ask or hand off instead of answering from the first 4 (`PHASE2_NOTES.md` §10)
 - [x] Schedule answers: write days, times and places in code, so `answer_text` cannot drop or change them (`rag/schedule_text.py`; `PHASE2_NOTES.md` §10)
 - [x] Repository restructured (§9): code apart from data, one way of depending on `rag/`, `pipeline.py` split into stages, tests per module under pytest. Same output as before on all 147 recorded traces
-- [ ] Re-run E1–E8 on Anar's dev set when it exists; pick τ (E5) and freeze the config
+- [ ] Re-run E1–E8 on the dev set when it exists; pick τ (E5) and freeze the config
 - [x] CLI demo (`python -m rag`); Phase 1 notes in `docs/PHASE1_NOTES.md`
 - [x] Developer probe set (`experiments/run_probes.py`, 22 questions) for quick regression checks
 
-#### Anar: evaluation and reports
+#### Evaluation and reports
 Evaluation:
 - [ ] Test set v1 (§7.1–7.2): ~100 cases, slices, language variants, dev/test split frozen **before** tuning
 - [ ] Collect 6–10 real questions from international students
 - [ ] `metrics.py` + `run_eval.py` (can start now with mock traces)
 - [ ] Baseline numbers on dev; run E1–E8 on dev as each one becomes runnable
-- [ ] `ragas_eval.py` with a pinned judge; human audit of ~20 answers with a second rater (e.g., Naura); agreement score
-- [ ] Gate threshold sweep on dev (with Shukurullo)
+- [ ] `ragas_eval.py` with a pinned judge; human audit of ~20 answers by two raters; agreement score
+- [ ] Gate threshold sweep on dev
 - [ ] Final single run on test; failure heatmap; 3–5 case studies; robustness probes (§7.6)
 
 Reports:
@@ -636,103 +640,94 @@ Reports:
 - [ ] Tables and figures: data quality, ablation table, slice/language results, heatmap, gate confusion matrix
 - [ ] Lesson mapping (§5) and industry lens (§11) sections
 
-**Test-set rule (Lesson 6):** Anar keeps the test split private until the final run. Shukurullo develops and tunes only on dev.
+**Test-set rule (Lesson 6):** the test split stays unused until the final run; all development and tuning use dev only.
 
-#### Naura: website (optional)
+#### Website (optional)
 - [ ] Choose the stack (Streamlit, or FastAPI + HTML)
 - [ ] Build against a **mock** answer JSON (§4.8) first, so work doesn't wait for the pipeline
-- [ ] Chat box, language selector, district/neighbourhood dropdown (from Vitou's district list)
+- [ ] Chat box, language selector, district/neighbourhood dropdown (from the district list in `data/processed/`)
 - [ ] Answer card: bin, how to prepare, schedule, "data as of" date, office phone, Korean handoff sentence
 - [ ] Expandable source cards; glossary hover; 👍/👎 feedback saved with `trace_id`
 - [ ] Connect to the real `answer()` when ready; prepare the demo flow
-- [ ] Optional: second rater for the human audit
 
-#### All: presentation
-- [ ] Each member presents their own part:
-
-  | Part | Presenter |
-  |---|---|
-  | Problem and vision | Anar |
-  | Data | Vitou |
-  | System design | Shukurullo |
-  | Evaluation results | Anar |
-  | Demo | Naura, or Shukurullo if there is no website |
+#### Presentation
+- [ ] Every member presents part of the talk: problem and vision, data, system design, evaluation results, demo
 
 - [ ] Backup screenshots or a video of the demo in case the live demo fails
 - [ ] One full rehearsal with timing
 
-### 10.2 Handoffs between members
+### 10.2 Handoffs between parts
 
 | From → To | What | Format | Needed for |
 |---|---|---|---|
-| Vitou → Shukurullo | Item chunks (UUIDv5), manifest, schedule table, dong lookup, district aliases, glossary; clean table chunks for guide p.17/18 | §4.1 chunk record; §4.5 `ScheduleRow` | Phase 1–2 |
-| Vitou → Anar | Chunk IDs and schedule rows for gold labels; data-quality numbers | Same files | Phase 1 |
-| Vitou → Naura | District and neighbourhood list for dropdowns | `district_aliases.json`, `dong_lookup.json` | Phase 3 |
-| Shukurullo → Anar | `Pipeline(cfg).run_case(case) -> trace`; `experiments/configs/E*.json` + `run_experiment.py`; `tau_sweep.py` | Trace §4.11; `experiments/results/<id>/` | Phase 1–2 |
-| Shukurullo → Naura | `answer(question, lang, district, dong) -> dict` | Answer JSON §4.8 | Phase 3 (mock earlier) |
-| Anar → Shukurullo | Dev results and failure labels after each change | `eval/reports/*.json` | Each Phase 2 step |
-| Anar → all | Report draft for each member to check their section | `report/` | Phase 4 |
+| Data → System | Item chunks (UUIDv5), manifest, schedule table, dong lookup, district aliases, glossary; clean table chunks for guide p.17/18 | §4.1 chunk record; §4.5 `ScheduleRow` | Phase 1–2 |
+| Data → Evaluation | Chunk IDs and schedule rows for gold labels; data-quality numbers | Same files | Phase 1 |
+| Data → Website | District and neighbourhood list for dropdowns | `district_aliases.json`, `dong_lookup.json` | Phase 3 |
+| System → Evaluation | `Pipeline(cfg).run_case(case) -> trace`; `experiments/configs/E*.json` + `run_experiment.py`; `tau_sweep.py` | Trace §4.11; `experiments/results/<id>/` | Phase 1–2 |
+| System → Website | `answer(question, lang, district, dong) -> dict` | Answer JSON §4.8 | Phase 3 (mock earlier) |
+| Evaluation → System | Dev results and failure labels after each change | `eval/reports/*.json` | Each Phase 2 step |
+| Report → all | Report draft for every member to check | `report/` | Phase 4 |
 
 Changing a shared format means telling the others and bumping its version (e.g., `chunk_schema: v2`).
 
 ### 10.3 Phases
 
-No deadline is fixed in this plan. Phases are ordered by dependency, and each one ends with something runnable. Work that doesn't depend on others starts right away: Anar's test set and metrics, and Naura's mock website.
+No deadline is fixed in this plan. Phases are ordered by dependency, and each one ends with something runnable. Work that doesn't depend on others starts right away: the test set and metrics, and the mock website.
 
 **Phase 0: Data foundation**
 - [x] Collect official item guides (2018 guideline, 2026 Annex 1) (done)
 - [x] Item chunk builder → 394 chunks (`preprocess/parse_item_guides.py`) (done)
 - [x] CSV fixes, schedule table, lookups, glossary, manifest, UUIDv5 IDs (`preprocess/`)
-- [ ] API key + 770-item snapshot (Vitou, optional)
-- [x] `.gitignore`, `requirements.txt`, folders (Shukurullo)
-- [ ] Case schema + first test cases (Anar)
-- [x] Mock-data website skeleton (Naura; `app/` on branch `naura`, not merged yet)
+- [ ] API key + 770-item snapshot (optional)
+- [x] `.gitignore`, `requirements.txt`, folders
+- [ ] Case schema + first test cases
+- [x] Mock-data website skeleton (`app/`)
 
 **Phase 1: Baseline system + test set**
-- [ ] Test set v1 frozen: dev + test (Anar)
-- [x] Qdrant index + verification report (Shukurullo)
-- [x] Baseline pipeline: vector-only retrieval → simple prompt → answer, CLI (Shukurullo)
-- [x] Schedule tool v1 (Shukurullo)
-- [x] `LLMClient` with Ollama; Korean + JSON check (Shukurullo)
-- [ ] `run_eval.py` + `metrics.py`; first baseline numbers on dev (Anar)
+- [ ] Test set v1 frozen: dev + test
+- [x] Qdrant index + verification report
+- [x] Baseline pipeline: vector-only retrieval → simple prompt → answer, CLI
+- [x] Schedule tool v1
+- [x] `LLMClient` with Ollama; Korean + JSON check
+- [ ] `run_eval.py` + `metrics.py`; first baseline numbers on dev
 
 **Phase 2: Improvements, one at a time (dev set only)**
-- [x] Router + rewrite validation (Shukurullo)
-- [x] Hybrid retrieval E3; embedding comparison E2 built (Shukurullo); probe runs in `PHASE2_NOTES.md`
-- [ ] E2/E3 on dev; E4 vector variants (Shukurullo builds, Anar measures)
-- [x] Reranker + gate + `tau_sweep.py` built (Shukurullo)
-- [ ] E5 τ sweep on dev (Anar measures)
-- [x] Prompt variants E1 built (Shukurullo)
-- [ ] E1 on dev (Anar measures)
+- [x] Router + rewrite validation
+- [x] Hybrid retrieval E3; embedding comparison E2 built; probe runs in `PHASE2_NOTES.md`
+- [ ] E2/E3 on dev; E4 vector variants
+- [x] Reranker + gate + `tau_sweep.py` built
+- [ ] E5 τ sweep on dev
+- [x] Prompt variants E1 built
+- [ ] E1 on dev
 - [ ] Optional: E6, E7, E8, HyDE
 
 **Phase 3: Product**
-- [x] Generator JSON contract + validation + citation check (Shukurullo)
-- [x] Conflict policy + data-date warnings (Shukurullo)
-- [x] Handoff message: office phone + Korean sentence (Shukurullo)
-- [ ] Website connected to `answer()` (Naura)
-- [ ] Trace logging + feedback (Shukurullo, Naura)
+- [x] Generator JSON contract + validation + citation check
+- [x] Conflict policy + data-date warnings
+- [x] Handoff message: office phone + Korean sentence
+- [ ] Website connected to `answer()`
+- [ ] Trace logging + feedback
 
 **Phase 4: Final evaluation, report, presentation**
-- [ ] Freeze the configuration; single run on test (Anar)
-- [ ] Ragas scoring + human audit (Anar + second rater)
-- [ ] Failure heatmap, case studies, robustness probes (Anar)
-- [ ] Final report (Anar, with input from all)
-- [ ] Slides, demo, rehearsal (All)
+- [ ] Freeze the configuration; single run on test
+- [ ] Ragas scoring + human audit (two raters)
+- [ ] Failure heatmap, case studies, robustness probes
+- [ ] Final report (input from all)
+- [ ] Slides, demo, rehearsal
 
 ### 10.4 Road to website-ready
 
 Goal: everything except the website is finished, and connecting the website is one small, known step. The stages run in this order because each needs the one before. Stage 1 comes before evaluation because it changes what users see, and nothing is measured on inputs we already know are wrong.
 
 **Stage 1: Website-ready system.** No outside dependency.
-- [x] Merge branches `vitou` and `naura` here, so `app/` and Vitou's README sit in the new layout. Move `main` forward by pull request: it still holds only the initial commit *(merged, with `anar` too; the pull request into `main` is the last step)*
+- [x] Merge the members' branches here, so `app/` and the EDA README sit in the new layout. Move `main` forward by pull request: it still holds only the initial commit *(merged; the pull request into `main` is the last step)*
 - [x] `rag/contract.py`: the answer as typed models, with the JSON schema exported to `docs/answer_schema.json`. `answer()` checks its output against them, so a field cannot change without a failing test
 - [x] `rag/service.py`: the one module the website imports. `ask()`, `save_feedback(trace_id, rating, comment)`, `source_text(citation)`, `locations()`, `glossary()`, `languages()`. It holds the single `Pipeline`, which takes time to load
 - [x] Fixed text in all six languages. Today `clarify.question`, `handoff.contact` and `notes` are English only, and `message()` covers English and Korean only
 - [x] The answer gaps in `PHASE2_NOTES.md` §10: say in `answer_text` when the item part failed, and show `no_collection_days`
 - [x] Citations carry the page and text, for the source cards
 - [x] Feedback saved by `trace_id` in `traces/feedback.jsonl`
-- [x] `docs/answer_examples.json`: one real answer per status, replacing Naura's mock, and an offline mode so the website runs without Ollama
+- [x] `docs/answer_examples.json`: one real answer per status, replacing the mock, and an offline mode so the website runs without Ollama
 - [x] `docs/WEBSITE.md`: one page on what to call and what to show
 
 Done when: a contract test passes on all 49 probes in every status, and the page's data needs are all answered by `rag/service.py`.
@@ -757,7 +752,7 @@ Done when: a contract test passes on all 49 probes in every status, and the page
 **Stage 5: Report and slides.**
 - [x] Figures and tables, the report following §12, and slides following §10.1 *(docs/REPORT.md and .pdf; slide deck)*
 
-**Stage 6: Website (Naura).** The only stage left at this point.
+**Stage 6: Website.** The only stage left at this point.
 - [x] Replace `get_mock_answer` in `app/streamlit_app.py` with `rag.service.ask()`
 - [x] Add the page parts the mock does not have: `OUT_OF_SCOPE`, clarify options, handoff, source cards, all six languages, the full location list
 - [ ] Demo flow, backup screenshots *(demo flow is in the slides; backup screenshots of the live page are a team task at rehearsal)*
@@ -767,7 +762,7 @@ Done when: a contract test passes on all 49 probes in every status, and the page
 | Task | Who | Needed by |
 |---|---|---|
 | 6 to 10 real questions from international students | Team | Stage 2, or the `real_users` slice is reported as missing |
-| Review of the table transcription and glossary | Vitou | Before Stage 2: gold labels depend on them |
+| Review of the table transcription and glossary | Team | Before Stage 2: gold labels depend on them |
 | Native-speaker check: glossary, day and label tables, Chinese method text | Speakers of zh, vi, uz, ru | Before the report claims those languages work |
 | Paraphrased cases checked by a person (§7.2) | Team | Stage 2 |
 | Human audit of about 20 answers, two independent raters | Two members | Stage 4 |
@@ -818,8 +813,8 @@ Maintenance (Moderna lesson): each source has an owner, a revision hash and a re
 | Ragas judge misreads Korean evidence vs English answers | Human audit; report agreement |
 | Too many experiments for the time | "Must" experiments first (E1–E5); others only if time remains |
 | Chunk IDs change and break gold labels | UUIDv5 IDs (Phase 0) |
-| Team members block each other | Fixed formats between members (§10.2); Anar starts with mock traces, Naura with mock answers |
-| Test set leaks into tuning | Anar keeps the test split private until the final run (§10.1) |
+| Team members block each other | Fixed formats between parts (§10.2); evaluation starts with mock traces, the website with mock answers |
+| Test set leaks into tuning | The test split stays unused until the final run (§10.1) |
 
 ---
 
@@ -829,4 +824,4 @@ Maintenance (Moderna lesson): each source has an owner, a revision hash and a re
 - [ ] Which extra languages besides English and Korean
 - [ ] Whether to include the 770-item API snapshot (needs an API key)
 - [ ] Project deadline, presentation date and demo format
-- [ ] Website: build it or not, and which stack (Naura)
+- [ ] Website: build it or not, and which stack

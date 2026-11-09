@@ -1,4 +1,4 @@
-# Phase 2 notes: full system on clean data (2026-11-04/06, Shukurullo)
+# Phase 2 notes: full system on clean data (2026-11-04/06)
 
 These are developer observations from the probe set (`experiments/probes/probes.jsonl`, 22 questions, 13 with gold chunks). They are **not** evaluation results. The official numbers will come from Anar's dev/test set. The probes are few and hand-picked, and they were also used to tune the system (τ, validation rules), so they cannot show that it generalises.
 
@@ -25,7 +25,7 @@ Code state, all with `git_dirty` false (current commit IDs; the run files store 
 
 Against `e8bc797`, full-system answers changed only on p11 and p14 (now written by code) and p16 (§2). Baseline answers did not change. The first runs used an uncommitted tree, and the re-run reproduced their retrieval numbers, τ and gate counts exactly. The old-vs-clean table in §1, the rerank-query paragraph in §3 and all of §8 are older runs, and they say so.
 
-## 1. Data fixes (Phase 0 tasks, done before these runs; Vitou to review)
+## 1. Data fixes (Phase 0 tasks, done before these runs; still to be reviewed)
 
 Phase 2 first ran on the raw data, which was the wrong order. Comparing the same config (v2, τ = 0.045, enforce) on old and clean data shows the cost:
 
@@ -40,7 +40,7 @@ Food-waste rules are in tables on guide p.17–18, and PDF extraction lost the l
 
 | Problem | Fix | Numbers |
 |---|---|---|
-| Tables on p.17–18 lost their layout | 9 hand-transcribed `table` chunks with page provenance; added search words are labelled | 9 chunks; needs Vitou's check against the PDF |
+| Tables on p.17–18 lost their layout | 9 hand-transcribed `table` chunks with page provenance; added search words are labelled | 9 chunks; needs a check against the PDF |
 | IDs depended on parse order | UUIDv5 of source, chunker, span and text digest; old ID kept as `legacy_id` | Repeat builds give identical IDs |
 | Number lists in area names (`휘경1,2동`, `상계6.7동`, `청학1·2동`, `수성1,2.3,4가동`) | `clean_areas` expands them with any separator and moves notes out | No unexpanded lists or stemless names left in 10,187 rows |
 | Exact area name lost to the base-name match | The exact name now wins; the official `상계6·7동` spelling also resolves | 상계6동: 3 wrong zones -> 1 |
@@ -51,7 +51,7 @@ Food-waste rules are in tables on guide p.17–18, and PDF extraction lost the l
 | Old data | Flagged and shown to the user | 6,234 rows (61%) older than 1 year on 2026-11-06; median age 843 days |
 | Seoul 도봉구, 강동구 missing | Explicit "no data" | Still no schedules for them |
 
-The `.`/`·`/`ㆍ` number lists were found late, by comparing against Vitou's own fix (branch `vitou`, `90ca8b9`, 2026-11-03), which handles them. Before that fix, 주례2동, 청학2동, 양정1동 and 수성2가동 were "not found" and returned every zone in the district. No probe covered them, so the probe scores could not have shown it.
+The `.`/`·`/`ㆍ` number lists were found late, by comparing against the fix in `notebooks/schedule_eda/` (`90ca8b9`, 2026-11-03), which handles them. Before that fix, 주례2동, 청학2동, 양정1동 and 수성2가동 were "not found" and returned every zone in the district. No probe covered them, so the probe scores could not have shown it.
 
 Full numbers: `data/reports/data_quality.md`.
 
@@ -244,7 +244,7 @@ Run at `09179b4`, `git_dirty` false.
 Time is the median over the 20 answerable cases, which all four variants answered.
 
 - **Vector alone is unsafe.** It answered all 27, including both no-data districts. A 강동구 resident got collection days from 울산 북구, 부산 강서구 and 서울 강북구. For 성동구 without a neighbourhood, all four rows came from 성북구.
-- **Day/time match cannot separate the filters from the lookup.** All three score 20/20, although both filters put the wrong row first on s05 and s09: the zones happen to share a schedule. This is Vitou's near-duplicate finding (#6). Top row and wrong place are the columns that separate them.
+- **Day/time match cannot separate the filters from the lookup.** All three score 20/20, although both filters put the wrong row first on s05 and s09: the zones happen to share a schedule. This is the near-duplicate finding (#6). Top row and wrong place are the columns that separate them.
 - **The filters' five misses are not retrieval misses.** On s17, s21, s22, s25 and s26 they have no rule to ask back or hand off. s21 and s22 show a 중구 and a 고성군 the user never chose, which is why each filter has 2 wrong-place cases. With the lookup's rules they would pass, and the gap left would be row order inside a district.
 - **No candidate starvation here, but that is weak evidence.** s27 reaches 정선군 (2,203 rows) and both filters found a right row, but every 정선읍 row has the same days. Postfilter's 11 against prefilter's 9 on "only right rows" comes from finding fewer rows, not from being better.
 - **"Only right rows" is harsh on purpose.** The vector variants always take 4 rows, even for a one-zone place. Taking 1 would match the top-row column, but would break multi-zone districts (s15, s16).
@@ -308,9 +308,9 @@ A line that fails stays in Korean after trying English. **The cost:** a Vietname
 - **Item failure in a mixed answer.** A statement that the item part failed appears only in `missing`, so the website has to show it.
 - **`no_collection_days` is no longer in `answer_text`.** It is still in `zones[].no_collection`.
 - **The source can contradict itself.** s10's row lists Sunday and not Friday, but its method says clear PET goes out on Friday (금). The answer shows both, as the data does.
-- Day-name and label tables for zh, vi, uz and ru were written by me and need a native check, like the glossary.
+- Day-name and label tables for zh, vi, uz and ru were written during development and need a native check, like the glossary.
 
-**For Naura:** `answer_text` now has several lines, so the page must keep line breaks. `handoff`, `office_phone` and `clarify.options` (up to 30) all need a place on the page.
+**For the website:** `answer_text` now has several lines, so the page must keep line breaks. `handoff`, `office_phone` and `clarify.options` (up to 30) all need a place on the page.
 
 **For Anar:** the plan samples the `schedule` slice from CSV rows, which will reach the rural districts. 정선군 and 고흥군 alone are about a third of the table, so decide whether to sample by row or by district. Both are worth reporting.
 
