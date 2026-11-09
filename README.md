@@ -75,10 +75,11 @@ imports none of them (`tests/test_layering.py` enforces this).
 `docs/REPORT.pdf`). Evaluation runs are in `eval/reports/<name>/` (the final test run is
 `eval/reports/test-final/`), experiments on dev in `experiments/results/dev/<id>/summary.md`.
 [docs/PHASE2_NOTES.md](docs/PHASE2_NOTES.md) holds the earlier developer probe results, which are
-not evaluation results.
+not evaluation results. Run records written before 2026-11-09 store older commit IDs;
+[docs/COMMIT_IDS.md](docs/COMMIT_IDS.md) maps them to the current ones.
 
 **Headline.** On the 30 test cases, which were never used for tuning and were run once with the
-configuration frozen at commit `cf047ff`, the system got 22 cases right with 1 false answer. The
+configuration frozen at commit `f0faba6`, the system got 22 cases right with 1 false answer. The
 Phase 1 baseline got 11 right with 4 false answers. On dev, with the same configuration, it got 56/70
 right with 3 false answers. The cases were written by the developer, not by real users, and the human
 audit has not been done yet; see the report's §11.

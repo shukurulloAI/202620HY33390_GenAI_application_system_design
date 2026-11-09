@@ -747,7 +747,7 @@ Done when: a contract test passes on all 49 probes in every status, and the page
 **Stage 3: Tune on dev.** About 4 to 5 hours of unattended machine time, estimated from measured medians and about 70 dev cases.
 - [x] E2, E3, E5 (rerank and τ), E1, E4, E8, E7; E6 if its chunk files are built. HyDE stays out unless a retrieval failure calls for it *(all run; E6 not run, its chunk files were not built; E9 item-name search added)*
 - [x] Work through `PHASE2_NOTES.md` §9 one change at a time, each measured on dev: Uzbek abstention, fluent wrong rewrites, `is_korean`, invented steps in `how_to_prepare`, wrong citations, latency
-- [x] Choose τ by the §4.6 objective, choose the prompt version, freeze the config in `rag/config.py`, and record the commit *(τ 0.15, prompt v5, router repair; frozen at `cf047ff`)*
+- [x] Choose τ by the §4.6 objective, choose the prompt version, freeze the config in `rag/config.py`, and record the commit *(τ 0.15, prompt v5, router repair; frozen at `f0faba6`)*
 
 **Stage 4: Final evaluation.**
 - [x] One run on test with the frozen config *(22/30 correct, 1/30 false answers; baseline 11/30, 4/30)*

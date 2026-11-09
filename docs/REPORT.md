@@ -148,7 +148,7 @@ The fixed texts are written in six languages (`rag/texts.py`). The zh, vi, uz an
 
 Gold chunk IDs and gold schedule rows come from scans of the data (`eval/label_helper.py`), never from the system's own output.
 
-**Split.** The split is 70 dev / 30 test, stratified by slice, with seed 20261108. Its SHA-256 hashes were frozen in `split_manifest.json` (commit `375e7d2`) **before any tuning**. Twelve cases already seen during development were forced into dev. All tuning (E1–E9, τ, the Stage 3 fixes) used dev only. The test split was run **once**, with the configuration frozen at commit `cf047ff` (§8). A test report lists no per-case rows, so nobody could tune on it.
+**Split.** The split is 70 dev / 30 test, stratified by slice, with seed 20261108. Its SHA-256 hashes were frozen in `split_manifest.json` (commit `19f079d`) **before any tuning**. Twelve cases already seen during development were forced into dev. All tuning (E1–E9, τ, the Stage 3 fixes) used dev only. The test split was run **once**, with the configuration frozen at commit `f0faba6` (§8). A test report lists no per-case rows, so nobody could tune on it.
 
 | Slice | Dev | Test | Expected behaviour |
 |---|---|---|---|
@@ -184,7 +184,7 @@ Languages: dev has en 25, ko 22, uz 7, zh 6, ru 6 and vi 4. Test has en 15, ko 8
 
 ### 8.1 The test split: one run of the frozen system
 
-The configuration was frozen at commit `cf047ff` (`rag/config.py`): hybrid retrieval with item-name search, the reranker on all queries, τ = 0.15, router repair, prompt v5, the 2026 conflict rule, validation in enforce mode, and the structured schedule lookup. Test was then run once, with no reply cache. The only file changed during the run was this report, which the pipeline does not read. The **baseline** is the Phase 1 system on the same 30 cases: dense bge-m3 retrieval of the original question, no router, no reranker, no gate, no validation, and prompt v1.
+The configuration was frozen at commit `f0faba6` (`rag/config.py`): hybrid retrieval with item-name search, the reranker on all queries, τ = 0.15, router repair, prompt v5, the 2026 conflict rule, validation in enforce mode, and the structured schedule lookup. Test was then run once, with no reply cache. The only file changed during the run was this report, which the pipeline does not read. Run records (`report.json`, `manifest.json`) store commit IDs from before 2026-11-09, when commit messages were edited; [COMMIT_IDS.md](COMMIT_IDS.md) maps them to the current IDs (file contents unchanged). The **baseline** is the Phase 1 system on the same 30 cases: dense bge-m3 retrieval of the original question, no router, no reranker, no gate, no validation, and prompt v1.
 
 ![Test: frozen system vs baseline](figures/test_vs_baseline.png)
 

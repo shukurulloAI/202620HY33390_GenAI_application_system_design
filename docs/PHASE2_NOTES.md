@@ -18,12 +18,12 @@ These are developer observations from the probe set (`experiments/probes/probes.
 | Baseline | Phase 1 system: dense only, no router, rerank or gate, `answer_v1`, no validation (`config.BASELINE`) |
 | Hardware | Apple M3 Pro, 36 GB |
 
-Code state, all with `git_dirty` false:
-- **`fa50916`:** E2, E3, E5 and the τ sweep (§3, §4). The retrieval code and item corpus have not changed since.
-- **`27ff6a4`:** E4 and the full-system probes, v2 and v3.
-- **`77790b7`:** the baseline (same code as `d492c1e`). `27ff6a4` only changes schedule text, which the baseline writes with the LLM, so it was not re-run.
+Code state, all with `git_dirty` false (current commit IDs; the run files store the IDs from before 2026-11-09, see [COMMIT_IDS.md](COMMIT_IDS.md)):
+- **`e8bc797`:** E2, E3, E5 and the τ sweep (§3, §4). The retrieval code and item corpus have not changed since.
+- **`09179b4`:** E4 and the full-system probes, v2 and v3.
+- **`369c4e8`:** the baseline (same code as `3f51463`). `09179b4` only changes schedule text, which the baseline writes with the LLM, so it was not re-run.
 
-Against `fa50916`, full-system answers changed only on p11 and p14 (now written by code) and p16 (§2). Baseline answers did not change. The first runs used an uncommitted tree, and the re-run reproduced their retrieval numbers, τ and gate counts exactly. The old-vs-clean table in §1, the rerank-query paragraph in §3 and all of §8 are older runs, and they say so.
+Against `e8bc797`, full-system answers changed only on p11 and p14 (now written by code) and p16 (§2). Baseline answers did not change. The first runs used an uncommitted tree, and the re-run reproduced their retrieval numbers, τ and gate counts exactly. The old-vs-clean table in §1, the rerank-query paragraph in §3 and all of §8 are older runs, and they say so.
 
 ## 1. Data fixes (Phase 0 tasks, done before these runs; Vitou to review)
 
@@ -153,7 +153,7 @@ p02 said chicken bones should be "emptied, punctured" and p15 said to "puncture 
 | Keyword pass | 20/22 | 18/22 |
 | p02, p15 invented steps | yes | **gone** |
 | p06 batteries | ✅ 전용함 | ❌ model said 종량제봉투; validation now abstains (§6) |
-| p14 Seongdong, tonight | ✅ | ✅ since `d492c1e`: schedule text no longer comes from this prompt. At `fa50916` v3 said "general waste bag (종량제봉투)" here |
+| p14 Seongdong, tonight | ✅ | ✅ since `3f51463`: schedule text no longer comes from this prompt. At `e8bc797` v3 said "general waste bag (종량제봉투)" here |
 | p20 batteries (RU) | ✅ 전용함 | ❌ 금속캔 (not caught) |
 
 **Decision: v2 stays the default for now.** v2's errors are unsupported extra steps. v3's are worse: a wrong bin for batteries, which is a fire risk (p20 still reaches the user; p06 is now stopped). This choice now only affects item answers. But v3 changed two things at once, and with 22 probes a two-probe swing may be chance: small prompt edits changed which chunks qwen cites. E1 on dev should compare both, ideally with the two v3 changes separated. The leak in v2 is still a known defect, so "v2 is better" is not the conclusion here.
@@ -232,7 +232,7 @@ Not run yet: E1, E6, E7 and E8. E4 has run on probes only (§10). All wait for A
 
 `experiments/probes/probes_schedule.jsonl` holds 27 hand-written probes in 6 languages. 20 should answer (10 with a neighbourhood, 6 with only a district, 3 with the place only in the question, 1 in a place with many collection points on the same days), 4 should ask, and 3 should abstain (강동구 and 도봉구 have no data; 고흥군 도덕면 differs by collection point). Gold rows come from a scan of the table, checked against the raw area text, not from the lookup. Every variant gets the location in its query text and shows at most 4 rows. s25–s27 were added after the gate defect below was found, so they are regression checks, not blind tests.
 
-Run at `27ff6a4`, `git_dirty` false.
+Run at `09179b4`, `git_dirty` false.
 
 | Variant | Expected behaviour (/27) | Cases showing a wrong place (/27) | Right row shown (/20) | Top row right (/20) | Only right rows (/20) | Top row day/time right (/20) | Median time (s) |
 |---|---|---|---|---|---|---|---|
@@ -318,10 +318,10 @@ A line that fails stays in Korean after trying English. **The cost:** a Vietname
 
 Probe runs are in `experiments/results/probes/` and experiments in `experiments/results/<id>/`. Paths and commands recorded inside these files are as they were at the time of the run; the repository was restructured afterwards (PLAN.md §9).
 
-- Full system at `27ff6a4`: `probes_fixed-default_20261106-233850.json` (v2), `probes_fixed-v3_20261106-234447.json` (v3)
-- Baseline at `77790b7`: `probes_final-baseline_20261106-221155.json`
-- Before the translation change, at `77790b7`: `probes_final-default_20261106-220752.json`, `probes_final-v3_20261106-221809.json`
-- At `fa50916`: `probes_committed-default_20261106-142243.json`, `probes_committed-v3_20261106-143252.json`, `probes_committed-baseline_20261106-142636.json`
+- Full system at `09179b4`: `probes_fixed-default_20261106-233850.json` (v2), `probes_fixed-v3_20261106-234447.json` (v3)
+- Baseline at `369c4e8`: `probes_final-baseline_20261106-221155.json`
+- Before the translation change, at `369c4e8`: `probes_final-default_20261106-220752.json`, `probes_final-v3_20261106-221809.json`
+- At `e8bc797`: `probes_committed-default_20261106-142243.json`, `probes_committed-v3_20261106-143252.json`, `probes_committed-baseline_20261106-142636.json`
 - First runs, uncommitted tree: `probes_default-final_20261104-232118.json`, `probes_default-v3_20261104-233910.json`, `probes_default-clean_20261104-203516.json` (before the last validation changes), `probes_baseline-clean_20261104-203908.json`
 - Old data, for comparison: `probes_full-qwen7b_*.json`, `probes_router-exaone_*.json`, `probes_all-exaone_*.json`, `probes_rq-*.json`
-- Experiments: `E2/`, `E3/`, `E5/` at `fa50916`, `E4/` at `27ff6a4` (traces per case + `manifest.json`)
+- Experiments: `E2/`, `E3/`, `E5/` at `e8bc797`, `E4/` at `09179b4` (traces per case + `manifest.json`)
