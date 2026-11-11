@@ -27,6 +27,7 @@ from pathlib import Path
 from eval.cases import load_cases
 from eval.metrics import score
 from eval.provenance import snapshot
+from eval.stats import fmt_interval, wilson
 from rag import paths
 from rag.config import load_config
 from rag.files import read_jsonl, sha256_file
@@ -61,6 +62,11 @@ def fmt(rate: dict | None) -> str:
     return "–" if not rate else f"{rate['k']}/{rate['n']} ({rate['rate']:.0%})"
 
 
+def fmt_ci(rate: dict | None) -> str:
+    """fmt plus the 95% Wilson interval, for the headline rates."""
+    return "–" if not rate else f"{fmt(rate)}, 95% CI {fmt_interval(wilson(rate['k'], rate['n']))}"
+
+
 def markdown(name: str, result: dict, meta: dict, show_rows: bool) -> str:
     o = result["overall"]
     r, g, lat = o["retrieval"], o["gate"], o["latency_s"]
@@ -69,12 +75,12 @@ def markdown(name: str, result: dict, meta: dict, show_rows: bool) -> str:
              f"`{meta['cases_sha256'][:12]}`), commit `{(meta['git_commit'] or '')[:7]}`"
              f"{' (uncommitted changes)' if meta['git_dirty'] else ''}, {meta['time']}.", "",
              "## Overall", "", "| Metric | Value |", "|---|---|",
-             f"| Case correct | {fmt(o['case_ok'])} |",
+             f"| Case correct | {fmt_ci(o['case_ok'])} |",
              f"| Expected behaviour (answer / abstain / clarify / out of scope) | "
-             f"{fmt(o['behaviour_ok'])} |",
-             f"| Bin correct (answerable item cases) | {fmt(o['bin_ok'])} |",
+             f"{fmt_ci(o['behaviour_ok'])} |",
+             f"| Bin correct (answerable item cases) | {fmt_ci(o['bin_ok'])} |",
              f"| **False answers** (answered when it should not, or wrong bin) | "
-             f"{fmt(o['false_answer'])} |",
+             f"{fmt_ci(o['false_answer'])} |",
              f"| Abstained when it should | {fmt(o['abstain_ok'])} |",
              f"| Asked back when it should | {fmt(o['clarify_ok'])} |",
              f"| Gold schedule row shown | {fmt(o['rows_found'])} |",

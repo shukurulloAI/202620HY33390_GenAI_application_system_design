@@ -178,7 +178,7 @@ Languages: dev has en 25, ko 22, uz 7, zh 6, ru 6 and vi 4. Test has en 15, ko 8
 
 **LLM judge.** Ragas 0.4.3 measured faithfulness and context relevance, with **exaone3.5:7.8b** (LG AI Research, digest `c7c4e3d1ca22`) as the judge. The judge comes from a different model family than the generator, so the system does not grade its own answers. It still is a 7.8B model, so its scores need a human check (§8.3, §11).
 
-**Statistics.** With 30 test cases, every rate is shown as a count ("26/30"). One case is 3.3 points, so differences of one or two cases are noise. The template cases are not independent of each other.
+**Statistics.** With 30 test cases, every rate is shown as a count ("26/30"), and each headline rate also gets a 95% Wilson interval (`eval/stats.py`). Wilson stays valid for small n and for 0/n or n/n, where the normal approximation does not. The system and the baseline ran on the same cases, so they are compared as pairs: the exact McNemar test looks only at the cases where exactly one of the two is right (`python -m eval.compare test-final test-baseline`; no models are needed). One case is 3.3 points, so differences of one or two cases are noise. The template cases are not independent of each other, so even the intervals are somewhat optimistic.
 
 ## 8. Results (Lesson 5)
 
@@ -219,7 +219,15 @@ By slice and language, frozen system on test (correct / cases):
 | out_of_scope | 2/2 | 3/3 | | **All** | **22/30** | **56/70** |
 
 - **Test is lower than dev: 73% against 80%.** That is the expected price of tuning six prompts and several retrieval options on dev. The gap is mostly in the item slices, where retrieval on test is also lower (Recall@5 0.684 against 0.841). Only 19 test cases have gold chunks, so one case is 5 points.
-- **The safety numbers held.** On test, 1 false answer in 30. Every case that should be refused or asked back was handled: no_evidence 3/3, out_of_scope 2/2, ambiguous_location 2/2. All 8 schedule rows were right, and no other district's rows were shown.
+- **The accuracy gain is real; the safety gain is not yet shown on test.** Paired test against the baseline on the same 30 cases (95% Wilson intervals, exact McNemar test):
+
+  | Metric (test) | Frozen system | Baseline | Only system right | Only baseline right | p |
+  |---|---|---|---|---|---|
+  | Case correct | 22/30 (56–86%) | 11/30 (22–54%) | 13 | 2 | **0.007** |
+  | Bin correct | 11/19 (36–77%) | 5/19 (12–49%) | 8 | 2 | 0.11 |
+  | False answers (fewer is better) | 1/30 (1–17%) | 4/30 (5–30%) | – | 3 cases only the baseline got wrong | 0.25 |
+
+  The case-correct gain is significant. The drop from 4 to 1 false answers is in the right direction but, with 30 cases, it could be chance (p = 0.25), and the true false-answer rate can be anywhere from about 1% to 17%. On dev the same drop is larger and significant (13 → 3 of 70, p = 0.006), but dev was used for tuning, so that does not count as held-out evidence. Every case that should be refused or asked back was handled: no_evidence 3/3, out_of_scope 2/2, ambiguous_location 2/2. All 8 schedule rows were right, and no other district's rows were shown.
 - **The weakest slice is the 2018-vs-2026 conflict** (0/2 test, 0/6 dev): see §9.
 - **The baseline is fast because it does less.** It has no router (7 s) and no reranker (6 s). Its "item withheld" count of 5 shows how often its answers covered only part of a combined question.
 

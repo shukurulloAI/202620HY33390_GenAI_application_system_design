@@ -221,6 +221,7 @@ python -m eval.run_eval --name my-run                 # full system on the dev s
 python -m eval.run_eval --name my-base --config baseline
 python -m eval.run_eval --name x --set gate_tau=0.3   # one field changed
 python -m eval.run_eval --name my-run --rescore       # score saved traces again after a metric fix
+python -m eval.compare test-final test-baseline       # paired test (McNemar) + 95% intervals, no models
 python -m eval.make_cases --check                     # the frozen split is unchanged
 python -m experiments.run_experiment experiments/configs/E9_item_names.json --cases eval/cases/dev.jsonl --cache
 python -m experiments.robustness                      # noise / negative / counterfactual probes
