@@ -76,9 +76,6 @@ def t(key: str, **args) -> str:
 
 
 st.set_page_config(page_title=t("page_title"), page_icon=ui.favicon_svg(), layout="wide")
-st.markdown(f"<style>{STYLE.read_text(encoding='utf-8')}</style>", unsafe_allow_html=True)
-st.html(f"<script>document.documentElement.lang = {json.dumps(lang)};</script>",
-        unsafe_allow_javascript=True)                 # screen readers pick the right voice
 
 
 # ---------- CALLBACKS (run before the script, with the latest widget values) ----------
@@ -137,19 +134,16 @@ def pick_option(kind: str, option: str) -> None:
 
 
 # ---------- PAGE ----------
-# A wide page with one centred column (at most --page-width in style.css): on a computer the
-# question and the answer sit side by side, so the answer appears without scrolling; on a
-# phone the columns stack.
+# One centred column, at most --page-width wide (style.css). On a laptop the question and the
+# answer sit side by side, so the answer appears without scrolling; on a tablet or a phone,
+# where two would be too narrow, the answer comes below the question (the workspace wraps).
 page = st.container(key="page")
 with page:
-    with st.container(key="topbar"):
-        brand, chooser = st.columns([4, 1], vertical_alignment="center")
-        with brand:
-            ui.show_header(t)
-        with chooser:
-            st.selectbox(f":material/language: {t('language')}", list(languages), key="lang",
-                         on_change=on_lang, format_func=lambda code: languages[code],
-                         disabled=busy)
+    with st.container(key="topbar", horizontal=True, wrap=False, vertical_alignment="center"):
+        ui.show_header(t, STYLE.read_text(encoding="utf-8"))   # the page's styles come with it
+        st.selectbox(t("language"), list(languages), key="lang", on_change=on_lang,
+                     format_func=lambda code: languages[code], disabled=busy,
+                     label_visibility="collapsed", width=150)
 
     health = service.health()
     if health["ollama"] and not health["offline"]:
@@ -163,7 +157,9 @@ with page:
                           width="stretch", disabled=busy, on_click=choose_question,
                           args=(t(f"ex{n}_q"),))
 
-    ask_column, answer_column = st.columns([5, 7], gap="large")
+    workspace = st.container(key="workspace", horizontal=True, gap="large")
+    ask_column = workspace.container(key="ask_side")
+    answer_column = workspace.container(key="answer_side")
 
 
 # ---------- QUESTION ----------
@@ -233,6 +229,7 @@ def answer_pending() -> None:
             st.session_state.pending = None
         box.update(label=t("stage_done"), state="complete")
     st.session_state.request, st.session_state.result = request, result
+    st.session_state.scroll_to_answer = True
     st.session_state.show_question = request["question"]
     st.rerun()
 
@@ -253,3 +250,11 @@ with page:
     st.caption(t("footer"))
     if ADMIN:
         ui.show_maintainer(health, service.data_reviews(), service.pipeline_settings())
+    # Last on the page, where its empty box adds no space: the page language, so screen readers
+    # pick the right voice (while a question is answered, the run before has set it), and once
+    # per new answer, a scroll to it when it is out of sight (below the question on a phone).
+    scroll = ""
+    if st.session_state.pop("scroll_to_answer", False) and st.session_state.result:
+        scroll = f"{ui.SCROLL_TO_ANSWER} // {uuid.uuid4()}"   # new text: the script runs again
+    st.html(f"<script>document.documentElement.lang = {json.dumps(lang)};{scroll}</script>",
+            unsafe_allow_javascript=True)

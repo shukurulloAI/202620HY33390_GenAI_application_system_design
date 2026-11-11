@@ -21,8 +21,10 @@
     --accent-text: 60%;                   /* blue text: the accent mixed with body text */
     --icon-from: #34c759;                 /* the app icon: Apple green to Apple blue */
     --icon-to: #0a84ff;
+    --glow-green: rgb(52 199 89 / 34%);   /* the bin sign's ambient light */
+    --glow-blue: rgb(10 132 255 / 30%);
     --tile-radius: 22px;
-    --page-width: 1180px;                 /* the page's one column, centred */
+    --page-width: 1040px;                 /* the page's one column, centred (Apple: 980-1068) */
 }
 
 .st-key-page {
@@ -76,14 +78,14 @@
     position: relative;
     isolation: isolate;
     text-align: center;
-    padding: 36px 8px 8px;
+    padding: 24px 8px 4px;
 }
 
 .hero::before {                           /* a soft green and blue glow behind the icon */
     content: "";
     position: absolute;
     inset: 0 0 auto;
-    height: 240px;
+    height: 220px;
     z-index: -1;
     pointer-events: none;
     background:
@@ -92,9 +94,9 @@
 }
 
 .hero-icon {
-    width: 96px;
-    height: 96px;
-    margin: 0 auto 22px;
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 18px;
     border-radius: 22px;
     background: linear-gradient(150deg, var(--icon-from), var(--icon-to));
     box-shadow: 0 12px 32px rgb(10 132 255 / 24%), inset 0 1px 0 rgb(255 255 255 / 35%);
@@ -105,8 +107,8 @@
 }
 
 .hero-icon svg {
-    width: 66px;
-    height: 66px;
+    width: 58px;
+    height: 58px;
 }
 
 .hero .hero-label {
@@ -117,11 +119,11 @@
 }
 
 .hero .hero-title {
-    font-size: clamp(36px, 5.6vw, 64px);
+    font-size: clamp(34px, 4.6vw, 56px);
     font-weight: 700;
     line-height: 1.07;
     letter-spacing: -0.025em;
-    max-width: 880px;
+    max-width: 820px;
     margin: 0 auto 14px;
     padding: 0;
     text-wrap: balance;                   /* no single word on the last line */
@@ -129,9 +131,9 @@
 
 .hero .hero-description {
     color: color-mix(in srgb, currentColor var(--muted), transparent);
-    font-size: clamp(18px, 1.9vw, 22px);
+    font-size: clamp(17px, 1.7vw, 20px);
     line-height: 1.45;
-    max-width: 700px;
+    max-width: 660px;
     margin: 0 auto;
     text-wrap: pretty;
 }
@@ -140,7 +142,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-top: 22px;
+    margin-top: 18px;
     padding: 6px 14px;
     border-radius: 999px;
     background: var(--tile);
@@ -165,6 +167,30 @@
     background: #ff9f0a;
 }
 
+/* ---------- question and answer ---------- */
+/* Side by side while both fit (question at least 320 px, answer 440 px, plus the gap: a page of
+ * 828 px, a window of about 1000 px); below that the answer wraps under the question and
+ * both take the full width. */
+.st-key-workspace {
+    container: workspace / inline-size;
+    align-items: flex-start;              /* each side only as tall as its content */
+    row-gap: 24px;                        /* stacked: the answer close under the question */
+}
+
+/* Streamlit puts each side in an unnamed wrapper, which is the row's flex item: `:has()` finds
+ * it by the side's key (and the side itself, should the wrapper go). */
+.st-key-workspace > :has(> .st-key-ask_side),
+.st-key-workspace > .st-key-ask_side {
+    flex: 5 1 320px;
+    min-width: 0;
+}
+
+.st-key-workspace > :has(> .st-key-answer_side),
+.st-key-workspace > .st-key-answer_side {
+    flex: 7 1 440px;
+    min-width: 0;
+}
+
 /* ---------- tiles ---------- */
 .st-key-examples h2,
 .st-key-question_panel h2,
@@ -184,6 +210,10 @@
     padding: 28px;
 }
 
+.st-key-answer_panel {
+    scroll-margin-top: 72px;              /* scrolled to on a phone: clear of the top menu */
+}
+
 .st-key-answer_placeholder {            /* the answer side before the first question */
     background: var(--tile);
     border-color: transparent;
@@ -195,10 +225,65 @@
     text-align: center;
 }
 
+/* The bin card: a lit sign (a green-blue tile with the bin) in a soft ambient light that slowly
+ * breathes. The light fades out within the gap between the sign and the text (2rem): under a
+ * caption even a 20 % blue light misses 4.5:1, so no text sits on it (tests/test_app_style.py
+ * checks its reach). */
 .st-key-bin_card {
+    position: relative;
+    isolation: isolate;                   /* the light stays under the card's own content */
+    overflow: hidden;
     background: var(--bin-tint);
     border-color: transparent;
+    border-radius: 18px;
+    padding: 18px 20px;
+}
+
+@keyframes ambient-light {
+    from {
+        opacity: 0.7;
+        scale: 0.9;
+    }
+
+    to {
+        opacity: 1;
+        scale: 1.08;
+    }
+}
+
+.bin-sign {
+    position: relative;
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
     border-radius: 16px;
+    background: linear-gradient(150deg, var(--icon-from), var(--icon-to));
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 35%),
+        0 6px 20px rgb(10 132 255 / 40%),
+        0 0 40px rgb(52 199 89 / 35%);
+}
+
+.bin-sign::before {                       /* the ambient light around the sign */
+    content: "";
+    position: absolute;
+    inset: -14px;
+    z-index: -1;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(closest-side, var(--glow-green), var(--glow-blue) 60%,
+                                transparent);
+    filter: blur(12px);
+    animation: ambient-light 6s ease-in-out infinite alternate;
+}
+
+.bin-sign svg {
+    width: 40px;
+    height: 40px;
 }
 
 .st-key-bin_card h3 {
@@ -206,8 +291,20 @@
     letter-spacing: -0.02em;
 }
 
-@media (max-width: 640px) {                /* a phone: Streamlit stacks the columns */
+@media (prefers-reduced-motion: reduce) {
+    .bin-sign::before {
+        animation: none;
+    }
+}
+
+@container workspace (max-width: 827px) {   /* stacked: the answer comes below anyway */
     .st-key-answer_placeholder {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {                /* a phone */
+    .brand-note {
         display: none;
     }
 
@@ -230,5 +327,20 @@
     .st-key-answer_panel {
         border-radius: 18px;
         padding: 20px 16px;
+    }
+
+    .st-key-bin_card {
+        padding: 14px 16px;
+    }
+
+    .bin-sign {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+    }
+
+    .bin-sign svg {
+        width: 34px;
+        height: 34px;
     }
 }

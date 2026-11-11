@@ -4,7 +4,8 @@ The parts of the page, as render functions.
 Rule: a value from an answer, the district table or the glossary reaches the page only as
 escaped Markdown (md()) inside native Streamlit elements. No such value is ever put into
 raw HTML, so a broken or hostile field cannot add markup (tests/test_app.py injects one).
-The only raw HTML is the static brand and hero, whose page labels are html-escaped too.
+The only raw HTML is the static brand, hero and bin sign; the page labels in them are
+html-escaped too.
 
 `t(key, **args)` is the page label in the chosen language (rag/texts.py PAGE).
 """
@@ -62,6 +63,18 @@ RECYCLING_PATH = (
     "374 522 341Q509 338 507.5 324.5Q506 311 517 304L544 288L419 80H560Q581 80 599.5 "
     "90.5Q618 101 629 119L681 206L707 190Q718 183 729 191Q740 199 737 212L704 345Q700 361 "
     "685.5 369.5Q671 378 655 374Z")
+# Material Symbols Rounded "delete", the trash bin on the same grid, for the bin card's sign.
+BIN_PATH = (
+    "M280 840Q247 840 223.5 816.5Q200 793 200 760V240Q183 240 171.5 228.5Q160 217 160 "
+    "200Q160 183 171.5 171.5Q183 160 200 160H360Q360 143 371.5 131.5Q383 120 400 "
+    "120H560Q577 120 588.5 131.5Q600 143 600 160H760Q777 160 788.5 171.5Q800 183 800 "
+    "200Q800 217 788.5 228.5Q777 240 760 240V760Q760 793 736.5 816.5Q713 840 680 840ZM680 "
+    "240H280V760Q280 760 280 760Q280 760 280 760H680Q680 760 680 760Q680 760 680 760ZM440 "
+    "640V360Q440 343 428.5 331.5Q417 320 400 320Q383 320 371.5 331.5Q360 343 360 "
+    "360V640Q360 657 371.5 668.5Q383 680 400 680Q417 680 428.5 668.5Q440 657 440 640ZM600 "
+    "640V360Q600 343 588.5 331.5Q577 320 560 320Q543 320 531.5 331.5Q520 343 520 "
+    "360V640Q520 657 531.5 668.5Q543 680 560 680Q577 680 588.5 668.5Q600 657 600 640ZM280 "
+    "240V760Q280 760 280 760Q280 760 280 760Q280 760 280 760Q280 760 280 760Z")
 GRADIENT = ("#34c759", "#0a84ff")    # Apple green to Apple blue, as in style.css
 
 
@@ -69,6 +82,21 @@ def icon_svg() -> str:
     """The recycling symbol in the current text colour (inside the app icon tile)."""
     return ('<svg viewBox="0 0 960 960" focusable="false" aria-hidden="true">'
             f'<path fill="currentColor" d="{RECYCLING_PATH}"/></svg>')
+
+
+def bin_svg() -> str:
+    """The trash bin in the current text colour (inside the bin card's sign)."""
+    return ('<svg viewBox="0 0 960 960" focusable="false" aria-hidden="true">'
+            f'<path fill="currentColor" d="{BIN_PATH}"/></svg>')
+
+
+# Brings a new answer into view when its top is in the lower part of the window (it is then
+# below the question: a phone or a tablet); smooth unless the visitor asked for less motion.
+SCROLL_TO_ANSWER = (
+    "setTimeout(() => { const a = document.querySelector('.st-key-answer_panel');"
+    " if (a && a.getBoundingClientRect().top > innerHeight * 0.6) a.scrollIntoView({block:"
+    " 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' :"
+    " 'smooth'}); }, 150);")
 
 
 def favicon_svg() -> str:
@@ -82,13 +110,17 @@ def favicon_svg() -> str:
             f'<path fill="#ffffff" d="{RECYCLING_PATH}"/></svg></svg>')
 
 
-def show_header(t: T) -> None:
+def show_header(t: T, css: str = "") -> None:
+    """The brand: the app icon and the name. It also carries the page's stylesheet (`css`),
+    so the styles need no element of their own: an empty element would still add a gap at the
+    top of the page (a style-only st.html, which would not, is not drawn in Streamlit 1.67)."""
     e = html.escape
     st.markdown(
+        (f"<style>{css}</style>" if css else "") +
         f'<div class="brand"><div class="brand-icon">{icon_svg()}</div><div>'
         f'<div class="brand-name">{e(t("page_title"))}</div>'
         f'<div class="brand-note">{e(t("brand_note"))}</div></div></div>',
-        unsafe_allow_html=True)
+        unsafe_allow_html=True, width="stretch")
 
 
 def show_hero(t: T, status: str) -> None:
@@ -113,9 +145,16 @@ def show_hero(t: T, status: str) -> None:
 def show_bin(result: dict, t: T) -> None:
     if not result.get("bin"):
         return
-    with st.container(border=True, key="bin_card"):
-        st.markdown(f"### :material/delete: {md(result.get('bin_en') or result['bin'])}")
-        st.caption(f"{md(result['bin'])} · {t('bin_note')}")
+    with st.container(border=True, key="bin_card", horizontal=True, wrap=False,
+                      vertical_alignment="center", gap="medium"):
+        # The sign: a lit green-blue tile with the bin in its ambient light (style.css; the
+        # light ends within the 2rem gap). Static HTML, no answer value in it; the bin's name
+        # beside it is escaped Markdown.
+        st.markdown(f'<div class="bin-sign">{bin_svg()}</div>', width="content",
+                    unsafe_allow_html=True)
+        with st.container(key="bin_name", gap=None):
+            st.markdown(f"### {md(result.get('bin_en') or result['bin'])}")
+            st.caption(f"{md(result['bin'])} · {t('bin_note')}")
 
 
 def show_steps(result: dict, t: T) -> None:

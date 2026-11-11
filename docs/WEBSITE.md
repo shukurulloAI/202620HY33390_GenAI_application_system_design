@@ -102,10 +102,10 @@ for exists.
 
 | File | What it holds |
 |---|---|
-| `app/streamlit_app.py` | The layout (a wide page, question and answer side by side on a computer, stacked on a phone), the callbacks and the answer flow |
+| `app/streamlit_app.py` | The layout (question and answer side by side on a laptop, the answer below the question on a tablet or a phone), the callbacks and the answer flow |
 | `app/ui/components.py` | One render function per part of an answer (bin, steps, zones, sources, handoff, clarify, feedback, glossary, maintainer panel) |
 | `app/ui/state.py` | Rules testable without a browser: session defaults, the starting language, the area check, the limits per tab and per visitor |
-| `app/ui/style.css` | The page width (1180 px at most), the app icon, the hero, the grey tiles and the bin card; everything else is the theme |
+| `app/ui/style.css` | The page width (1040 px at most), when the two sides wrap, the app icon, the hero, the grey tiles and the bin card with its lit sign; everything else is the theme. The brand element carries it, so it takes no space of its own |
 | `.streamlit/config.toml` | The theme in Apple's style (system font, Apple blue, pill buttons) in light and dark, no usage statistics, no developer menu, no tracebacks for visitors |
 | `deploy/public_link.sh` | A public https link to the website on this Mac, through a Cloudflare tunnel ([below](#a-public-link-from-this-mac)) |
 
@@ -133,7 +133,13 @@ for exists.
   questions in 5 minutes, and each visitor 20, however many tabs they open. A visitor is a
   public IP address. Behind Docker, on a home network or on this machine, many people share
   one address, so there only the per-tab limit counts.
-- **ANSWER:** the bin card, `answer_text`, preparation steps, one card per zone (days, times, next
+- **Layout.** The page is at most 1040 px wide. The question and the answer sit side by side
+  while both fit (the question at least 320 px wide, the answer 440 px, so a window of about
+  1000 px or more). Below that, the answer comes under the question at full width, and the
+  page scrolls to a new answer when it is out of sight. On a phone the brand and the language
+  box share one row.
+- **ANSWER:** the bin card (a lit green-blue sign with the bin, in a slow ambient light that
+  stops before the text; still for visitors who ask for less motion), `answer_text`, preparation steps, one card per zone (days, times, next
   dates, `day_check`, no-collection days, office, data date and a warning on data over a year
   old), the handoff card when part of the question failed, and one source card per citation with
   the full source text.
@@ -162,7 +168,8 @@ for exists.
   primary colour. Streamlit does not tell CSS which theme it shows, so the tiles are translucent
   grey and secondary text is body text at lower opacity. The test composes them on the page, a
   tile and the bin card in both themes. Body text is `#0d0d0f`, not Apple's `#1d1d1f`, whose
-  captions miss 4.5:1 on white.
+  captions miss 4.5:1 on white. No text sits on the bin sign's light: a caption on even a 20%
+  blue light misses 4.5:1, so the light ends within the gap before the text (also tested).
 - **No Streamlit internals in the CSS** (no `data-testid`, no `!important`), so an upgrade cannot
   silently break the look.
 - **One icon set.** Every icon is a Material Symbol (`:material/<name>:`), the set Streamlit

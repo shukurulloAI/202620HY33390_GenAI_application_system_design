@@ -24,6 +24,7 @@ SIZES = {"desktop": (1280, 2600), "phone": (375, 4200)}   # tall: Streamlit scro
 
 def ask(page, question: str, labels: dict = EN) -> None:
     page.get_by_label(labels["question_label"]).fill(question)
+    page.wait_for_timeout(300)        # a click during the rerun the typing starts can be lost
     page.get_by_role("button", name=labels["submit"]).click()
     page.get_by_text(labels["helpful"]).wait_for(timeout=30000)
 
@@ -133,3 +134,34 @@ def test_a_question_can_be_asked_with_the_keyboard_alone(open_page):
         or page.evaluate("getComputedStyle(document.activeElement).boxShadow") != "none"
     page.keyboard.press("Enter")
     page.get_by_text(EN["helpful"]).wait_for(timeout=30000)
+
+
+@pytest.mark.parametrize("width, beside", [(1440, True), (1024, True), (820, False), (390, False)],
+                         ids=["laptop-wide", "laptop", "tablet", "phone"])
+def test_the_answer_sits_beside_the_question_on_a_laptop_and_below_it_on_a_phone(
+        open_page, width, beside):
+    """At most 1040 px wide. Two columns only while both fit (the question at least 320 px,
+    the answer 440); on a tablet or a phone the answer comes below, as wide as the question."""
+    page = open_page(width=width, height=900)
+    ask(page, "Where do I throw away a pizza box?")
+    question = page.locator(".st-key-question_panel").bounding_box()
+    answer = page.locator(".st-key-answer_panel").bounding_box()
+    assert page.locator(".st-key-page").bounding_box()["width"] <= 1040
+    if beside:
+        assert abs(answer["y"] - question["y"]) < 2
+        assert answer["x"] > question["x"] + question["width"]
+        assert answer["width"] > question["width"]               # the answer has the wider side
+    else:
+        assert answer["y"] >= question["y"] + question["height"]
+        assert abs(answer["width"] - question["width"]) < 2
+    assert page.locator(".bin-sign").is_visible()
+    assert not page.evaluate("document.documentElement.scrollWidth > window.innerWidth")
+
+
+def test_on_a_phone_a_new_answer_is_scrolled_into_view(open_page):
+    """On a phone the answer comes below the question, out of sight: the page scrolls to it."""
+    page = open_page(width=390, height=844)
+    ask(page, "Where do I throw away a pizza box?")
+    page.wait_for_function("() => { const top = document.querySelector('.st-key-answer_panel')"
+                           ".getBoundingClientRect().top; return top >= 0 && top < innerHeight / 2 }",
+                           timeout=5000)

@@ -92,9 +92,25 @@ def test_css_uses_no_streamlit_internals():
     assert "!important" not in css
     assert "data-testid" not in css and "baseweb" not in css
     assert "color-scheme" not in css          # colours follow the theme, not the system
-    keys = {"st-key-page", "st-key-topbar", "st-key-examples", "st-key-question_panel",
+    keys = {"st-key-page", "st-key-topbar", "st-key-examples", "st-key-workspace",
+            "st-key-ask_side", "st-key-answer_side", "st-key-question_panel",
             "st-key-answer_panel", "st-key-answer_placeholder", "st-key-bin_card"}
     assert set(re.findall(r"\.(st-[\w-]+)", css)) <= keys
+
+
+def test_the_bin_signs_light_ends_before_the_text():
+    """No text may sit on the light: a caption on even a 20 % blue light misses 4.5:1. The
+    light reaches its inset plus its blur beyond the sign; the text starts a medium gap
+    (2rem) away (app/ui/components.py show_bin)."""
+    css = re.sub(r"/\*.*?\*/", "", STYLE.read_text(encoding="utf-8"), flags=re.S)
+    light = re.search(r"\.bin-sign::before\s*\{([^}]*)\}", css).group(1)
+    reach = (int(re.search(r"inset:\s*-(\d+)px", light).group(1))
+             + int(re.search(r"blur\((\d+)px\)", light).group(1)))
+    font = tomllib.loads(CONFIG.read_text(encoding="utf-8"))["theme"]["baseFontSize"]
+    assert reach < 2 * font                                         # 26 px < 34 px
+    components = (paths.ROOT / "app" / "ui" / "components.py").read_text(encoding="utf-8")
+    assert re.search(r'key="bin_card".*?gap="medium"', components, flags=re.S)
+    assert "bin-tint" in css and "st-key-bin_card::before" not in css   # no light on the card
 
 
 def used_icons() -> set[str]:

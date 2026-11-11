@@ -302,6 +302,8 @@ deploy/public_link.sh                                # a public https link to th
 The page has the following:
 - **Languages.** It comes in the six answer languages, chosen from the link (`?lang=ru`) or the
   browser.
+- **Laptop and phone.** On a laptop the question and the answer sit side by side. On a tablet or
+  a phone the answer comes below the question, and the page scrolls to it.
 - **Progress.** A status box names each stage while a question is answered, and says when the
   question is waiting for another one.
 - **Light and dark themes.** Both meet WCAG AA contrast, and axe-core finds no accessibility
