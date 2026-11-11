@@ -351,7 +351,17 @@ The heatmap places each failed case at the **earliest stage whose check failed**
 | Improvement | Prefer the newer source; show data dates; abstain below a threshold; hand off with a Korean sentence; validate every bin against the cited evidence |
 | Measurement | Bin correctness and false answers on a frozen test set, by slice and language; faithfulness with a judge, to be checked by people. In deployment, the 👍/👎 feedback saved by `trace_id`, and repeat questions |
 
-**Maintenance.** Every source has a hash and a date in `data/processed/manifest.json`. A change to the chunks changes the corpus hash, which forces a rebuild of the index: the pipeline will not run on a mismatch. The district table should be refreshed from data.go.kr every month, with stale rows flagged to the user in the meantime. Each source has an owner (a role) and a next review date in `data/manual/stewardship.json` (the district CSV monthly, the 2026 directive every six months, the glossary once by native speakers). `service.health()` lists the overdue ones, and the website shows them. Live use is measured from the system's own records with `python -m eval.ops_summary`: requests, status mix, latency per stage, errors, and 👍/👎 joined to the answer they rate. These describe use, not correctness.
+**Maintenance.** Every source has a hash and a date in `data/processed/manifest.json`. A change to the chunks changes the corpus hash, which forces a rebuild of the index: the pipeline will not run on a mismatch. The district table should be refreshed from data.go.kr every month, with stale rows flagged to the user in the meantime. Each source has an owner (a role) and a next review date in `data/manual/stewardship.json` (the district CSV monthly, the 2026 directive every six months, the glossary once by native speakers). `service.health()` lists the overdue ones, and the website's maintainer view (`RAG_ADMIN=1`) shows them. Live use is measured from the system's own records with `python -m eval.ops_summary`: requests, status mix, latency per stage, errors, and 👍/👎 joined to the answer they rate. These describe use, not correctness.
+
+**The website** ([WEBSITE.md](WEBSITE.md)) went through a senior review of its own. The review found a real bug: the area pickers sat in a form that does not refresh, so after choosing 부산 the district list still showed Seoul. A stale pair (부산 + 강남구) finds no data, and the user got an abstention on a question the system can answer. The page was rebuilt, and the bug is fixed and tested. Every change left the pipeline's answers unchanged (dev replay, 70/70 identical: `experiments/results/dev/perf/progress_callback.json`). The page now does the following:
+- **Languages.** It speaks the six answer languages (one selector, `<html lang>` set).
+- **Progress and waiting.** It names each stage while a question is answered, and says when the question waits for another visitor's.
+- **Uninterruptible questions.** Inputs are disabled during an answer, so a click cannot break it.
+- **No raw HTML from data.** Nothing from an answer or the district table is put into raw HTML.
+- **Light and dark themes.** Both meet WCAG AA. The old hero text was 2.1–2.8:1.
+- **Maintainer information.** Model and data-review details go only to maintainers.
+
+axe-core finds no accessibility violations in Chromium on the home page and on answers, in light and dark, at phone and desktop width, and in all six languages (`tests/e2e`, run in CI). A Docker image runs the offline demo, and Compose runs the full system with Ollama.
 
 ## 11. Limitations, risks, responsible use, future work
 
@@ -368,13 +378,14 @@ The heatmap places each failed case at the **earliest stage whose check failed**
 - **Stale and incomplete district data.** 61% of the rows are over a year old (shown to the user), and 강동구 and 도봉구 have no rows.
 - **Latency.** About 22 s per question (median, test run) on an Apple M3 Pro with local models: the router about 7 s, the reranker about 6 s, the generator about 14 s. Too slow for a chat feel, but acceptable for a lookup.
 - **Small test set.** With 30 test cases, one case is 3.3 points. The 95% interval for the false-answer rate is 1–17%.
-- **One machine.** Local Qdrant allows one process per index folder. A second process reads a full temporary copy, and the website answers one question at a time, because the local LLM serves one request anyway. Serving many users would need a Qdrant server and an LLM server that runs requests in parallel.
+- **One machine.** Local Qdrant allows one process per index folder. A second process reads a full temporary copy, and the website answers one question at a time, because the local LLM serves one request anyway: a second visitor is told the question is queued, and one session can ask 8 questions in 5 minutes. Serving many users would need a Qdrant server and an LLM server that runs requests in parallel.
 
 **Responsible use.** The page:
 - says that the answers come from official guides that can differ from building or district practice;
 - shows each source and its data date;
 - marks old data;
-- never shows a bin when it abstains.
+- never shows a bin when it abstains;
+- asks visitors not to write personal details, and says how long questions are kept, in their language.
 
 Feedback is stored with a trace ID and an optional comment, and no personal data is asked for. The location is a district and neighbourhood, never a street address. A question is free text, though, and a user could type something personal into it. So traces, errors and feedback are deleted after 30 days (`RAG_TRACE_RETENTION_DAYS`, `rag/tracing.py`).
 

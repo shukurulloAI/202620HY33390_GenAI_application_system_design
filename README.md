@@ -67,8 +67,9 @@ experiments/
   probes/         developer regression questions (not an evaluation set)
   results/        raw output: dev/<id>/ (experiments on dev), test/robustness/ (Stage 4 probes),
                   <id>/ and probes/ (Phase 2 probes)
-app/              the website (Streamlit), on rag/service.py
-tests/            fast tests with no models or Ollama, one file per module
+app/              the website (Streamlit), on rag/service.py; ui/ holds its parts
+tests/            fast tests with no models or Ollama, one file per module;
+                  e2e/ drives the website in Chromium (pytest tests/e2e -m e2e)
 docs/             REPORT.md / REPORT.pdf (final report), WEBSITE.md, PHASE1/2_NOTES.md,
                   answer_schema.json + answer_examples.json (answer contract, recorded answers),
                   Model_and_System_Guide.pdf, COMMIT_IDS.md (old -> current commit IDs),
@@ -76,8 +77,8 @@ docs/             REPORT.md / REPORT.pdf (final report), WEBSITE.md, PHASE1/2_NO
 notebooks/        data exploration (schedule_eda/)
 ```
 
-Dependencies run one way: `preprocess`, `ingest`, `eval` and `experiments` import `rag`, and `rag`
-imports none of them (`tests/test_layering.py` enforces this).
+Dependencies run one way: `preprocess`, `ingest`, `eval`, `experiments` and `app` import `rag`, and
+`rag` imports none of them (`tests/test_layering.py` enforces this).
 
 **Where are the results?** The final report is [docs/REPORT.md](docs/REPORT.md) (PDF:
 `docs/REPORT.pdf`). Evaluation runs are in `eval/reports/<name>/` (the final test run is
@@ -285,10 +286,24 @@ which needs reviewed data and a new held-out set first.
 
 ## Website
 
+![The website: a pizza-box answer](docs/figures/website_desktop_light.png)
+
 ```bash
 pip install -r requirements-app.txt
 streamlit run app/streamlit_app.py                   # live: Ollama running, index built
 RAG_OFFLINE=1 streamlit run app/streamlit_app.py     # recorded answers, no models
+docker compose --profile offline up                  # the same demo in Docker
 ```
 
-What the page shows for each answer field: [docs/WEBSITE.md](docs/WEBSITE.md).
+The page has the following:
+- **Languages.** It comes in the six answer languages, chosen from the link (`?lang=ru`) or the
+  browser.
+- **Progress.** A status box names each stage while a question is answered, and says when the
+  question is waiting for another one.
+- **Light and dark themes.** Both meet WCAG AA contrast, and axe-core finds no accessibility
+  violations in Chromium (`python -m pytest tests/e2e -m e2e`, after
+  `pip install -r requirements-e2e.txt`).
+- **Maintainer panel.** `RAG_ADMIN=1` adds a panel with the models, digests and data-review dates.
+
+What the page shows for each answer field, how it is tested and how to run it in Docker:
+[docs/WEBSITE.md](docs/WEBSITE.md).
