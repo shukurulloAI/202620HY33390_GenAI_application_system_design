@@ -292,6 +292,20 @@ At temperature 0 with a fixed seed the answer is reproducible: the same question
 
 The median is 21.7 s per question on an Apple M3 Pro (36 GB) with local models (test run, no cache). The stages are the router 6.6 s, the reranker 5.9 s, the generator 13.8 s, and the schedule text 1.3 s (only when there is a schedule). The reranker is slower than in Phase 2 (3.4 s) because it now scores the item names as extra queries.
 
+**v2.1: the same answers, a faster reranker.** After the test run, the reranker was changed to score all distinct query–chunk pairs in one model call, sorted by length (it had made one call per query, and scored a repeated query twice). The models are also kept loaded between questions, and the website loads them at start. The change was accepted only after two checks on dev (no test cases were used):
+- **Retrieval.** On the 46 dev cases that reach the reranker, the candidate order and scores are identical to the frozen system's saved traces (maximum difference 0.0). The median rerank time falls from 6.56 s to 2.67 s, measured in one process on the same cases (`python -m experiments.verify_rerank`, `experiments/results/dev/perf/rerank_batching.json`).
+- **Whole system.** An uncached run on all 70 dev cases (`eval/reports/dev-v2.1`, clean tree, generator digest recorded) gives the same status, bin, citations and answer text in **70/70** cases as `dev-s3e-final`. It scores the same: 56/70 correct, 3 false answers.
+
+| Stage, median (s) | Test run (v2) | Dev run (v2.1) |
+|---|---|---|
+| Router | 6.6 | 6.8 |
+| Reranker | 5.9 | **2.8** |
+| Generator | 13.8 | 13.1 |
+| Total, item questions | – | 23.1 |
+| Total, all questions | 21.7 | 21.2 |
+
+The two splits have different cases, so only the reranker row is a controlled comparison. The test numbers in §8.1 stay valid for v2.1, because no answer changed. About 87% of the remaining time is the two LLM calls (router about 7 s, generator about 13 s). The generator's full prompt, about 2,600 tokens, is evaluated on every call (`prompt_eval_count` ≈ the counted prompt). The router and the generator take turns on one model, so neither keeps its cached prompt prefix. Giving Ollama two parallel slots (`OLLAMA_NUM_PARALLEL=2`) could keep both cached. It counts only if a dev run then gives the same answers, and it has not been tried yet. Skipping the router for questions whose place comes from the dropdowns would change answers, so it belongs to v3.
+
 ## 9. Failure analysis (Lesson 6)
 
 ![Test: earliest failed stage](figures/heatmap_test-final.png)
