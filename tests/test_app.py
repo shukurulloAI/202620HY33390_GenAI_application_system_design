@@ -335,8 +335,11 @@ def test_visitor_log_and_who_the_visitor_is():
     assert log.allow("a", state.RATE_WINDOW_S + state.VISITOR_LIMIT)   # the window moved on
     log.allow("c", 10 * state.RATE_WINDOW_S)
     assert set(log._times) == {"c"}                             # idle visitors are forgotten
-    cf = {"CF-Connecting-IP": "203.0.113.7"}
-    assert state.visitor_id("198.51.100.2", cf, "s") == "198.51.100.2"  # the address Streamlit saw
-    assert state.visitor_id(None, cf, "s") == "203.0.113.7"   # from this machine (Streamlit: None)
-    assert state.visitor_id(None, {"CF-Connecting-IP": " "}, "s") == "s"
+    cf = {"CF-Connecting-IP": "8.8.4.4"}
+    assert state.visitor_id("1.1.1.1", cf, "s") == "1.1.1.1"    # the public address Streamlit saw
+    assert state.visitor_id(None, cf, "s") == "8.8.4.4"         # from this machine (Streamlit: None)
+    assert state.visitor_id("2606:4700::1111", None, "s") == "2606:4700::1111"
+    for shared in ("::ffff:127.0.0.1", "172.17.0.1", "192.168.65.1", "10.0.0.5", "100.64.0.1"):
+        assert state.visitor_id(shared, None, "s") == "s"       # this machine, Docker, LAN, CGNAT
+    assert state.visitor_id(None, {"CF-Connecting-IP": "not an ip"}, "s") == "s"
     assert state.visitor_id(None, None, "session-9") == "session-9"

@@ -126,7 +126,9 @@ for exists.
   question is being answered. Yours is next…". Then the page reruns with the answer. No click can
   interrupt a question halfway, and a failure in the page itself gives the "not available"
   answer with a handoff, never a page with disabled inputs. Each browser tab can ask 8
-  questions in 5 minutes, and each visitor (one IP address, however many tabs) 20.
+  questions in 5 minutes, and each visitor 20, however many tabs they open. A visitor is a
+  public IP address. Behind Docker, on a home network or on this machine, many people share
+  one address, so there only the per-tab limit counts.
 - **ANSWER:** the bin card, `answer_text`, preparation steps, one card per zone (days, times, next
   dates, `day_check`, no-collection days, office, data date and a warning on data over a year
   old), the handoff card when part of the question failed, and one source card per citation with

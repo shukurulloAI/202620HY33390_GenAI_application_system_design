@@ -14,6 +14,7 @@ Session keys (st.session_state):
 """
 from __future__ import annotations
 
+import ipaddress
 import threading
 import uuid
 from collections.abc import Mapping, MutableMapping
@@ -76,16 +77,30 @@ class VisitorLog:
 
 
 def visitor_id(ip: str | None, headers: Mapping[str, str] | None, session_visitor: str) -> str:
-    """Who is asking, for the per-visitor limit: the visitor's IP address. Through the
-    Cloudflare tunnel (deploy/public_link.sh) `ip` is already the visitor's: Streamlit's
+    """Who is asking, for the per-visitor limit: the visitor's public IP address, else this
+    browser session (then only the per-tab limit counts).
+
+    Through the Cloudflare tunnel (deploy/public_link.sh) `ip` is the visitor's: Streamlit's
     server reads X-Forwarded-For only from this machine and takes the last address, the one
-    Cloudflare added, so a visitor cannot choose it (checked through a real tunnel).
-    Streamlit gives None for a connection from this machine: then Cloudflare's
-    CF-Connecting-IP header if there is one, else this browser session."""
-    if ip:
-        return ip
-    forwarded = ((headers or {}).get("CF-Connecting-IP") or "").strip()
-    return forwarded or session_visitor
+    Cloudflare added, so a visitor cannot choose it (checked through a real tunnel). Any other
+    address is not one visitor: behind Docker every visitor comes from the gateway (so the
+    limit would hold for everyone together), and a server on all interfaces sees this machine
+    as ::ffff:127.0.0.1 (Streamlit gives None only for 127.0.0.1 and ::1). A connection from
+    this machine may carry Cloudflare's CF-Connecting-IP header instead."""
+    for candidate in (ip, (headers or {}).get("CF-Connecting-IP")):
+        if public_ip(candidate):
+            return candidate.strip()
+    return session_visitor
+
+
+def public_ip(text: str | None) -> bool:
+    """A global internet address: not loopback, private, link-local or carrier NAT."""
+    try:
+        address = ipaddress.ip_address((text or "").strip())
+    except ValueError:
+        return False
+    address = getattr(address, "ipv4_mapped", None) or address
+    return address.is_global
 
 
 def pick_lang(query: str | None, locale: str | None, offered) -> str:
