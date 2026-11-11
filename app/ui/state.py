@@ -9,17 +9,23 @@ Session keys (st.session_state):
     request, result   the last question asked and its answer
     feedback          trace_id -> rating already given
     asked             times of this session's recent questions (the rate limit)
+    visitor           this session's id, when the visitor's address is not known
     flash             (page-label key, arguments) to show once under the button
 """
 from __future__ import annotations
 
-from collections.abc import MutableMapping
+import threading
+import uuid
+from collections.abc import Mapping, MutableMapping
 
 DEFAULT_PROVINCE = "서울특별시"          # most of the district data is Seoul's
 # One local LLM answers one question at a time (about 20 s), so one visitor sending many
 # questions makes everyone else wait. 8 in 5 minutes is more than a person asks by hand.
 RATE_LIMIT = 8
 RATE_WINDOW_S = 300
+# On a public link, one person can open many tabs: a second limit counts per visitor (IP
+# address), across tabs. Higher than per tab, since a class on one Wi-Fi shares an address.
+VISITOR_LIMIT = 20
 DEFAULTS = {"pending": None, "request": None, "result": None, "flash": None,
             "area_district": None, "area_dong": None}
 
@@ -30,6 +36,7 @@ def init(session: MutableMapping, tree: dict) -> None:
         session.setdefault(key, value)
     session.setdefault("feedback", {})
     session.setdefault("asked", [])
+    session.setdefault("visitor", str(uuid.uuid4()))
     session.setdefault("area_province", DEFAULT_PROVINCE if DEFAULT_PROVINCE in tree else None)
 
 
@@ -43,8 +50,42 @@ def allow_question(asked: list[float], now: float) -> bool:
     return True
 
 
-def rate_message_args() -> dict:
-    return {"n": RATE_LIMIT, "minutes": RATE_WINDOW_S // 60}
+def rate_message_args(n: int | None = None) -> dict:
+    return {"n": n or RATE_LIMIT, "minutes": RATE_WINDOW_S // 60}
+
+
+class VisitorLog:
+    """Recent question times per visitor, shared by every session of this server process
+    (the page keeps one with st.cache_resource)."""
+
+    def __init__(self) -> None:
+        self._times: dict[str, list[float]] = {}
+        self._lock = threading.Lock()
+
+    def allow(self, visitor: str, now: float) -> bool:
+        with self._lock:
+            for key in [k for k, times in self._times.items()        # memory stays small
+                        if not times or now - times[-1] >= RATE_WINDOW_S]:
+                del self._times[key]
+            times = self._times.setdefault(visitor, [])
+            times[:] = [t for t in times if now - t < RATE_WINDOW_S]
+            if len(times) >= VISITOR_LIMIT:
+                return False
+            times.append(now)
+            return True
+
+
+def visitor_id(ip: str | None, headers: Mapping[str, str] | None, session_visitor: str) -> str:
+    """Who is asking, for the per-visitor limit: the visitor's IP address. Through the
+    Cloudflare tunnel (deploy/public_link.sh) `ip` is already the visitor's: Streamlit's
+    server reads X-Forwarded-For only from this machine and takes the last address, the one
+    Cloudflare added, so a visitor cannot choose it (checked through a real tunnel).
+    Streamlit gives None for a connection from this machine: then Cloudflare's
+    CF-Connecting-IP header if there is one, else this browser session."""
+    if ip:
+        return ip
+    forwarded = ((headers or {}).get("CF-Connecting-IP") or "").strip()
+    return forwarded or session_visitor
 
 
 def pick_lang(query: str | None, locale: str | None, offered) -> str:

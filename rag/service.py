@@ -16,8 +16,13 @@ The one module the website imports (PLAN.md §4.12; how to use it: docs/WEBSITE.
     service.warm_up()                             # load everything before the first question
 
 Every answer fits the contract in rag/contract.py (schema: docs/answer_schema.json). `ask()`
-never raises for a question: if the pipeline fails (Ollama down, a bug), the user gets an
-abstention with a handoff and the error goes to traces/errors.jsonl.
+does not raise for a question: if the pipeline fails (Ollama down, a bug), the user gets an
+abstention with a handoff and the error goes to traces/errors.jsonl. The one exception is
+`Busy`: MAX_QUEUE questions are already running or waiting, so the page asks the visitor to
+try again in a minute instead of making them wait several minutes.
+
+A question asked again on the same day, with the same language and area, is answered from
+memory at once (the answer cache below): the pipeline would give the same answer anyway.
 
 Offline mode (environment variable RAG_OFFLINE=1, or `configure(offline=True)`): `ask()`
 returns the recorded answers in docs/answer_examples.json, so the page can be built and
@@ -31,6 +36,7 @@ A question that has to wait for another one is told "queued" through `progress`.
 """
 from __future__ import annotations
 
+import copy
 import json
 import logging
 import os
@@ -38,18 +44,20 @@ import threading
 import time
 import traceback
 import uuid
+from collections import OrderedDict
 from collections.abc import Callable
 from datetime import UTC, datetime
 from functools import lru_cache
 from urllib.error import URLError
 from urllib.request import urlopen
+from zoneinfo import ZoneInfo
 
 from rag import config, paths
 from rag.contract import check
 from rag.files import append_jsonl, read_jsonl
 from rag.handoff import korean_sentence
 from rag.texts import LANGUAGES, lang_or_default, text
-from rag.tracing import TRACE_RETENTION_DAYS
+from rag.tracing import TRACE_RETENTION_DAYS, write_trace
 
 log = logging.getLogger(__name__)
 
@@ -67,9 +75,29 @@ OFFLINE_DELAY_S = float(os.environ.get("RAG_OFFLINE_DELAY_S", "0"))
 
 HEALTH_TTL_S = 10.0             # the page asks on every click; Ollama is asked at most this often
 
+# One question runs at a time (about 25 s); more than this many running or waiting are
+# refused with Busy, so nobody waits for minutes (RAG_MAX_QUEUE changes it).
+MAX_QUEUE = int(os.environ.get("RAG_MAX_QUEUE", "5"))
+
+# The answer cache. The pipeline gives the same answer to the same request on the same day:
+# the LLM runs at temperature 0 with a fixed seed, and dates ("today", the next collection
+# days, how old the data is) are resolved by day in Korean time (rag/schedule_tool.py). So the
+# key is (KST date, question, language, area). It lives in this process: a restart, needed
+# anyway after a model or data change, empties it. Failures are never cached.
+CACHE_SIZE = 512
+KST = ZoneInfo("Asia/Seoul")
+
 _lock = threading.Lock()
 _state: dict = {"pipeline": None, "offline": os.environ.get("RAG_OFFLINE") == "1"}
 _probe: dict = {"at": None, "up": False}          # the last Ollama check (monotonic time)
+_answers: OrderedDict[tuple, dict] = OrderedDict()   # cache key -> answer, oldest first
+_answers_lock = threading.Lock()
+_inflight = {"n": 0}                                  # questions running or waiting
+_inflight_lock = threading.Lock()
+
+
+class Busy(Exception):
+    """MAX_QUEUE questions are already running or waiting: try again shortly."""
 
 
 def configure(*, offline: bool | None = None, pipeline=None) -> None:
@@ -79,6 +107,8 @@ def configure(*, offline: bool | None = None, pipeline=None) -> None:
     if pipeline is not None:
         _state["pipeline"] = pipeline
     _probe["at"] = None                           # check Ollama again
+    with _answers_lock:                           # answers of another pipeline do not count
+        _answers.clear()
 
 
 def _pipeline():
@@ -126,7 +156,9 @@ def ask(question: str, lang: str | None = None, district: str | None = None,
     """Answer one question. `lang` is the answer language (one of languages(); None = the
     question's). `district`/`dong`/`province` come from the dropdowns, in Korean
     (locations()); empty means the user did not choose, and the question is read instead.
-    `progress(stage)` is told what is happening; an error in it is logged, never raised."""
+    `progress(stage)` is told what is happening; an error in it is logged, never raised.
+    Raises Busy when MAX_QUEUE questions are already running or waiting (not for a question
+    answered from the cache, which costs nothing)."""
     question = (question or "").strip()[:MAX_QUESTION_CHARS]
     lang = lang if lang in LANGUAGES else None
     district, dong, province = (district or None), (dong or None), (province or None)
@@ -139,19 +171,30 @@ def ask(question: str, lang: str | None = None, district: str | None = None,
                 report(stage)
                 time.sleep(OFFLINE_DELAY_S)
         return offline_answer(question, lang)
+    key = (_today(), question, lang, province, district, dong, waste_type)
+    if (hit := _from_cache(key)) is not None:
+        return hit
+    with _inflight_lock:
+        if _inflight["n"] >= MAX_QUEUE:
+            raise Busy
+        _inflight["n"] += 1
     try:
         if not _lock.acquire(blocking=False):    # another question, or the warm-up, is running
             report("queued" if _state["pipeline"] is not None else "loading")
             _lock.acquire()
         try:
+            if (hit := _from_cache(key)) is not None:   # answered while this one waited
+                return hit
             if _state["pipeline"] is None:
                 report("loading")
             extra = {"progress": report} if progress else {}
-            answer = _pipeline().answer(question, lang=lang, district=district, dong=dong,
-                                        province=province, waste_type=waste_type, **extra)
+            answer = check(_pipeline().answer(question, lang=lang, district=district,
+                                              dong=dong, province=province,
+                                              waste_type=waste_type, **extra))
         finally:
             _lock.release()
-        return check(answer)
+        _remember(key, answer)
+        return answer
     except Exception as exc:                     # the user gets a handoff, never a traceback
         trace_id = str(uuid.uuid4())
         log.exception("ask failed (%s)", trace_id)
@@ -159,6 +202,42 @@ def ask(question: str, lang: str | None = None, district: str | None = None,
                                    "lang": lang, "district": district, "dong": dong,
                                    "error": repr(exc), "traceback": traceback.format_exc()})
         return unavailable_answer(lang, district, dong, trace_id)
+    finally:
+        with _inflight_lock:
+            _inflight["n"] -= 1
+
+
+def _today() -> str:
+    return datetime.now(KST).date().isoformat()
+
+
+def _from_cache(key: tuple) -> dict | None:
+    """The cached answer for `key` (a copy), recorded as a request in the traces."""
+    with _answers_lock:
+        answer = _answers.get(key)
+        if answer is None:
+            return None
+        _answers.move_to_end(key)
+        answer = copy.deepcopy(answer)
+    _, question, lang, province, district, dong, waste_type = key
+    try:                                         # eval/ops_summary.py counts it as a request
+        write_trace({"trace_id": str(uuid.uuid4()), "time": _now(),
+                     "cached_from": answer.get("trace_id"),
+                     "input": {"question": question, "lang": lang, "district": district,
+                               "province": province, "dong": dong, "waste_type": waste_type},
+                     "resolved": {"lang": answer.get("lang")},
+                     "answer": {"status": answer.get("status")}})
+    except OSError:
+        log.exception("could not record a cached answer")
+    return answer
+
+
+def _remember(key: tuple, answer: dict) -> None:
+    with _answers_lock:
+        _answers[key] = copy.deepcopy(answer)
+        _answers.move_to_end(key)
+        while len(_answers) > CACHE_SIZE:
+            _answers.popitem(last=False)
 
 
 def _reporter(progress: Callable[[str], None] | None) -> Callable[[str], None]:

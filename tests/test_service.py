@@ -203,3 +203,94 @@ def test_health_asks_ollama_at_most_every_few_seconds(monkeypatch):
     service.configure(offline=True)
     assert not service.health()["ollama"] and len(calls) == 2
     service.configure(offline=False)
+
+
+class Counting:
+    """A pipeline stand-in that counts its calls; `fail` raises on the first one."""
+    def __init__(self, gate=None, fail=False):
+        self.calls, self.gate, self.fail = [], gate, fail
+
+    def answer(self, question, progress=None, **kwargs):
+        self.calls.append((question, kwargs.get("lang"), kwargs.get("district")))
+        if self.gate:
+            self.gate.wait(5)
+        if self.fail and len(self.calls) == 1:
+            raise ConnectionError("ollama is down")
+        answer = dict(service.examples()[0]["answer"])
+        answer["trace_id"] = f"trace-{len(self.calls)}"
+        return answer
+
+
+@pytest.fixture
+def traces(tmp_path, monkeypatch):
+    from rag import paths
+    monkeypatch.setattr(paths, "TRACE_DIR", tmp_path)
+    monkeypatch.setattr(service, "ERRORS_FILE", tmp_path / "errors.jsonl")
+    yield tmp_path
+    service.configure(offline=False)
+    service._state["pipeline"] = None
+
+
+def test_a_repeated_question_is_answered_from_the_cache(traces):
+    pipeline = Counting()
+    service.configure(offline=False, pipeline=pipeline)
+    first = service.ask("Where do batteries go?", lang="en", district="성동구")
+    again = service.ask("Where do batteries go?", lang="en", district="성동구")
+    assert again == first and len(pipeline.calls) == 1
+    again["bin"] = "changed by the page"                          # a copy, not the cached one
+    assert service.ask("Where do batteries go?", lang="en", district="성동구") == first
+    service.ask("Where do batteries go?", lang="ko", district="성동구")        # other language
+    service.ask("Where do batteries go?", lang="en", district="강남구")        # other area
+    assert len(pipeline.calls) == 3
+    hits = [json.loads(line) for path in traces.glob("*.jsonl") if path.name[0].isdigit()
+            for line in path.read_text().splitlines()]
+    assert [h["cached_from"] for h in hits] == ["trace-1", "trace-1"]   # counted as requests
+    assert hits[0]["answer"]["status"] == first["status"]
+
+
+def test_the_cache_starts_again_each_day_and_never_keeps_a_failure(traces, monkeypatch):
+    pipeline = Counting(fail=True)
+    service.configure(offline=False, pipeline=pipeline)
+    failed = service.ask("Where do batteries go?")
+    assert failed["answer_text"] == TEXTS["en"]["UNAVAILABLE"]
+    service.ask("Where do batteries go?")                              # asked again, not cached
+    assert len(pipeline.calls) == 2
+    monkeypatch.setattr(service, "_today", lambda: "2099-01-01")     # dates in the answer move
+    service.ask("Where do batteries go?")
+    assert len(pipeline.calls) == 3
+
+
+def test_questions_waiting_for_the_same_answer_get_it_from_the_cache(traces):
+    import threading
+    release = threading.Event()
+    pipeline = Counting(gate=release)
+    service.configure(offline=False, pipeline=pipeline)
+    answers = []
+    threads = [threading.Thread(target=lambda: answers.append(service.ask("Pizza box?")))
+               for _ in range(3)]                       # a class clicks the same example
+    for thread in threads:
+        thread.start()
+    wait_until(lambda: service._inflight["n"] == 3)
+    release.set()
+    for thread in threads:
+        thread.join(5)
+    assert len(answers) == 3 and len(pipeline.calls) == 1 and service._inflight["n"] == 0
+
+
+def test_a_full_queue_is_busy_but_a_cached_answer_still_comes(traces, monkeypatch):
+    import threading
+    monkeypatch.setattr(service, "MAX_QUEUE", 1)
+    release = threading.Event()
+    pipeline = Counting()
+    service.configure(offline=False, pipeline=pipeline)
+    known = service.ask("Where do batteries go?")
+    pipeline.gate = release
+    running = threading.Thread(target=service.ask, args=("first question",))
+    running.start()
+    wait_until(lambda: service._inflight["n"] == 1)
+    with pytest.raises(service.Busy):
+        service.ask("another question")
+    assert service.ask("Where do batteries go?") == known              # costs nothing
+    release.set()
+    running.join(5)
+    assert service._inflight["n"] == 0

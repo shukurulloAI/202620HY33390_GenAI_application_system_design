@@ -295,3 +295,48 @@ def test_a_source_label_does_not_repeat_its_page_year_or_date(offline):
             assert label.count(f"p. {c['page']}") + label.count(f"p.{c['page']}") <= 1 \
                 if c.get("page") else True
             assert label.count(c["data_date"]) == 1 if c.get("data_date") else True
+
+
+def test_a_busy_site_asks_to_try_again_and_keeps_the_question(offline, monkeypatch):
+    from rag.texts import PAGE
+
+    def busy(**kwargs):
+        raise service.Busy
+    monkeypatch.setattr(service, "ask", busy)
+    at = submit("Where do batteries go?")
+    assert not at.exception
+    assert at.warning[0].value == PAGE["en"]["site_busy"]
+    box = at.text_area(key="question_input")
+    assert box.value == "Where do batteries go?" and not box.disabled    # ask again in a click
+    assert at.session_state.pending is None and at.session_state.result is None
+
+
+def test_one_visitor_with_many_tabs_shares_one_limit(offline, monkeypatch):
+    import streamlit as st
+
+    from rag.texts import PAGE
+    st.cache_resource.clear()                                  # a fresh visitor log
+    monkeypatch.setattr(state, "VISITOR_LIMIT", 1)
+    monkeypatch.setattr(state, "visitor_id", lambda ip, headers, session: "203.0.113.7")
+    asked = []
+    monkeypatch.setattr(service, "ask", lambda **kw: asked.append(kw) or service.examples()[0]
+                        ["answer"])
+    submit("first tab")
+    second_tab = submit("second tab")                          # a new session, same visitor
+    assert [a["question"] for a in asked] == ["first tab"]
+    assert second_tab.warning[0].value == PAGE["en"]["rate_limited"].format(n=1, minutes=5)
+    st.cache_resource.clear()
+
+
+def test_visitor_log_and_who_the_visitor_is():
+    log = state.VisitorLog()
+    assert all(log.allow("a", t) for t in range(state.VISITOR_LIMIT))
+    assert not log.allow("a", state.VISITOR_LIMIT) and log.allow("b", state.VISITOR_LIMIT)
+    assert log.allow("a", state.RATE_WINDOW_S + state.VISITOR_LIMIT)   # the window moved on
+    log.allow("c", 10 * state.RATE_WINDOW_S)
+    assert set(log._times) == {"c"}                             # idle visitors are forgotten
+    cf = {"CF-Connecting-IP": "203.0.113.7"}
+    assert state.visitor_id("198.51.100.2", cf, "s") == "198.51.100.2"  # the address Streamlit saw
+    assert state.visitor_id(None, cf, "s") == "203.0.113.7"   # from this machine (Streamlit: None)
+    assert state.visitor_id(None, {"CF-Connecting-IP": " "}, "s") == "s"
+    assert state.visitor_id(None, None, "session-9") == "session-9"

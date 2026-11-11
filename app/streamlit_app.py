@@ -45,6 +45,11 @@ def location_tree():
 
 
 @st.cache_resource(show_spinner=False)
+def visitor_log() -> state.VisitorLog:
+    return state.VisitorLog()                    # one per server process, for every session
+
+
+@st.cache_resource(show_spinner=False)
 def start_warm_up() -> bool:
     """Once per server process: load the models in the background while the page renders."""
     threading.Thread(target=service.warm_up, name="warm-up", daemon=True).start()
@@ -96,11 +101,16 @@ def reset_dong() -> None:
 
 
 def queue(request: dict) -> None:
-    """Answer `request` on the next run, unless this session is over the rate limit."""
-    if state.allow_question(st.session_state.asked, time.time()):
-        st.session_state.pending = request
-    else:
+    """Answer `request` on the next run, unless this tab or this visitor is over its limit."""
+    now = time.time()
+    visitor = state.visitor_id(st.context.ip_address, st.context.headers,
+                               st.session_state.visitor)
+    if not state.allow_question(st.session_state.asked, now):
         st.session_state.flash = ("rate_limited", state.rate_message_args())
+    elif not visitor_log().allow(visitor, now):
+        st.session_state.flash = ("rate_limited", state.rate_message_args(state.VISITOR_LIMIT))
+    else:
+        st.session_state.pending = request
 
 
 def submit_question() -> None:
@@ -204,6 +214,11 @@ def answer_pending() -> None:
                 pass
         try:
             result = service.ask(**request, progress=update)
+        except service.Busy:                 # too many waiting: ask again, keep the last answer
+            st.session_state.pending = None
+            st.session_state.flash = ("site_busy", {})
+            st.session_state.show_question = request["question"]
+            st.rerun()
         except Exception:
             trace_id = str(uuid.uuid4())
             log.exception("answering failed in the page (%s)", trace_id)
