@@ -70,7 +70,7 @@ def show_bin(result: dict, t: T) -> None:
     if not result.get("bin"):
         return
     with st.container(border=True, key="bin_card"):
-        st.markdown(f"#### {md(result.get('bin_en') or result['bin'])}")
+        st.markdown(f"### {md(result.get('bin_en') or result['bin'])}")
         st.caption(f"{md(result['bin'])} · {t('bin_note')}")
 
 
@@ -128,11 +128,14 @@ def show_sources(result: dict, t: T) -> None:
         return
     st.markdown(f"**{t('sources')}**")
     for c in citations:
-        where = " · ".join(str(x) for x in (
-            t("source_page", page=c["page"]) if c.get("page") else None,
-            c.get("year"),
+        source = str(c.get("source") or "")
+        compact = source.replace(" ", "")
+        where = " · ".join(str(x) for x in (       # page and year only if the name lacks them
+            t("source_page", page=c["page"]) if c.get("page")
+            and f"p.{c['page']}" not in compact else None,
+            c.get("year") if c.get("year") and str(c["year"]) not in source else None,
             t("source_data_date", date=c["data_date"]) if c.get("data_date") else None) if x)
-        label = f"[{c.get('n')}] {c.get('source') or ''}" + (f" · {where}" if where else "")
+        label = f"[{c.get('n')}] {source}" + (f" · {where}" if where else "")
         with st.expander(md(label)):
             st.text(service.source_text(c)["text"])
 
@@ -200,7 +203,7 @@ def show_result(result: dict, request: dict, t: T, on_pick: Callable[[str, str],
         st.caption(t("your_question"))
         st.markdown(md(request.get("question")))
         status = result["status"]
-        st.subheader(t(f"title_{status}"))
+        st.header(t(f"title_{status}"))
         text = md(result.get("answer_text"))
         if status == "ANSWER":
             show_bin(result, t)

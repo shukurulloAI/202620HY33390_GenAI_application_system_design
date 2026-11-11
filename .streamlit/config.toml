@@ -1,0 +1,40 @@
+# Streamlit settings for the website (app/streamlit_app.py). Streamlit reads this file from the
+# folder it is started in: run `streamlit run app/streamlit_app.py` from the repo root.
+# Every colour pair below is checked for WCAG AA contrast by tests/test_app_style.py; the
+# rendered page is scanned with axe-core by tests/e2e/ (docs/WEBSITE.md).
+
+[server]
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false          # no usage data sent to Streamlit
+
+[client]
+toolbarMode = "viewer"            # no developer menu for visitors
+showErrorDetails = "none"         # a bug shows a generic error, never a traceback
+
+[theme]
+font = "sans-serif"
+baseRadius = "0.6rem"
+buttonRadius = "0.6rem"
+headingFontSizes = ["2.25rem", "1.4rem", "1.15rem", "1rem", "1rem", "1rem"]
+headingFontWeights = [700, 700, 700, 600, 600, 600]
+linkUnderline = true
+
+# No [theme] base: the page follows the visitor's light or dark system setting, and the
+# settings menu can switch it.
+[theme.light]
+primaryColor = "#2f6b27"
+backgroundColor = "#f7faf5"
+secondaryBackgroundColor = "#e9f0e4"
+textColor = "#0d160e"
+linkColor = "#245a96"
+borderColor = "#c5d3bc"
+
+[theme.dark]
+primaryColor = "#3a7d2e"
+backgroundColor = "#0f1710"
+secondaryBackgroundColor = "#1a261b"
+textColor = "#eef4ec"
+linkColor = "#8cc4ff"
+borderColor = "#3a4a36"

@@ -54,7 +54,7 @@ def t(key: str, **args) -> str:
 
 
 st.set_page_config(page_title=t("page_title"), page_icon="♻️", layout="centered")
-st.html(STYLE)
+st.markdown(f"<style>{STYLE.read_text(encoding='utf-8')}</style>", unsafe_allow_html=True)
 st.html(f"<script>document.documentElement.lang = {json.dumps(lang)};</script>",
         unsafe_allow_javascript=True)                 # screen readers pick the right voice
 
@@ -126,7 +126,7 @@ st.caption(status_line)
 
 
 # ---------- EXAMPLE QUESTIONS ----------
-st.subheader(t("examples_heading"))
+st.header(t("examples_heading"))
 for column, n in zip(st.columns(3), (1, 2, 3), strict=True):
     column.button(t(f"ex{n}_label"), icon=t(f"ex{n}_icon"), key=f"example_{n}",
                   width="stretch", disabled=busy, on_click=choose_question,
@@ -137,7 +137,7 @@ for column, n in zip(st.columns(3), (1, 2, 3), strict=True):
 # No st.form: a form does not rerun when a selectbox changes, so the district list would
 # stay on the old province (a mismatched pair finds no data).
 with st.container(key="question_panel"):
-    st.subheader(t("ask_heading"))
+    st.header(t("ask_heading"))
     st.text_area(t("question_label"), placeholder=t("question_placeholder"), height=105,
                  key="question_input", max_chars=service.MAX_QUESTION_CHARS, disabled=busy)
     with st.expander(t("area_heading")):

@@ -35,7 +35,7 @@ def test_every_example_renders(offline):
     for example in service.examples():
         at = submit(example["question"])
         assert not at.exception, at.exception[0].value
-        assert at.subheader[-1].value == TITLES[example["answer"]["status"]]
+        assert at.header[-1].value == TITLES[example["answer"]["status"]]
 
 
 def test_abstention_shows_the_korean_sentence(offline):
@@ -123,7 +123,7 @@ def test_choosing_a_language_switches_page_and_answer(offline, monkeypatch):
     at.text_area(key="question_input").input("Куда выбрасывать батарейки?")
     next(b for b in at.button if b.label == PAGE["ru"]["submit"]).click().run()
     assert asked[-1]["lang"] == "ru"
-    assert at.subheader[-1].value == PAGE["ru"]["title_ANSWER"]
+    assert at.header[-1].value == PAGE["ru"]["title_ANSWER"]
 
 
 def test_locale_picks_the_starting_language():
@@ -165,7 +165,7 @@ def test_markup_in_an_answer_stays_text(offline, monkeypatch):
     monkeypatch.setattr(service, "ask", lambda **kw: hostile_answer())
     at = submit("anything")
     assert not at.exception
-    shown = [*at.markdown, *at.caption, *at.warning, *at.info, *at.subheader]
+    shown = [*at.markdown, *at.caption, *at.warning, *at.info, *at.header]
     assert any("onerror" in str(m.value) for m in shown)           # it is on the page...
     for m in at.markdown:
         if getattr(m, "allow_html", False):                         # ...never as raw HTML
