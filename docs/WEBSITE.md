@@ -228,8 +228,9 @@ deploy/public_link.sh                    # the full system: Ollama running, inde
 RAG_OFFLINE=1 deploy/public_link.sh      # the offline demo
 ```
 
-The script prints a `https://<random words>.trycloudflare.com` link to share. Ctrl-C stops the
-website and the link.
+The script prints the `https://<random words>.trycloudflare.com` link on its own line and copies
+it, so it can be pasted straight away. The logs go to `.cache/website.log` and
+`.cache/tunnel.log`. Keep the window open: Ctrl-C, or closing it, stops the website and the link.
 
 - **How it works.** The website runs on this Mac and listens on 127.0.0.1 only. It runs without
   the maintainer panel and without reloading when a file changes. `cloudflared` connects out to
