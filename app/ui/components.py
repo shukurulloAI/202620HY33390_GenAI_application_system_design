@@ -282,6 +282,20 @@ def show_feedback(result: dict, t: T, disabled: bool = False) -> None:
                       disabled=disabled, on_click=save_rating, args=(trace_id, rating))
 
 
+def show_area_status(t: T, district: dict | None, tree: dict[str, list[dict]]) -> None:
+    """Under the district box: whether the chosen district's collection days are in the data,
+    or, before one is chosen, how many districts are."""
+    if district is None:
+        known = [d for districts in tree.values() for d in districts]
+        st.caption(t("area_coverage", n=sum(d["has_data"] for d in known), total=len(known)))
+    elif district["has_data"]:
+        st.caption(f":green[:material/check_circle:] "
+                   f"{t('area_known', district=md(district['label']))}")
+    else:
+        st.caption(f":orange[:material/info:] "
+                   f"{t('area_unknown', district=md(district['label']))}")
+
+
 def show_placeholder(t: T) -> None:
     """Where the answer will appear, before the first question (hidden on a phone, where the
     answer comes below the question anyway)."""

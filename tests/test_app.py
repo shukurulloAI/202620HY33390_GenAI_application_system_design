@@ -57,15 +57,20 @@ def test_the_neighbourhood_box_says_why_it_has_nothing_to_choose(offline):
     district) used to show an empty list with "Not selected"."""
     at = AppTest.from_file(APP, default_timeout=60)
     at.run()
+    captions = lambda: [c.value for c in at.caption]                         # noqa: E731
+    assert "Collection days are known for 222 of 224 districts." in captions()
     dong = at.selectbox(key="area_dong")
     assert dong.disabled and dong.options == ["Choose a district first"]
     at.selectbox(key="area_province").select("서울특별시").run()
     at.selectbox(key="area_district").select("구로구").run()
     dong = at.selectbox(key="area_dong")
     assert dong.disabled and dong.options == ["Not needed: the answer covers the whole district"]
+    assert any("구로구" in c and "its collection days are in the data." in c for c in captions())
     at.selectbox(key="area_district").select("강서구").run()
     dong = at.selectbox(key="area_dong")
     assert not dong.disabled and dong.options[0] == "Not selected" and "등촌2동" in dong.options
+    at.selectbox(key="area_district").select("도봉구").run()
+    assert any("no collection data" in c for c in captions())
     tree = state.location_tree(service.locations())
     assert state.dong_prompt(next(d for d in tree["서울특별시"] if d["district"] == "도봉구")) \
         == "not_selected"                                   # no data at all: not "not needed"

@@ -182,6 +182,7 @@ with ask_column, st.container(key="question_panel", border=True):
             districts[name]["label"] + ("" if districts[name]["has_data"]
                                         else f" - {t('no_data')}"))
         chosen = districts.get(st.session_state.area_district)
+        ui.show_area_status(t, chosen, tree)              # is this district in the data?
         areas = chosen["areas"] if chosen else []
         # An empty list says why: no district yet, or a district whose data has no
         # neighbourhoods (39 of 222: one schedule for the whole district, or zones the answer
