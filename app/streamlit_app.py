@@ -127,33 +127,33 @@ def pick_option(kind: str, option: str) -> None:
 
 
 # ---------- HEADER ----------
-brand, chooser = st.columns([3, 1], vertical_alignment="center")
-with brand:
-    ui.show_header(t)
-with chooser:
-    st.selectbox(t("language"), list(languages), key="lang", on_change=on_lang,
-                 format_func=lambda code: languages[code], disabled=busy)
-ui.show_hero(t)
+with st.container(key="topbar"):
+    brand, chooser = st.columns([3, 1], vertical_alignment="center")
+    with brand:
+        ui.show_header(t)
+    with chooser:
+        st.selectbox(t("language"), list(languages), key="lang", on_change=on_lang,
+                     format_func=lambda code: languages[code], disabled=busy)
 
 health = service.health()
 if health["ollama"] and not health["offline"]:
     start_warm_up()
-st.caption(t("status_offline") if health["offline"] else
-           t("status_live") if health["ollama"] else t("status_down"))
+ui.show_hero(t, "offline" if health["offline"] else "live" if health["ollama"] else "down")
 
 
 # ---------- EXAMPLE QUESTIONS ----------
-st.header(t("examples_heading"))
-for column, n in zip(st.columns(3), (1, 2, 3), strict=True):
-    column.button(t(f"ex{n}_label"), icon=t(f"ex{n}_icon"), key=f"example_{n}",
-                  width="stretch", disabled=busy, on_click=choose_question,
-                  args=(t(f"ex{n}_q"),))
+with st.container(key="examples"):
+    st.header(t("examples_heading"))
+    for column, n in zip(st.columns(3), (1, 2, 3), strict=True):
+        column.button(t(f"ex{n}_label"), icon=t(f"ex{n}_icon"), key=f"example_{n}",
+                      width="stretch", disabled=busy, on_click=choose_question,
+                      args=(t(f"ex{n}_q"),))
 
 
 # ---------- QUESTION ----------
 # No st.form: a form does not rerun when a selectbox changes, so the district list would
 # stay on the old province (a mismatched pair finds no data).
-with st.container(key="question_panel"):
+with st.container(key="question_panel", border=True):
     st.header(t("ask_heading"))
     st.text_area(t("question_label"), placeholder=t("question_placeholder"), height=105,
                  key="question_input", max_chars=service.MAX_QUESTION_CHARS, disabled=busy)

@@ -94,8 +94,8 @@ for exists.
 | `app/streamlit_app.py` | The layout, the callbacks and the answer flow |
 | `app/ui/components.py` | One render function per part of an answer (bin, steps, zones, sources, handoff, clarify, feedback, glossary, maintainer panel) |
 | `app/ui/state.py` | Rules testable without a browser: session defaults, the starting language, the area check, the rate limit |
-| `app/ui/style.css` | The brand and the hero only; everything else is the theme |
-| `.streamlit/config.toml` | Light and dark theme colours, no usage statistics, no developer menu, no tracebacks for visitors |
+| `app/ui/style.css` | The app icon, the hero, the grey tiles and the bin card; everything else is the theme |
+| `.streamlit/config.toml` | The theme in Apple's style (system font, Apple blue, pill buttons) in light and dark, no usage statistics, no developer menu, no tracebacks for visitors |
 
 ### What it does
 
@@ -140,8 +140,11 @@ for exists.
   `$…$` maths and `:red[…]` colours. Only the static brand and hero use HTML, with their
   labels escaped. A test feeds the page an answer with markup in every field.
 - **Contrast.** Every colour pair in `config.toml` and `style.css` meets WCAG AA in light and dark
-  mode (`tests/test_app_style.py`): text 4.5:1, captions at 60% opacity, links, white on the
-  primary colour, white on the hero (5.1:1 or more).
+  mode (`tests/test_app_style.py`): text 4.5:1, captions at 60% opacity, links, and white on the
+  primary colour. Streamlit does not tell CSS which theme it shows, so the tiles are translucent
+  grey and secondary text is body text at lower opacity. The test composes them on the page, a
+  tile and the bin card in both themes. Body text is `#0d0d0f`, not Apple's `#1d1d1f`, whose
+  captions miss 4.5:1 on white.
 - **No Streamlit internals in the CSS** (no `data-testid`, no `!important`), so an upgrade cannot
   silently break the look.
 

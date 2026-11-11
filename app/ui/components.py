@@ -44,23 +44,33 @@ def waste_name(waste_type: str, t: T) -> str:
 
 # ---------------------------------------------------------------------------- header
 
+ICON = "♻︎"                    # the recycling sign as text, not the green emoji
+STATUSES = ("live", "offline", "down")
+
+
 def show_header(t: T) -> None:
     e = html.escape
     st.markdown(
-        f'<div class="brand"><div class="brand-icon" aria-hidden="true">♻</div><div>'
+        f'<div class="brand"><div class="brand-icon" aria-hidden="true">{ICON}</div><div>'
         f'<div class="brand-name">{e(t("page_title"))}</div>'
         f'<div class="brand-note">{e(t("brand_note"))}</div></div></div>',
         unsafe_allow_html=True)
 
 
-def show_hero(t: T) -> None:
+def show_hero(t: T, status: str) -> None:
+    """The app icon, the headline and a pill saying whether answers are live (`status` is
+    one of STATUSES)."""
+    if status not in STATUSES:
+        raise ValueError(f"unknown status {status!r}")
     e = html.escape
     st.markdown(
-        f'<div class="hero"><div class="hero-copy">'
+        f'<div class="hero"><div class="hero-icon" aria-hidden="true">{ICON}</div>'
         f'<p class="hero-label">{e(t("hero_label"))}</p>'
         f'<h1 class="hero-title">{e(t("hero_title"))}</h1>'
-        f'<p class="hero-description">{e(t("hero_text"))}</p></div>'
-        f'<div class="hero-art" aria-hidden="true"><span>♻</span></div></div>',
+        f'<p class="hero-description">{e(t("hero_text"))}</p>'
+        f'<div class="hero-status hero-status-{status}">'
+        f'<span class="hero-status-dot" aria-hidden="true"></span>'
+        f'{e(t(f"status_{status}"))}</div></div>',
         unsafe_allow_html=True)
 
 

@@ -13,28 +13,34 @@ gatherUsageStats = false          # no usage data sent to Streamlit
 toolbarMode = "viewer"            # no developer menu for visitors
 showErrorDetails = "none"         # a bug shows a generic error, never a traceback
 
+# Apple's style: the system font (San Francisco on Apple devices), white or black pages, grey
+# tiles (app/ui/style.css), Apple blue for actions and pill-shaped buttons.
 [theme]
-font = "sans-serif"
-baseRadius = "0.6rem"
-buttonRadius = "0.6rem"
-headingFontSizes = ["2.25rem", "1.4rem", "1.15rem", "1rem", "1rem", "1rem"]
-headingFontWeights = [700, 700, 700, 600, 600, 600]
+font = "-apple-system, BlinkMacSystemFont, Helvetica Neue, Segoe UI, Roboto, Apple SD Gothic Neo, Noto Sans KR, sans-serif"
+headingFont = "-apple-system, BlinkMacSystemFont, Helvetica Neue, Segoe UI, Roboto, Apple SD Gothic Neo, Noto Sans KR, sans-serif"
+baseRadius = "0.75rem"
+buttonRadius = "full"
+paddingTop = "2.5rem"
+showWidgetBorder = true
+headingFontSizes = ["2.5rem", "1.6rem", "1.25rem", "1.05rem", "1rem", "1rem"]
+headingFontWeights = [700, 700, 600, 600, 600, 600]
 linkUnderline = true
 
 # No [theme] base: the page follows the visitor's light or dark system setting, and the
-# settings menu can switch it.
+# settings menu can switch it. Body text is darker than Apple's #1d1d1f because Streamlit
+# draws captions as body text at 60 % opacity, and #1d1d1f captions miss 4.5:1 on white.
 [theme.light]
-primaryColor = "#2f6b27"
-backgroundColor = "#f7faf5"
-secondaryBackgroundColor = "#e9f0e4"
-textColor = "#0d160e"
-linkColor = "#245a96"
-borderColor = "#c5d3bc"
+primaryColor = "#0071e3"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#0d0d0f"
+linkColor = "#0066cc"
+borderColor = "#d2d2d7"
 
 [theme.dark]
-primaryColor = "#3a7d2e"
-backgroundColor = "#0f1710"
-secondaryBackgroundColor = "#1a261b"
-textColor = "#eef4ec"
-linkColor = "#8cc4ff"
-borderColor = "#3a4a36"
+primaryColor = "#0071e3"
+backgroundColor = "#000000"
+secondaryBackgroundColor = "#1c1c1e"
+textColor = "#f5f5f7"
+linkColor = "#2997ff"
+borderColor = "#38383a"
