@@ -7,6 +7,7 @@ in one place (PLAN.md §6).
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -47,7 +48,9 @@ RERANKER_REVISION = "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
 RERANKER_MAX_LENGTH = 512
 
 # --- Generator (Ollama) ---
-OLLAMA_URL = "http://localhost:11434"
+# RAG_OLLAMA_URL: Ollama on another host, e.g. http://ollama:11434 in compose.yaml or
+# http://host.docker.internal:11434 for a container using the Mac's own Ollama.
+OLLAMA_URL = os.environ.get("RAG_OLLAMA_URL", "http://localhost:11434")
 OLLAMA_KEEP_ALIVE = "30m"          # keep the model loaded between questions (Ollama default: 5m)
 OLLAMA_RETRY_WAIT_S = 2.0          # one retry after a connection error (e.g. Ollama restarting)
 # qwen2.5:7b chosen over the course default qwen2.5:3b after the Phase 1 probes:

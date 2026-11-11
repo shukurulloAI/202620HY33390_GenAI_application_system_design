@@ -46,3 +46,39 @@ jobs:
 
       - name: Tests
         run: python -m pytest -q --cov=rag --cov=eval --cov-report=term
+
+  # The deployable website: the offline image must start, report healthy and serve the
+  # page; the full image must build. compose.yaml must parse.
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: compose.yaml is valid
+        run: docker compose --profile offline --profile live config --quiet
+
+      - name: Build the offline image
+        run: docker build --target offline -t waste-assistant:offline .
+
+      - name: It starts, is healthy and serves the page
+        run: |
+          docker run -d --name demo -p 8501:8501 waste-assistant:offline
+          for i in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:8501/_stcore/health && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8501/ | grep -q "<title>"
+          for i in $(seq 1 30); do
+            [ "$(docker inspect --format '{{.State.Health.Status}}' demo)" = healthy ] && break
+            sleep 3
+          done
+          docker inspect --format '{{.State.Health.Status}}' demo | grep -qx healthy
+          docker exec demo id -u | grep -qx 1000            # not root
+
+      - name: Logs
+        if: always()
+        run: docker logs demo || true
+
+      - name: The full image builds
+        run: docker build -t waste-assistant .
