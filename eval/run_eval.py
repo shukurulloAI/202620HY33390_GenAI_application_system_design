@@ -26,7 +26,7 @@ from pathlib import Path
 
 from eval.cases import load_cases
 from eval.metrics import score
-from eval.provenance import git_commit, git_dirty
+from eval.provenance import snapshot
 from rag import paths
 from rag.config import load_config
 from rag.files import read_jsonl, sha256_file
@@ -135,8 +135,7 @@ def rescore(name: str) -> None:
     meta = json.loads((out / "report.json").read_text(encoding="utf-8"))["meta"]
     cases = load_cases(paths.ROOT / meta["cases_file"])[:meta["n_cases"]]
     result = score(read_jsonl(paths.ROOT / meta["traces_file"]), cases)
-    meta["rescored"] = {"time": datetime.now().isoformat(timespec="seconds"),
-                        "git_commit": git_commit(), "git_dirty": git_dirty()}
+    meta["rescored"] = {"time": datetime.now().isoformat(timespec="seconds"), **snapshot()}
     (out / "report.json").write_text(json.dumps({"meta": meta, **result}, ensure_ascii=False,
                                                 indent=1), encoding="utf-8")
     (out / "report.md").write_text(markdown(name, result, meta, "test" not in meta["cases_file"]),
@@ -171,6 +170,7 @@ def main() -> None:
     if "test" in args.cases.name and not args.allow_test:
         raise SystemExit("refusing to run on the test split without --allow-test")
     cases = load_cases(args.cases)[:args.limit] if args.limit else load_cases(args.cases)
+    provenance = snapshot()                    # before anything is written
     out = REPORT_DIR / args.name
     out.mkdir(parents=True, exist_ok=True)
     replayed = 0
@@ -185,8 +185,8 @@ def main() -> None:
             "traces_file": (str(args.traces) if args.traces
                             else f"{paths.relative(out)}/traces.jsonl"),
             "settings": settings or (traces[0].get("settings") if traces else None),
-            "config": args.config, "overrides": args.set, "git_commit": git_commit(),
-            "git_dirty": git_dirty(), "llm_replayed": replayed,
+            "config": args.config, "overrides": args.set, **provenance,
+            "llm_replayed": replayed,
             "time": datetime.now().isoformat(timespec="seconds")}
     (out / "report.json").write_text(json.dumps({"meta": meta, **result}, ensure_ascii=False,
                                                 indent=1), encoding="utf-8")

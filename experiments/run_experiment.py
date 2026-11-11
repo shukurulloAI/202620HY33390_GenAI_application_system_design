@@ -29,7 +29,7 @@ from pathlib import Path
 
 from eval.cases import default_cases, load_cases
 from eval.metrics import quick_summary, schedule_summary, score
-from eval.provenance import git_commit, git_dirty
+from eval.provenance import snapshot
 from rag import config, paths
 from rag.config import PipelineConfig
 from rag.files import sha256_file
@@ -132,8 +132,7 @@ def main() -> None:
     manifest = {"id": spec["id"], "question": spec.get("question"), "stage": spec["stage"],
                 "spec_file": str(args.config), "cases": paths.relative(cases_path.resolve()),
                 "cases_sha256": sha, "n_cases": len(cases), "slices": slices,
-                "limit": limit, "git_commit": git_commit(),
-                "git_dirty": git_dirty(),
+                "limit": limit, **snapshot(),
                 "started": datetime.now().isoformat(timespec="seconds"), "variants": kept}
 
     base = base_config(spec)

@@ -21,7 +21,7 @@ from datetime import datetime
 
 from eval.cases import load_cases
 from eval.metrics import gold_rank
-from eval.provenance import git_commit, git_dirty
+from eval.provenance import snapshot
 from rag import paths
 from rag.config import load_config
 from rag.llm_client import make_client
@@ -77,7 +77,7 @@ def summarize(rows: list[dict], label: str | None, cfg, pipeline: Pipeline,
     with_gold = [r for r in rows if r["has_gold"]]
     summary = {
         "label": label, "config": cfg.to_dict(), "settings": pipeline.settings(),
-        "git_commit": git_commit(), "git_dirty": git_dirty(),
+        **snapshot(),
         "retrieval_only": retrieval_only, "total": len(rows),
         "hit_at_k_final": sum(1 for r in with_gold
                               if r["gold_rank"] and r["gold_rank"] <= cfg.k_final),

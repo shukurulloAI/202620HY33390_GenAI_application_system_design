@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 from datetime import datetime
 
-from eval.provenance import git_commit, git_dirty
+from eval.provenance import snapshot
 from rag import service
 from rag.contract import CONTRACT_VERSION, check
 from rag.pipeline import Pipeline
@@ -39,6 +39,7 @@ EXAMPLES = [
 
 
 def main() -> None:
+    provenance = snapshot()
     pipeline = Pipeline(write_traces=False)
     out = []
     for name, question, lang, district, dong in EXAMPLES:
@@ -50,8 +51,8 @@ def main() -> None:
         {"about": "Real answers from the full system, for the website's offline mode "
                   "(RAG_OFFLINE=1) and docs/WEBSITE.md. Regenerate with "
                   "python -m experiments.make_examples.",
-         "contract_version": CONTRACT_VERSION, "git_commit": git_commit(),
-         "git_dirty": git_dirty(), "generated": datetime.now().isoformat(timespec="seconds"),
+         "contract_version": CONTRACT_VERSION, **provenance,
+         "generated": datetime.now().isoformat(timespec="seconds"),
          "examples": out}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"-> {service.EXAMPLES_FILE}")
 

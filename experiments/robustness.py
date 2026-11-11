@@ -31,7 +31,7 @@ from pathlib import Path
 
 from eval.cases import gold_chunks, load_cases
 from eval.metrics import score_case
-from eval.provenance import git_commit, git_dirty
+from eval.provenance import git_commit, snapshot
 from rag import config, paths
 from rag.bins import BINS, evidence_bins
 from rag.files import read_jsonl, sha256_file
@@ -144,6 +144,7 @@ def main() -> None:
 
     from rag.llm_client import CachedClient, make_client
     from rag.pipeline import Pipeline
+    provenance = snapshot()                    # before anything is written
     cfg = config.load_config(args.config, args.set)
     llm = CachedClient(make_client("ollama", cfg.llm_model))
     pipeline = Pipeline(cfg, llm, write_traces=False)
@@ -187,7 +188,8 @@ def main() -> None:
                       flush=True)
         print()
         results[probe] = counts
-    run = (f"Commit `{(git_commit() or '')[:7]}`{' (uncommitted changes)' if git_dirty() else ''}"
+    dirty = " (uncommitted changes)" if provenance["git_dirty"] else ""
+    run = (f"Commit `{(provenance['git_commit'] or '')[:7]}`{dirty}"
            f". Config overrides: {args.set or 'none'}.")
     write_summary(out, args.cases, len(cases), results, cfg.to_dict(), run)
 

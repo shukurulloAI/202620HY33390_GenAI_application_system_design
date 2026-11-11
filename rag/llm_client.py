@@ -125,6 +125,29 @@ class CachedClient:
         return result
 
 
+_DIGESTS: dict[tuple[str, str], str | None] = {}
+
+
+def ollama_digest(model: str, url: str = config.OLLAMA_URL) -> str | None:
+    """The digest of an Ollama model: a tag like qwen2.5:7b can be re-pulled with other
+    weights, the digest cannot. None when Ollama is not reachable. Cached per process."""
+    key = (url.rstrip("/"), model)
+    if key not in _DIGESTS:
+        try:
+            with urllib.request.urlopen(f"{key[0]}/api/tags", timeout=5) as response:
+                tags = json.load(response)["models"]
+            _DIGESTS[key] = next((m["digest"] for m in tags if m["name"] == model), None)
+        except (OSError, ValueError, KeyError):
+            _DIGESTS[key] = None
+    return _DIGESTS[key]
+
+
+def model_digest(client: LLMClient) -> str | None:
+    """Digest for an Ollama client (also behind CachedClient); None for any other client."""
+    inner = getattr(client, "inner", client)
+    return ollama_digest(inner.model_id, inner.url) if isinstance(inner, OllamaClient) else None
+
+
 def make_client(name: str = "ollama", model: str | None = None) -> LLMClient:
     if name == "fixture":
         return FixtureClient()

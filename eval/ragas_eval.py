@@ -27,7 +27,6 @@ import argparse
 import asyncio
 import json
 import math
-import urllib.request
 from datetime import datetime
 from pathlib import Path
 
@@ -74,15 +73,6 @@ def prepare(name: str, cases_file: Path | None) -> Path:
 
 # ---------------------------------------------------------------------------- score (judge env)
 
-def judge_digest(model: str) -> str | None:
-    try:
-        with urllib.request.urlopen(f"{OLLAMA}/api/tags", timeout=5) as response:
-            tags = json.load(response)["models"]
-        return next((m["digest"] for m in tags if m["name"] == model), None)
-    except OSError:
-        return None
-
-
 async def _score_all(rows: list[dict], model: str) -> list[dict]:
     from openai import AsyncOpenAI
     from ragas.llms import llm_factory
@@ -119,6 +109,8 @@ def _mean(values: list) -> dict:
 
 def score(name: str, model: str, limit: int | None = None, out_name: str = "ragas.json") -> None:
     import ragas
+
+    from rag.llm_client import ollama_digest  # stdlib only, so it runs in the judge env
     rows = [json.loads(line) for line in
             (REPORTS / name / "judge_input.jsonl").read_text(encoding="utf-8").splitlines()]
     rows = rows[:limit] if limit else rows
@@ -128,7 +120,7 @@ def score(name: str, model: str, limit: int | None = None, out_name: str = "raga
         group = [r for r in scored if r["slice"] == slice_name]
         by_slice[slice_name] = {m: _mean([r[m] for r in group])
                                 for m in ("faithfulness", "context_relevance")}
-    result = {"report": name, "judge": {"model": model, "digest": judge_digest(model),
+    result = {"report": name, "judge": {"model": model, "digest": ollama_digest(model, OLLAMA),
                                         "ragas": ragas.__version__, "temperature": 0.0},
               "time": datetime.now().isoformat(timespec="seconds"),
               "overall": {m: _mean([r[m] for r in scored])

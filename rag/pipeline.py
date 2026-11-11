@@ -35,7 +35,7 @@ from rag.contract import problems
 from rag.gate import MAX_ZONES, GateDecision, decide
 from rag.generate import ANSWER_SCHEMA, build_prompt, parse_answer
 from rag.handoff import message
-from rag.llm_client import LLMClient, make_client
+from rag.llm_client import LLMClient, make_client, model_digest
 from rag.retrieve import ItemRetriever
 from rag.router import Route, Router
 from rag.schedule_text import ScheduleWriter, merge_schedule
@@ -117,7 +117,9 @@ class Pipeline:
         return {"pipeline_version": PIPELINE_VERSION, "config": self.cfg.to_dict(),
                 "retriever": self.retriever.name, "collection": self.retriever.collection,
                 "router": self.router.name if self.router else None,
-                "llm": self.llm.model_id, "schedule_source": self.schedule.source,
+                "llm": self.llm.model_id, "llm_digest": model_digest(self.llm),
+                "router_digest": model_digest(self.router.llm) if self.router else None,
+                "schedule_source": self.schedule.source,
                 "schedule_retriever": (self.schedule_search.name if self.schedule_search
                                        else "structured lookup")}
 
