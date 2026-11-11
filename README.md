@@ -13,6 +13,7 @@ when and where to put waste out (from the district table), with sources, in thei
 python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements-dev.txt
+# (to reproduce the reported numbers exactly: pip install -r requirements.lock)
 
 # 2. Local LLM (https://ollama.com)
 ollama serve                # or open the Ollama app
