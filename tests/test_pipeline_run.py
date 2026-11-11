@@ -96,6 +96,38 @@ def test_a_bin_the_cited_chunk_does_not_state_is_refused(table):
     assert trace["answer"]["status"] == "INSUFFICIENT_CONTEXT" and trace["answer"]["bin"] == ""
 
 
+# The bin field says one bin, the text tells the user another (a pizza box: 종이, its greasy
+# inner paper 종량제봉투, and the text named only the second).
+CONFLICTING = answer(bin="종량제봉투", bin_en="general waste bag", citations=[1],
+                     answer_text="Put the eggshells in food waste (음식물쓰레기) [1].")
+
+
+def test_a_bin_that_its_text_contradicts_is_asked_once_more(table):
+    trace, llm, _ = run([EGG_ROUTE, CONFLICTING, EGG_ANSWER], [candidate(EGGSHELL, 0.9)], table)
+    a = trace["answer"]
+    assert (a["status"], a["bin"]) == ("ANSWER", "종량제봉투") and len(llm.calls) == 3
+    assert "Your previous answer gave the bin 종량제봉투" in llm.calls[2]["prompt"]
+    retry = trace["llm"]["bin_conflict_retry"]
+    assert retry["passed"] and "names ['음식물']" in retry["first_reasons"][0]
+    assert trace["checks"]["validation"]["retried_after"] == retry["first_reasons"]
+
+
+def test_a_retry_that_still_contradicts_itself_is_withheld(table):
+    trace, llm, _ = run([EGG_ROUTE, CONFLICTING, CONFLICTING], [candidate(EGGSHELL, 0.9)],
+                        table)
+    assert trace["answer"]["status"] == "INSUFFICIENT_CONTEXT" and len(llm.calls) == 3
+    assert trace["llm"]["bin_conflict_retry"]["passed"] is False
+    assert trace["checks"]["validation"]["bin_text_conflict"]
+
+
+def test_only_an_answer_that_would_be_withheld_for_a_conflict_is_retried(table):
+    for reply in (EGG_ANSWER,                                         # passes: no retry
+                  answer(bin="음식물", bin_en="food waste", answer_text="Food waste [1].",
+                         citations=[1])):                             # withheld, no conflict
+        trace, llm, _ = run([EGG_ROUTE, reply], [candidate(EGGSHELL, 0.9)], table)
+        assert len(llm.calls) == 2 and "bin_conflict_retry" not in trace["llm"]
+
+
 def test_router_failure_falls_back_to_the_question(table):
     trace, _, retriever = run(["no json", "still no json", EGG_ANSWER],
                               [candidate(EGGSHELL, 0.9)], table)

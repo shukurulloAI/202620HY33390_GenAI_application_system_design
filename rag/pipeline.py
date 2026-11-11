@@ -301,8 +301,8 @@ class Pipeline:
                 and route.checks.get("intent_repaired") != ASKS_WHEN):
             asked = item_only_question(request.question, route)
 
-        def prompt_with(evidence_text: str) -> tuple[str, str]:
-            return build_prompt(self.cfg.prompt_version, asked, evidence_text, request.lang,
+        def prompt_with(evidence_text: str, question: str = asked) -> tuple[str, str]:
+            return build_prompt(self.cfg.prompt_version, question, evidence_text, request.lang,
                                 self.cfg.conflict_policy)
 
         system, empty = prompt_with("")
@@ -326,6 +326,31 @@ class Pipeline:
                 else set() if gate.schedule != "skip" else None)
         draft, validation = validate(draft, evidence, days, self.cfg.validation,
                                      item_question=gate.item == "answer")
+        if validation.get("bin_text_conflict") and validation.get("downgraded"):
+            # The text names another bin than the bin field: e.g. a pizza box (종이) whose
+            # greasy inner paper goes in 종량제봉투, with only the second in the text. Ask
+            # once more, saying what was inconsistent; keep the new answer only if it passes
+            # every check. Only answers that would be withheld are retried.
+            note = BIN_CONFLICT_NOTE.format(bin=validation["bin"],
+                                            named=", ".join(validation["bins_in_text"]))
+            retry_system, retry_prompt = prompt_with(evidence_text, f"{asked}\n({note})")
+            with timed(timings, "generate_retry_s"):
+                retry = self.llm.generate(system=retry_system, prompt=retry_prompt,
+                                          json_schema=ANSWER_SCHEMA,
+                                          temperature=self.cfg.temperature, seed=self.cfg.seed)
+            retry_draft, retry_checks = parse_answer(retry.text, len(evidence))
+            retry_draft, retry_validation = validate(
+                retry_draft, evidence, days, self.cfg.validation,
+                item_question=gate.item == "answer")
+            passed = (retry_draft.get("status") == "ANSWER"
+                      and not retry_validation.get("downgraded"))
+            trace["llm"]["bin_conflict_retry"] = {
+                "raw_output": retry.text, "done_reason": retry.done_reason,
+                "first_reasons": validation["reasons"], "passed": passed}
+            if passed:
+                retry_checks["output_truncated"] = retry.done_reason == "length"
+                draft, checks = retry_draft, retry_checks
+                validation = {**retry_validation, "retried_after": validation["reasons"]}
         if draft.get("status") not in ("ANSWER", "INSUFFICIENT_CONTEXT"):
             # Not JSON, or a status outside the schema: say nothing rather than guess.
             validation["unusable_output"] = draft.get("status")
@@ -374,6 +399,12 @@ def day_asked(question: str, routed: str | None) -> str | None:
     """One weekday named in the question beats the router, which read 화요일 as Wednesday."""
     named = days_mentioned(question)
     return DAY_EN[next(iter(named))].lower() if len(named) == 1 else routed
+
+
+BIN_CONFLICT_NOTE = (
+    "Your previous answer gave the bin {bin} but its text named only {named}. Name the bin "
+    "for the item itself in the text too; if the source puts a part of the item in another "
+    "bin, name both and say which part goes where.")
 
 
 def item_only_question(question: str, route: Route) -> str:

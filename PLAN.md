@@ -304,6 +304,7 @@ Output JSON:
 - Every `[n]` must resolve to a chunk actually in the context.
 - **Cheap support check:** the `bin` value must appear in at least one cited chunk's categories or text. If it doesn't, the answer is downgraded to abstain.
 - **Invented schedule check:** an answer that states days or clock times with no schedule rows behind it is downgraded to abstain (`schedule_invented`).
+- **Bin and text disagree** (`bin_text_conflict`): the text names another bin than the `bin` field. Before abstaining, the generator is asked once more and told what was inconsistent. The new answer is kept only if it passes every check. This happens with a pizza box: the bin is 종이, the greasy inner paper goes in 종량제봉투, and the text named only the second. No answer in the four runs of the current version (dev-s3e-final, dev-v2.1, test-baseline, test-final) had this conflict, so none of them changes (`tests/test_pipeline_run.py`).
 - Optional LLM claim check, used in evaluation only, not at runtime.
 
 ### 4.10 Human handoff (Lesson 7, Klarna case)
