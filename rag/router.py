@@ -66,11 +66,13 @@ _NEGATION = re.compile(
 ASKS_WHEN = "item -> both (question asks when)"     # route.checks["intent_repaired"]
 
 # The question asks when (a day or a time), in the six languages. English "when" counts only
-# as a question word ("When is...", "where and when", "when to..."), not as a conjunction
+# as a question word: first, next to another question word ("where when and how", "where,
+# when", "how/when") or before a verb ("when is", "when to"), not as a conjunction
 # ("...chicken bones when I'm done").
 _WHEN = re.compile(
-    r"^\W*when\b|\b(?:and|or)\s+when\b|\bwhen\s+(?:is|are|do|does|can|could|should|will|"
-    r"to|must)\b|\bwhat\s+(?:day|days|time)\b|\bwhich\s+(?:day|days)\b"
+    r"^\W*when\b|\b(?:and|or|where|how|what)\s*[,/&]?\s*when\b"
+    r"|\bwhen\s*(?:[,/&?]|(?:and|or|where|how|is|are|do|does|can|could|should|will|would|"
+    r"to|must)\b)|\bwhat\s+(?:day|days|time)\b|\bwhich\s+(?:day|days)\b"
     r"|\bcollection\s+(?:day|days|time|times)\b|\bpick[- ]?up\s+(?:day|days)\b"
     r"|언제|요일|몇\s*시|수거\s*일|배출\s*일|수거\s*시간|배출\s*시간"
     r"|什么时候|哪天|哪一天|几点|星期几|周几|什么时间"

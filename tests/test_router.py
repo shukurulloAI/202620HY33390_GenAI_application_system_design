@@ -45,6 +45,8 @@ def test_an_item_question_that_asks_when_gets_the_schedule_too():
     question that asks when, so no recorded answer changes."""
     asks_when = [
         "Where and when do I throw away a pizza box?", "When can I put out a pizza box?",
+        "Where when and how do I throw away a pizza box?", "Where, when and how: pizza box?",
+        "Pizza box - where/when?", "How and when do I throw away a pizza box?",
         "What day do I put out pizza boxes?", "피자 박스는 언제 버려요?", "피자 박스 배출 요일은?",
         "披萨盒什么时候扔?", "Khi nào tôi bỏ hộp pizza?", "Pitsa qutisini qachon tashlayman?",
         "Когда выбрасывать коробку от пиццы?"]
@@ -56,6 +58,7 @@ def test_an_item_question_that_asks_when_gets_the_schedule_too():
         assert checks["intent_repaired"] == "item -> both (question asks when)"
     for question in ("Where do I throw away a pizza box?",
                      "What do I do with chicken bones when I'm done eating?",   # a conjunction
+                     "Can I recycle a pizza box when it is greasy?",
                      "피자 박스는 어떻게 버려요?"):
         route = Route(valid=True, intent="item", item="pizza box", item_ko="피자 상자",
                       ko_query="피자 상자 분리배출")
