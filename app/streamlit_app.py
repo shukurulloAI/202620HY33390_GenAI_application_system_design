@@ -14,6 +14,8 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # run from any folder
 
+from app.ui import state  # noqa: E402
+from app.ui.state import NOT_SELECTED  # noqa: E402
 from rag import service  # noqa: E402
 
 st.set_page_config(
@@ -234,19 +236,19 @@ st.markdown(
         border-color: #6c9a55 !important;
     }
 
-    .stFormSubmitButton > button {
+    .stButton > button[data-testid="stBaseButton-primary"] {
         background: #438b32 !important;
         border: 1px solid #438b32 !important;
         border-radius: 9px !important;
         min-height: 48px;
     }
 
-    .stFormSubmitButton > button p {
+    .stButton > button[data-testid="stBaseButton-primary"] p {
         color: #ffffff !important;
         font-weight: 700;
     }
 
-    .stFormSubmitButton > button:hover {
+    .stButton > button[data-testid="stBaseButton-primary"]:hover {
         background: #367428 !important;
     }
 
@@ -320,7 +322,6 @@ st.markdown(
 
 WASTE_TYPE_NAMES = {"general": "General waste", "food": "Food waste",
                     "recycling": "Recycling", "bulky": "Bulky waste"}
-NOT_SELECTED = "Not selected"
 
 
 # ---------- SESSION STATE ----------
@@ -342,13 +343,17 @@ def md(text: str) -> str:
 # ---------- DATA FOR THE FORM ----------
 @st.cache_data(show_spinner=False)
 def location_tree():
-    tree = {}
-    for loc in service.locations():
-        areas = sorted({a for z in loc["zones"] for a in z["areas"]})
-        tree.setdefault(loc["province"], []).append(
-            {"district": loc["district"], "label": f"{loc['district_en']} ({loc['district']})"
-             + ("" if loc["has_data"] else " - no data"), "areas": areas})
-    return tree
+    return state.location_tree(service.locations())
+
+
+def reset_district():
+    """A new province: its own districts, nothing chosen yet."""
+    st.session_state.area_district = None
+    st.session_state.area_dong = NOT_SELECTED
+
+
+def reset_dong():
+    st.session_state.area_dong = NOT_SELECTED
 
 
 def ask(question, lang, province=None, district=None, dong=None):
@@ -438,45 +443,43 @@ for column, (label, text) in zip(st.columns(3), examples, strict=True):
 languages = service.languages()
 tree = location_tree()
 
+if "area_province" not in st.session_state:
+    st.session_state.area_province = "서울특별시" if "서울특별시" in tree else NOT_SELECTED
+
+# No st.form here: a form does not rerun when a selectbox changes, so the district list
+# would stay on the old province (a mismatched pair finds no data).
 with st.container(key="question_panel"):
     st.subheader("Ask about an item or a collection day")
-    with st.form("question_form", border=False):
-        question = st.text_area(
-            "Your question",
-            placeholder="For example: How should I dispose of a plastic bottle?",
-            height=105,
-            key="question_input",
-            max_chars=500,
-        )
-        lang = st.selectbox("Answer language", list(languages),
-                            format_func=lambda code: languages[code])
+    st.text_area(
+        "Your question",
+        placeholder="For example: How should I dispose of a plastic bottle?",
+        height=105,
+        key="question_input",
+        max_chars=500,
+    )
+    lang = st.selectbox("Answer language", list(languages),
+                        format_func=lambda code: languages[code])
 
-        with st.expander("Your area (for collection days)"):
-            st.caption("Optional. Choose your district, not your street address. "
-                       "You can also write it in the question.")
-            province = st.selectbox("Province / city", [NOT_SELECTED, *tree],
-                                    index=1 + list(tree).index("서울특별시")
-                                    if "서울특별시" in tree else 0)
-            districts = tree.get(province, [])
-            district = st.selectbox("District", [None, *districts],
-                                    format_func=lambda d: NOT_SELECTED if d is None
-                                    else d["label"])
-            areas = district["areas"] if district else []
-            dong = st.selectbox("Neighbourhood (동) or zone", [NOT_SELECTED, *areas])
-            st.caption("If the lists don't match after changing the province, "
-                       "press the button once to refresh them.")
+    with st.expander("Your area (for collection days)"):
+        st.caption("Optional. Choose your district, not your street address. "
+                   "You can also write it in the question.")
+        province = st.selectbox("Province / city", [NOT_SELECTED, *tree], key="area_province",
+                                on_change=reset_district)
+        districts = {d["district"]: d for d in tree.get(province, [])}
+        district = st.selectbox(
+            "District", [None, *districts], key="area_district", on_change=reset_dong,
+            format_func=lambda name: NOT_SELECTED if name is None else
+            districts[name]["label"] + ("" if districts[name]["has_data"] else " - no data"))
+        areas = districts[district]["areas"] if district in districts else []
+        dong = st.selectbox("Neighbourhood (동) or zone", [NOT_SELECTED, *areas],
+                            key="area_dong")
 
-        submitted = st.form_submit_button("Find disposal guidance", type="primary",
-                                          use_container_width=True)
-
-    if submitted:
-        if not question.strip():
+    if st.button("Find disposal guidance", type="primary", width="stretch"):
+        question = (st.session_state.question_input or "").strip()
+        if not question:
             st.warning("Please enter an item or a question.")
         else:
-            ask(question.strip(), lang,
-                province=None if province == NOT_SELECTED or district is None else province,
-                district=district["district"] if district else None,
-                dong=None if dong == NOT_SELECTED else dong)
+            ask(question, lang, **state.area_request(tree, province, district, dong))
 
 
 # ---------- RESULT PARTS ----------

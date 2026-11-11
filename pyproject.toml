@@ -22,4 +22,4 @@ select = ["E", "F", "I", "B", "UP"]
 "preprocess/parse_item_guides.py" = ["E501", "B905", "B023"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["eval", "experiments", "ingest", "preprocess", "rag", "tests"]
+known-first-party = ["app", "eval", "experiments", "ingest", "preprocess", "rag", "tests"]

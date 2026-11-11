@@ -5,7 +5,7 @@ import ast
 
 from rag import paths
 
-ABOVE_RAG = {"preprocess", "ingest", "eval", "experiments", "tests"}
+ABOVE_RAG = {"app", "preprocess", "ingest", "eval", "experiments", "tests"}
 
 
 def imported_packages(source: str) -> set[str]:
