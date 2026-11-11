@@ -28,3 +28,6 @@ data/processed/schedule_chunks.jsonl
 /notebooks/schedule_eda/waste_disposal_scrape.py
 /data/waste_disposal.db
 /data/image/
+.coverage
+coverage.xml
+htmlcov/
