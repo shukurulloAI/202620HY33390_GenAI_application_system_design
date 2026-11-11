@@ -25,6 +25,17 @@ service.pipeline_settings()   # models and Ollama digests once loaded (maintaine
 - **`ask()` never raises for a question.** If Ollama is down or something breaks, the answer is an
   abstention with a handoff, and the error goes to `traces/errors.jsonl`. An empty question
   raises `ValueError`, so check for it in the page.
+- **Except when it is busy.** When `MAX_QUEUE` questions (5; `RAG_MAX_QUEUE`) are already being
+  answered or waiting, `ask()` raises `service.Busy` rather than keep a sixth visitor waiting
+  for minutes. The page then asks them to try again in a minute and keeps their question. A
+  cached answer still comes.
+- **A repeated question is answered at once.** `ask()` keeps the last 512 answers in memory,
+  by the day in Korea, the question, the language and the area. Asked again on the same day,
+  the question gets the same answer without the pipeline, which would give that answer anyway
+  (temperature 0, a fixed seed, dates worked out per day). Each repeat is still a line in
+  `traces/`, with `cached_from` naming the trace of the answer, and the answer keeps that
+  `trace_id`, so a 👍/👎 on it reaches the full trace. A failed ("not available") answer is
+  never kept. The memory is empty again after a restart.
 - **The first question takes about 20 s**, because two models load (the page starts loading them
   in the background when it opens). After that a question takes 15–25 s. Pass `progress` to show
   what is happening. `ask()` is told `"queued"` when another question is being answered (one
@@ -93,9 +104,10 @@ for exists.
 |---|---|
 | `app/streamlit_app.py` | The layout (a wide page, question and answer side by side on a computer, stacked on a phone), the callbacks and the answer flow |
 | `app/ui/components.py` | One render function per part of an answer (bin, steps, zones, sources, handoff, clarify, feedback, glossary, maintainer panel) |
-| `app/ui/state.py` | Rules testable without a browser: session defaults, the starting language, the area check, the rate limit |
+| `app/ui/state.py` | Rules testable without a browser: session defaults, the starting language, the area check, the limits per tab and per visitor |
 | `app/ui/style.css` | The page width (1180 px at most), the app icon, the hero, the grey tiles and the bin card; everything else is the theme |
 | `.streamlit/config.toml` | The theme in Apple's style (system font, Apple blue, pill buttons) in light and dark, no usage statistics, no developer menu, no tracebacks for visitors |
+| `deploy/public_link.sh` | A public https link to the website on this Mac, through a Cloudflare tunnel ([below](#a-public-link-from-this-mac)) |
 
 ### What it does
 
@@ -113,8 +125,8 @@ for exists.
   guides…", "Checking your district's collection data…", "Writing the answer…", or "Another
   question is being answered. Yours is next…". Then the page reruns with the answer. No click can
   interrupt a question halfway, and a failure in the page itself gives the "not available"
-  answer with a handoff, never a page with disabled inputs. Each session can ask 8 questions in
-  5 minutes.
+  answer with a handoff, never a page with disabled inputs. Each browser tab can ask 8
+  questions in 5 minutes, and each visitor (one IP address, however many tabs) 20.
 - **ANSWER:** the bin card, `answer_text`, preparation steps, one card per zone (days, times, next
   dates, `day_check`, no-collection days, office, data date and a warning on data over a year
   old), the handoff card when part of the question failed, and one source card per citation with
@@ -204,6 +216,36 @@ docker compose --profile live up                     # the full system, Ollama i
   `RAG_OLLAMA_URL=http://host.docker.internal:11434`.
 - **One question at a time.** One local LLM answers one question at a time, so many visitors at
   once would need an LLM server that serves requests in parallel (REPORT §11). The page queues
-  questions and says so.
+  questions and says so, and turns a sixth waiting visitor away with "try again in a minute".
 - **CI.** It builds both images, and checks that the offline one turns healthy, serves the page
   and runs as a non-root user.
+
+### A public link from this Mac
+
+```bash
+brew install cloudflared                 # once
+deploy/public_link.sh                    # the full system: Ollama running, index built
+RAG_OFFLINE=1 deploy/public_link.sh      # the offline demo
+```
+
+The script prints a `https://<random words>.trycloudflare.com` link to share. Ctrl-C stops the
+website and the link.
+
+- **How it works.** The website runs on this Mac and listens on 127.0.0.1 only. It runs without
+  the maintainer panel and without reloading when a file changes. `cloudflared` connects out to
+  Cloudflare, which passes visitors to it. So the router needs no settings, no port is open,
+  and the link is https. Visitors cannot reach the website any other way.
+- **The link changes** every time the script starts. A new link can take a minute or two to
+  open everywhere, while its name spreads through DNS. A link that stays the same needs a
+  Cloudflare account and a domain (a named tunnel: `cloudflared tunnel create`).
+- **The Mac must stay on, online and awake.** The script stops idle sleep while it runs, but
+  closing the lid still puts the Mac to sleep. Quick tunnels are for demos and testing:
+  Cloudflare gives no uptime guarantee.
+- **Speed.** One local LLM answers one question at a time, in 15–25 s. A question someone has
+  already asked today comes back at once (the answer cache, above). At most 5 questions are
+  answered or waiting; the next visitor is asked to try again in a minute.
+- **Limits per visitor.** 20 questions in 5 minutes per IP address, and 8 per tab. The address
+  is the one Cloudflare saw: Streamlit's server takes it from the last X-Forwarded-For entry,
+  and trusts that header only from this Mac, so a visitor cannot pick another address.
+- **What visitors type** is kept in `traces/` on this Mac for 30 days, as the page says under the
+  question box.

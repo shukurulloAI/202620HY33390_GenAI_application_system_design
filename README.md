@@ -296,6 +296,7 @@ pip install -r requirements/app.txt
 streamlit run app/streamlit_app.py                   # live: Ollama running, index built
 RAG_OFFLINE=1 streamlit run app/streamlit_app.py     # recorded answers, no models
 docker compose --profile offline up                  # the same demo in Docker
+deploy/public_link.sh                                # a public https link to this Mac's website
 ```
 
 The page has the following:
@@ -307,6 +308,10 @@ The page has the following:
   violations in Chromium (`python -m pytest tests/e2e -m e2e`, after
   `pip install -r requirements/e2e.txt`).
 - **Maintainer panel.** `RAG_ADMIN=1` adds a panel with the models, digests and data-review dates.
+- **Public link.** `deploy/public_link.sh` (needs `brew install cloudflared`) shares the website
+  through a Cloudflare tunnel. A question already asked that day is answered at once from
+  memory. At most 5 questions are answered or waiting, and each visitor can ask 20 in
+  5 minutes ([docs/WEBSITE.md](docs/WEBSITE.md#a-public-link-from-this-mac)).
 
 What the page shows for each answer field, how it is tested and how to run it in Docker:
 [docs/WEBSITE.md](docs/WEBSITE.md).
