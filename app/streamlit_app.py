@@ -70,7 +70,7 @@ def t(key: str, **args) -> str:
     return page_text(key, lang, **args)
 
 
-st.set_page_config(page_title=t("page_title"), page_icon="♻️", layout="centered")
+st.set_page_config(page_title=t("page_title"), page_icon=ui.favicon_svg(), layout="centered")
 st.markdown(f"<style>{STYLE.read_text(encoding='utf-8')}</style>", unsafe_allow_html=True)
 st.html(f"<script>document.documentElement.lang = {json.dumps(lang)};</script>",
         unsafe_allow_javascript=True)                 # screen readers pick the right voice
@@ -132,7 +132,8 @@ with st.container(key="topbar"):
     with brand:
         ui.show_header(t)
     with chooser:
-        st.selectbox(t("language"), list(languages), key="lang", on_change=on_lang,
+        st.selectbox(f":material/language: {t('language')}", list(languages), key="lang",
+                 on_change=on_lang,
                      format_func=lambda code: languages[code], disabled=busy)
 
 health = service.health()
@@ -157,7 +158,7 @@ with st.container(key="question_panel", border=True):
     st.header(t("ask_heading"))
     st.text_area(t("question_label"), placeholder=t("question_placeholder"), height=105,
                  key="question_input", max_chars=service.MAX_QUESTION_CHARS, disabled=busy)
-    with st.expander(t("area_heading")):
+    with st.expander(f":material/location_on: {t('area_heading')}"):
         st.caption(t("area_help"))
         st.selectbox(t("province"), [None, *tree], key="area_province", disabled=busy,
                      on_change=reset_district,
@@ -178,7 +179,7 @@ with st.container(key="question_panel", border=True):
     st.caption(t("privacy", days=days) if days > 0 else t("privacy_kept"))
     if st.session_state.flash:
         key, args = st.session_state.flash
-        st.warning(t(key, **args))
+        st.warning(t(key, **args), icon=":material/info:")
         st.session_state.flash = None
 
 

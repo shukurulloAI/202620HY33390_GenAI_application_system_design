@@ -95,3 +95,32 @@ def test_css_uses_no_streamlit_internals():
     keys = {"st-key-topbar", "st-key-examples", "st-key-question_panel", "st-key-answer_panel",
             "st-key-bin_card"}
     assert set(re.findall(r"\.(st-[\w-]+)", css)) <= keys
+
+
+def used_icons() -> set[str]:
+    sources = [*(paths.ROOT / "app").rglob("*.py"), paths.ROOT / "rag" / "texts.py"]
+    return {name for path in sources
+            for name in re.findall(r":material/([a-z0-9_]+):", path.read_text(encoding="utf-8"))}
+
+
+def test_every_icon_is_a_material_symbol_streamlit_knows():
+    """One icon set on the whole page; a name Streamlit does not know fails at runtime."""
+    from streamlit.string_util import validate_material_icon
+    assert len(used_icons()) > 10
+    for name in used_icons():
+        validate_material_icon(f":material/{name}:")              # raises for an unknown name
+    from rag.texts import PAGE
+    for lang, labels in PAGE.items():
+        for key in ("ex1_icon", "ex2_icon", "ex3_icon"):
+            assert re.fullmatch(r":material/[a-z0-9_]+:", labels[key]), (lang, key)
+
+
+def test_the_app_icon_is_one_svg_drawing():
+    import xml.etree.ElementTree as ET
+
+    from app.ui import components
+    favicon = ET.fromstring(components.favicon_svg())               # well-formed, no download
+    assert favicon.tag.endswith("svg") and favicon.get("viewBox") == "0 0 64 64"
+    inline = ET.fromstring(components.icon_svg())
+    assert inline.get("aria-hidden") == "true"                     # decoration, not content
+    assert components.GRADIENT == tuple(css_tokens()[0][k] for k in ("icon-from", "icon-to"))

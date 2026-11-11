@@ -44,14 +44,48 @@ def waste_name(waste_type: str, t: T) -> str:
 
 # ---------------------------------------------------------------------------- header
 
-ICON = "♻︎"                    # the recycling sign as text, not the green emoji
 STATUSES = ("live", "offline", "down")
+# The icons are Material Symbols Rounded, the set Streamlit itself uses (":material/<name>:"),
+# so they look the same on every device and need no download. The app icon is that set's
+# "recycling" symbol as an SVG path (Apache License 2.0), drawn on a 960 x 960 grid.
+RECYCLING_PATH = (
+    "M389 334 457 221 398 123Q386 103 363.5 103Q341 103 329 123L252 252Q244 266 247.5 "
+    "282.5Q251 299 265 307L334 348Q348 356 364.5 352Q381 348 389 334ZM755 640 687 527Q678 "
+    "513 682.5 496.5Q687 480 701 472L771 432Q785 424 801 428Q817 432 825 446L869 519Q880 "
+    "536 881 557Q882 578 872 596Q862 616 842.5 628Q823 640 800 640ZM606 886 508 788Q496 776 "
+    "496 760Q496 744 508 732L606 634Q616 624 628 629Q640 634 640 648V680H830L772 796Q761 "
+    "816 742 828Q723 840 700 840H640V872Q640 886 628 891Q616 896 606 886ZM253 840Q233 840 "
+    "216.5 829.5Q200 819 192 802Q184 786 184.5 768.5Q185 751 194 736L228 680H360Q377 680 "
+    "388.5 691.5Q400 703 400 720V800Q400 817 388.5 828.5Q377 840 360 840ZM154 726 89 596Q80 "
+    "578 80.5 557.5Q81 537 92 519L108 492L81 476Q70 469 72 455.5Q74 442 87 439L220 406Q236 "
+    "402 250.5 410.5Q265 419 269 435L302 569Q305 582 294 590Q283 598 272 591L245 574ZM655 "
+    "374 522 341Q509 338 507.5 324.5Q506 311 517 304L544 288L419 80H560Q581 80 599.5 "
+    "90.5Q618 101 629 119L681 206L707 190Q718 183 729 191Q740 199 737 212L704 345Q700 361 "
+    "685.5 369.5Q671 378 655 374Z")
+GRADIENT = ("#34c759", "#0a84ff")    # Apple green to Apple blue, as in style.css
+
+
+def icon_svg() -> str:
+    """The recycling symbol in the current text colour (inside the app icon tile)."""
+    return ('<svg viewBox="0 0 960 960" focusable="false" aria-hidden="true">'
+            f'<path fill="currentColor" d="{RECYCLING_PATH}"/></svg>')
+
+
+def favicon_svg() -> str:
+    """The app icon for the browser tab: the symbol in white on the green-blue tile."""
+    start, end = GRADIENT
+    return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
+            '<defs><linearGradient id="g" x1="0.2" y1="0" x2="0.8" y2="1">'
+            f'<stop offset="0" stop-color="{start}"/><stop offset="1" stop-color="{end}"/>'
+            '</linearGradient></defs><rect width="64" height="64" rx="14" fill="url(#g)"/>'
+            '<svg x="11" y="11" width="42" height="42" viewBox="0 0 960 960">'
+            f'<path fill="#ffffff" d="{RECYCLING_PATH}"/></svg></svg>')
 
 
 def show_header(t: T) -> None:
     e = html.escape
     st.markdown(
-        f'<div class="brand"><div class="brand-icon" aria-hidden="true">{ICON}</div><div>'
+        f'<div class="brand"><div class="brand-icon">{icon_svg()}</div><div>'
         f'<div class="brand-name">{e(t("page_title"))}</div>'
         f'<div class="brand-note">{e(t("brand_note"))}</div></div></div>',
         unsafe_allow_html=True)
@@ -64,7 +98,7 @@ def show_hero(t: T, status: str) -> None:
         raise ValueError(f"unknown status {status!r}")
     e = html.escape
     st.markdown(
-        f'<div class="hero"><div class="hero-icon" aria-hidden="true">{ICON}</div>'
+        f'<div class="hero"><div class="hero-icon">{icon_svg()}</div>'
         f'<p class="hero-label">{e(t("hero_label"))}</p>'
         f'<h1 class="hero-title">{e(t("hero_title"))}</h1>'
         f'<p class="hero-description">{e(t("hero_text"))}</p>'
@@ -80,14 +114,14 @@ def show_bin(result: dict, t: T) -> None:
     if not result.get("bin"):
         return
     with st.container(border=True, key="bin_card"):
-        st.markdown(f"### {md(result.get('bin_en') or result['bin'])}")
+        st.markdown(f"### :material/delete: {md(result.get('bin_en') or result['bin'])}")
         st.caption(f"{md(result['bin'])} · {t('bin_note')}")
 
 
 def show_steps(result: dict, t: T) -> None:
     steps = result.get("how_to_prepare") or []
     if steps:
-        st.markdown(f"**{t('prepare')}**")
+        st.markdown(f":material/checklist: **{t('prepare')}**")
         st.markdown("\n".join(f"{i}. {md(step)}" for i, step in enumerate(steps, 1)))
 
 
@@ -110,7 +144,8 @@ def zone_lines(zone: dict, t: T) -> list[str]:
             line += " · " + t("zone_next", dates=md(", ".join(rule["next_dates"])))
         lines.append(line)
     for check in zone.get("day_check") or []:
-        lines.append(("✅ " if check.get("allowed") else "⛔ ") + md(check.get("text")))
+        lines.append((":green[:material/check_circle:] " if check.get("allowed")
+                      else ":red[:material/block:] ") + md(check.get("text")))
     if zone.get("no_collection"):
         lines.append(t("zone_no_collection", days=md(zone["no_collection"])))
     office = " ".join(str(x) for x in (zone.get("office"), zone.get("phone")) if x)
@@ -123,12 +158,12 @@ def show_schedule(result: dict, t: T) -> None:
     zones = (result.get("schedule") or {}).get("zones") or []
     if not zones:
         return
-    st.markdown(f"**{t('collection')}**")
+    st.markdown(f":material/calendar_month: **{t('collection')}**")
     for i, zone in enumerate(zones):
         with st.container(border=True, key=f"zone_{i}"):
             st.markdown("  \n".join(zone_lines(zone, t)))
             if zone.get("stale"):
-                st.warning(t("stale"))
+                st.warning(t("stale"), icon=":material/history:")
             st.caption(t("data_as_of", date=md(zone.get("data_date")) or t("date_unknown")))
 
 
@@ -136,7 +171,7 @@ def show_sources(result: dict, t: T) -> None:
     citations = result.get("citations") or []
     if not citations:
         return
-    st.markdown(f"**{t('sources')}**")
+    st.markdown(f":material/menu_book: **{t('sources')}**")
     for c in citations:
         source = str(c.get("source") or "")
         compact = source.replace(" ", "")
@@ -147,7 +182,7 @@ def show_sources(result: dict, t: T) -> None:
             t("source_data_date", date=c["data_date"]) if c.get("data_date")
             and str(c["data_date"]) not in source else None) if x)
         label = f"[{c.get('n')}] {source}" + (f" · {where}" if where else "")
-        with st.expander(md(label)):
+        with st.expander(f":material/description: {md(label)}"):   # icon=… would hide the arrow
             st.text(service.source_text(c)["text"])
 
 
@@ -156,7 +191,7 @@ def show_handoff(result: dict, t: T) -> None:
     if not handoff:
         return
     with st.container(border=True, key="handoff"):
-        st.markdown(f"**{t('ask_person')}**")
+        st.markdown(f":material/support_agent: **{t('ask_person')}**")
         contact = md(handoff.get("contact"))
         href = tel_href(handoff.get("phone"))
         if href:
@@ -176,7 +211,7 @@ def show_clarify(result: dict, t: T, on_pick: Callable[[str, str], None],
     clarify = result.get("clarify")
     if not clarify:
         return
-    st.info(md(clarify.get("question")))
+    st.info(md(clarify.get("question")), icon=":material/help:")
     options = (clarify.get("options") or [])[:MAX_CLARIFY_OPTIONS]
     if clarify.get("kind") == "district" or not options:
         st.caption(t("choose_district"))
@@ -202,7 +237,8 @@ def show_feedback(result: dict, t: T, disabled: bool = False) -> None:
         return
     st.text_input(t("comment"), key=f"comment_{trace_id}", max_chars=300, disabled=disabled)
     up, down, _ = st.columns([1, 1, 3])
-    for column, rating, label, icon in ((up, "up", t("yes"), "👍"), (down, "down", t("no"), "👎")):
+    for column, rating, label, icon in ((up, "up", t("yes"), ":material/thumb_up:"),
+                                       (down, "down", t("no"), ":material/thumb_down:")):
         column.button(label, icon=icon, key=f"{rating}_{trace_id}", width="stretch",
                       disabled=disabled, on_click=save_rating, args=(trace_id, rating))
 
@@ -228,10 +264,10 @@ def show_result(result: dict, request: dict, t: T, on_pick: Callable[[str, str],
             st.markdown(text)
             show_clarify(result, t, on_pick, disabled)
         elif status == "INSUFFICIENT_CONTEXT":
-            st.warning(text)
+            st.warning(text, icon=":material/info:")
             show_handoff(result, t)
         else:
-            st.info(text)
+            st.info(text, icon=":material/info:")
         for note in result.get("notes") or []:
             st.caption(md(note))
         show_feedback(result, t, disabled)
@@ -240,7 +276,7 @@ def show_result(result: dict, request: dict, t: T, on_pick: Callable[[str, str],
 # ---------------------------------------------------------------------------- page bottom
 
 def show_glossary(lang: str, t: T, languages: dict[str, str]) -> None:
-    with st.expander(t("glossary")):
+    with st.expander(f":material/translate: {t('glossary')}"):
         column = lang if lang in GLOSSARY_LANGS else "en"
         rows = [f"| {md(term['ko'])} | {md(term.get(column) or term['en'])} |"
                 for term in service.glossary()]
@@ -254,7 +290,7 @@ def show_maintainer(health: dict, reviews: list[dict], settings: dict | None) ->
     """RAG_ADMIN=1 only, in English: what runs, which data is due for review, where the
     numbers are. Open by itself when a data review is overdue."""
     overdue = [r for r in reviews if r["overdue"]]
-    with st.expander("Maintainer", expanded=bool(overdue)):
+    with st.expander(":material/build: Maintainer", expanded=bool(overdue)):
         mode = "offline demo" if health["offline"] else "live"
         st.markdown(md(f"Mode: {mode} · Ollama: {'up' if health['ollama'] else 'down'} · "
                        f"pipeline: {'loaded' if health['pipeline_loaded'] else 'not loaded yet'}"))

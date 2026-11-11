@@ -246,8 +246,9 @@ def placeholders(template: str) -> set[str]:
 # Every label, heading, caption and button of the website (app/), in the same six
 # languages and under the same rule: en and ko by the team, zh/vi/uz/ru drafts for a
 # native-speaker check. One language selector sets both the page and the answer language.
-# ex*_icon are not translations: each language's examples use its own recorded question
-# where docs/answer_examples.json has one, so the offline demo shows a real answer.
+# ex*_icon are Material Symbols names (Streamlit's icon set), not translations: each
+# language's examples use its own recorded question where docs/answer_examples.json has
+# one, so the offline demo shows a real answer.
 
 PAGE: dict[str, dict[str, str]] = {
     "en": {
@@ -258,9 +259,9 @@ PAGE: dict[str, dict[str, str]] = {
         "hero_text": "Find out how to prepare an item for disposal and check collection days in your neighbourhood, from the official Korean guides and district data.",
         "language": "Language",
         "examples_heading": "What are you throwing away?",
-        "ex1_icon": "🍕", "ex1_label": "Pizza box", "ex1_q": "Where do I throw away a pizza box?",
-        "ex2_icon": "🍗", "ex2_label": "Chicken bones", "ex2_q": "닭뼈는 음식물쓰레기인가요?",
-        "ex3_icon": "🥬", "ex3_label": "Food waste days", "ex3_q": "When can I put out food waste?",
+        "ex1_icon": ":material/local_pizza:", "ex1_label": "Pizza box", "ex1_q": "Where do I throw away a pizza box?",
+        "ex2_icon": ":material/restaurant:", "ex2_label": "Chicken bones", "ex2_q": "닭뼈는 음식물쓰레기인가요?",
+        "ex3_icon": ":material/calendar_month:", "ex3_label": "Food waste days", "ex3_q": "When can I put out food waste?",
         "ask_heading": "Ask about an item or a collection day",
         "question_label": "Your question",
         "question_placeholder": "For example: How should I dispose of a plastic bottle?",
@@ -331,9 +332,9 @@ PAGE: dict[str, dict[str, str]] = {
         "hero_text": "공식 분리배출 지침과 지역 자료를 바탕으로, 물건을 버리기 전에 준비하는 방법과 우리 동네 배출 요일을 알려 드립니다.",
         "language": "언어",
         "examples_heading": "무엇을 버리시나요?",
-        "ex1_icon": "🍕", "ex1_label": "피자 상자", "ex1_q": "피자 상자는 어디에 버리나요?",
-        "ex2_icon": "🍗", "ex2_label": "닭뼈", "ex2_q": "닭뼈는 음식물쓰레기인가요?",
-        "ex3_icon": "🥬", "ex3_label": "음식물 배출 요일", "ex3_q": "음식물쓰레기는 언제 버릴 수 있나요?",
+        "ex1_icon": ":material/local_pizza:", "ex1_label": "피자 상자", "ex1_q": "피자 상자는 어디에 버리나요?",
+        "ex2_icon": ":material/restaurant:", "ex2_label": "닭뼈", "ex2_q": "닭뼈는 음식물쓰레기인가요?",
+        "ex3_icon": ":material/calendar_month:", "ex3_label": "음식물 배출 요일", "ex3_q": "음식물쓰레기는 언제 버릴 수 있나요?",
         "ask_heading": "품목이나 배출 요일을 물어보세요",
         "question_label": "질문",
         "question_placeholder": "예: 플라스틱 병은 어떻게 버리나요?",
@@ -404,9 +405,9 @@ PAGE: dict[str, dict[str, str]] = {
         "hero_text": "根据韩国官方指南和地区数据，告诉您丢弃物品前如何处理，以及您所在社区的收集日期。",
         "language": "语言",
         "examples_heading": "您要扔什么？",
-        "ex1_icon": "🔋", "ex1_label": "废电池", "ex1_q": "用过的电池应该怎么扔？",
-        "ex2_icon": "🍗", "ex2_label": "鸡骨头", "ex2_q": "鸡骨头是厨余垃圾吗？",
-        "ex3_icon": "🥬", "ex3_label": "厨余垃圾收集日", "ex3_q": "什么时候可以扔厨余垃圾？",
+        "ex1_icon": ":material/battery_full:", "ex1_label": "废电池", "ex1_q": "用过的电池应该怎么扔？",
+        "ex2_icon": ":material/restaurant:", "ex2_label": "鸡骨头", "ex2_q": "鸡骨头是厨余垃圾吗？",
+        "ex3_icon": ":material/calendar_month:", "ex3_label": "厨余垃圾收集日", "ex3_q": "什么时候可以扔厨余垃圾？",
         "ask_heading": "询问物品或收集日期",
         "question_label": "您的问题",
         "question_placeholder": "例如：塑料瓶应该怎么扔？",
@@ -477,9 +478,9 @@ PAGE: dict[str, dict[str, str]] = {
         "hero_text": "Tìm cách chuẩn bị đồ vật trước khi bỏ và xem ngày thu gom ở khu phố của bạn, dựa trên hướng dẫn chính thức của Hàn Quốc và dữ liệu của quận.",
         "language": "Ngôn ngữ",
         "examples_heading": "Bạn muốn bỏ gì?",
-        "ex1_icon": "🍕", "ex1_label": "Hộp pizza", "ex1_q": "Hộp pizza bỏ ở đâu?",
-        "ex2_icon": "🍗", "ex2_label": "Xương gà", "ex2_q": "Xương gà có phải là rác thực phẩm không?",
-        "ex3_icon": "🥬", "ex3_label": "Ngày đổ rác", "ex3_q": "Khi nào tôi có thể đổ rác thực phẩm?",
+        "ex1_icon": ":material/local_pizza:", "ex1_label": "Hộp pizza", "ex1_q": "Hộp pizza bỏ ở đâu?",
+        "ex2_icon": ":material/restaurant:", "ex2_label": "Xương gà", "ex2_q": "Xương gà có phải là rác thực phẩm không?",
+        "ex3_icon": ":material/calendar_month:", "ex3_label": "Ngày đổ rác", "ex3_q": "Khi nào tôi có thể đổ rác thực phẩm?",
         "ask_heading": "Hỏi về một món đồ hoặc ngày thu gom",
         "question_label": "Câu hỏi của bạn",
         "question_placeholder": "Ví dụ: Chai nhựa nên bỏ như thế nào?",
@@ -550,9 +551,9 @@ PAGE: dict[str, dict[str, str]] = {
         "hero_text": "Rasmiy Koreya qo'llanmalari va tuman ma'lumotlari asosida buyumni tashlashga qanday tayyorlashni va mahallangizdagi yig'ish kunlarini bilib oling.",
         "language": "Til",
         "examples_heading": "Nimani tashlamoqchisiz?",
-        "ex1_icon": "🧴", "ex1_label": "Plastik shishalar", "ex1_q": "Plastik shishalarni qayerga tashlayman?",
-        "ex2_icon": "🍗", "ex2_label": "Tovuq suyaklari", "ex2_q": "Tovuq suyaklari oziq-ovqat chiqindisimi?",
-        "ex3_icon": "🥬", "ex3_label": "Chiqarish kunlari", "ex3_q": "Oziq-ovqat chiqindisini qachon chiqarsam bo'ladi?",
+        "ex1_icon": ":material/water_bottle:", "ex1_label": "Plastik shishalar", "ex1_q": "Plastik shishalarni qayerga tashlayman?",
+        "ex2_icon": ":material/restaurant:", "ex2_label": "Tovuq suyaklari", "ex2_q": "Tovuq suyaklari oziq-ovqat chiqindisimi?",
+        "ex3_icon": ":material/calendar_month:", "ex3_label": "Chiqarish kunlari", "ex3_q": "Oziq-ovqat chiqindisini qachon chiqarsam bo'ladi?",
         "ask_heading": "Buyum yoki yig'ish kuni haqida so'rang",
         "question_label": "Savolingiz",
         "question_placeholder": "Masalan: Plastik shishani qanday tashlash kerak?",
@@ -623,9 +624,9 @@ PAGE: dict[str, dict[str, str]] = {
         "hero_text": "Узнайте, как подготовить вещь к выбрасыванию и в какие дни вывозят мусор в вашем районе, по официальным корейским руководствам и районным данным.",
         "language": "Язык",
         "examples_heading": "Что вы выбрасываете?",
-        "ex1_icon": "🍾", "ex1_label": "Стеклянные бутылки", "ex1_q": "Куда выбрасывать стеклянные бутылки?",
-        "ex2_icon": "🍗", "ex2_label": "Куриные кости", "ex2_q": "Куриные кости — это пищевые отходы?",
-        "ex3_icon": "🥬", "ex3_label": "Дни вывоза еды", "ex3_q": "Когда можно выносить пищевые отходы?",
+        "ex1_icon": ":material/liquor:", "ex1_label": "Стеклянные бутылки", "ex1_q": "Куда выбрасывать стеклянные бутылки?",
+        "ex2_icon": ":material/restaurant:", "ex2_label": "Куриные кости", "ex2_q": "Куриные кости — это пищевые отходы?",
+        "ex3_icon": ":material/calendar_month:", "ex3_label": "Дни вывоза еды", "ex3_q": "Когда можно выносить пищевые отходы?",
         "ask_heading": "Спросите о вещи или дне вывоза",
         "question_label": "Ваш вопрос",
         "question_placeholder": "Например: как выбросить пластиковую бутылку?",

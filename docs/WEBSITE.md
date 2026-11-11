@@ -147,6 +147,11 @@ for exists.
   captions miss 4.5:1 on white.
 - **No Streamlit internals in the CSS** (no `data-testid`, no `!important`), so an upgrade cannot
   silently break the look.
+- **One icon set.** Every icon is a Material Symbol (`:material/<name>:`), the set Streamlit
+  bundles, so icons look the same on every device and load nothing from outside; emoji differ
+  between systems. The app icon and the browser-tab icon are one SVG drawing of the set's
+  recycling symbol. Icons are hidden from screen readers, so buttons are read by their
+  labels. A test checks that Streamlit knows every icon name.
 
 ### Testing the page
 

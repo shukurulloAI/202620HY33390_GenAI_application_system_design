@@ -1,6 +1,7 @@
 /*
  * Page styles beyond the theme in .streamlit/config.toml, loaded by app/streamlit_app.py,
- * in Apple's style: large tight headlines, an app icon, grey tiles, a blue accent.
+ * in Apple's style: large tight headlines, an app icon, grey tiles, a blue accent. Icons are
+ * Material Symbols, Streamlit's own set (app/ui/components.py).
  *
  * Only classes the page writes itself (brand, hero) and Streamlit's documented key
  * classes (.st-key-<key>): no internal data-testid selectors and no !important, so a
@@ -45,8 +46,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
-    line-height: 1;
+}
+
+.brand-icon svg {
+    width: 26px;
+    height: 26px;
 }
 
 .brand-name {
@@ -91,8 +95,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 58px;
-    line-height: 1;
+}
+
+.hero-icon svg {
+    width: 66px;
+    height: 66px;
 }
 
 .hero .hero-label {
@@ -190,7 +197,11 @@
         width: 76px;
         height: 76px;
         border-radius: 18px;
-        font-size: 46px;
+    }
+
+    .hero-icon svg {
+        width: 52px;
+        height: 52px;
     }
 
     .st-key-question_panel,
