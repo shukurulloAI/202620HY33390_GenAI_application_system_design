@@ -124,6 +124,17 @@ def location_tree(locations: list[dict]) -> dict[str, list[dict]]:
     return tree
 
 
+def dong_prompt(district: dict | None) -> str:
+    """The page label for the neighbourhood box with nothing chosen: "Choose a district
+    first", "Not needed: the answer covers the whole district" (a district with data but no
+    neighbourhoods), else "Not selected"."""
+    if district is None:
+        return "dong_pick_district"
+    if district["has_data"] and not district["areas"]:
+        return "dong_whole_district"
+    return "not_selected"
+
+
 def area_request(tree: dict[str, list[dict]], province: str | None, district: str | None,
                  dong: str | None) -> dict:
     """The area to send with a question. A district that is not in the province, or a

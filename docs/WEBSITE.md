@@ -119,7 +119,11 @@ for exists.
   province, district (all 224, marked "no data" where the table has none) and neighbourhood or
   zone, from `locations()`. The pickers are not in an `st.form`, so a new province refreshes the
   district list at once. A district that is not in the chosen province is never sent
-  (`state.area_request`).
+  (`state.area_request`). The neighbourhood box is empty and disabled in two cases, and it
+  says why: no district chosen yet ("Choose a district first"), or a district whose data has
+  no neighbourhoods, 39 of the 222 with data ("Not needed: the answer covers the whole
+  district"). Their data has one schedule for the district, or a few zones that the answer
+  lists one by one (포항시남구, 포항시북구).
 - **Asking.** The button only stores the request. The next run shows every input disabled and a
   status box that names the stage as it starts: "Reading your question…", "Searching the official
   guides…", "Checking your district's collection data…", "Writing the answer…", or "Another

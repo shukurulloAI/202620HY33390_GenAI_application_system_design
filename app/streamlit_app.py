@@ -186,8 +186,13 @@ with ask_column, st.container(key="question_panel", border=True):
             districts[name]["label"] + ("" if districts[name]["has_data"]
                                         else f" - {t('no_data')}"))
         chosen = districts.get(st.session_state.area_district)
-        st.selectbox(t("dong"), [None, *(chosen["areas"] if chosen else [])], key="area_dong",
-                     disabled=busy, format_func=lambda d: t("not_selected") if d is None else d)
+        areas = chosen["areas"] if chosen else []
+        # An empty list says why: no district yet, or a district whose data has no
+        # neighbourhoods (39 of 222: one schedule for the whole district, or zones the answer
+        # lists one by one), so there is nothing to choose.
+        unset = state.dong_prompt(chosen)
+        st.selectbox(t("dong"), [None, *areas], key="area_dong", disabled=busy or not areas,
+                     format_func=lambda d: t(unset) if d is None else d)
     st.button(t("submit"), type="primary", width="stretch", disabled=busy,
               on_click=submit_question)
     days = health["trace_retention_days"]

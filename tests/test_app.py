@@ -52,6 +52,25 @@ def test_feedback_is_saved(offline):
     assert '"rating": "up"' in saved and service.examples()[0]["answer"]["trace_id"] in saved
 
 
+def test_the_neighbourhood_box_says_why_it_has_nothing_to_choose(offline):
+    """A district whose data has no neighbourhoods (구로구: one schedule for the whole
+    district) used to show an empty list with "Not selected"."""
+    at = AppTest.from_file(APP, default_timeout=60)
+    at.run()
+    dong = at.selectbox(key="area_dong")
+    assert dong.disabled and dong.options == ["Choose a district first"]
+    at.selectbox(key="area_province").select("서울특별시").run()
+    at.selectbox(key="area_district").select("구로구").run()
+    dong = at.selectbox(key="area_dong")
+    assert dong.disabled and dong.options == ["Not needed: the answer covers the whole district"]
+    at.selectbox(key="area_district").select("강서구").run()
+    dong = at.selectbox(key="area_dong")
+    assert not dong.disabled and dong.options[0] == "Not selected" and "등촌2동" in dong.options
+    tree = state.location_tree(service.locations())
+    assert state.dong_prompt(next(d for d in tree["서울특별시"] if d["district"] == "도봉구")) \
+        == "not_selected"                                   # no data at all: not "not needed"
+
+
 def test_districts_follow_the_province(offline, monkeypatch):
     """Regression: inside st.form the district list stayed on Seoul after choosing 부산."""
     tree = state.location_tree(service.locations())
