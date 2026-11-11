@@ -1,0 +1,5 @@
+# Browser tests of the website (tests/e2e, docs/WEBSITE.md "Testing the page"):
+#   pip install -r requirements-e2e.txt && python -m playwright install chromium
+#   python -m pytest tests/e2e -m e2e      (needs only the offline set: no torch, no models)
+playwright==1.64.1
+axe-playwright-python==0.1.8          # bundles axe-core (accessibility rules, WCAG 2.x A/AA)

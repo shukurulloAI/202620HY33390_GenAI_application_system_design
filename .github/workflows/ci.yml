@@ -47,6 +47,38 @@ jobs:
       - name: Tests
         run: python -m pytest -q --cov=rag --cov=eval --cov-report=term
 
+  # The page in a real browser (Chromium) against the offline demo: axe-core finds no
+  # accessibility violations (light and dark, phone and desktop, all six languages); the
+  # area pickers, the language link, the question flow and the keyboard path work.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-e2e.txt
+
+      - name: Install (the offline demo needs no torch and no models)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -c requirements.lock streamlit pydantic tzdata pytest -r requirements-e2e.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Browser tests
+        run: E2E_SCREENSHOTS=e2e-screenshots python -m pytest tests/e2e -m e2e -q
+
+      - name: Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-screenshots
+          path: e2e-screenshots
+          if-no-files-found: ignore
+
   # The deployable website: the offline image must start, report healthy and serve the
   # page; the full image must build. compose.yaml must parse.
   docker:
