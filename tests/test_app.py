@@ -261,3 +261,36 @@ def test_rate_limit_window():
     assert all(state.allow_question(asked, t) for t in range(state.RATE_LIMIT))
     assert not state.allow_question(asked, state.RATE_LIMIT)
     assert state.allow_question(asked, state.RATE_WINDOW_S + 1)        # the oldest expired
+
+
+def test_maintainer_details_only_with_rag_admin(offline, monkeypatch):
+    from datetime import date
+    due = service.data_reviews(today=date(2026, 12, 15))           # schedule_csv overdue
+    monkeypatch.setattr(service, "data_reviews", lambda today=None: due)
+    visitor = AppTest.from_file(APP, default_timeout=60)
+    visitor.run()
+    text = " ".join(str(e.value) for e in [*visitor.caption, *visitor.markdown, *visitor.warning])
+    assert "overdue" not in text and "stewardship" not in text
+    assert not [e for e in visitor.expander if e.label == "Maintainer"]
+    from rag.texts import PAGE
+    from rag.tracing import TRACE_RETENTION_DAYS
+    privacy = PAGE["en"]["privacy"].format(days=TRACE_RETENTION_DAYS)
+    assert privacy in [c.value for c in visitor.caption]             # what is kept, how long
+
+    monkeypatch.setenv("RAG_ADMIN", "1")
+    admin = AppTest.from_file(APP, default_timeout=60)
+    admin.run()
+    panel = next(e for e in admin.expander if e.label == "Maintainer")
+    assert "schedule\\_csv" in panel.warning[0].value and not admin.exception
+
+
+def test_a_source_label_does_not_repeat_its_page_year_or_date(offline):
+    for question in ("Where do I throw away a pizza box?", "When can I put out food waste?"):
+        example = next(e for e in service.examples() if e["question"] == question)
+        at = submit(question)
+        labels = [e.label.replace("\\", "") for e in at.expander if e.label.startswith("\\[")]
+        assert len(labels) == len(example["answer"]["citations"])
+        for c, label in zip(example["answer"]["citations"], labels, strict=True):
+            assert label.count(f"p. {c['page']}") + label.count(f"p.{c['page']}") <= 1 \
+                if c.get("page") else True
+            assert label.count(c["data_date"]) == 1 if c.get("data_date") else True

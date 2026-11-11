@@ -180,3 +180,26 @@ def test_offline_demo_can_show_the_stages(offline, monkeypatch):
     monkeypatch.setattr(service, "OFFLINE_DELAY_S", 0.001)
     answer = service.ask(service.examples()[0]["question"], progress=seen.append)
     assert seen == list(service.OFFLINE_STAGES) and answer == service.examples()[0]["answer"]
+
+
+def test_health_asks_ollama_at_most_every_few_seconds(monkeypatch):
+    calls = []
+
+    class Response:
+        status = 200
+        def __enter__(self):
+            return self
+        def __exit__(self, *exc):
+            return False
+
+    monkeypatch.setattr(service, "urlopen", lambda url, timeout: calls.append(url) or Response())
+    service.configure(offline=False)                    # also forgets the last check
+    assert service.health()["ollama"] and service.health()["ollama"]
+    assert len(calls) == 1
+    monkeypatch.setattr(service, "HEALTH_TTL_S", 0.0)
+    service.health()
+    assert len(calls) == 2
+    assert service.pipeline_settings() is None          # nothing loaded, nothing loads
+    service.configure(offline=True)
+    assert not service.health()["ollama"] and len(calls) == 2
+    service.configure(offline=False)

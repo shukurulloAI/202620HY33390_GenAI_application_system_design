@@ -5,6 +5,7 @@ without a browser), components.py (render functions) and style.css.
 
     streamlit run app/streamlit_app.py                  # full system (Ollama + index)
     RAG_OFFLINE=1 streamlit run app/streamlit_app.py    # recorded answers, no models
+    RAG_ADMIN=1 streamlit run app/streamlit_app.py      # + a maintainer panel at the bottom
 
 A question is answered in two runs of this script: the button only stores the request
 (`pending`), and the next run shows every input disabled while it answers. So nothing the
@@ -12,6 +13,7 @@ user clicks can interrupt a question halfway.
 """
 import json
 import logging
+import os
 import sys
 import threading
 import time
@@ -33,6 +35,7 @@ except ImportError:                    # moved: then nothing is caught, as befor
     ScriptControlException = ()
 
 STYLE = Path(__file__).parent / "ui" / "style.css"
+ADMIN = os.environ.get("RAG_ADMIN") == "1"     # models, digests, data reviews: not for visitors
 log = logging.getLogger("app")
 
 
@@ -135,16 +138,8 @@ ui.show_hero(t)
 health = service.health()
 if health["ollama"] and not health["offline"]:
     start_warm_up()
-if health["offline"]:
-    status_line = t("status_offline")
-elif health["ollama"]:
-    status_line = t("status_live")
-else:
-    status_line = t("status_down")
-if health["data_review_overdue"]:
-    status_line += (" Data review overdue: " + ", ".join(health["data_review_overdue"])
-                    + " (data/manual/stewardship.json).")
-st.caption(status_line)
+st.caption(t("status_offline") if health["offline"] else
+           t("status_live") if health["ollama"] else t("status_down"))
 
 
 # ---------- EXAMPLE QUESTIONS ----------
@@ -179,6 +174,8 @@ with st.container(key="question_panel"):
                      disabled=busy, format_func=lambda d: t("not_selected") if d is None else d)
     st.button(t("submit"), type="primary", width="stretch", disabled=busy,
               on_click=submit_question)
+    days = health["trace_retention_days"]
+    st.caption(t("privacy", days=days) if days > 0 else t("privacy_kept"))
     if st.session_state.flash:
         key, args = st.session_state.flash
         st.warning(t(key, **args))
@@ -225,3 +222,5 @@ if st.session_state.result:
 st.write("")
 ui.show_glossary(lang, t, languages)
 st.caption(t("footer"))
+if ADMIN:
+    ui.show_maintainer(health, service.data_reviews(), service.pipeline_settings())

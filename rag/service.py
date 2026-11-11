@@ -12,6 +12,7 @@ The one module the website imports (PLAN.md §4.12; how to use it: docs/WEBSITE.
     service.glossary()                            # waste terms in six languages
     service.languages()                           # {"en": "English", "ko": "한국어", ...}
     service.health()                              # for a status line: offline? Ollama up?
+    service.pipeline_settings()                   # models and digests, once loaded (maintainers)
     service.warm_up()                             # load everything before the first question
 
 Every answer fits the contract in rag/contract.py (schema: docs/answer_schema.json). `ask()`
@@ -48,6 +49,7 @@ from rag.contract import check
 from rag.files import append_jsonl, read_jsonl
 from rag.handoff import korean_sentence
 from rag.texts import LANGUAGES, lang_or_default, text
+from rag.tracing import TRACE_RETENTION_DAYS
 
 log = logging.getLogger(__name__)
 
@@ -63,8 +65,11 @@ STAGES = ("queued", "loading", "route", "retrieve", "schedule", "write")
 OFFLINE_STAGES = ("route", "retrieve", "write")
 OFFLINE_DELAY_S = float(os.environ.get("RAG_OFFLINE_DELAY_S", "0"))
 
+HEALTH_TTL_S = 10.0             # the page asks on every click; Ollama is asked at most this often
+
 _lock = threading.Lock()
 _state: dict = {"pipeline": None, "offline": os.environ.get("RAG_OFFLINE") == "1"}
+_probe: dict = {"at": None, "up": False}          # the last Ollama check (monotonic time)
 
 
 def configure(*, offline: bool | None = None, pipeline=None) -> None:
@@ -73,6 +78,7 @@ def configure(*, offline: bool | None = None, pipeline=None) -> None:
         _state["offline"] = offline
     if pipeline is not None:
         _state["pipeline"] = pipeline
+    _probe["at"] = None                           # check Ollama again
 
 
 def _pipeline():
@@ -263,23 +269,47 @@ def data_reviews(today=None) -> list[dict]:
     """Each source with its owner and review dates (data/manual/stewardship.json);
     `overdue` once next_review has passed."""
     today = (today or datetime.now(UTC).date()).isoformat()
-    sources = json.loads(paths.STEWARDSHIP.read_text(encoding="utf-8"))["sources"]
+    sources = _stewardship(paths.STEWARDSHIP.stat().st_mtime_ns)["sources"]
     return [{"source": key, **record, "overdue": record["next_review"] < today}
             for key, record in sources.items()]
 
 
+@lru_cache(maxsize=2)
+def _stewardship(mtime_ns: int) -> dict:
+    """The parsed file, read again only when it changes."""
+    return json.loads(paths.STEWARDSHIP.read_text(encoding="utf-8"))
+
+
+def _ollama_up() -> bool:
+    """Whether Ollama answers, asked at most once per HEALTH_TTL_S."""
+    now = time.monotonic()
+    if _probe["at"] is not None and now - _probe["at"] < HEALTH_TTL_S:
+        return _probe["up"]
+    try:
+        with urlopen(f"{config.OLLAMA_URL}/api/tags", timeout=2) as response:
+            up = response.status == 200
+    except (URLError, OSError):
+        up = False
+    _probe.update(at=now, up=up)
+    return up
+
+
 def health() -> dict:
-    """What the page can show in a status line. Never loads the models."""
-    ollama = False
-    if not _state["offline"]:
-        try:
-            with urlopen(f"{config.OLLAMA_URL}/api/tags", timeout=2) as response:
-                ollama = response.status == 200
-        except (URLError, OSError):
-            ollama = False
-    return {"offline": _state["offline"], "ollama": ollama,
+    """What the page can show in a status line. Never loads the models; Ollama is asked at
+    most every HEALTH_TTL_S seconds, so calling this on every page run is cheap."""
+    return {"offline": _state["offline"],
+            "ollama": False if _state["offline"] else _ollama_up(),
             "pipeline_loaded": _state["pipeline"] is not None, "model": config.LLM_MODEL,
+            "trace_retention_days": TRACE_RETENTION_DAYS,
             "data_review_overdue": [r["source"] for r in data_reviews() if r["overdue"]]}
+
+
+def pipeline_settings() -> dict | None:
+    """The loaded pipeline's settings (models, Ollama digests, configuration), or None
+    before the first question or the warm-up. For the maintainer view; never loads."""
+    pipeline = _state["pipeline"]
+    settings = getattr(pipeline, "settings", None)
+    return settings() if callable(settings) else None
 
 
 def _now() -> str:

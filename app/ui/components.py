@@ -130,11 +130,12 @@ def show_sources(result: dict, t: T) -> None:
     for c in citations:
         source = str(c.get("source") or "")
         compact = source.replace(" ", "")
-        where = " · ".join(str(x) for x in (       # page and year only if the name lacks them
+        where = " · ".join(str(x) for x in (       # only what the name does not say
             t("source_page", page=c["page"]) if c.get("page")
             and f"p.{c['page']}" not in compact else None,
             c.get("year") if c.get("year") and str(c["year"]) not in source else None,
-            t("source_data_date", date=c["data_date"]) if c.get("data_date") else None) if x)
+            t("source_data_date", date=c["data_date"]) if c.get("data_date")
+            and str(c["data_date"]) not in source else None) if x)
         label = f"[{c.get('n')}] {source}" + (f" · {where}" if where else "")
         with st.expander(md(label)):
             st.text(service.source_text(c)["text"])
@@ -237,3 +238,32 @@ def show_glossary(lang: str, t: T, languages: dict[str, str]) -> None:
                     + "\n".join(rows))
         if column != "en":
             st.caption(t("glossary_unchecked"))
+
+
+def show_maintainer(health: dict, reviews: list[dict], settings: dict | None) -> None:
+    """RAG_ADMIN=1 only, in English: what runs, which data is due for review, where the
+    numbers are. Open by itself when a data review is overdue."""
+    overdue = [r for r in reviews if r["overdue"]]
+    with st.expander("Maintainer", expanded=bool(overdue)):
+        mode = "offline demo" if health["offline"] else "live"
+        st.markdown(md(f"Mode: {mode} · Ollama: {'up' if health['ollama'] else 'down'} · "
+                       f"pipeline: {'loaded' if health['pipeline_loaded'] else 'not loaded yet'}"))
+        if settings:
+            st.markdown(md(f"Generator {settings.get('llm')} ({settings.get('llm_digest')}) · "
+                           f"router digest {settings.get('router_digest')} · "
+                           f"pipeline {settings.get('pipeline_version')}"))
+        else:
+            st.markdown(md(f"Generator {health['model']} (digests once the pipeline loads)"))
+        days = health["trace_retention_days"]
+        st.markdown(md(f"Traces, errors and feedback are kept {days} days" if days
+                       else "Traces, errors and feedback are kept without a limit"))
+        if overdue:
+            st.warning(md("Data review overdue: " + ", ".join(
+                f"{r['source']} (due {r['next_review']}, {r['owner']})" for r in overdue)
+                + ". See data/manual/stewardship.json."))
+        rows = [f"| {md(r['source'])} | {md(r['owner'])} | {md(r['last_reviewed'])} | "
+                f"{md(r['next_review'])}{' ⚠' if r['overdue'] else ''} |" for r in reviews]
+        st.markdown("| Source | Owner | Last reviewed | Next review |\n|---|---|---|---|\n"
+                    + "\n".join(rows))
+        st.code("python -m eval.ops_summary --days 7    # live use: requests, latency, feedback",
+                language="bash")
