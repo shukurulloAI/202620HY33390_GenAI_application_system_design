@@ -41,7 +41,7 @@ from rag.generate import ANSWER_SCHEMA, build_prompt, parse_answer
 from rag.handoff import message
 from rag.llm_client import LLMClient, make_client, model_digest
 from rag.retrieve import ItemRetriever
-from rag.router import Route, Router
+from rag.router import ASKS_WHEN, Route, Router
 from rag.schedule_text import ScheduleWriter, merge_schedule
 from rag.schedule_tool import (
     DAY_EN,
@@ -297,7 +297,8 @@ class Pipeline:
                   timings: dict[str, float]) -> tuple[dict, list]:
         """LLM call 2, then parsing, citation check and validation."""
         asked = request.question
-        if self.cfg.schedule_text == "code" and gate.schedule != "skip":
+        if (self.cfg.schedule_text == "code" and gate.schedule != "skip"
+                and route.checks.get("intent_repaired") != ASKS_WHEN):
             asked = item_only_question(request.question, route)
 
         def prompt_with(evidence_text: str) -> tuple[str, str]:
@@ -377,7 +378,11 @@ def day_asked(question: str, routed: str | None) -> str | None:
 
 def item_only_question(question: str, route: Route) -> str:
     """What the generator is asked when the schedule part is not its job. Asked the whole
-    question with no schedule to read, it copied the days of its few-shot example."""
+    question with no schedule to read, it copied the days of its few-shot example.
+    Not for an item question that also asks when (router.ASKS_WHEN): the router used to send
+    it as an item question, and this wording lost its bin ("…pizza box? Answer only about the
+    item…" -> a second bin in the text -> downgraded), so it keeps the question it had then.
+    Any day it states is still checked against the rows (none), so none can be invented."""
     rule = "Answer only about the item. Do not mention days or times."
     return f"How do I throw away {route.item}? {rule}" if route.item else f"{question}\n({rule})"
 

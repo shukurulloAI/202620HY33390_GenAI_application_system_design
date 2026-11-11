@@ -37,3 +37,27 @@ def test_a_mixed_script_rewrite_is_repaired_once():
     route = Router(Scripted(), repair=True).route(question)
     assert route.item_ko == "폐식용유" and route.checks["rewrite_usable"]
     assert "repaired" in route.checks["repair"] and len(route.attempts) == 2
+
+
+def test_an_item_question_that_asks_when_gets_the_schedule_too():
+    """qwen2.5:7b routes "Where and when do I throw away a pizza box?" as item only, so the
+    collection days were never looked up. None of the recorded dev or test routes is an item
+    question that asks when, so no recorded answer changes."""
+    asks_when = [
+        "Where and when do I throw away a pizza box?", "When can I put out a pizza box?",
+        "What day do I put out pizza boxes?", "피자 박스는 언제 버려요?", "피자 박스 배출 요일은?",
+        "披萨盒什么时候扔?", "Khi nào tôi bỏ hộp pizza?", "Pitsa qutisini qachon tashlayman?",
+        "Когда выбрасывать коробку от пиццы?"]
+    for question in asks_when:
+        route = Route(valid=True, intent="item", item="pizza box", item_ko="피자 상자",
+                      ko_query="피자 상자 분리배출")
+        checks = check_invariants(question, route)
+        assert route.intent == "both", question
+        assert checks["intent_repaired"] == "item -> both (question asks when)"
+    for question in ("Where do I throw away a pizza box?",
+                     "What do I do with chicken bones when I'm done eating?",   # a conjunction
+                     "피자 박스는 어떻게 버려요?"):
+        route = Route(valid=True, intent="item", item="pizza box", item_ko="피자 상자",
+                      ko_query="피자 상자 분리배출")
+        assert "intent_repaired" not in check_invariants(question, route)
+        assert route.intent == "item", question

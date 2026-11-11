@@ -212,6 +212,7 @@ Input: the raw user question (+ previous turn if any). Output (JSON, validated):
 ```
 
 - **Invariants:** the item, location, waste type, time ("tonight", "Sunday") and negation ("is it NOT recyclable?") must survive the rewrite. A validation step checks that every entity in the original question appears in the JSON.
+- **Intent repairs** (code, after the router): a schedule question that names an item becomes `both`. So does an item question that asks when ("Where and when do I throw away a pizza box?", `언제`, `khi nào`, `когда`…), which `qwen2.5:7b` routed as item only, so the days were never looked up. The generator is then asked the question as before, and code adds the schedule. None of the 620 recorded dev and test routes is an item question that asks when, so no recorded answer changes (`tests/test_router.py`).
 - **Fallbacks:**
   - Invalid JSON → retry once, then search with the original question.
   - Unknown district → ask the user.

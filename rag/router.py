@@ -17,6 +17,9 @@ invents an entity silently changes the question:
                             in Korean or romanised (otherwise dropped: never guess a place)
     dong_in_question        same for the neighbourhood
     negation_kept           a negation word in the question -> negation = true
+    asks_when               an item question that also asks when ("Where and when do I
+                            throw away a pizza box?") -> intent both, so the schedule is
+                            looked up too (qwen2.5:7b routes these as item only)
 
 Fallbacks: invalid JSON -> one retry -> route.valid = False, and the pipeline searches
 with the original question only (Phase 1 behaviour). The original question is always
@@ -58,6 +61,22 @@ ROUTER_SCHEMA = {
 
 _NEGATION = re.compile(
     r"\bnot\b|n't\b|\bnever\b|안\s|않|아니|아닌|못\s|\bemas\b|\bне\b|không|不|没",
+    re.IGNORECASE)
+
+ASKS_WHEN = "item -> both (question asks when)"     # route.checks["intent_repaired"]
+
+# The question asks when (a day or a time), in the six languages. English "when" counts only
+# as a question word ("When is...", "where and when", "when to..."), not as a conjunction
+# ("...chicken bones when I'm done").
+_WHEN = re.compile(
+    r"^\W*when\b|\b(?:and|or)\s+when\b|\bwhen\s+(?:is|are|do|does|can|could|should|will|"
+    r"to|must)\b|\bwhat\s+(?:day|days|time)\b|\bwhich\s+(?:day|days)\b"
+    r"|\bcollection\s+(?:day|days|time|times)\b|\bpick[- ]?up\s+(?:day|days)\b"
+    r"|언제|요일|몇\s*시|수거\s*일|배출\s*일|수거\s*시간|배출\s*시간"
+    r"|什么时候|哪天|哪一天|几点|星期几|周几|什么时间"
+    r"|khi\s+nào|lúc\s+nào|ngày\s+nào|mấy\s+giờ|thứ\s+mấy"
+    r"|\bqachon\b|qaysi\s+kun|soat\s+nechada"
+    r"|когда|в\s+какой\s+день|в\s+какие\s+дни|во\s+сколько|по\s+каким\s+дням",
     re.IGNORECASE)
 
 
@@ -206,6 +225,9 @@ def check_invariants(question: str, route: Route) -> dict:
             bool(words) and all(w in q for w in words))
     if route.intent == "schedule" and route.item:      # an item was named -> both parts
         checks["intent_repaired"] = "schedule -> both (question names an item)"
+        route.intent = "both"
+    if route.intent == "item" and _WHEN.search(question):   # ...and it asks when -> both
+        checks["intent_repaired"] = ASKS_WHEN
         route.intent = "both"
     if route.intent != "out_of_scope" and (route.item_ko or route.ko_query):
         # The rewrite is only used for search if it is really Korean (qwen2.5:7b sometimes
