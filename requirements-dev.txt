@@ -2,4 +2,4 @@
 -r requirements.txt
 pytest>=8.0
 pytest-cov>=5               # python -m pytest --cov=rag --cov=eval
-ruff>=0.6
+ruff==0.17.4                # pinned: a new ruff release can add rules and fail CI
