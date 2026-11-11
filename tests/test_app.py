@@ -78,7 +78,7 @@ def test_a_mismatched_area_is_not_sent():
     seoul = next(d for d in tree["서울특별시"] if d["areas"])
     none = {"province": None, "district": None, "dong": None}
     assert state.area_request(tree, "부산광역시", "강남구", None) == none
-    assert state.area_request(tree, state.NOT_SELECTED, None, None) == none
+    assert state.area_request(tree, None, None, None) == none
     assert state.area_request(tree, "서울특별시", seoul["district"], "없는동") == {
         "province": "서울특별시", "district": seoul["district"], "dong": None}
     assert state.area_request(tree, "서울특별시", seoul["district"], seoul["areas"][0])["dong"] \
@@ -97,3 +97,92 @@ def test_a_clarify_option_asks_again(offline, monkeypatch):
     assert not at.exception
     assert asked[-1]["question"] == example["question"]
     assert option.split(" ")[-1] in (asked[-1]["district"], asked[-1]["dong"])
+
+
+def test_the_page_speaks_every_language(offline):
+    from rag.texts import PAGE
+    for lang in service.languages():
+        at = AppTest.from_file(APP, default_timeout=60)
+        at.query_params["lang"] = lang                       # a shared link: ?lang=ru
+        at.run()
+        assert not at.exception, (lang, at.exception)
+        assert at.session_state["lang"] == lang
+        assert PAGE[lang]["submit"] in [b.label for b in at.button]
+        assert at.text_area(key="question_input").label == PAGE[lang]["question_label"]
+
+
+def test_choosing_a_language_switches_page_and_answer(offline, monkeypatch):
+    from rag.texts import PAGE
+    asked = []
+    monkeypatch.setattr(service, "ask", lambda **kw: asked.append(kw) or service.examples()[0]
+                        ["answer"])
+    at = AppTest.from_file(APP, default_timeout=60)
+    at.run()
+    at.selectbox(key="lang").select("ru").run()
+    assert at.query_params["lang"] in ("ru", ["ru"])
+    at.text_area(key="question_input").input("Куда выбрасывать батарейки?")
+    next(b for b in at.button if b.label == PAGE["ru"]["submit"]).click().run()
+    assert asked[-1]["lang"] == "ru"
+    assert at.subheader[-1].value == PAGE["ru"]["title_ANSWER"]
+
+
+def test_locale_picks_the_starting_language():
+    offered = service.languages()
+    assert state.pick_lang(None, "ru-RU", offered) == "ru"
+    assert state.pick_lang(None, "uz_Latn_UZ", offered) == "uz"
+    assert state.pick_lang("vi", "ru-RU", offered) == "vi"            # the link wins
+    assert state.pick_lang("xx", "ja-JP", offered) == "en"
+    assert state.pick_lang(None, None, offered) == "en"
+
+
+HOSTILE = '<img src=x onerror=alert(1)>[click](javascript:alert(1)) $x$ :red[red]'
+
+
+def hostile_answer() -> dict:
+    """A recorded schedule answer with markup in every field the page shows."""
+    import copy
+    example = next(e for e in service.examples()
+                   if e["answer"]["status"] == "ANSWER" and e["answer"].get("schedule"))
+    a = copy.deepcopy(example["answer"])
+    a.update(bin="종량제봉투" + HOSTILE, bin_en="bag" + HOSTILE, answer_text="text" + HOSTILE,
+             how_to_prepare=["step" + HOSTILE], notes=["note" + HOSTILE])
+    for zone in a["schedule"]["zones"]:
+        zone.update(district=HOSTILE, zone=HOSTILE, place=HOSTILE, office=HOSTILE,
+                    phone="02-" + HOSTILE, areas=[HOSTILE], no_collection=HOSTILE,
+                    data_date=HOSTILE, day_check=[{"allowed": True, "text": HOSTILE}])
+        for rule in zone["by_type"].values():
+            rule.update(days=HOSTILE, start=HOSTILE, next_dates=[HOSTILE])
+    for c in a["citations"]:
+        c.update(source=HOSTILE, text=HOSTILE)
+    a["handoff"] = {"office": HOSTILE, "phone": "02-" + HOSTILE, "contact": HOSTILE,
+                    "korean_sentence": HOSTILE, "checked": [HOSTILE]}
+    a["clarify"] = {"kind": "names", "question": HOSTILE, "options": [HOSTILE]}
+    return a
+
+
+def test_markup_in_an_answer_stays_text(offline, monkeypatch):
+    import re
+    monkeypatch.setattr(service, "ask", lambda **kw: hostile_answer())
+    at = submit("anything")
+    assert not at.exception
+    shown = [*at.markdown, *at.caption, *at.warning, *at.info, *at.subheader]
+    assert any("onerror" in str(m.value) for m in shown)           # it is on the page...
+    for m in at.markdown:
+        if getattr(m, "allow_html", False):                         # ...never as raw HTML
+            assert "onerror" not in m.value and "javascript" not in m.value
+    for m in shown:                                                 # ...and only escaped
+        value = str(m.value)
+        assert not re.search(r"(?<!\\)<img", value), value
+        assert not re.search(r"(?<!\\)\]\(javascript", value), value
+        assert not re.search(r"(?<!\\):red\[", value), value
+        assert "tel:" not in value or re.search(r"\(tel:\+?\d+\)", value), value
+
+
+def test_text_helpers():
+    from app.ui.components import md, tel_href
+    assert md("a*b_c [x](y) <b> $1 :red[z]\nnext") == \
+        r"a\*b\_c \[x\]\(y\) \<b\> \$1 \:red\[z\]" + "  \nnext"
+    assert md(None) == "" and md(3) == "3"
+    assert tel_href("02-2286-5114") == "tel:0222865114"
+    assert tel_href("+82 2 123") == "tel:+822123"
+    assert tel_href("call the office") is None and tel_href(None) is None
