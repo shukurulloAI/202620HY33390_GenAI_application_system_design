@@ -94,8 +94,12 @@ class OllamaClient:
         raise AssertionError("unreachable")
 
     def warm_up(self) -> None:
-        """Load the model into memory now (one token), so the first question is not slow."""
-        body = {"model": self.model_id, "prompt": "", "keep_alive": config.OLLAMA_KEEP_ALIVE}
+        """Load the model into memory now, so the first question is not slow. With the same
+        num_ctx as the questions: Ollama reloads a model whose context size changes, so a
+        warm-up at its default (4096) loaded the weights twice and replaced a model already
+        loaded for the questions (measured with Ollama 0.12.6)."""
+        body = {"model": self.model_id, "prompt": "", "keep_alive": config.OLLAMA_KEEP_ALIVE,
+                "options": {"num_ctx": self.num_ctx}}
         self._post(urllib.request.Request(
             f"{self.url}/api/generate", data=json.dumps(body).encode("utf-8"),
             headers={"Content-Type": "application/json"}))

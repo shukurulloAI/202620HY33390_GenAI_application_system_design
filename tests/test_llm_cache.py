@@ -90,3 +90,14 @@ def test_ollama_does_not_retry_a_timeout_or_an_unknown_model(monkeypatch):
         with pytest.raises(RuntimeError):
             client.generate(system="s", prompt="p")
         assert len(calls) == 1
+
+
+def test_warm_up_loads_the_model_as_the_questions_use_it(monkeypatch):
+    """Ollama reloads a model when the context size of a request differs from the loaded one:
+    a warm-up without num_ctx loaded it at Ollama's default and the first question reloaded it."""
+    client, calls = _client(monkeypatch, [{"response": ""}, OK])
+    client.warm_up()
+    client.generate(system="s", prompt="p")
+    warm, question = calls
+    assert warm["options"]["num_ctx"] == question["options"]["num_ctx"] == client.num_ctx
+    assert warm["keep_alive"] == question["keep_alive"]
