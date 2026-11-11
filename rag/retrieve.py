@@ -273,22 +273,33 @@ class Reranker:
         self.model = CrossEncoder(model_id, revision=revision, max_length=max_length)
         self.name = f"rerank:{model_id.split('/')[-1]}@{revision[:8]}"
 
-    def score(self, query: str, candidates: list[Candidate]) -> list[float]:
-        raw = self.model.predict([(query, c.text) for c in candidates],
-                                 batch_size=16, show_progress_bar=False)
-        scores = [float(s) for s in raw]
+    def score_pairs(self, pairs: list[tuple[str, str]]) -> list[float]:
+        """One model call for all (query, text) pairs. Pairs go to the model sorted by
+        length, so each batch pads to similar lengths, and come back in the given order."""
+        order = sorted(range(len(pairs)), key=lambda i: len(pairs[i][0]) + len(pairs[i][1]))
+        raw = self.model.predict([pairs[i] for i in order], batch_size=16,
+                                 show_progress_bar=False)
+        scores = [0.0] * len(pairs)
+        for i, s in zip(order, raw, strict=True):
+            scores[i] = float(s)
         if any(s < 0 or s > 1 for s in scores):          # logits -> probability
             scores = [1 / (1 + math.exp(-s)) for s in scores]
         return scores
 
+    def score(self, query: str, candidates: list[Candidate]) -> list[float]:
+        return self.score_pairs([(query, c.text) for c in candidates])
+
     def rerank(self, queries: list[str], candidates: list[Candidate]) -> list[Candidate]:
-        """Several queries (original + rewrite): each chunk keeps its best score, so a
-        bad rewrite cannot push the right chunk down."""
-        if not candidates:
-            return []
-        per_query = [self.score(q, candidates) for q in queries if q]
-        scores = [max(col) for col in zip(*per_query, strict=True)]
-        order = sorted(range(len(candidates)), key=lambda i: -scores[i])
+        """Several queries (original + rewrite + item names): each chunk keeps its best
+        score, so a bad rewrite cannot push the right chunk down. A query given twice is
+        scored once (the item name often equals its Korean rewrite)."""
+        distinct = list(dict.fromkeys(q for q in queries if q))
+        if not candidates or not distinct:
+            return list(candidates)
+        n = len(candidates)
+        flat = self.score_pairs([(q, c.text) for q in distinct for c in candidates])
+        scores = [max(flat[j * n + i] for j in range(len(distinct))) for i in range(n)]
+        order = sorted(range(n), key=lambda i: -scores[i])
         return [_copy(candidates[i], rank=r, rerank_score=round(scores[i], 4),
                       ranks={**candidates[i].ranks, "fused": candidates[i].rank})
                 for r, i in enumerate(order, 1)]

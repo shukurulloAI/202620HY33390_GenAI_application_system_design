@@ -1,8 +1,6 @@
 """Rank fusion and tokenisers (no index needed)."""
 from __future__ import annotations
 
-import pytest
-
 from rag.retrieve import rrf, tokenize_bigram
 from tests.helpers import cand
 
@@ -45,7 +43,6 @@ def test_rerank_keeps_the_best_score_over_queries():
     assert out[0].ranks["fused"] == 1 and out[1].rank == 2
 
 
-@pytest.mark.xfail(strict=True, reason="the reranker scores a repeated query again (fixed next)")
 def test_rerank_scores_each_distinct_pair_once():
     reranker = fake_reranker({("q", "A"): 0.5})
     out = reranker.rerank(["q", "q", ""], [cand("a", 1, text="A")])
