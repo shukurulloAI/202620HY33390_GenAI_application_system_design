@@ -4,6 +4,8 @@ The one module the website imports (PLAN.md §4.12; how to use it: docs/WEBSITE.
     from rag import service
     answer = service.ask("Where do I throw away a pizza box?", lang="en",
                          district="성동구", dong="행당1동")
+    service.ask(question, progress=print)        # "queued", "loading", "route", "retrieve",
+                                                 # "schedule", "write" as they happen
     service.save_feedback(answer["trace_id"], "up", "clear answer")
     service.source_text(answer["citations"][0])   # full text for a source card
     service.locations()                           # dropdowns: province -> district -> areas
@@ -22,6 +24,7 @@ demonstrated without Ollama or the 4.6 GB of models.
 
 The pipeline loads two models (about 20 s), so it is created once, on the first question,
 and shared. Questions are answered one at a time: the local LLM serves one request anyway.
+A question that has to wait for another one is told "queued" through `progress`.
 """
 from __future__ import annotations
 
@@ -31,6 +34,7 @@ import os
 import threading
 import traceback
 import uuid
+from collections.abc import Callable
 from datetime import UTC, datetime
 from functools import lru_cache
 from urllib.error import URLError
@@ -104,10 +108,11 @@ def warm_up() -> None:
 
 def ask(question: str, lang: str | None = None, district: str | None = None,
         dong: str | None = None, province: str | None = None,
-        waste_type: str | None = None) -> dict:
+        waste_type: str | None = None, progress: Callable[[str], None] | None = None) -> dict:
     """Answer one question. `lang` is the answer language (one of languages(); None = the
     question's). `district`/`dong`/`province` come from the dropdowns, in Korean
-    (locations()); empty means the user did not choose, and the question is read instead."""
+    (locations()); empty means the user did not choose, and the question is read instead.
+    `progress(stage)` is told what is happening; an error in it is logged, never raised."""
     question = (question or "").strip()[:MAX_QUESTION_CHARS]
     lang = lang if lang in LANGUAGES else None
     district, dong, province = (district or None), (dong or None), (province or None)
@@ -115,10 +120,19 @@ def ask(question: str, lang: str | None = None, district: str | None = None,
         raise ValueError("empty question")
     if _state["offline"]:
         return offline_answer(question, lang)
+    report = _reporter(progress)
     try:
-        with _lock:
+        if not _lock.acquire(blocking=False):    # another visitor's question is running
+            report("queued")
+            _lock.acquire()
+        try:
+            if _state["pipeline"] is None:
+                report("loading")
+            extra = {"progress": report} if progress else {}
             answer = _pipeline().answer(question, lang=lang, district=district, dong=dong,
-                                        province=province, waste_type=waste_type)
+                                        province=province, waste_type=waste_type, **extra)
+        finally:
+            _lock.release()
         return check(answer)
     except Exception as exc:                     # the user gets a handoff, never a traceback
         trace_id = str(uuid.uuid4())
@@ -127,6 +141,18 @@ def ask(question: str, lang: str | None = None, district: str | None = None,
                                    "lang": lang, "district": district, "dong": dong,
                                    "error": repr(exc), "traceback": traceback.format_exc()})
         return unavailable_answer(lang, district, dong, trace_id)
+
+
+def _reporter(progress: Callable[[str], None] | None) -> Callable[[str], None]:
+    """`progress` wrapped so that a broken status box cannot break an answer."""
+    def report(stage: str) -> None:
+        if progress is None:
+            return
+        try:
+            progress(stage)
+        except Exception:
+            log.exception("progress callback failed at %s", stage)
+    return report
 
 
 def unavailable_answer(lang: str | None, district: str | None, dong: str | None,

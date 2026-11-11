@@ -93,3 +93,70 @@ def test_every_source_has_an_owner_and_a_review_date():
     later = service.data_reviews(today=date(2026, 12, 15))
     assert {r["source"] for r in later if r["overdue"]} == {"schedule_csv", "glossary"}
     assert "data_review_overdue" in service.health()
+
+
+def wait_until(condition, seconds=5.0):
+    import time
+    deadline = time.monotonic() + seconds
+    while not condition():
+        assert time.monotonic() < deadline, "timed out"
+        time.sleep(0.005)
+
+
+class Recording:
+    """A pipeline stand-in that reports two stages and returns a recorded answer."""
+    def __init__(self, gate=None):
+        self.gate = gate
+
+    def answer(self, question, progress=None, **kwargs):
+        if self.gate:
+            self.gate.wait(5)
+        for stage in ("route", "write"):
+            progress and progress(stage)
+        return service.examples()[0]["answer"]
+
+
+def test_progress_reports_the_stages_and_a_wait_in_the_queue():
+    import threading
+    seen = []
+    service.configure(offline=False, pipeline=Recording())
+    try:
+        service.ask("Where do batteries go?", progress=seen.append)
+        assert seen == ["route", "write"]
+
+        release = threading.Event()
+        service.configure(pipeline=Recording(gate=release))
+        first = threading.Thread(target=service.ask, args=("first question",))
+        first.start()
+        wait_until(service._lock.locked)
+        waiting = []
+        second = threading.Thread(target=service.ask, args=("second question",),
+                                  kwargs={"progress": waiting.append})
+        second.start()
+        wait_until(lambda: waiting)
+        assert waiting == ["queued"]                     # told before it waits
+        release.set()
+        first.join(5)
+        second.join(5)
+        assert waiting == ["queued", "route", "write"] and not service._lock.locked()
+    finally:
+        service._state["pipeline"] = None
+
+
+def test_a_broken_progress_callback_does_not_break_the_answer():
+    def broken(stage):
+        raise RuntimeError("the status box is gone")
+    service.configure(offline=False, pipeline=Recording())
+    try:
+        answer = service.ask("Where do batteries go?", progress=broken)
+    finally:
+        service._state["pipeline"] = None
+    assert answer["status"] == service.examples()[0]["answer"]["status"]
+
+
+def test_loading_is_reported_before_the_pipeline_is_built(monkeypatch):
+    seen = []
+    monkeypatch.setattr(service, "_pipeline", lambda: Recording())
+    service.configure(offline=False)
+    service.ask("Where do batteries go?", progress=seen.append)
+    assert seen == ["loading", "route", "write"]

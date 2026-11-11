@@ -15,6 +15,9 @@ End-to-end pipeline (PLAN.md §4). Every stage is set by one PipelineConfig
 
 Interfaces for teammates:
     Pipeline().answer(question, lang, district, dong)  -> answer dict   (website)
+    Pipeline().answer(..., progress=callback)          -> callback("route"), ("retrieve"),
+                                                          ("schedule"), ("write") as each
+                                                          stage starts (the page's status box)
     Pipeline().run_case(case)                          -> full trace    (evaluation)
     Pipeline(config.BASELINE)                          -> the Phase 1 system
 
@@ -24,6 +27,7 @@ from __future__ import annotations
 
 import time
 import uuid
+from collections.abc import Callable
 from dataclasses import asdict, dataclass, replace
 from datetime import UTC, datetime
 
@@ -53,6 +57,15 @@ from rag.tracing import timed, write_trace
 from rag.validate import days_mentioned, validate
 
 PIPELINE_VERSION = "v2"
+ITEM_INTENTS = ("item", "both", "unknown")
+
+# Told the name of each stage as it starts. It only observes: the answer is the same with or
+# without it (tests/test_pipeline_run.py).
+Progress = Callable[[str], None]
+
+
+def _no_progress(stage: str) -> None:
+    pass
 
 
 @dataclass(frozen=True)
@@ -129,9 +142,10 @@ class Pipeline:
     # ------------------------------------------------------------------ entry points
     def answer(self, question: str, lang: str | None = None, district: str | None = None,
                dong: str | None = None, province: str | None = None,
-               waste_type: str | None = None) -> dict:
+               waste_type: str | None = None, *, progress: Progress | None = None) -> dict:
         """Website interface (PLAN.md §4.12): returns only the answer dict."""
-        return self.run(question, lang, district, province, dong, waste_type)["answer"]
+        return self.run(question, lang, district, province, dong, waste_type,
+                        progress=progress)["answer"]
 
     def run_case(self, case: dict, stop_after_retrieval: bool = False) -> dict:
         """Evaluation interface (PLAN.md §7.1): case -> full trace (+ case_id)."""
@@ -144,8 +158,10 @@ class Pipeline:
 
     def run(self, question: str, lang: str | None = None, district: str | None = None,
             province: str | None = None, dong: str | None = None,
-            waste_type: str | None = None, stop_after_retrieval: bool = False) -> dict:
+            waste_type: str | None = None, stop_after_retrieval: bool = False, *,
+            progress: Progress | None = None) -> dict:
         """Full trace for one request (everything needed to explain the answer)."""
+        emit = progress or _no_progress
         start = time.perf_counter()
         timings: dict[str, float] = {}
         trace = {"trace_id": str(uuid.uuid4()),
@@ -154,12 +170,15 @@ class Pipeline:
                  "input": {"question": question, "lang": lang, "district": district,
                            "province": province, "dong": dong, "waste_type": waste_type}}
 
+        emit("route")
         with timed(timings, "route_s"):
             route = self.route(question)
         trace["route"] = route.to_trace()
         request = Request.resolve(question, route, lang, district, province, dong, waste_type)
         trace["resolved"] = request.to_trace()
 
+        if request.intent in ITEM_INTENTS:
+            emit("retrieve")
         selected = self._retrieve_items(request, route, trace, timings)
         if self.evidence_hook is not None:
             selected = self.evidence_hook(selected, trace)
@@ -169,6 +188,8 @@ class Pipeline:
             trace["timings"] = timings
             return trace
 
+        if self._wants_schedule(request):
+            emit("schedule")
         with timed(timings, "schedule_s"):
             schedule, day = self._lookup_schedule(request, route, trace)
 
@@ -178,6 +199,8 @@ class Pipeline:
         trace["gate"] = gate.to_trace()
         rows = schedule.rows[:MAX_ZONES] if gate.schedule == "answer" else []
 
+        if gate.status == "ANSWER":
+            emit("write")
         draft, evidence = self._draft(request, route, gate, selected, rows, day, trace, timings)
         if self._code_writes_schedule(rows):
             draft, evidence, gate = self._add_schedule_text(draft, evidence, request, gate, rows,
@@ -221,7 +244,7 @@ class Pipeline:
     def _retrieve_items(self, request: Request, route: Route, trace: dict,
                         timings: dict[str, float]) -> list:
         candidates, selected = [], []
-        if request.intent in ("item", "both", "unknown"):
+        if request.intent in ITEM_INTENTS:
             candidates, selected, record = self.retrieve(request.question, route)
             timings.update(record.pop("timings"))
             trace["retrieval"] = record
@@ -231,9 +254,7 @@ class Pipeline:
 
     def _lookup_schedule(self, request: Request, route: Route,
                          trace: dict) -> tuple[ScheduleResult | None, DayRef | None]:
-        wanted = request.intent in ("schedule", "both") or (
-            request.intent == "unknown" and request.district)
-        if not wanted or not request.district:
+        if not self._wants_schedule(request):
             return None, None
         if self.schedule_search:                       # E4 only
             usable = route.valid and route.checks.get("rewrite_usable", False)
@@ -245,6 +266,12 @@ class Pipeline:
                                             request.waste_type)
         trace["schedule"] = schedule.to_trace()
         return schedule, resolve_day(request.day_ref)
+
+    @staticmethod
+    def _wants_schedule(request: Request) -> bool:
+        wanted = request.intent in ("schedule", "both") or (
+            request.intent == "unknown" and request.district)
+        return bool(wanted and request.district)
 
     def _code_writes_schedule(self, rows: list[ScheduleRow]) -> bool:
         """With schedule_text = code the generator never sees days, times or places."""

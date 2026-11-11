@@ -127,3 +127,29 @@ def test_combined_question_keeps_the_schedule_when_the_item_fails(table):
     assert trace["gate"]["item"] == "abstain"
     assert "schedule answered alone" in trace["gate"]["reasons"][-1]
     assert {e["kind"] for e in trace["evidence"]} == {"schedule"}
+
+
+def without_id(answer):
+    return {k: v for k, v in answer.items() if k != "trace_id"}
+
+
+@pytest.mark.parametrize(("replies", "score", "inputs", "stages"), [
+    ([COMBINED_ROUTE, EGG_ANSWER], 0.9,
+     {"question": COMBINED_Q, "lang": "ko", "district": "성동구", "dong": "행당동"},
+     ["route", "retrieve", "schedule", "write"]),
+    ([EGG_ROUTE, EGG_ANSWER], 0.9, {}, ["route", "retrieve", "write"]),
+    ([EGG_ROUTE], 0.05, {}, ["route", "retrieve"]),                    # abstains: nothing to write
+    ([route(intent="out_of_scope")], 0.9, {"question": "What is the capital of France?"},
+     ["route"]),
+])
+def test_progress_names_each_stage_and_changes_nothing(table, replies, score, inputs, stages):
+    plain, _, _ = run(replies, [candidate(EGGSHELL, score)], table, **inputs)
+    seen = []
+    llm = ScriptedLLM(*replies)
+    pipeline = Pipeline(PipelineConfig(), llm, write_traces=False,
+                        retriever=FakeRetriever([candidate(EGGSHELL, score)]), schedule=table,
+                        counter=CharCounter())
+    question = inputs.pop("question", "Where do eggshells go?")
+    observed = pipeline.answer(question, **inputs, progress=seen.append)
+    assert seen == stages
+    assert without_id(observed) == without_id(plain["answer"])
