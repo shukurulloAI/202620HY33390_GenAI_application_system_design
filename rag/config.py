@@ -48,6 +48,8 @@ RERANKER_MAX_LENGTH = 512
 
 # --- Generator (Ollama) ---
 OLLAMA_URL = "http://localhost:11434"
+OLLAMA_KEEP_ALIVE = "30m"          # keep the model loaded between questions (Ollama default: 5m)
+OLLAMA_RETRY_WAIT_S = 2.0          # one retry after a connection error (e.g. Ollama restarting)
 # qwen2.5:7b chosen over the course default qwen2.5:3b after the Phase 1 probes:
 # 3b contradicted its evidence on pizza box / chicken bones (7/12 vs 9/12 correct,
 # see docs/PHASE1_NOTES.md). 3b stays available with --set llm_model.

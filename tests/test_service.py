@@ -63,3 +63,22 @@ def test_page_data():
     card = service.source_text({"kind": "item", "ref": service.examples()[0]["answer"]
                                 ["citations"][0]["ref"]})
     assert card["text"]
+
+
+def test_warm_up_loads_each_model_once_and_never_raises(monkeypatch):
+    from types import SimpleNamespace
+    loaded = []
+    llm = SimpleNamespace(warm_up=lambda: loaded.append("llm"))
+    pipeline = SimpleNamespace(llm=llm, router=SimpleNamespace(llm=llm))   # one shared model
+    service.configure(offline=False, pipeline=pipeline)
+    try:
+        service.warm_up()
+        assert loaded == ["llm"]
+
+        def broken():
+            raise ConnectionError("ollama is down")
+        service.configure(pipeline=SimpleNamespace(llm=SimpleNamespace(warm_up=broken),
+                                                   router=None))
+        service.warm_up()                                # logged, not raised
+    finally:
+        service._state["pipeline"] = None

@@ -10,6 +10,7 @@ The one module the website imports (PLAN.md §4.12; how to use it: docs/WEBSITE.
     service.glossary()                            # waste terms in six languages
     service.languages()                           # {"en": "English", "ko": "한국어", ...}
     service.health()                              # for a status line: offline? Ollama up?
+    service.warm_up()                             # load everything before the first question
 
 Every answer fits the contract in rag/contract.py (schema: docs/answer_schema.json). `ask()`
 never raises for a question: if the pipeline fails (Ollama down, a bug), the user gets an
@@ -65,8 +66,38 @@ def configure(*, offline: bool | None = None, pipeline=None) -> None:
 def _pipeline():
     if _state["pipeline"] is None:
         from rag.pipeline import Pipeline  # heavy imports only when really needed
+        _prune_logs()
         _state["pipeline"] = Pipeline()
     return _state["pipeline"]
+
+
+def _prune_logs() -> None:
+    """Retention for traces, errors and feedback (rag/tracing.py), once per process."""
+    from rag.tracing import prune
+    try:
+        removed = prune()
+    except OSError:
+        log.exception("could not prune traces")
+        return
+    if removed["trace_files"] or removed["records"]:
+        log.info("pruned old traces: %s", removed)
+
+
+def warm_up() -> None:
+    """Build the pipeline (embedding model, reranker, indexes) and load the Ollama models,
+    so the first question is not the slow one. Meant for a background thread at app start;
+    a failure is logged, never raised (ask() still works, only slower)."""
+    if _state["offline"]:
+        return
+    try:
+        with _lock:
+            pipeline = _pipeline()
+        clients = [pipeline.llm, pipeline.router.llm if pipeline.router else None]
+        for client in {id(c): c for c in clients if c is not None}.values():
+            if hasattr(client, "warm_up"):
+                client.warm_up()
+    except Exception:
+        log.exception("warm-up failed")
 
 
 # ---------------------------------------------------------------------------- questions

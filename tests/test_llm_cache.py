@@ -31,3 +31,62 @@ def test_a_different_request_or_sampling_is_not_replayed(tmp_path):
     llm.generate(system="s", prompt="p", temperature=0.7)
     llm.generate(system="s", prompt="p", temperature=0.7)
     assert inner.calls == 5 and llm.cached == 0
+
+
+class _Response:
+    def __init__(self, body):
+        self.body = body
+
+    def read(self):
+        return self.body
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+def _client(monkeypatch, outcomes):
+    """An OllamaClient whose HTTP calls return/raise `outcomes` in order."""
+    import json
+    import urllib.request
+
+    from rag import config
+    from rag.llm_client import OllamaClient
+    calls = []
+
+    def urlopen(request, timeout=None):
+        calls.append(json.loads(request.data))
+        outcome = outcomes.pop(0)
+        if isinstance(outcome, Exception):
+            raise outcome
+        return _Response(json.dumps(outcome).encode())
+
+    monkeypatch.setattr(urllib.request, "urlopen", urlopen)
+    monkeypatch.setattr(config, "OLLAMA_RETRY_WAIT_S", 0)
+    return OllamaClient("qwen2.5:7b"), calls
+
+
+OK = {"message": {"content": "{}"}, "prompt_eval_count": 3, "eval_count": 2,
+      "done_reason": "stop"}
+
+
+def test_ollama_retries_once_after_a_connection_error(monkeypatch):
+    import urllib.error
+    client, calls = _client(monkeypatch, [urllib.error.URLError(ConnectionRefusedError()), OK])
+    result = client.generate(system="s", prompt="p")
+    assert result.text == "{}" and len(calls) == 2
+    assert calls[0]["keep_alive"] == "30m"
+
+
+def test_ollama_does_not_retry_a_timeout_or_an_unknown_model(monkeypatch):
+    import urllib.error
+
+    import pytest
+    for error in (urllib.error.URLError(TimeoutError()),
+                  urllib.error.HTTPError("u", 404, "not found", None, None)):
+        client, calls = _client(monkeypatch, [error, OK])
+        with pytest.raises(RuntimeError):
+            client.generate(system="s", prompt="p")
+        assert len(calls) == 1

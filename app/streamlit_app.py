@@ -7,6 +7,7 @@ system through rag/service.py (docs/WEBSITE.md).
 """
 import re
 import sys
+import threading
 from pathlib import Path
 
 import streamlit as st
@@ -398,7 +399,16 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+@st.cache_resource(show_spinner=False)
+def start_warm_up() -> bool:
+    """Once per server process: load the models in the background while the page renders."""
+    threading.Thread(target=service.warm_up, name="warm-up", daemon=True).start()
+    return True
+
+
 health = service.health()
+if health["ollama"] and not health["offline"]:
+    start_warm_up()
 if health["offline"]:
     status_line = "Offline demo: answers are recorded examples, not live answers."
 elif health["ollama"]:

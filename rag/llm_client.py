@@ -54,6 +54,7 @@ class OllamaClient:
             "messages": [{"role": "system", "content": system},
                          {"role": "user", "content": prompt}],
             "stream": False,
+            "keep_alive": config.OLLAMA_KEEP_ALIVE,
             "options": {"temperature": temperature, "seed": seed,
                         "num_predict": max_tokens, "num_ctx": self.num_ctx},
         }
@@ -63,13 +64,7 @@ class OllamaClient:
             f"{self.url}/api/chat", data=json.dumps(body).encode("utf-8"),
             headers={"Content-Type": "application/json"})
         start = time.perf_counter()
-        try:
-            with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
-                data = json.loads(response.read())
-        except urllib.error.URLError as exc:
-            raise RuntimeError(
-                f"Ollama is not reachable at {self.url}. Start it with `ollama serve` "
-                f"and run `ollama pull {self.model_id}`.") from exc
+        data = self._post(request)
         return LLMResult(
             text=data["message"]["content"],
             model_id=self.model_id,
@@ -78,6 +73,32 @@ class OllamaClient:
             latency_s=round(time.perf_counter() - start, 3),
             done_reason=data.get("done_reason"),
         )
+
+
+    def _post(self, request: urllib.request.Request) -> dict:
+        """One retry after a connection error or a server error (5xx). No retry after a
+        timeout (it would only time out again, twice as late) or a client error such as an
+        unknown model (404)."""
+        for attempt in (1, 2):
+            try:
+                with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
+                    return json.loads(response.read())
+            except urllib.error.URLError as exc:
+                timed_out = isinstance(getattr(exc, "reason", None), TimeoutError)
+                client_error = isinstance(exc, urllib.error.HTTPError) and exc.code < 500
+                if attempt == 2 or timed_out or client_error:
+                    raise RuntimeError(
+                        f"Ollama is not reachable at {self.url}. Start it with `ollama serve` "
+                        f"and run `ollama pull {self.model_id}`.") from exc
+                time.sleep(config.OLLAMA_RETRY_WAIT_S)
+        raise AssertionError("unreachable")
+
+    def warm_up(self) -> None:
+        """Load the model into memory now (one token), so the first question is not slow."""
+        body = {"model": self.model_id, "prompt": "", "keep_alive": config.OLLAMA_KEEP_ALIVE}
+        self._post(urllib.request.Request(
+            f"{self.url}/api/generate", data=json.dumps(body).encode("utf-8"),
+            headers={"Content-Type": "application/json"}))
 
 
 class FixtureClient:
