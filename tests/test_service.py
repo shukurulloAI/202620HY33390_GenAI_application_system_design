@@ -160,3 +160,23 @@ def test_loading_is_reported_before_the_pipeline_is_built(monkeypatch):
     service.configure(offline=False)
     service.ask("Where do batteries go?", progress=seen.append)
     assert seen == ["loading", "route", "write"]
+
+    seen.clear()                                  # the warm-up holds the lock: still loading
+    with service._lock:
+        import threading
+        waiting = threading.Thread(target=service.ask, args=("q",),
+                                   kwargs={"progress": seen.append})
+        waiting.start()
+        wait_until(lambda: seen)
+        assert seen == ["loading"]
+    waiting.join(5)
+    assert seen == ["loading", "loading", "route", "write"]
+
+
+def test_offline_demo_can_show_the_stages(offline, monkeypatch):
+    seen = []
+    service.ask("anything", progress=seen.append)
+    assert seen == []                                    # no delay set: instant, no stages
+    monkeypatch.setattr(service, "OFFLINE_DELAY_S", 0.001)
+    answer = service.ask(service.examples()[0]["question"], progress=seen.append)
+    assert seen == list(service.OFFLINE_STAGES) and answer == service.examples()[0]["answer"]

@@ -11,8 +11,11 @@ A question is answered in two runs of this script: the button only stores the re
 user clicks can interrupt a question halfway.
 """
 import json
+import logging
 import sys
 import threading
+import time
+import uuid
 from pathlib import Path
 
 import streamlit as st
@@ -24,7 +27,13 @@ from app.ui import state  # noqa: E402
 from rag import service  # noqa: E402
 from rag.texts import page_text  # noqa: E402
 
+try:                                   # what Streamlit raises to rerun or stop a script
+    from streamlit.runtime.scriptrunner_utils.exceptions import ScriptControlException
+except ImportError:                    # moved: then nothing is caught, as before
+    ScriptControlException = ()
+
 STYLE = Path(__file__).parent / "ui" / "style.css"
+log = logging.getLogger("app")
 
 
 @st.cache_data(show_spinner=False)
@@ -47,6 +56,11 @@ if "lang" not in st.session_state:
                                             languages)
 lang = st.session_state.lang
 busy = st.session_state.pending is not None
+# The question box loses what was typed when it is disabled right after "type, then click"
+# (Streamlit 1.67 in Chromium; tests/e2e). Setting it through the session state makes
+# Streamlit send the text to the browser again.
+if (shown := st.session_state.pop("show_question", None)) is not None:
+    st.session_state.question_input = shown
 
 
 def t(key: str, **args) -> str:
@@ -78,14 +92,23 @@ def reset_dong() -> None:
     st.session_state.area_dong = None
 
 
+def queue(request: dict) -> None:
+    """Answer `request` on the next run, unless this session is over the rate limit."""
+    if state.allow_question(st.session_state.asked, time.time()):
+        st.session_state.pending = request
+    else:
+        st.session_state.flash = ("rate_limited", state.rate_message_args())
+
+
 def submit_question() -> None:
     s = st.session_state
     question = (s.question_input or "").strip()
     if not question:
-        s.flash = "empty_question"
+        s.flash = ("empty_question", {})
         return
-    s.pending = {"question": question, "lang": s.lang,
-                 **state.area_request(tree, s.area_province, s.area_district, s.area_dong)}
+    s.question_input = question                      # shown while it is answered
+    queue({"question": question, "lang": s.lang,
+           **state.area_request(tree, s.area_province, s.area_district, s.area_dong)})
 
 
 def pick_option(kind: str, option: str) -> None:
@@ -97,8 +120,7 @@ def pick_option(kind: str, option: str) -> None:
     else:
         area = {"province": request.get("province"), "district": request.get("district"),
                 "dong": option}
-    st.session_state.pending = {"question": request["question"], "lang": request["lang"],
-                                **area}
+    queue({"question": request["question"], "lang": request["lang"], **area})
 
 
 # ---------- HEADER ----------
@@ -158,21 +180,42 @@ with st.container(key="question_panel"):
     st.button(t("submit"), type="primary", width="stretch", disabled=busy,
               on_click=submit_question)
     if st.session_state.flash:
-        st.warning(t(st.session_state.flash))
+        key, args = st.session_state.flash
+        st.warning(t(key, **args))
         st.session_state.flash = None
 
 
 # ---------- ANSWER ----------
-if busy:
+def answer_pending() -> None:
+    """Answer the stored request in a status box that names each stage as it starts
+    ("Reading your question…", "Searching the official guides…", or "Another question is
+    being answered. Yours is next…"), then rerun with the inputs enabled again.
+    service.ask() never raises for a question; if this code fails anyway, the user gets the
+    same "not available" answer with a handoff, never a page with every input disabled."""
     request = st.session_state.pending
-    first = not health["pipeline_loaded"] and not health["offline"]
-    with st.spinner(t("stage_loading") if first else t("stage_retrieve")):
+    with st.status(t("stage_route")) as box:
+        def update(stage: str) -> None:
+            try:
+                box.update(label=t(f"stage_{stage}"))
+            except ScriptControlException:   # a rerun request: this run reruns anyway
+                pass
         try:
-            result = service.ask(**request)
+            result = service.ask(**request, progress=update)
+        except Exception:
+            trace_id = str(uuid.uuid4())
+            log.exception("answering failed in the page (%s)", trace_id)
+            result = service.unavailable_answer(request.get("lang"), request.get("district"),
+                                                request.get("dong"), trace_id)
         finally:
             st.session_state.pending = None
+        box.update(label=t("stage_done"), state="complete")
     st.session_state.request, st.session_state.result = request, result
-    st.rerun()                                         # inputs enabled again
+    st.session_state.show_question = request["question"]
+    st.rerun()
+
+
+if busy:
+    answer_pending()
 
 if st.session_state.result:
     ui.show_result(st.session_state.result, st.session_state.request or {}, t, pick_option)

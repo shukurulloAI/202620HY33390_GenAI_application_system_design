@@ -62,6 +62,7 @@ ITEM_INTENTS = ("item", "both", "unknown")
 # Told the name of each stage as it starts. It only observes: the answer is the same with or
 # without it (tests/test_pipeline_run.py).
 Progress = Callable[[str], None]
+STAGES = ("route", "retrieve", "schedule", "write")
 
 
 def _no_progress(stage: str) -> None:

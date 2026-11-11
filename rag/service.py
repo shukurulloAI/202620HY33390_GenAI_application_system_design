@@ -20,7 +20,9 @@ abstention with a handoff and the error goes to traces/errors.jsonl.
 
 Offline mode (environment variable RAG_OFFLINE=1, or `configure(offline=True)`): `ask()`
 returns the recorded answers in docs/answer_examples.json, so the page can be built and
-demonstrated without Ollama or the 4.6 GB of models.
+demonstrated without Ollama or the 4.6 GB of models. RAG_OFFLINE_DELAY_S=1 makes each
+recorded answer take that long per stage and report the stages, as the live system does
+(for demos and the browser tests of the progress box).
 
 The pipeline loads two models (about 20 s), so it is created once, on the first question,
 and shared. Questions are answered one at a time: the local LLM serves one request anyway.
@@ -32,6 +34,7 @@ import json
 import logging
 import os
 import threading
+import time
 import traceback
 import uuid
 from collections.abc import Callable
@@ -54,6 +57,11 @@ ERRORS_FILE = paths.TRACE_DIR / "errors.jsonl"
 MAX_QUESTION_CHARS = 500
 MAX_COMMENT_CHARS = 1000
 RATINGS = ("up", "down")
+
+# What `progress` can be told: the wait, then the pipeline's stages (rag/pipeline.py STAGES).
+STAGES = ("queued", "loading", "route", "retrieve", "schedule", "write")
+OFFLINE_STAGES = ("route", "retrieve", "write")
+OFFLINE_DELAY_S = float(os.environ.get("RAG_OFFLINE_DELAY_S", "0"))
 
 _lock = threading.Lock()
 _state: dict = {"pipeline": None, "offline": os.environ.get("RAG_OFFLINE") == "1"}
@@ -118,12 +126,16 @@ def ask(question: str, lang: str | None = None, district: str | None = None,
     district, dong, province = (district or None), (dong or None), (province or None)
     if not question:
         raise ValueError("empty question")
-    if _state["offline"]:
-        return offline_answer(question, lang)
     report = _reporter(progress)
+    if _state["offline"]:
+        if OFFLINE_DELAY_S > 0:
+            for stage in OFFLINE_STAGES:
+                report(stage)
+                time.sleep(OFFLINE_DELAY_S)
+        return offline_answer(question, lang)
     try:
-        if not _lock.acquire(blocking=False):    # another visitor's question is running
-            report("queued")
+        if not _lock.acquire(blocking=False):    # another question, or the warm-up, is running
+            report("queued" if _state["pipeline"] is not None else "loading")
             _lock.acquire()
         try:
             if _state["pipeline"] is None:

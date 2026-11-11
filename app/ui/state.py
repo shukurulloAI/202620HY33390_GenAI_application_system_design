@@ -8,13 +8,18 @@ Session keys (st.session_state):
     pending           a request waiting to be answered on this run, or None
     request, result   the last question asked and its answer
     feedback          trace_id -> rating already given
-    flash             a page-label key to show once under the button (e.g. empty question)
+    asked             times of this session's recent questions (the rate limit)
+    flash             (page-label key, arguments) to show once under the button
 """
 from __future__ import annotations
 
 from collections.abc import MutableMapping
 
 DEFAULT_PROVINCE = "서울특별시"          # most of the district data is Seoul's
+# One local LLM answers one question at a time (about 20 s), so one visitor sending many
+# questions makes everyone else wait. 8 in 5 minutes is more than a person asks by hand.
+RATE_LIMIT = 8
+RATE_WINDOW_S = 300
 DEFAULTS = {"pending": None, "request": None, "result": None, "flash": None,
             "area_district": None, "area_dong": None}
 
@@ -24,7 +29,22 @@ def init(session: MutableMapping, tree: dict) -> None:
     for key, value in DEFAULTS.items():
         session.setdefault(key, value)
     session.setdefault("feedback", {})
+    session.setdefault("asked", [])
     session.setdefault("area_province", DEFAULT_PROVINCE if DEFAULT_PROVINCE in tree else None)
+
+
+def allow_question(asked: list[float], now: float) -> bool:
+    """The per-session rate limit: forget questions older than the window, then allow this
+    one (and count it) only if fewer than RATE_LIMIT remain."""
+    asked[:] = [t for t in asked if now - t < RATE_WINDOW_S]
+    if len(asked) >= RATE_LIMIT:
+        return False
+    asked.append(now)
+    return True
+
+
+def rate_message_args() -> dict:
+    return {"n": RATE_LIMIT, "minutes": RATE_WINDOW_S // 60}
 
 
 def pick_lang(query: str | None, locale: str | None, offered) -> str:

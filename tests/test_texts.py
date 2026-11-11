@@ -43,10 +43,11 @@ def test_the_page_has_a_label_for_every_stage_and_waste_type():
     import re
 
     from rag import pipeline, service
-    reported = set(re.findall(r'emit\("(\w+)"\)', inspect.getsource(pipeline.Pipeline.run)))
-    reported |= set(re.findall(r'report\("(\w+)"\)', inspect.getsource(service.ask)))
-    assert reported == {"queued", "loading", "route", "retrieve", "schedule", "write"}
-    assert all(f"stage_{s}" in PAGE["en"] for s in reported)
+    emitted = set(re.findall(r'emit\("(\w+)"\)', inspect.getsource(pipeline.Pipeline.run)))
+    assert emitted == set(pipeline.STAGES)
+    assert set(service.STAGES) == {"queued", "loading", *pipeline.STAGES}
+    assert set(service.OFFLINE_STAGES) <= set(service.STAGES)
+    assert all(f"stage_{s}" in PAGE["en"] for s in service.STAGES)
     assert all(f"waste_{w}" in PAGE["en"] for w in WASTE_TYPES)
     assert all(f"title_{s}" in PAGE["en"] for s in get_args(Status))
 

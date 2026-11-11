@@ -186,3 +186,78 @@ def test_text_helpers():
     assert tel_href("02-2286-5114") == "tel:0222865114"
     assert tel_href("+82 2 123") == "tel:+822123"
     assert tel_href("call the office") is None and tel_href(None) is None
+
+
+def test_a_question_reports_progress_and_then_shows_the_answer(offline, monkeypatch):
+    stages = []
+
+    def ask(progress=None, **kw):
+        for stage in ("queued", "route", "retrieve", "write"):
+            progress(stage)                            # relabels the status box
+            stages.append(stage)
+        return service.examples()[0]["answer"]
+    monkeypatch.setattr(service, "ask", ask)
+    at = submit("Where do I throw away a pizza box?")
+    assert not at.exception and stages == ["queued", "route", "retrieve", "write"]
+    assert at.header[-1].value == TITLES["ANSWER"]
+    assert at.session_state["pending"] is None
+    assert not at.text_area(key="question_input").disabled           # enabled again
+
+
+def test_inputs_are_disabled_while_a_question_runs_and_never_stay_stuck(offline, monkeypatch):
+    called = []
+
+    def broken(**kw):
+        called.append(kw)
+        raise RuntimeError("a bug in the page's call")
+    monkeypatch.setattr(service, "ask", broken)
+    at = AppTest.from_file(APP, default_timeout=60)
+    at.run()
+    at.text_area(key="question_input").input("Where do I throw away a pizza box?")
+    at.session_state["pending"] = {"question": "Where do I throw away a pizza box?",
+                                   "lang": "en", "province": None, "district": None,
+                                   "dong": None}
+    at.run()
+    assert called and not at.exception
+    assert at.header[-1].value == TITLES["INSUFFICIENT_CONTEXT"]     # a handoff, not a trace
+    assert at.session_state["pending"] is None
+    assert not at.text_area(key="question_input").disabled            # usable again
+    assert not any(b.disabled for b in at.button)
+
+
+def test_while_answering_every_input_is_disabled(offline, monkeypatch):
+    """The run that answers shows the inputs disabled, so no click can interrupt it."""
+    from streamlit.runtime.scriptrunner_utils.exceptions import StopException
+
+    def stop_midway(**kw):
+        raise StopException()                         # end the run while it is answering
+    monkeypatch.setattr(service, "ask", stop_midway)
+    at = AppTest.from_file(APP, default_timeout=60)
+    at.run()
+    at.session_state["pending"] = {"question": "q", "lang": "en", "province": None,
+                                   "district": None, "dong": None}
+    at.run()
+    assert at.text_area(key="question_input").disabled
+    assert all(b.disabled for b in at.button)
+    assert at.selectbox(key="lang").disabled and at.selectbox(key="area_province").disabled
+
+
+def test_a_session_over_the_rate_limit_is_asked_to_wait(offline, monkeypatch):
+    from rag.texts import PAGE
+    monkeypatch.setattr(state, "RATE_LIMIT", 2)
+    asked = []
+    monkeypatch.setattr(service, "ask", lambda **kw: asked.append(kw) or service.examples()[0]
+                        ["answer"])
+    at = submit("first")
+    for question in ("second", "third"):
+        at.text_area(key="question_input").input(question)
+        next(b for b in at.button if "Find disposal" in str(b.label)).click().run()
+    assert [a["question"] for a in asked] == ["first", "second"]
+    assert at.warning[0].value == PAGE["en"]["rate_limited"].format(n=2, minutes=5)
+
+
+def test_rate_limit_window():
+    asked = []
+    assert all(state.allow_question(asked, t) for t in range(state.RATE_LIMIT))
+    assert not state.allow_question(asked, state.RATE_LIMIT)
+    assert state.allow_question(asked, state.RATE_WINDOW_S + 1)        # the oldest expired
