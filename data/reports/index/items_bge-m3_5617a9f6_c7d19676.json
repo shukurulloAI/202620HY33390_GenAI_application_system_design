@@ -1,5 +1,5 @@
 {
-  "built_at": "2026-11-04T11:13:12+00:00",
+  "built_at": "2026-11-11T10:46:33+00:00",
   "collection": "items_bge-m3_5617a9f6_c7d19676",
   "status": "PASS",
   "representation_contract": {
@@ -14,7 +14,7 @@
     "languages": "multilingual"
   },
   "corpus": {
-    "path": "preprocess/item_chunks.jsonl",
+    "path": "data/processed/item_chunks.jsonl",
     "sha256": "c7d196766f9135a82942606e690120a6078e24960a5f4305cb56415b2627896d",
     "chunks": 403,
     "doc_types": {
@@ -35,13 +35,7 @@
     "no_reserved_keys": true
   },
   "embedding_run": {
-    "reused_existing_collection": false,
-    "device": "mps:0",
-    "model_load_seconds": 6.8,
-    "embed_seconds": 9.8,
-    "chunk_tokens_max": 730,
-    "chunk_tokens_mean": 100.0,
-    "chunks_over_max_seq_length": 0
+    "reused_existing_collection": true
   },
   "verification": {
     "collection": "items_bge-m3_5617a9f6_c7d19676",
