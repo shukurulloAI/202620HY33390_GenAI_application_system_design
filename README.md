@@ -71,7 +71,8 @@ app/              the website (Streamlit), on rag/service.py
 tests/            fast tests with no models or Ollama, one file per module
 docs/             REPORT.md / REPORT.pdf (final report), WEBSITE.md, PHASE1/2_NOTES.md,
                   answer_schema.json + answer_examples.json (answer contract, recorded answers),
-                  Model_and_System_Guide.pdf, COMMIT_IDS.md (old -> current commit IDs)
+                  Model_and_System_Guide.pdf, COMMIT_IDS.md (old -> current commit IDs),
+                  AUDIT_GUIDE.md (human audit), V3_PLAN.md (next cycle: data, new held-out set)
 notebooks/        data exploration (schedule_eda/)
 ```
 
@@ -87,7 +88,9 @@ not evaluation results. Run records written before 2026-11-09 store older commit
 
 **Headline.** On the 30 test cases, which were never used for tuning and were run once with the
 configuration frozen at commit `f0faba6`, the system got 22 cases right with 1 false answer. The
-Phase 1 baseline got 11 right with 4 false answers. On dev, with the same configuration, it got 56/70
+Phase 1 baseline got 11 right with 4 false answers. In a paired test the gain in correct cases is
+significant (p = 0.007); the drop in false answers is not, with 30 cases (p = 0.25, 95% CI 1–17%;
+`python -m eval.compare test-final test-baseline`). On dev, with the same configuration, it got 56/70
 right with 3 false answers. The cases were written by the team (with AI assistance), not by real users, and the human
 audit has not been done yet; see the report's §11.
 
@@ -129,6 +132,8 @@ answer = service.ask("Where do I throw away a pizza box?", lang="en",
 service.save_feedback(answer["trace_id"], "up", "clear answer")
 service.source_text(answer["citations"][0])   # full text for a source card
 service.locations(); service.glossary(); service.languages(); service.health()
+service.warm_up()     # load the pipeline and the Ollama models now (the website does this at start)
+service.data_reviews()  # owner and review date per source (data/manual/stewardship.json)
 # RAG_OFFLINE=1 (or service.configure(offline=True)): recorded answers, no models
 ```
 
@@ -145,7 +150,15 @@ p.run_case({"case_id": "c001", "question": "...", "lang": "en",
 ```
 
 `Pipeline()` loads two models, so create one and keep it. Only one process can open `qdrant_data/`
-at a time; a second process automatically reads a temporary snapshot copy.
+at a time; a second process automatically reads a temporary snapshot copy (a full copy of the
+folder: fine on one machine, not a way to serve many processes). Tests hand `Pipeline` a
+scripted LLM and a fake retriever (`retriever=`, `schedule=`, `counter=`; `tests/helpers.py`).
+
+**Live records.** Every request is a trace in `traces/<date>.jsonl`, failures go to
+`traces/errors.jsonl`, 👍/👎 to `traces/feedback.jsonl`. They hold the users' own words, so they are
+kept for `RAG_TRACE_RETENTION_DAYS` (default 30, `0` keeps all) and pruned when the pipeline starts.
+`python -m eval.ops_summary [--days 7]` summarizes them: requests, status mix, latency p50/p90 per
+stage, errors, feedback by answer status.
 
 Answer dict:
 
@@ -203,10 +216,12 @@ python -m experiments.run_experiment experiments/configs/E3_lexical_dense_hybrid
 python -m experiments.summarize experiments/results/dev/E3        # rewrite its summary.md
 python -m experiments.tau_sweep experiments/results/dev/E5/rerank-on.jsonl --cases eval/cases/dev.jsonl
 
+python -m experiments.verify_rerank                 # batched reranker == frozen system's candidates (dev)
 python -m experiments.check_contract                # every probe fits the answer contract (Ollama)
 python -m experiments.make_examples                 # re-record docs/answer_examples.json (Ollama)
 python -m eval.label_helper item 피자 건전지          # candidate gold chunks for a new case
 python -m eval.label_helper rows 성동구 --dong 행당1동  # candidate gold rows
+python -m preprocess.review_templates               # blank v3 review sheets in data/manual/drafts/
 ```
 
 With `--cases eval/cases/dev.jsonl`, `run_experiment` writes
@@ -264,7 +279,9 @@ python -m eval.run_eval --name check --rescore   # 22/30 correct, 1 false answer
 ```
 
 The human audit of the test answers is still to do: the sheets are in
-`eval/reports/test-final/audit/`.
+`eval/reports/test-final/audit/`, and [docs/AUDIT_GUIDE.md](docs/AUDIT_GUIDE.md) says how to fill
+them. Changes that change answers belong to the next cycle, [docs/V3_PLAN.md](docs/V3_PLAN.md),
+which needs reviewed data and a new held-out set first.
 
 ## Website
 

@@ -337,14 +337,14 @@ The heatmap places each failed case at the **earliest stage whose check failed**
 | Improvement | Prefer the newer source; show data dates; abstain below a threshold; hand off with a Korean sentence; validate every bin against the cited evidence |
 | Measurement | Bin correctness and false answers on a frozen test set, by slice and language; faithfulness with a judge, to be checked by people. In deployment, the 👍/👎 feedback saved by `trace_id`, and repeat questions |
 
-**Maintenance.** Every source has a hash and a date in `data/processed/manifest.json`. A change to the chunks changes the corpus hash, which forces a rebuild of the index: the pipeline will not run on a mismatch. The district table should be refreshed from data.go.kr every month, with stale rows flagged to the user in the meantime.
+**Maintenance.** Every source has a hash and a date in `data/processed/manifest.json`. A change to the chunks changes the corpus hash, which forces a rebuild of the index: the pipeline will not run on a mismatch. The district table should be refreshed from data.go.kr every month, with stale rows flagged to the user in the meantime. Each source has an owner (a role) and a next review date in `data/manual/stewardship.json` (the district CSV monthly, the 2026 directive every six months, the glossary once by native speakers). `service.health()` lists the overdue ones, and the website shows them. Live use is measured from the system's own records with `python -m eval.ops_summary`: requests, status mix, latency per stage, errors, and 👍/👎 joined to the answer they rate. These describe use, not correctness.
 
 ## 11. Limitations, risks, responsible use, future work
 
 **What was not done (and must not be read into the numbers).**
 - **No real users.** The `real_users` slice is empty: no real questions from international students were collected.
 - **The cases were written by the team that built the system** (with AI assistance), not by independent people. The paraphrases in zh, vi, uz and ru were not checked by native speakers. People who built a system tend to write questions it can parse. So the test score is an optimistic estimate, even though the test split was never used for tuning.
-- **No human audit yet.** The plan asks two people to label about 20 answers independently. The test run produced 17 answers with evidence, and blank sheets for both raters are exported (`eval/reports/test-final/audit/`). `python -m eval.audit agree test-final` computes human faithfulness, Cohen's kappa between the raters, and the judge's agreement with them, once the sheets are filled. Until then, the judge's scores are unchecked. Our own reading already found two judge errors (§8.3).
+- **No human audit yet.** The plan asks two people to label about 20 answers independently ([AUDIT_GUIDE.md](AUDIT_GUIDE.md) gives the rules and a worked example). The test run produced 17 answers with evidence, and blank sheets for both raters are exported (`eval/reports/test-final/audit/`). `python -m eval.audit agree test-final` computes human faithfulness, Cohen's kappa between the raters, and the judge's agreement with them, once the sheets are filled. Until then, the judge's scores are unchecked. Our own reading already found two judge errors (§8.3).
 - **No native-speaker check** of the glossary, the day and label tables, or the fixed texts in zh, vi, uz and ru.
 
 **Known weaknesses.**
@@ -353,7 +353,8 @@ The heatmap places each failed case at the **earliest stage whose check failed**
 - **Outdated entries outrank newer rules.** A 2018 entry that names the item beats a 2026 rule that names its material group. The conflict slice is 0/2 on test and 0/6 on dev.
 - **Stale and incomplete district data.** 61% of the rows are over a year old (shown to the user), and 강동구 and 도봉구 have no rows.
 - **Latency.** About 22 s per question (median, test run) on an Apple M3 Pro with local models: the router about 7 s, the reranker about 6 s, the generator about 14 s. Too slow for a chat feel, but acceptable for a lookup.
-- **Small test set.** With 30 test cases, one case is 3.3 points.
+- **Small test set.** With 30 test cases, one case is 3.3 points. The 95% interval for the false-answer rate is 1–17%.
+- **One machine.** Local Qdrant allows one process per index folder. A second process reads a full temporary copy, and the website answers one question at a time, because the local LLM serves one request anyway. Serving many users would need a Qdrant server and an LLM server that runs requests in parallel.
 
 **Responsible use.** The page:
 - says that the answers come from official guides that can differ from building or district practice;
@@ -361,12 +362,12 @@ The heatmap places each failed case at the **earliest stage whose check failed**
 - marks old data;
 - never shows a bin when it abstains.
 
-Feedback is stored with a trace ID and an optional comment, and no personal data is asked for. The location is a district and neighbourhood, never a street address.
+Feedback is stored with a trace ID and an optional comment, and no personal data is asked for. The location is a district and neighbourhood, never a street address. A question is free text, though, and a user could type something personal into it. So traces, errors and feedback are deleted after 30 days (`RAG_TRACE_RETENTION_DAYS`, `rag/tracing.py`).
 
 **Future work, in order of expected value:**
 1. A reviewed table of Korean item names in the user languages, to replace LLM translation of item names. This needs native speakers. It addresses the largest failure cause on test.
 2. Retrieving the 2026 rule group of an item explicitly, through a reviewed map from 2018 categories to 2026 groups, so a newer rule cannot be outranked (h25, the conflict slice).
 3. A check that a cited chunk is about the asked item, not just a chunk that states the bin (item08, the counterfactual probe).
 4. A stricter script check for Korean names (no Hangul glued to lowercase Latin, as in `구loth`), and a stronger or specialised model for Uzbek and Russian routing.
-5. The human audit, then real-user questions as a new evaluation slice.
+5. The human audit, then real-user questions as a new evaluation slice. Items 1–3 change answers. So they belong to a new cycle with a new held-out set frozen before tuning, because this test split has been used ([V3_PLAN.md](V3_PLAN.md)). The review sheets for items 1 and 2 are ready in `data/manual/drafts/`.
 6. Caching the router and reranker for frequent items, to cut latency.
