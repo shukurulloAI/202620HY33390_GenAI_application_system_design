@@ -1,4 +1,5 @@
 # Tests and lint: pip install -r requirements-dev.txt
 -r requirements.txt
 pytest>=8.0
+pytest-cov>=5               # python -m pytest --cov=rag --cov=eval
 ruff>=0.6

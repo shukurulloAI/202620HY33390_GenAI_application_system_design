@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import time
 import uuid
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import UTC, datetime
 
 from rag import config
@@ -90,11 +90,14 @@ class Request:
 
 class Pipeline:
     def __init__(self, cfg: PipelineConfig | None = None, llm: LLMClient | None = None,
-                 write_traces: bool = True, router_llm: LLMClient | None = None):
+                 write_traces: bool = True, router_llm: LLMClient | None = None, *,
+                 retriever=None, schedule=None, counter=None):
+        """`retriever`, `schedule` and `counter` replace the defaults (index-backed retriever,
+        the processed table, the generator's tokenizer); tests hand in stand-ins."""
         self.cfg = cfg or config.DEFAULT
         self.llm = llm or make_client("ollama", self.cfg.llm_model)
-        self.retriever = ItemRetriever(self.cfg)
-        self.schedule = default_table()
+        self.retriever = retriever or ItemRetriever(self.cfg)
+        self.schedule = schedule or default_table()
         self.schedule_search = (None if self.cfg.schedule_retrieval == "structured"
                                 else ScheduleVectorSearch(self.schedule, self.cfg))
         self.writer = ScheduleWriter(self.llm, self.cfg.temperature, self.cfg.seed)
@@ -105,7 +108,7 @@ class Pipeline:
                               if self.cfg.router_model else self.llm)
             self.router = Router(router_llm, temperature=self.cfg.temperature,
                                  seed=self.cfg.seed, repair=self.cfg.router_repair)
-        self.counter = default_counter(
+        self.counter = counter or default_counter(
             config.LLM_TOKENIZERS.get(self.llm.model_id, config.LLM_TOKENIZER))
         self.budget = ContextBudget()
         self.write_traces = write_traces
@@ -177,8 +180,8 @@ class Pipeline:
 
         draft, evidence = self._draft(request, route, gate, selected, rows, day, trace, timings)
         if self._code_writes_schedule(rows):
-            draft, evidence = self._add_schedule_text(draft, evidence, request, gate, rows, day,
-                                                      trace, timings)
+            draft, evidence, gate = self._add_schedule_text(draft, evidence, request, gate, rows,
+                                                            day, trace, timings)
 
         timings["total_s"] = round(time.perf_counter() - start, 3)
         trace["timings"] = timings
@@ -307,13 +310,15 @@ class Pipeline:
 
     def _add_schedule_text(self, draft: dict | None, evidence: list, request: Request,
                            gate: GateDecision, rows: list[ScheduleRow], day: DayRef | None,
-                           trace: dict, timings: dict[str, float]) -> tuple[dict, list]:
+                           trace: dict, timings: dict[str, float]
+                           ) -> tuple[dict, list, GateDecision]:
+        """Returns the merged draft, the evidence and the gate decision as it now stands."""
         with timed(timings, "schedule_text_s"):
             item_missing = ""
             if draft and draft.get("status") != "ANSWER":   # the schedule stands without it
                 item_missing, draft, evidence = draft.get("missing", ""), None, []
-                gate.item = "abstain"
-                gate.reasons.append("item answer did not pass; schedule answered alone")
+                gate = replace(gate, item="abstain", reasons=[
+                    *gate.reasons, "item answer did not pass; schedule answered alone"])
                 trace["gate"] = gate.to_trace()
             first_number = len(evidence) + 1
             row_evidence = [schedule_evidence(r, request.waste_type, day) for r in rows]
@@ -326,7 +331,7 @@ class Pipeline:
         evidence = evidence + row_evidence
         trace["evidence"] = [e.to_citation() for e in evidence]
         trace["schedule_text"] = record
-        return draft, evidence
+        return draft, evidence, gate
 
 
 def fixed_answer(gate: GateDecision, lang: str | None) -> dict:
