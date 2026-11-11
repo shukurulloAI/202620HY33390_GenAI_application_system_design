@@ -1,6 +1,6 @@
 # Python 3.11 or 3.12 recommended.
 #   python3.12 -m venv .venv && source .venv/bin/activate
-#   pip install -r requirements.txt
+#   pip install -r requirements/base.txt
 # The generator LLM runs in Ollama (installed separately): https://ollama.com
 #   ollama pull qwen2.5:7b
 

@@ -563,7 +563,7 @@ app/                          website (optional)
 report/                       final report + figures
 slides/                       presentation
 qdrant_data/, traces/         (gitignored)
-PLAN.md, README.md, pyproject.toml, requirements*.txt
+PLAN.md, README.md, pyproject.toml, requirements/
 ```
 
 Members work on their own branches and merge into `main` through pull requests.

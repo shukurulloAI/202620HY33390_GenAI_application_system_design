@@ -2,12 +2,14 @@
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+cache_dir = ".cache/pytest"             # all local caches live in .cache/
 # Browser tests start a server and Chromium: run them with  pytest tests/e2e -m e2e
 addopts = ["-m", "not e2e"]
-markers = ["e2e: the website in a real browser (tests/e2e, requirements-e2e.txt)"]
+markers = ["e2e: the website in a real browser (tests/e2e, requirements/e2e.txt)"]
 
 [tool.ruff]
 line-length = 100
+cache-dir = ".cache/ruff"
 extend-exclude = ["notebooks"]
 
 [tool.ruff.lint]

@@ -149,7 +149,7 @@ for exists.
 
 ```bash
 python -m pytest tests/test_app.py tests/test_app_style.py     # headless (AppTest), no browser
-pip install -r requirements-e2e.txt && python -m playwright install chromium
+pip install -r requirements/e2e.txt && python -m playwright install chromium
 python -m pytest tests/e2e -m e2e                              # Chromium against the offline demo
 E2E_SCREENSHOTS=docs/figures python -m pytest tests/e2e -m e2e  # also the pictures above
 ```
@@ -171,7 +171,7 @@ E2E_SCREENSHOTS=docs/figures python -m pytest tests/e2e -m e2e  # also the pictu
 ## Running
 
 ```bash
-pip install -r requirements-app.txt
+pip install -r requirements/app.txt
 streamlit run app/streamlit_app.py                  # full system: Ollama running, index built
 RAG_OFFLINE=1 streamlit run app/streamlit_app.py    # recorded examples only
 RAG_OFFLINE=1 RAG_OFFLINE_DELAY_S=1 streamlit run app/streamlit_app.py   # ... showing the stages

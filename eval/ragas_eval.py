@@ -9,7 +9,7 @@ change packages the pipeline relies on. Two steps:
     .venv-judge/bin/python -m eval.ragas_eval score <report name>   # judge env: Ragas
 
     setup once:  python3.12 -m venv .venv-judge
-                 .venv-judge/bin/pip install -r requirements-judge.txt
+                 .venv-judge/bin/pip install -r requirements/judge.txt
 
 Inputs per answered case: the question, answer_text, and the full text of every piece of
 evidence the answer was built from (item chunks the generator read, district rows written

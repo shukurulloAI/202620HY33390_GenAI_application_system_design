@@ -21,7 +21,7 @@ from rag import paths
 
 try:
     from playwright import sync_api as playwright
-except ImportError:                    # pip install -r requirements-e2e.txt
+except ImportError:                    # pip install -r requirements/e2e.txt
     playwright = None
     collect_ignore_glob = ["test_*.py"]
 

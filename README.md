@@ -12,8 +12,8 @@ when and where to put waste out (from the district table), with sources, in thei
 # 1. Python environment (3.11 or 3.12)
 python3.12 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements-dev.txt
-# (to reproduce the reported numbers exactly: pip install -r requirements.lock)
+pip install -r requirements/dev.txt
+# (to reproduce the reported numbers exactly: pip install -r requirements/lock.txt)
 
 # 2. Local LLM (https://ollama.com)
 ollama serve                # or open the Ollama app
@@ -75,6 +75,9 @@ docs/             REPORT.md / REPORT.pdf (final report), WEBSITE.md, PHASE1/2_NO
                   Model_and_System_Guide.pdf, COMMIT_IDS.md (old -> current commit IDs),
                   AUDIT_GUIDE.md (human audit), V3_PLAN.md (next cycle: data, new held-out set)
 notebooks/        data exploration (schedule_eda/)
+requirements/     base.txt (the system), app.txt (+ website), dev.txt (+ tests),
+                  e2e.txt (browser tests), judge.txt (LLM judge), lock.txt (exact
+                  versions of the reported results)
 ```
 
 Dependencies run one way: `preprocess`, `ingest`, `eval`, `experiments` and `app` import `rag`, and
@@ -248,7 +251,7 @@ python -m experiments.robustness --relabel            # label saved probe traces
 
 # LLM judge (Ragas), in its own environment, with its own Ollama model
 ollama pull exaone3.5:7.8b
-python3.12 -m venv .venv-judge && .venv-judge/bin/pip install -r requirements-judge.txt
+python3.12 -m venv .venv-judge && .venv-judge/bin/pip install -r requirements/judge.txt
 python -m eval.ragas_eval prepare my-run && .venv-judge/bin/python -m eval.ragas_eval score my-run
 
 python -m eval.audit export my-run                    # two blank sheets for human raters
@@ -289,7 +292,7 @@ which needs reviewed data and a new held-out set first.
 ![The website: a pizza-box answer](docs/figures/website_desktop_light.png)
 
 ```bash
-pip install -r requirements-app.txt
+pip install -r requirements/app.txt
 streamlit run app/streamlit_app.py                   # live: Ollama running, index built
 RAG_OFFLINE=1 streamlit run app/streamlit_app.py     # recorded answers, no models
 docker compose --profile offline up                  # the same demo in Docker
@@ -302,7 +305,7 @@ The page has the following:
   question is waiting for another one.
 - **Light and dark themes.** Both meet WCAG AA contrast, and axe-core finds no accessibility
   violations in Chromium (`python -m pytest tests/e2e -m e2e`, after
-  `pip install -r requirements-e2e.txt`).
+  `pip install -r requirements/e2e.txt`).
 - **Maintainer panel.** `RAG_ADMIN=1` adds a panel with the models, digests and data-review dates.
 
 What the page shows for each answer field, how it is tested and how to run it in Docker:

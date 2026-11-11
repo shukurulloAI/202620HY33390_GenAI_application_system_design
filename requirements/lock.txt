@@ -1,7 +1,7 @@
 # Exact versions of the environment that produced the reported results (eval/reports/test-final).
 # Python 3.12.13, macOS arm64 (Apple M3 Pro). Regenerate: .venv/bin/pip freeze --exclude-editable
-#   python3.12 -m venv .venv && .venv/bin/pip install -r requirements.lock
-# Development uses the ranges in requirements*.txt; this file is for reproducing the numbers.
+#   python3.12 -m venv .venv && .venv/bin/pip install -r requirements/lock.txt
+# Development uses the ranges in the other files here; this file is for reproducing the numbers.
 altair==6.3.0
 annotated-doc==0.0.5
 annotated-types==0.8.0

@@ -28,15 +28,15 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: |
-            requirements.txt
-            requirements-dev.txt
-            requirements-app.txt
+            requirements/base.txt
+            requirements/dev.txt
+            requirements/app.txt
 
       - name: Install (CPU-only torch keeps the install small)
         run: |
           python -m pip install --upgrade pip
           pip install torch --index-url https://download.pytorch.org/whl/cpu
-          pip install -r requirements-app.txt -r requirements-dev.txt
+          pip install -r requirements/app.txt -r requirements/dev.txt
 
       - name: Lint
         run: ruff check .
@@ -60,12 +60,12 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: requirements-e2e.txt
+          cache-dependency-path: requirements/e2e.txt
 
       - name: Install (the offline demo needs no torch and no models)
         run: |
           python -m pip install --upgrade pip
-          pip install -c requirements.lock streamlit pydantic tzdata pytest -r requirements-e2e.txt
+          pip install -c requirements/lock.txt streamlit pydantic tzdata pytest -r requirements/e2e.txt
           python -m playwright install --with-deps chromium
 
       - name: Browser tests
