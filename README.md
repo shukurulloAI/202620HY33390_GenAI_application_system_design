@@ -35,6 +35,9 @@ python -m pytest
 ruff check .
 ```
 
+The same checks run on every push and pull request (`.github/workflows/ci.yml`: ruff, the frozen
+split, pytest with coverage), with no models or Ollama.
+
 Add `--show-trace` to see the full trace: router output, candidates with dense/BM25/rerank ranks,
 gate decision, evidence, token budget, raw LLM output, validation, timings. Every request is also
 appended to `traces/<date>.jsonl`.

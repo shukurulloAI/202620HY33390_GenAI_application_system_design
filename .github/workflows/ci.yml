@@ -1,0 +1,48 @@
+# Lint and tests on every push and pull request. No models, no index, no Ollama: the tests
+# use scripted LLMs, real chunks and the real schedule table (tests/helpers.py).
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HF_HUB_OFFLINE: "1"          # a test that needs a model download fails instead of hanging
+      TRANSFORMERS_OFFLINE: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+            requirements-app.txt
+
+      - name: Install (CPU-only torch keeps the install small)
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements-app.txt -r requirements-dev.txt
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Frozen dev/test split unchanged
+        run: python -m eval.make_cases --check
+
+      - name: Tests
+        run: python -m pytest -q --cov=rag --cov=eval --cov-report=term
