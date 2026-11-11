@@ -25,6 +25,7 @@ RAW_SCHEDULE_CSV = RAW_DIR / "korean_waste_policies.csv"
 
 GLOSSARY = MANUAL_DIR / "glossary.json"
 FOOD_WASTE_TABLE = MANUAL_DIR / "food_waste_table_2018.json"
+STEWARDSHIP = MANUAL_DIR / "stewardship.json"      # owner and review date per source
 
 PARSED_ITEM_CHUNKS = INTERIM_DIR / "parsed_item_chunks.jsonl"
 

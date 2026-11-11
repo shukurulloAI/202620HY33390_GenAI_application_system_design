@@ -1,0 +1,10 @@
+{
+ "about": "Who keeps each source current, and when it is next checked (Lesson 7: a shared assistant needs an owner, a source revision and a review date). Owner is a role, not a person. After a review, set last_reviewed and next_review; if a source changed, replace the file in data/raw/, rebuild (python -m preprocess.build_all, python -m ingest.build_index) and rerun the dev evaluation. service.health() lists overdue sources and the website shows them.",
+ "sources": {
+  "schedule_csv": {"owner": "project team (data steward)", "last_reviewed": "2026-10-31", "next_review": "2026-11-30", "cadence": "monthly", "check": "Download the current 생활쓰레기 배출정보 CSV from data.go.kr; compare row count and data dates; 61% of rows were over a year old at the last check."},
+  "annex2026": {"owner": "project team (data steward)", "last_reviewed": "2026-11-03", "next_review": "2027-05-03", "cadence": "every 6 months, or when the ministry amends 분리수거 등에 관한 지침", "check": "Look for a newer 훈령 number on law.go.kr; a new version is a new source with its own year."},
+  "guide2018": {"owner": "project team (data steward)", "last_reviewed": "2026-11-03", "next_review": "2027-11-03", "cadence": "yearly", "check": "Is the 2018 guide still published? Its entries lose to the 2026 rules (conflict policy), but they remain the only source for many items."},
+  "glossary": {"owner": "project team (data steward)", "last_reviewed": "2026-11-07", "next_review": "2026-12-01", "cadence": "once by native speakers, then yearly", "check": "zh, vi, uz and ru terms have never been checked by native speakers (docs/REPORT.md §11)."},
+  "food_waste_table_2018": {"owner": "project team (data steward)", "last_reviewed": "2026-11-03", "next_review": "2027-11-03", "cadence": "yearly, with guide2018", "check": "Compare the hand transcription with the 2018 guide pp.17-18."}
+ }
+}

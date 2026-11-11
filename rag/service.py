@@ -221,6 +221,15 @@ def languages() -> dict[str, str]:
     return dict(LANGUAGES)
 
 
+def data_reviews(today=None) -> list[dict]:
+    """Each source with its owner and review dates (data/manual/stewardship.json);
+    `overdue` once next_review has passed."""
+    today = (today or datetime.now(UTC).date()).isoformat()
+    sources = json.loads(paths.STEWARDSHIP.read_text(encoding="utf-8"))["sources"]
+    return [{"source": key, **record, "overdue": record["next_review"] < today}
+            for key, record in sources.items()]
+
+
 def health() -> dict:
     """What the page can show in a status line. Never loads the models."""
     ollama = False
@@ -231,7 +240,8 @@ def health() -> dict:
         except (URLError, OSError):
             ollama = False
     return {"offline": _state["offline"], "ollama": ollama,
-            "pipeline_loaded": _state["pipeline"] is not None, "model": config.LLM_MODEL}
+            "pipeline_loaded": _state["pipeline"] is not None, "model": config.LLM_MODEL,
+            "data_review_overdue": [r["source"] for r in data_reviews() if r["overdue"]]}
 
 
 def _now() -> str:

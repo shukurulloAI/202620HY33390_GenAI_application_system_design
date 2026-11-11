@@ -68,6 +68,7 @@ def manifest(items: dict, schedule: dict) -> dict:
             "sources": [source_record(key, src, schedule) for key, src in SOURCES.items()],
             "outputs": {path.name: {"path": paths.relative(path), "sha256": sha}
                         for path, sha in hashes.items()},
+            "stewardship": json.loads(paths.STEWARDSHIP.read_text(encoding="utf-8"))["sources"],
             "not_included": [
                 "data.go.kr recycling item API (~770 items): needs an API key; take a dated "
                 "snapshot, never call it live",

@@ -416,6 +416,9 @@ elif health["ollama"]:
 else:
     status_line = ("The language model is not running (start Ollama). "
                    "Questions will get a contact for the district office instead.")
+if health["data_review_overdue"]:
+    status_line += (" Data review overdue: " + ", ".join(health["data_review_overdue"])
+                    + " (data/manual/stewardship.json).")
 st.markdown(f'<div class="status-line">{status_line}</div>', unsafe_allow_html=True)
 
 

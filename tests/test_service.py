@@ -82,3 +82,14 @@ def test_warm_up_loads_each_model_once_and_never_raises(monkeypatch):
         service.warm_up()                                # logged, not raised
     finally:
         service._state["pipeline"] = None
+
+
+def test_every_source_has_an_owner_and_a_review_date():
+    from datetime import date
+    reviews = service.data_reviews(today=date(2026, 11, 11))
+    assert {r["source"] for r in reviews} >= {"schedule_csv", "annex2026", "guide2018"}
+    assert all(r["owner"] and r["next_review"] > r["last_reviewed"] for r in reviews)
+    assert not any(r["overdue"] for r in reviews)
+    later = service.data_reviews(today=date(2026, 12, 15))
+    assert {r["source"] for r in later if r["overdue"]} == {"schedule_csv", "glossary"}
+    assert "data_review_overdue" in service.health()
