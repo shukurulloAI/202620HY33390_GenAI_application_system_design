@@ -91,10 +91,10 @@ for exists.
 
 | File | What it holds |
 |---|---|
-| `app/streamlit_app.py` | The layout, the callbacks and the answer flow |
+| `app/streamlit_app.py` | The layout (a wide page, question and answer side by side on a computer, stacked on a phone), the callbacks and the answer flow |
 | `app/ui/components.py` | One render function per part of an answer (bin, steps, zones, sources, handoff, clarify, feedback, glossary, maintainer panel) |
 | `app/ui/state.py` | Rules testable without a browser: session defaults, the starting language, the area check, the rate limit |
-| `app/ui/style.css` | The app icon, the hero, the grey tiles and the bin card; everything else is the theme |
+| `app/ui/style.css` | The page width (1180 px at most), the app icon, the hero, the grey tiles and the bin card; everything else is the theme |
 | `.streamlit/config.toml` | The theme in Apple's style (system font, Apple blue, pill buttons) in light and dark, no usage statistics, no developer menu, no tracebacks for visitors |
 
 ### What it does

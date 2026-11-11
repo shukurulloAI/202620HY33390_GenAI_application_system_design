@@ -70,7 +70,7 @@ def t(key: str, **args) -> str:
     return page_text(key, lang, **args)
 
 
-st.set_page_config(page_title=t("page_title"), page_icon=ui.favicon_svg(), layout="centered")
+st.set_page_config(page_title=t("page_title"), page_icon=ui.favicon_svg(), layout="wide")
 st.markdown(f"<style>{STYLE.read_text(encoding='utf-8')}</style>", unsafe_allow_html=True)
 st.html(f"<script>document.documentElement.lang = {json.dumps(lang)};</script>",
         unsafe_allow_javascript=True)                 # screen readers pick the right voice
@@ -126,35 +126,40 @@ def pick_option(kind: str, option: str) -> None:
     queue({"question": request["question"], "lang": request["lang"], **area})
 
 
-# ---------- HEADER ----------
-with st.container(key="topbar"):
-    brand, chooser = st.columns([3, 1], vertical_alignment="center")
-    with brand:
-        ui.show_header(t)
-    with chooser:
-        st.selectbox(f":material/language: {t('language')}", list(languages), key="lang",
-                 on_change=on_lang,
-                     format_func=lambda code: languages[code], disabled=busy)
+# ---------- PAGE ----------
+# A wide page with one centred column (at most --page-width in style.css): on a computer the
+# question and the answer sit side by side, so the answer appears without scrolling; on a
+# phone the columns stack.
+page = st.container(key="page")
+with page:
+    with st.container(key="topbar"):
+        brand, chooser = st.columns([4, 1], vertical_alignment="center")
+        with brand:
+            ui.show_header(t)
+        with chooser:
+            st.selectbox(f":material/language: {t('language')}", list(languages), key="lang",
+                         on_change=on_lang, format_func=lambda code: languages[code],
+                         disabled=busy)
 
-health = service.health()
-if health["ollama"] and not health["offline"]:
-    start_warm_up()
-ui.show_hero(t, "offline" if health["offline"] else "live" if health["ollama"] else "down")
+    health = service.health()
+    if health["ollama"] and not health["offline"]:
+        start_warm_up()
+    ui.show_hero(t, "offline" if health["offline"] else "live" if health["ollama"] else "down")
 
+    with st.container(key="examples"):
+        st.header(t("examples_heading"))
+        for column, n in zip(st.columns(3), (1, 2, 3), strict=True):
+            column.button(t(f"ex{n}_label"), icon=t(f"ex{n}_icon"), key=f"example_{n}",
+                          width="stretch", disabled=busy, on_click=choose_question,
+                          args=(t(f"ex{n}_q"),))
 
-# ---------- EXAMPLE QUESTIONS ----------
-with st.container(key="examples"):
-    st.header(t("examples_heading"))
-    for column, n in zip(st.columns(3), (1, 2, 3), strict=True):
-        column.button(t(f"ex{n}_label"), icon=t(f"ex{n}_icon"), key=f"example_{n}",
-                      width="stretch", disabled=busy, on_click=choose_question,
-                      args=(t(f"ex{n}_q"),))
+    ask_column, answer_column = st.columns([5, 7], gap="large")
 
 
 # ---------- QUESTION ----------
 # No st.form: a form does not rerun when a selectbox changes, so the district list would
 # stay on the old province (a mismatched pair finds no data).
-with st.container(key="question_panel", border=True):
+with ask_column, st.container(key="question_panel", border=True):
     st.header(t("ask_heading"))
     st.text_area(t("question_label"), placeholder=t("question_placeholder"), height=105,
                  key="question_input", max_chars=service.MAX_QUESTION_CHARS, disabled=busy)
@@ -212,16 +217,19 @@ def answer_pending() -> None:
     st.rerun()
 
 
-if busy:
-    answer_pending()
-
-if st.session_state.result:
-    ui.show_result(st.session_state.result, st.session_state.request or {}, t, pick_option)
+with answer_column:
+    if busy:
+        answer_pending()
+    if st.session_state.result:
+        ui.show_result(st.session_state.result, st.session_state.request or {}, t, pick_option)
+    else:
+        ui.show_placeholder(t)
 
 
 # ---------- BOTTOM ----------
-st.write("")
-ui.show_glossary(lang, t, languages)
-st.caption(t("footer"))
-if ADMIN:
-    ui.show_maintainer(health, service.data_reviews(), service.pipeline_settings())
+with page:
+    st.write("")
+    ui.show_glossary(lang, t, languages)
+    st.caption(t("footer"))
+    if ADMIN:
+        ui.show_maintainer(health, service.data_reviews(), service.pipeline_settings())

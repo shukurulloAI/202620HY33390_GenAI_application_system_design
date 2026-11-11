@@ -92,8 +92,8 @@ def test_css_uses_no_streamlit_internals():
     assert "!important" not in css
     assert "data-testid" not in css and "baseweb" not in css
     assert "color-scheme" not in css          # colours follow the theme, not the system
-    keys = {"st-key-topbar", "st-key-examples", "st-key-question_panel", "st-key-answer_panel",
-            "st-key-bin_card"}
+    keys = {"st-key-page", "st-key-topbar", "st-key-examples", "st-key-question_panel",
+            "st-key-answer_panel", "st-key-answer_placeholder", "st-key-bin_card"}
     assert set(re.findall(r"\.(st-[\w-]+)", css)) <= keys
 
 

@@ -22,6 +22,13 @@
     --icon-from: #34c759;                 /* the app icon: Apple green to Apple blue */
     --icon-to: #0a84ff;
     --tile-radius: 22px;
+    --page-width: 1180px;                 /* the page's one column, centred */
+}
+
+.st-key-page {
+    width: 100%;
+    max-width: var(--page-width);
+    margin-inline: auto;
 }
 
 /* ---------- top bar ---------- */
@@ -110,11 +117,11 @@
 }
 
 .hero .hero-title {
-    font-size: clamp(34px, 6.5vw, 56px);
+    font-size: clamp(36px, 5.6vw, 64px);
     font-weight: 700;
     line-height: 1.07;
     letter-spacing: -0.025em;
-    max-width: 640px;
+    max-width: 880px;
     margin: 0 auto 14px;
     padding: 0;
     text-wrap: balance;                   /* no single word on the last line */
@@ -122,9 +129,9 @@
 
 .hero .hero-description {
     color: color-mix(in srgb, currentColor var(--muted), transparent);
-    font-size: clamp(17px, 2.3vw, 21px);
+    font-size: clamp(18px, 1.9vw, 22px);
     line-height: 1.45;
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
     text-wrap: pretty;
 }
@@ -177,6 +184,17 @@
     padding: 28px;
 }
 
+.st-key-answer_placeholder {            /* the answer side before the first question */
+    background: var(--tile);
+    border-color: transparent;
+    border-radius: var(--tile-radius);
+    min-height: 340px;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+    text-align: center;
+}
+
 .st-key-bin_card {
     background: var(--bin-tint);
     border-color: transparent;
@@ -188,7 +206,11 @@
     letter-spacing: -0.02em;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {                /* a phone: Streamlit stacks the columns */
+    .st-key-answer_placeholder {
+        display: none;
+    }
+
     .hero {
         padding-top: 20px;
     }

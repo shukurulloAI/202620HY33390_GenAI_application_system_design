@@ -243,6 +243,14 @@ def show_feedback(result: dict, t: T, disabled: bool = False) -> None:
                       disabled=disabled, on_click=save_rating, args=(trace_id, rating))
 
 
+def show_placeholder(t: T) -> None:
+    """Where the answer will appear, before the first question (hidden on a phone, where the
+    answer comes below the question anyway)."""
+    with st.container(key="answer_placeholder", border=True):
+        st.markdown(f"### :material/forum: {t('placeholder_title')}")
+        st.caption(t("placeholder_text"))
+
+
 def show_result(result: dict, request: dict, t: T, on_pick: Callable[[str, str], None],
                 disabled: bool = False) -> None:
     """One answer, by status (docs/WEBSITE.md "What to show, by status")."""
