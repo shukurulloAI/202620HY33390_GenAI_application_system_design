@@ -83,9 +83,9 @@ for exists.
 
 ![The page on a desktop and a phone, light and dark](figures/website_desktop_light.png)
 
-| | |
-|---|---|
-| ![Desktop, dark](figures/website_desktop_dark.png) | ![Phone, light](figures/website_phone_light.png) |
+| | | |
+|---|---|---|
+| ![Desktop, dark](figures/website_desktop_dark.png) | ![Phone, light](figures/website_phone_light.png) | ![Phone, dark](figures/website_phone_dark.png) |
 
 ### Files
 
