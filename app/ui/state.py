@@ -80,9 +80,11 @@ def visitor_id(ip: str | None, headers: Mapping[str, str] | None, session_visito
     """Who is asking, for the per-visitor limit: the visitor's public IP address, else this
     browser session (then only the per-tab limit counts).
 
-    Through the Cloudflare tunnel (deploy/public_link.sh) `ip` is the visitor's: Streamlit's
-    server reads X-Forwarded-For only from this machine and takes the last address, the one
-    Cloudflare added, so a visitor cannot choose it (checked through a real tunnel). Any other
+    Through the public link (deploy/public_link.sh: Tailscale Funnel or a Cloudflare tunnel)
+    `ip` is the visitor's: Streamlit's server reads X-Forwarded-For only from this machine and
+    takes the last address, the one Tailscale or Cloudflare put there, so a visitor cannot
+    choose it (checked through real links: Tailscale replaces a visitor's X-Forwarded-For,
+    Cloudflare adds its entry after it). Any other
     address is not one visitor: behind Docker every visitor comes from the gateway (so the
     limit would hold for everyone together), and a server on all interfaces sees this machine
     as ::ffff:127.0.0.1 (Streamlit gives None only for 127.0.0.1 and ::1). A connection from

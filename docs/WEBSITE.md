@@ -107,7 +107,7 @@ for exists.
 | `app/ui/state.py` | Rules testable without a browser: session defaults, the starting language, the area check, the limits per tab and per visitor |
 | `app/ui/style.css` | The page width (1040 px at most), when the two sides wrap, the app icon, the hero, the grey tiles and the bin card with its lit sign; everything else is the theme. The brand element carries it, so it takes no space of its own |
 | `.streamlit/config.toml` | The theme in Apple's style (system font, Apple blue, pill buttons) in light and dark, no usage statistics, no developer menu, no tracebacks for visitors |
-| `deploy/public_link.sh` | A public https link to the website on this Mac, through a Cloudflare tunnel ([below](#a-public-link-from-this-mac)) |
+| `deploy/public_link.sh` | A public https link to the website on this Mac, through Tailscale Funnel or a Cloudflare tunnel ([below](#a-public-link-from-this-mac)) |
 
 ### What it does
 
@@ -238,35 +238,43 @@ docker compose --profile live up                     # the full system, Ollama i
 ### A public link from this Mac
 
 ```bash
-brew install cloudflared                 # once
-deploy/public_link.sh                    # the full system: Ollama running, index built
-RAG_OFFLINE=1 deploy/public_link.sh      # the offline demo
+deploy/public_link.sh                        # the full system: Ollama running, index built
+RAG_OFFLINE=1 deploy/public_link.sh          # the offline demo
+LINK_VIA=cloudflare deploy/public_link.sh    # a Cloudflare quick tunnel instead
 ```
 
-The script prints the `https://<random words>.trycloudflare.com` link on its own line and copies
-it, so it can be pasted straight away. The logs go to `.cache/website.log` and
+The script prints the link on its own line and copies it, so it can be pasted straight away.
+It uses Tailscale Funnel when the Tailscale app is signed in on this Mac, and otherwise a
+Cloudflare quick tunnel (`brew install cloudflared`). The logs go to `.cache/website.log` and
 `.cache/tunnel.log`. Keep the window open: Ctrl-C, or closing it, stops the website and the link.
 
 - **How it works.** The website runs on this Mac and listens on 127.0.0.1 only. It runs without
-  the maintainer panel and without reloading when a file changes. `cloudflared` connects out to
-  Cloudflare, which passes visitors to it. So the router needs no settings, no port is open,
-  and the link is https. Visitors cannot reach the website any other way.
-- **The link changes** every time the script starts. A new link can take a minute or two to
-  open everywhere, while its name spreads through DNS. A link that stays the same needs a
-  Cloudflare account and a domain (a named tunnel: `cloudflared tunnel create`).
+  the maintainer panel and without reloading when a file changes. Tailscale (or `cloudflared`)
+  connects out to its own servers, which pass visitors to it. So the router needs no settings,
+  no port is open, and the link is https. Visitors cannot reach the website any other way.
+- **Tailscale Funnel** gives `https://<this Mac>.<tailnet>.ts.net`: the same link every time,
+  with no page in between, and visitors need no Tailscale. The first time, Tailscale may ask to
+  allow Funnel for this Mac; the script shows the page. Funnel runs in the foreground, so when
+  the script stops the link closes and nothing stays switched on (`tailscale funnel status`
+  says "No serve config"). The script runs the app's own program
+  (`/Applications/Tailscale.app/Contents/MacOS/tailscale`), because stopping the
+  `/usr/local/bin/tailscale` wrapper would leave the link open.
+- **A Cloudflare link** is new every time the script starts, and can take a minute or two to
+  open everywhere while its name spreads through DNS. Cloudflare gives quick tunnels no uptime
+  guarantee, and sometimes gives no link for a while ("failed to request quick Tunnel …
+  context deadline exceeded", or "status 429: Tunnelstore request failed"), even when its
+  status page shows no incident. The script then keeps the website running and asks again
+  once a minute, 8 times (`TUNNEL_TRIES=20` waits longer); not faster, since too many tries
+  get "429 Too Many Requests".
 - **The Mac must stay on, online and awake.** The script stops idle sleep while it runs, but
-  closing the lid still puts the Mac to sleep. Quick tunnels are for demos and testing:
-  Cloudflare gives no uptime guarantee.
-- **When Cloudflare gives no link** ("failed to request quick Tunnel … context deadline
-  exceeded"), its quick-tunnel service is not answering, even when its status page shows no
-  incident. The script keeps the website running and asks again once a minute, 8 times
-  (`TUNNEL_TRIES=20` waits longer); not faster, since too many tries get "429 Too Many
-  Requests". A demo that cannot wait for this needs a named tunnel.
+  closing the lid still puts the Mac to sleep.
 - **Speed.** One local LLM answers one question at a time, in 15–25 s. A question someone has
   already asked today comes back at once (the answer cache, above). At most 5 questions are
   answered or waiting; the next visitor is asked to try again in a minute.
 - **Limits per visitor.** 20 questions in 5 minutes per IP address, and 8 per tab. The address
-  is the one Cloudflare saw: Streamlit's server takes it from the last X-Forwarded-For entry,
-  and trusts that header only from this Mac, so a visitor cannot pick another address.
+  is the one Tailscale or Cloudflare saw: Streamlit's server takes it from the last
+  X-Forwarded-For entry, and trusts that header only from this Mac. Tailscale replaces an
+  X-Forwarded-For the visitor sends, and Cloudflare adds its entry after it, so a visitor
+  cannot pick another address (both checked through a real link).
 - **What visitors type** is kept in `traces/` on this Mac for 30 days, as the page says under the
   question box.

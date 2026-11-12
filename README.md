@@ -310,8 +310,9 @@ The page has the following:
   violations in Chromium (`python -m pytest tests/e2e -m e2e`, after
   `pip install -r requirements/e2e.txt`).
 - **Maintainer panel.** `RAG_ADMIN=1` adds a panel with the models, digests and data-review dates.
-- **Public link.** `deploy/public_link.sh` (needs `brew install cloudflared`) shares the website
-  through a Cloudflare tunnel. A question already asked that day is answered at once from
+- **Public link.** `deploy/public_link.sh` shares the website through Tailscale Funnel when the
+  Tailscale app is signed in (the same link every time), or else a Cloudflare quick tunnel
+  (`brew install cloudflared`). A question already asked that day is answered at once from
   memory. At most 5 questions are answered or waiting, and each visitor can ask 20 in
   5 minutes ([docs/WEBSITE.md](docs/WEBSITE.md#a-public-link-from-this-mac)).
 
