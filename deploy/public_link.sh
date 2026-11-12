@@ -6,7 +6,8 @@
 #   RAG_OFFLINE=1 deploy/public_link.sh    # the offline demo: recorded answers, no models
 #
 # It prints the https://<random words>.trycloudflare.com link on its own and copies it;
-# Ctrl-C stops the website and the link. Each start gives a new link. The website listens on
+# Ctrl-C stops the website and the link. Each start gives a new link; when Cloudflare gives
+# none, it asks again every minute (TUNNEL_TRIES=8 times). The website listens on
 # 127.0.0.1 only, so the tunnel is the one way in, and the Mac is kept awake while it runs
 # (closing the lid still puts it to sleep). The logs go to .cache/website.log and
 # .cache/tunnel.log. Needs: brew install cloudflared.
@@ -47,17 +48,40 @@ for _ in $(seq 90); do
 done
 caffeinate -i -w "$APP" &          # no idle sleep while the website runs
 
-echo "Opening the public link…"
-cloudflared tunnel --no-autoupdate --url "http://127.0.0.1:$PORT" >"$TUNNEL_LOG" 2>&1 &
-TUNNEL=$!
+# One try: sets LINK, or fails once cloudflared has given up (or found nothing in 60 s).
+open_link() {
+    cloudflared tunnel --no-autoupdate --url "http://127.0.0.1:$PORT" >"$TUNNEL_LOG" 2>&1 &
+    TUNNEL=$!
+    for _ in $(seq 60); do
+        LINK=$(grep -Eo 'https://[a-z0-9-]+\.trycloudflare\.com' "$TUNNEL_LOG" | grep -v '//api\.' | head -1 || true)
+        [ -n "$LINK" ] && return 0
+        kill -0 "$TUNNEL" 2>/dev/null || return 1
+        sleep 1
+    done
+    kill "$TUNNEL" 2>/dev/null || true
+    return 1
+}
+
+# Cloudflare's quick-tunnel service sometimes does not answer for a while ("failed to request
+# quick Tunnel"): ask again once a minute for about 10 minutes, with the website kept running.
+# Not faster: too many tries in a row get "429 Too Many Requests".
+TRIES="${TUNNEL_TRIES:-8}"
 LINK=""
-for _ in $(seq 60); do
-    LINK=$(grep -Eo 'https://[a-z0-9-]+\.trycloudflare\.com' "$TUNNEL_LOG" | grep -v '//api\.' | head -1 || true)
-    [ -n "$LINK" ] && break
-    kill -0 "$TUNNEL" 2>/dev/null || { tail -20 "$TUNNEL_LOG" >&2; echo "The tunnel did not start" >&2; exit 1; }
-    sleep 1
+for TRY in $(seq "$TRIES"); do
+    echo "Opening the public link…"
+    open_link && break
+    REASON=$(grep -m1 -E 'failed|ERR' "$TUNNEL_LOG" || tail -1 "$TUNNEL_LOG")
+    echo "  Cloudflare gave no link (try $TRY of $TRIES): $REASON" >&2
+    if [ "$TRY" -lt "$TRIES" ]; then
+        echo "  That is Cloudflare's side; asking again in a minute. Ctrl-C stops."
+        sleep 60
+    fi
 done
-[ -n "$LINK" ] || { echo "No link after 60 s: see $TUNNEL_LOG" >&2; exit 1; }
+if [ -z "$LINK" ]; then
+    echo "No link after $TRIES tries. Cloudflare's quick tunnels are down for now: try again" >&2
+    echo "later (docs/WEBSITE.md, \"A public link from this Mac\"). Log: $TUNNEL_LOG" >&2
+    exit 1
+fi
 printf '%s' "$LINK" | pbcopy 2>/dev/null || true
 
 echo

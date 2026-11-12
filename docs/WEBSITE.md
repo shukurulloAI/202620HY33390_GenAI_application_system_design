@@ -257,6 +257,11 @@ it, so it can be pasted straight away. The logs go to `.cache/website.log` and
 - **The Mac must stay on, online and awake.** The script stops idle sleep while it runs, but
   closing the lid still puts the Mac to sleep. Quick tunnels are for demos and testing:
   Cloudflare gives no uptime guarantee.
+- **When Cloudflare gives no link** ("failed to request quick Tunnel … context deadline
+  exceeded"), its quick-tunnel service is not answering, even when its status page shows no
+  incident. The script keeps the website running and asks again once a minute, 8 times
+  (`TUNNEL_TRIES=20` waits longer); not faster, since too many tries get "429 Too Many
+  Requests". A demo that cannot wait for this needs a named tunnel.
 - **Speed.** One local LLM answers one question at a time, in 15–25 s. A question someone has
   already asked today comes back at once (the answer cache, above). At most 5 questions are
   answered or waiting; the next visitor is asked to try again in a minute.
