@@ -19,6 +19,7 @@ from eval.answer_judge import load_labels
 from eval.cases import load_cases
 from eval.metrics import score
 from rag import config, paths
+from rag.contract import first_bin
 from rag.files import read_jsonl
 
 
@@ -48,7 +49,7 @@ def stability(manifest: dict) -> list[str]:
         for t in read_jsonl(paths.ROOT / v["traces"]):
             a = t.get("answer") or {}
             by_temp.setdefault(temp, {}).setdefault(t["case_id"], []).append(
-                (a.get("status"), a.get("bin") or ""))
+                (a.get("status"), first_bin(a)))
     lines = ["Stability across seeds (a case agrees when every seed gives the same status "
              "and bin; a flip is a case answered under some seeds and not under others):", "",
              "| Temperature | Seeds | Cases | Same status and bin | Abstention flips | "
@@ -76,16 +77,23 @@ def write_summary(spec: dict, manifest: dict, cases: list[dict], out_dir: Path) 
              f"Reference variant: `{ref}`.", ""]
     if stage == "retrieval":
         langs = sorted({c["lang"] for c in cases})
-        lines += ["| Variant | Recall@5 | MRR | nDCG@5 | P@5 | " + " | ".join(
-                      f"R@5 {lang}" for lang in langs) + " | Retrieve s (median) |",
-                  "|---|---|---|---|---|" + "---|" * len(langs) + "---|"]
+        # The router's own measures sit beside retrieval (for experiments on the router):
+        # intent, and the district / neighbourhood when only the question names the place.
+        lines += ["| Variant | Recall@5 | Hit@5 | MRR | nDCG@5 | P@5 | Intent | District | "
+                  "Dong | " + " | ".join(f"R@5 {lang}" for lang in langs)
+                  + " | Route s (median) | Retrieve s (median) |",
+                  "|---|---|---|---|---|---|---|---|---|" + "---|" * len(langs) + "---|---|"]
         for name, result in results.items():
-            r = result["overall"]["retrieval"]
+            o = result["overall"]
+            r = o["retrieval"]
             by_lang = [str(result["by_lang"].get(lang, {}).get("retrieval", {}).get("recall@5"))
                        for lang in langs]
+            route = result["stage_latency_s"].get("route_s", {}).get("median")
             retrieve = result["stage_latency_s"].get("retrieve_s", {}).get("median")
-            lines.append(f"| {name} | {r['recall@5']} | {r['mrr']} | {r['ndcg@5']} | "
-                         f"{r['precision@5']} | " + " | ".join(by_lang) + f" | {retrieve} |")
+            lines.append(f"| {name} | {r['recall@5']} | {r.get('hit@5')} | {r['mrr']} | "
+                         f"{r['ndcg@5']} | {r['precision@5']} | {_pct(o['intent_ok'])} | "
+                         f"{_pct(o['district_ok'])} | {_pct(o['dong_ok'])} | "
+                         + " | ".join(by_lang) + f" | {route} | {retrieve} |")
         lines.append(f"\nn = {results[ref]['overall']['retrieval']['n']} cases with gold chunks.")
     else:
         lines += ["| Variant | Correct | False answers | Bin | Behaviour | Abstain ok | "

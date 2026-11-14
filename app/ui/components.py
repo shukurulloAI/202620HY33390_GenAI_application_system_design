@@ -143,25 +143,47 @@ def show_hero(t: T, status: str) -> None:
 # ---------------------------------------------------------------------------- answer parts
 
 def show_bin(result: dict, t: T) -> None:
-    if not result.get("bin"):
+    items = [i for i in result.get("items") or [] if i.get("bin")]
+    if not items:
         return
     with st.container(border=True, key="bin_card", horizontal=True, wrap=False,
                       vertical_alignment="center", gap="medium"):
         # The sign: a lit green-blue tile with the bin in its ambient light (style.css; the
         # light ends within the 2rem gap). Static HTML, no answer value in it; the bin's name
-        # beside it is escaped Markdown.
+        # beside it is escaped Markdown. Several items: one line per item, in answer order.
         st.markdown(f'<div class="bin-sign">{bin_svg()}</div>', width="content",
                     unsafe_allow_html=True)
         with st.container(key="bin_name", gap=None):
-            st.markdown(f"### {md(result.get('bin_en') or result['bin'])}")
-            st.caption(f"{md(result['bin'])} · {t('bin_note')}")
+            if len(items) > 1:
+                for item in items:
+                    label = f"{md(item['item'])}: " if item.get("item") else ""
+                    st.markdown(f"**{label}{md(item.get('bin_en') or item['bin'])}**")
+                    st.caption(md(item["bin"]))
+                st.caption(t("bin_note"))
+            else:
+                st.markdown(f"### {md(items[0].get('bin_en') or items[0]['bin'])}")
+                st.caption(f"{md(items[0]['bin'])} · {t('bin_note')}")
 
 
 def show_steps(result: dict, t: T) -> None:
-    steps = result.get("how_to_prepare") or []
-    if steps:
-        st.markdown(f":material/checklist: **{t('prepare')}**")
-        st.markdown("\n".join(f"{i}. {md(step)}" for i, step in enumerate(steps, 1)))
+    """Each item's own steps (under the item's name when there are several), then the
+    district's put-out steps."""
+    items = [i for i in result.get("items") or [] if i.get("how_to_prepare")]
+    put_out = result.get("put_out_steps") or []
+    if not items and not put_out:
+        return
+    st.markdown(f":material/checklist: **{t('prepare')}**")
+    several = len(result.get("items") or []) > 1
+    for item in items:
+        if several and item.get("item"):
+            st.markdown(f"*{md(item['item'])}*")
+        st.markdown(numbered(item["how_to_prepare"]))
+    if put_out:
+        st.markdown(numbered(put_out))
+
+
+def numbered(steps: list[str]) -> str:
+    return "\n".join(f"{n}. {md(step)}" for n, step in enumerate(steps, 1))
 
 
 def zone_lines(zone: dict, t: T) -> list[str]:

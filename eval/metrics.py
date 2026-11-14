@@ -36,6 +36,7 @@ import statistics
 from collections import Counter, defaultdict
 
 from eval.cases import by_id, case_id, gold_chunks
+from rag.contract import answer_bins, first_bin
 
 EXPECTED_STATUS = {"answer": "ANSWER", "abstain": "INSUFFICIENT_CONTEXT", "clarify": "CLARIFY",
                    "out_of_scope": "OUT_OF_SCOPE"}
@@ -232,9 +233,12 @@ def score_case(trace: dict, case: dict, citations: dict | None = None) -> dict:
 
     expected_bins = set(case.get("expected_bin") or [])
     answered = status == "ANSWER"
+    item_bins = answer_bins(answer) if answered else []     # 1.0 traces: the top-level bin
     if expected_bins:
-        out["bin"] = answer.get("bin") or ""
+        out["bin"] = first_bin(answer)
         out["bin_ok"] = answered and out["bin"] in expected_bins
+        # v6 several-item answers: every item's bin must be one the case accepts
+        out["wrong_item_bins"] = sorted({b for b in item_bins if b not in expected_bins})
         raw = validation.get("bin_raw") or ""
         from rag.bins import canonical_bin
         out["raw_bin_ok"] = bool(raw) and canonical_bin(raw) in expected_bins
@@ -245,7 +249,8 @@ def score_case(trace: dict, case: dict, citations: dict | None = None) -> dict:
     out["item_withheld"] = answered and bool(expected_bins) and not out["bin"]
     out["false_answer"] = answered and (behaviour != "answer"
                                         or (bool(expected_bins) and bool(out["bin"])
-                                            and not out["bin_ok"]))
+                                            and not out["bin_ok"])
+                                        or bool(out.get("wrong_item_bins")))
     gold = gold_chunks(case)
     if gold and trace.get("candidates"):
         out["retrieval"] = _retrieval(gold, trace, supporting=case.get("supporting_chunk_ids"))
@@ -275,9 +280,9 @@ def score_case(trace: dict, case: dict, citations: dict | None = None) -> dict:
     all_bins = set(case.get("expected_bins_all") or [])
     if all_bins and behaviour == "answer":
         # multi_item / vague_item: every item's (or kind's) bin is named in what the user
-        # reads, by its Korean name or an alias (rag.bins.bins_named_in), or is the answer's bin.
+        # reads, by its Korean name or an alias (rag.bins.bins_named_in), or is an item's bin.
         from rag.bins import bins_named_in
-        named = (bins_named_in(answer.get("answer_text", "")) | {answer.get("bin")}
+        named = (bins_named_in(answer.get("answer_text", "")) | set(item_bins)
                  if answered else set())
         out["bins_all_ok"] = all_bins <= named
         out["bins_all_missing"] = sorted(all_bins - named)

@@ -64,17 +64,17 @@ def test_schedule_method_translation():
     method = row.rules["food"].method
     llm = StubLLM(json.dumps({"text": "1) Houses: use the bag. 2) Flats: use the bin."}))
     answer, record = ScheduleWriter(llm).write([row], "food", "en", None, 3)
-    assert not record["kept_korean"] and "Houses" in answer["how_to_prepare"][0]
+    assert not record["kept_korean"] and "Houses" in answer["put_out_steps"][0]
     assert answer["citations"] == [3] and "[3]" in answer["answer_text"]
     prompt = llm.calls[0]["prompt"]
     assert method in prompt and "Mon" not in prompt and "20:00" not in prompt  # no facts to change
     llm = StubLLM("{}")
-    assert ScheduleWriter(llm).write([row], "food", "ko", None, 1)[0]["how_to_prepare"] == [method]
+    assert ScheduleWriter(llm).write([row], "food", "ko", None, 1)[0]["put_out_steps"] == [method]
     assert not llm.calls                                         # Korean needs no LLM
     for broken in ("not json", "{}", '{"text": ""}', '{"text": null}', '{"text": 1}',
                    '{"lines": ["a"]}'):                          # falls back to the Korean text
         answer, record = ScheduleWriter(StubLLM(broken)).write([row], "food", "en", None, 1)
-        assert answer["how_to_prepare"] == [method] and record["kept_korean"] == [method], broken
+        assert answer["put_out_steps"] == [method] and record["kept_korean"] == [method], broken
         assert "Mon, Wed, Fri, 20:00-24:00" in answer["answer_text"]
     # A language without tables gets English, not a crash.
     assert "Mon, Wed, Fri" in ScheduleWriter(StubLLM("{}")).write([row], "food", "ja", None, 1)[0]["answer_text"]
@@ -172,7 +172,8 @@ def test_schedule_terms_in_glossary():
 
 
 def test_merge_schedule():
-    written = {"status": "ANSWER", "bin": "", "bin_en": "", "how_to_prepare": ["put it out"],
+    written = {"status": "ANSWER", "bin": "", "bin_en": "", "how_to_prepare": [],
+               "put_out_steps": ["put it out"],
                "answer_text": "Food waste: Mon [2]", "citations": [2], "missing": ""}
     assert merge_schedule(None, written) == written
     item = {"status": "ANSWER", "bin": "종이", "bin_en": "paper", "how_to_prepare": ["fold it"],
@@ -180,7 +181,8 @@ def test_merge_schedule():
     both = merge_schedule(item, written)
     assert both["answer_text"] == "Paper bin [1].\n\nFood waste: Mon [2]"
     assert both["bin"] == "종이" and both["citations"] == [1, 2]
-    assert both["how_to_prepare"] == ["fold it", "put it out"]
+    # the item's own steps stay the item's; the district's put-out steps are kept apart
+    assert both["how_to_prepare"] == ["fold it"] and both["put_out_steps"] == ["put it out"]
 
 
 def test_no_collection_days_are_translated_only_when_every_part_is_known():

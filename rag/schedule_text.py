@@ -351,7 +351,8 @@ class ScheduleWriter:
         how, record = self.translate(method_lines(rows, waste_type), lang)
         if how:
             lines.append(f"{TEXT[lang]['how']}: " + " / ".join(how))
-        return {"status": "ANSWER", "bin": "", "bin_en": "", "how_to_prepare": how,
+        return {"status": "ANSWER", "bin": "", "bin_en": "", "how_to_prepare": [],
+                "put_out_steps": how,
                 "answer_text": "\n".join(lines), "citations": sorted(numbers.values()),
                 "missing": ""}, record
 
@@ -362,5 +363,5 @@ def merge_schedule(answer: dict | None, written: dict) -> dict:
         return dict(written)
     return {**answer,
             "answer_text": f"{answer['answer_text'].strip()}\n\n{written['answer_text']}",
-            "how_to_prepare": list(answer.get("how_to_prepare", [])) + written["how_to_prepare"],
+            "put_out_steps": list(answer.get("put_out_steps", [])) + written["put_out_steps"],
             "citations": sorted({*answer.get("citations", []), *written["citations"]})}

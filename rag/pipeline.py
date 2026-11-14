@@ -37,9 +37,10 @@ from rag.config import PipelineConfig
 from rag.context import ContextBudget, default_counter, pack_evidence, schedule_evidence
 from rag.contract import problems
 from rag.gate import MAX_ZONES, GateDecision, decide
-from rag.generate import ANSWER_SCHEMA, build_prompt, parse_answer
+from rag.generate import answer_schema, build_prompt, parse_answer
 from rag.handoff import message
 from rag.llm_client import LLMClient, make_client, model_digest
+from rag.places import read_place
 from rag.retrieve import ItemRetriever
 from rag.router import ASKS_WHEN, Route, Router
 from rag.schedule_text import ScheduleWriter, merge_schedule
@@ -121,7 +122,8 @@ class Pipeline:
                 router_llm = (make_client("ollama", self.cfg.router_model)
                               if self.cfg.router_model else self.llm)
             self.router = Router(router_llm, temperature=self.cfg.temperature,
-                                 seed=self.cfg.seed, repair=self.cfg.router_repair)
+                                 seed=self.cfg.seed, repair=self.cfg.router_repair,
+                                 prompt_version=self.cfg.router_prompt)
         self.counter = counter or default_counter(
             config.LLM_TOKENIZERS.get(self.llm.model_id, config.LLM_TOKENIZER))
         self.budget = ContextBudget()
@@ -175,6 +177,19 @@ class Pipeline:
         with timed(timings, "route_s"):
             route = self.route(question)
         trace["route"] = route.to_trace()
+        if self.cfg.place_reader and not district:
+            place = read_place(question)
+            trace["place"] = place.to_trace() if place else None
+            if place:
+                # Read by code from the table's own names: it wins over the router's guess.
+                # A name in several provinces keeps them all, so the schedule tool asks.
+                router_place = (route.district, route.dong)
+                route.district = place.district
+                route.dong = place.dong or (route.dong if router_place[0] == place.district
+                                            else "")
+                if len(place.provinces) == 1:
+                    province = place.provinces[0]
+                trace["place"]["router_had"] = list(router_place)
         request = Request.resolve(question, route, lang, district, province, dong, waste_type)
         trace["resolved"] = request.to_trace()
 
@@ -240,7 +255,44 @@ class Pipeline:
                 names.append(route.item_ko)
         if self.cfg.rerank_item and names:
             rerank_queries = [*rerank_queries, *names]
-        return self.retriever.search(queries, rerank_queries, item_names=names)
+        if not (route.valid and route.intent != "out_of_scope" and len(route.items) > 1):
+            return self.retriever.search(queries, rerank_queries, item_names=names)
+        return self._retrieve_each(question, route)
+
+    def _retrieve_each(self, question: str, route: Route):
+        """Several items: one search per item, then the reranked lists taken in turn
+        (round-robin, no repeats), so every item has evidence in the top k_final. An item
+        whose Korean rewrite failed the checks is searched with the question instead."""
+        usable = [route.checks.get("rewrite_usable", False),
+                  *(c.get("rewrite_usable", False) for c in route.checks.get("items", []))]
+        items = route.items
+        per_item, runs, timings = [], [], {}
+        for entry, ok in zip(items, usable, strict=False):
+            names = [entry["item"]] + ([entry["item_ko"]] if ok and entry["item_ko"] else [])
+            if ok:
+                queries = {"original": entry["item"], "rewrite": entry["ko_query"]}
+                rerank = [q for q in (entry["ko_query"], entry["item_ko"], entry["item"]) if q]
+            else:
+                queries, rerank = {"original": question}, [question, entry["item"]]
+            candidates, _, record = self.retriever.search(queries, rerank,
+                                                          item_names=[n for n in names if n])
+            for key, value in record.pop("timings").items():
+                timings[key] = round(timings.get(key, 0.0) + value, 3)
+            per_item.append({"item": entry["item"], **record,
+                             "top": [c.chunk_id for c in candidates[:self.cfg.k_final]]})
+            runs.append(candidates)
+        share = max(2, -(-self.cfg.k_final // len(items)))       # ceil(k_final / n)
+        merged, seen = [], set()
+        for depth in range(max(len(r) for r in runs)):
+            for run in runs:
+                if depth < len(run) and run[depth].chunk_id not in seen:
+                    seen.add(run[depth].chunk_id)
+                    merged.append((depth, run[depth]))
+        # the first `share` of each item first, then everything else in turn
+        merged.sort(key=lambda dc: dc[0] >= share)
+        candidates = [replace(c, rank=r) for r, (_, c) in enumerate(merged, 1)]
+        record = {"per_item": per_item, "share": share, "timings": timings}
+        return candidates, candidates[:self.cfg.k_final], record
 
     def _retrieve_items(self, request: Request, route: Route, trace: dict,
                         timings: dict[str, float]) -> list:
@@ -313,7 +365,8 @@ class Pipeline:
         trace["budget"] = budget
         system, prompt = prompt_with(evidence_text)
         with timed(timings, "generate_s"):
-            result = self.llm.generate(system=system, prompt=prompt, json_schema=ANSWER_SCHEMA,
+            result = self.llm.generate(system=system, prompt=prompt,
+                                       json_schema=answer_schema(self.cfg.prompt_version),
                                        temperature=self.cfg.temperature, seed=self.cfg.seed)
         draft, checks = parse_answer(result.text, len(evidence))
         checks["output_truncated"] = result.done_reason == "length"
@@ -324,19 +377,33 @@ class Pipeline:
         # A schedule question with no rows shown: any day the model states is invented.
         days = (schedule_days(llm_rows, request.waste_type) if llm_rows
                 else set() if gate.schedule != "skip" else None)
+        model_answered = draft.get("status") == "ANSWER"       # before validation downgrades
         draft, validation = validate(draft, evidence, days, self.cfg.validation,
                                      item_question=gate.item == "answer")
-        if validation.get("bin_text_conflict") and validation.get("downgraded"):
-            # The text names another bin than the bin field: e.g. a pizza box (종이) whose
-            # greasy inner paper goes in 종량제봉투, with only the second in the text. Ask
-            # once more, saying what was inconsistent; keep the new answer only if it passes
-            # every check. Only answers that would be withheld are retried.
-            note = BIN_CONFLICT_NOTE.format(bin=validation["bin"],
-                                            named=", ".join(validation["bins_in_text"]))
+        conflict = bool(validation.get("bin_text_conflict"))
+        rejected = (self.cfg.generation_retry == "rejected" and model_answered
+                    and bool(validation.get("reasons")))
+        if validation.get("downgraded") and (conflict or rejected):
+            # Ask once more, saying why the answer was rejected; keep the new answer only if
+            # it passes every check. Only answers that would be withheld are retried.
+            #   conflict: the text names another bin than the bin field, e.g. a pizza box
+            #     (종이) whose greasy inner paper goes in 종량제봉투, with only the second in
+            #     the text (always on).
+            #   rejected (generation_retry = "rejected"): any other check failed, most often
+            #     a bin that the cited evidence does not state. On dev v2 (v5) 10 of the 13
+            #     withheld answers had a gold chunk in the evidence: 6 named the right bin
+            #     but cited another number, 4 named another bin.
+            note = (BIN_CONFLICT_NOTE.format(bin=validation["bin"],
+                                             named=", ".join(validation["bins_in_text"]))
+                    if conflict else REJECTED_NOTE.format(
+                        # with "(they state [...])": dev v2 (v6 + router v2) 7 retried answers
+                        # became correct, 4 became false (the chunk was about another item).
+                        # Without it the model repeated itself: 0 correct, 0 false.
+                        reasons="; ".join(validation["reasons"])))
             retry_system, retry_prompt = prompt_with(evidence_text, f"{asked}\n({note})")
             with timed(timings, "generate_retry_s"):
                 retry = self.llm.generate(system=retry_system, prompt=retry_prompt,
-                                          json_schema=ANSWER_SCHEMA,
+                                          json_schema=answer_schema(self.cfg.prompt_version),
                                           temperature=self.cfg.temperature, seed=self.cfg.seed)
             retry_draft, retry_checks = parse_answer(retry.text, len(evidence))
             retry_draft, retry_validation = validate(
@@ -344,7 +411,8 @@ class Pipeline:
                 item_question=gate.item == "answer")
             passed = (retry_draft.get("status") == "ANSWER"
                       and not retry_validation.get("downgraded"))
-            trace["llm"]["bin_conflict_retry"] = {
+            trace["llm"]["retry"] = {
+                "kind": "bin_conflict" if conflict else "rejected", "note": note,
                 "raw_output": retry.text, "done_reason": retry.done_reason,
                 "first_reasons": validation["reasons"], "passed": passed}
             if passed:
@@ -354,7 +422,7 @@ class Pipeline:
         if draft.get("status") not in ("ANSWER", "INSUFFICIENT_CONTEXT"):
             # Not JSON, or a status outside the schema: say nothing rather than guess.
             validation["unusable_output"] = draft.get("status")
-            draft.update(status="INSUFFICIENT_CONTEXT", bin="", bin_en="", citations=[],
+            draft.update(status="INSUFFICIENT_CONTEXT", bin="", bin_en="", citations=[], items=[],
                          missing=draft.get("missing") or "model output was unusable")
             validation["downgraded"] = True
         if validation.get("downgraded"):
@@ -405,6 +473,9 @@ BIN_CONFLICT_NOTE = (
     "Your previous answer gave the bin {bin} but its text named only {named}. Name the bin "
     "for the item itself in the text too; if the source puts a part of the item in another "
     "bin, name both and say which part goes where.")
+REJECTED_NOTE = (
+    "Your previous answer was rejected: {reasons}. Answer again from the same evidence. "
+    "Each bin must be the 구분 category of the evidence you cite for it.")
 
 
 def item_only_question(question: str, route: Route) -> str:

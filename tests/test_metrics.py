@@ -154,3 +154,16 @@ def test_v2_graded_gold_and_every_bin_named():
     missing = score_case(trace, case)
     assert (missing["bins_all_ok"], missing["bins_all_missing"]) == (False, ["음식물"])
     assert not missing["case_ok"] and missing["failure_stage"] == "generation"
+
+
+def test_a_wrong_bin_on_any_item_is_a_false_answer():
+    from eval.metrics import score_case
+    case = {"case_id": "c1", "slice": "multi_item", "expected_behavior": "answer",
+            "expected_bin": ["종이", "음식물"], "expected_bins_all": ["종이", "음식물"]}
+    trace = _trace("ANSWER", "종이", [])
+    trace["answer"]["answer_text"] = "Box (종이), crusts (음식물)."
+    trace["answer"]["items"] = [{"item": "box", "bin": "종이"}, {"item": "crusts", "bin": "음식물"}]
+    assert not score_case(trace, case)["false_answer"]
+    trace["answer"]["items"][1]["bin"] = "플라스틱"
+    row = score_case(trace, case)
+    assert row["false_answer"] and row["wrong_item_bins"] == ["플라스틱"]

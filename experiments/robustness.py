@@ -34,6 +34,7 @@ from eval.metrics import score_case
 from eval.provenance import git_commit, snapshot
 from rag import config, paths
 from rag.bins import BINS, evidence_bins
+from rag.contract import first_bin
 from rag.files import read_jsonl, sha256_file
 from rag.retrieve import Candidate
 
@@ -106,7 +107,7 @@ def outcome(probe: str, row: dict, trace: dict, case: dict, clean_bin: str | Non
     """An ANSWER with no bin (the item part withheld, only the schedule given) names no bin,
     so it counts as abstaining on the item, as in eval/metrics.py."""
     answer = trace["answer"]
-    answered, bin_key = answer["status"] == "ANSWER", answer.get("bin") or ""
+    answered, bin_key = answer["status"] == "ANSWER", first_bin(answer)
     named = answered and bool(bin_key)
     if probe == "negative":
         return "abstained" if not named else (
@@ -179,7 +180,7 @@ def main() -> None:
                 trace = pipeline.run_case(case)
                 row = score_case(trace, case)
                 if probe == "clean":
-                    clean_bins[case["case_id"]] = trace["answer"].get("bin") or ""
+                    clean_bins[case["case_id"]] = first_bin(trace["answer"])
                 result = outcome(probe, row, trace, case, clean_bins.get(case["case_id"]))
                 trace["probe_outcome"] = result
                 counts[result] += 1
@@ -226,7 +227,7 @@ def relabel(cases_path: Path) -> None:
         for trace in traces:
             case = cases[trace["case_id"]]
             if probe == "clean":
-                clean_bins[case["case_id"]] = trace["answer"].get("bin") or ""
+                clean_bins[case["case_id"]] = first_bin(trace["answer"])
             row = score_case(trace, case)
             trace["probe_outcome"] = outcome(probe, row, trace, case,
                                              clean_bins.get(case["case_id"]))

@@ -53,7 +53,7 @@ from urllib.request import urlopen
 from zoneinfo import ZoneInfo
 
 from rag import config, paths
-from rag.contract import check
+from rag.contract import CONTRACT_VERSION, check
 from rag.files import append_jsonl, read_jsonl
 from rag.handoff import korean_sentence
 from rag.texts import LANGUAGES, lang_or_default, text
@@ -255,8 +255,8 @@ def _reporter(progress: Callable[[str], None] | None) -> Callable[[str], None]:
 def unavailable_answer(lang: str | None, district: str | None, dong: str | None,
                        trace_id: str) -> dict:
     return check({
-        "contract_version": "1.0", "status": "INSUFFICIENT_CONTEXT", "lang": lang,
-        "bin": "", "bin_en": "", "how_to_prepare": [],
+        "contract_version": CONTRACT_VERSION, "status": "INSUFFICIENT_CONTEXT", "lang": lang,
+        "items": [], "put_out_steps": [],
         "answer_text": text("UNAVAILABLE", lang), "citations": [],
         "missing": "the assistant failed; see traces/errors.jsonl", "schedule": None,
         "data_date": None, "office_phone": None, "clarify": None, "notes": [],

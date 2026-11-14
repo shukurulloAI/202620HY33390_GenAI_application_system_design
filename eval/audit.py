@@ -31,6 +31,8 @@ import json
 import random
 from pathlib import Path
 
+from rag.contract import answer_bins
+
 ROOT = Path(__file__).resolve().parents[1]
 REPORTS = ROOT / "eval" / "reports"
 SEED = 20261108
@@ -87,7 +89,7 @@ def export(name: str, n: int) -> Path:
         rows.append({"audit_id": f"a{i:02d}", "case_id": item["trace"]["case_id"],
                      "slice": item["slice"], "lang": item["lang"],
                      "question": item["question"], "answer_text": answer["answer_text"],
-                     "bin": answer.get("bin", ""),
+                     "bin": ", ".join(answer_bins(answer)),
                      "evidence": "\n\n".join(_evidence_texts(item["trace"])),
                      "claims": "", "supported": "", "contradicted": "", "bin_correct": "",
                      "notes": ""})

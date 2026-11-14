@@ -96,9 +96,23 @@ class PipelineConfig:
     router_repair: bool = True          # one retry when the Korean rewrite fails the script
                                         # check (rag/router.Router._repair). Dev, with v4:
                                         # 51 -> 53/70 correct (h08, item14), none worse
-    prompt_version: str = "v5"          # E1 on dev: v5 54/70 correct, v4 51, v2 51
+    router_prompt: str = "v2"           # v1: one item | v2: one entry per item (several items)
+                                        # and one search per item. Dev v2 with prompt v6:
+                                        # Recall@5 0.607 -> 0.658 (v1 with v5)
+    place_reader: bool = True           # read the district / neighbourhood by code from the
+                                        # table's names (rag/places.py); the router is the
+                                        # fallback. Dev v2 (v5): 85 -> 91/151 correct, district
+                                        # read 10/19 -> 16/19, gold schedule row 19 -> 25/28
+    prompt_version: str = "v6"          # E1 on dev: v5 54/70 correct, v4 51, v2 51. Dev v2:
+                                        # v6 (one bin per item) + router v2 91/151 correct like
+                                        # v5, 14 false answers vs 9; chosen for several-item
+                                        # answers (decision 2026-11-15)
     conflict_policy: str = "prefer_2026"  # prefer_2026 | none   (E8)
     validation: str = "enforce"         # off | flag | enforce   (PLAN.md §4.9)
+    generation_retry: str = "rejected"  # conflict: retry only a bin/text conflict | rejected:
+                                        # retry any withheld answer, stating the reason. Dev v2
+                                        # (v6 + router v2): rejected 91 -> 98 correct, but
+                                        # 14 -> 18 false answers; chosen anyway (2026-11-15)
     schedule_retrieval: str = "structured"  # structured (typed lookup) | vector | postfilter |
                                             # prefilter; the last three exist only for E4
     schedule_text: str = "code"         # code: days, times and places written by code, the LLM
@@ -111,7 +125,9 @@ class PipelineConfig:
                "bm25_tokenizer": ("kiwi", "bigram"),
                "query_mode": ("original", "rewrite", "both"),
                "rerank_query": ("original", "rewrite", "max"),
-               "prompt_version": ("v0", "v1", "v2", "v3", "v4", "v5"),
+               "prompt_version": ("v0", "v1", "v2", "v3", "v4", "v5", "v6"),
+               "router_prompt": ("v1", "v2"),
+               "generation_retry": ("conflict", "rejected"),
                "conflict_policy": ("prefer_2026", "none"),
                "validation": ("off", "flag", "enforce"),
                "schedule_retrieval": ("structured", "vector", "postfilter", "prefilter"),
