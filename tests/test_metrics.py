@@ -1,6 +1,10 @@
 """Counts over traces."""
 from __future__ import annotations
 
+import math
+
+import pytest
+
 from eval.metrics import schedule_summary
 from rag.schedule_tool import default_table
 
@@ -130,3 +134,23 @@ def test_citation_precision_is_pooled_over_judged_claims():
     precision = score(traces, cases, labels)["overall"]["citation_precision"]
     assert precision == {"k": 3, "n": 4, "rate": 0.75, "cases": 2}   # not the case mean 0.5
     assert score(traces, cases)["overall"]["citation_precision"] is None   # not judged
+
+
+def test_v2_graded_gold_and_every_bin_named():
+    from eval.metrics import score_case
+    case = {"case_id": "c1", "slice": "multi_item", "expected_behavior": "answer",
+            "expected_bin": ["종이", "음식물"], "expected_bins_all": ["종이", "음식물"],
+            "expected_chunk_ids": ["g1"], "supporting_chunk_ids": ["s1"]}
+    trace = _trace("ANSWER", "종이", ["s1", "x", "g1"])
+    trace["answer"]["answer_text"] = "Box with paper (종이) [1]; leftover pizza is food waste (음식물) [2]."
+    row = score_case(trace, case)
+    r = row["retrieval"]
+    # Recall counts required chunks only; precision counts both grades; nDCG is graded.
+    assert (r["recall"], r["precision"], r["gold_rank"]) == (1.0, 0.4, 3)
+    best = 2 + 1 / math.log2(3)
+    assert r["ndcg"] == pytest.approx((1 + 2 / math.log2(4)) / best)
+    assert row["bins_all_ok"] and row["case_ok"]
+    trace["answer"]["answer_text"] = "Put the box with paper (종이) [1]."
+    missing = score_case(trace, case)
+    assert (missing["bins_all_ok"], missing["bins_all_missing"]) == (False, ["음식물"])
+    assert not missing["case_ok"] and missing["failure_stage"] == "generation"

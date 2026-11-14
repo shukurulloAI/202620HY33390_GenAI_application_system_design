@@ -86,6 +86,8 @@ def markdown(name: str, result: dict, meta: dict, show_rows: bool) -> str:
              f"| Expected behaviour (answer / abstain / clarify / out of scope) | "
              f"{fmt_ci(o['behaviour_ok'])} |",
              f"| Bin correct (answerable item cases) | {fmt_ci(o['bin_ok'])} |",
+             *([f"| Every expected bin named (multi-item / vague-item cases) | "
+                f"{fmt(o['bins_all_ok'])} |"] if o.get("bins_all_ok") else []),
              f"| **False answers** (answered when it should not, or wrong bin) | "
              f"{fmt_ci(o['false_answer'])} |",
              f"| Abstained when it should | {fmt(o['abstain_ok'])} |",

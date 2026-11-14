@@ -11,6 +11,8 @@ Definitions (declared so that undefined values are counted, not hidden; §7.3):
     behaviour ok     answer -> ANSWER; abstain -> INSUFFICIENT_CONTEXT or OUT_OF_SCOPE (both
                      decline); clarify -> CLARIFY; out_of_scope -> OUT_OF_SCOPE
     bin ok           ANSWER and its bin is one of expected_bin (item cases only)
+    bins all ok      v2 multi_item / vague_item: every bin in expected_bins_all is named in
+                     the answer; part of case ok
     false answer     ANSWER when the case should not be answered, or with a bin not in
                      expected_bin: the costly error (§4.6)
     retrieval        over cases with gold chunks, on the final candidate order (after rerank).
@@ -41,7 +43,9 @@ ACCEPTED_STATUS = {"answer": {"ANSWER"}, "abstain": {"INSUFFICIENT_CONTEXT", "OU
                    "clarify": {"CLARIFY"}, "out_of_scope": {"OUT_OF_SCOPE"}}
 EXPECTED_INTENT = {"item_direct": "item", "item_tricky": "item", "conflict": "item",
                    "false_premise": "item", "schedule": "schedule", "combined": "both",
-                   "ambiguous_location": "schedule", "out_of_scope": "out_of_scope"}
+                   "ambiguous_location": "schedule", "out_of_scope": "out_of_scope",
+                   "multi_item": "item", "condition": "item", "vague_item": "item",
+                   "bulky": "item", "analogy": "item"}  # natural_phrasing, real_users: per case
 STAGES = ("router", "retrieval", "schedule_tool", "gate", "generation", "validation", "other")
 K = 5
 
@@ -144,20 +148,26 @@ def recall_at_k(gold: list[str], candidates: list[dict], k: int = K) -> float | 
     return len(found) / len(wanted)
 
 
-def _retrieval(gold: list[str], trace: dict, k: int = K) -> dict:
-    """hit = at least one gold chunk in the top k (success@k, also called hit rate); recall =
-    the share of the case's gold chunks in the top k. They differ when a case has several
-    gold chunks: finding 1 of 3 is a hit but recall 1/3."""
-    wanted = set(gold)
+def _retrieval(gold: list[str], trace: dict, k: int = K,
+               supporting: list[str] | None = None) -> dict:
+    """hit = at least one required gold chunk in the top k (success@k, also called hit rate);
+    recall = the share of the case's required gold chunks in the top k. They differ when a
+    case has several: finding 1 of 3 is a hit but recall 1/3. Precision counts required and
+    supporting chunks as relevant; nDCG gives them gain 2 and 1 (graded relevance, Lesson 6).
+    With no supporting chunks (v1) every gain is 2, and nDCG equals the binary one."""
+    wanted, helping = set(gold), set(supporting or []) - set(gold)
     candidates = trace.get("candidates", [])
-    top = candidates[:k]
-    relevant = [_gold_id(c, wanted) is not None for c in top]
+    gains = []
+    for c in candidates[:k]:
+        gains.append(2 if _gold_id(c, wanted) else 1 if _gold_id(c, helping) else 0)
     rank = _rank_of(wanted, trace)
-    dcg = sum(1 / math.log2(i + 2) for i, rel in enumerate(relevant) if rel)
-    ideal = sum(1 / math.log2(i + 2) for i in range(min(len(wanted), k)))
+    dcg = sum(g / math.log2(i + 2) for i, g in enumerate(gains))
+    best = sorted([2] * len(wanted) + [1] * len(helping), reverse=True)[:k]
+    ideal = sum(g / math.log2(i + 2) for i, g in enumerate(best))
     return {"gold_rank": rank, "hit": bool(rank and rank <= k),
             "recall": recall_at_k(gold, candidates, k), "rr": 1 / rank if rank else 0.0,
-            "ndcg": dcg / ideal if ideal else 0.0, "precision": sum(relevant) / k}
+            "ndcg": dcg / ideal if ideal else 0.0,
+            "precision": sum(g > 0 for g in gains) / k}
 
 
 _OWN = {"ko": r"[가-힣]", "zh": r"[\u4e00-\u9fff]", "ru": r"[а-яё]",
@@ -204,7 +214,8 @@ def score_case(trace: dict, case: dict, citations: dict | None = None) -> dict:
     out = {"case_id": case_id(case), "slice": case.get("slice"), "lang": case.get("lang"),
            "split": case.get("split"), "expected": behaviour, "status": status,
            "behaviour_ok": status in ACCEPTED_STATUS.get(behaviour, set()),
-           "intent": route.get("intent"), "intent_expected": EXPECTED_INTENT.get(case.get("slice")),
+           "intent": route.get("intent"),
+           "intent_expected": case.get("expected_intent") or EXPECTED_INTENT.get(case.get("slice")),
            "contract_problems": len(trace.get("contract_problems") or []),
            "json_valid": (trace.get("checks") or {}).get("json_valid"),
            "downgraded": bool(validation.get("downgraded")),
@@ -237,7 +248,7 @@ def score_case(trace: dict, case: dict, citations: dict | None = None) -> dict:
                                             and not out["bin_ok"]))
     gold = gold_chunks(case)
     if gold and trace.get("candidates"):
-        out["retrieval"] = _retrieval(gold, trace)
+        out["retrieval"] = _retrieval(gold, trace, supporting=case.get("supporting_chunk_ids"))
         cited = [c["ref"] for c in answer.get("citations", []) if c["kind"] == "item"]
         if answered and cited:
             out["cites_gold"] = any(c in set(gold) for c in cited)
@@ -261,12 +272,22 @@ def score_case(trace: dict, case: dict, citations: dict | None = None) -> dict:
         out["only_gold_rows"] = bool(shown) and set(shown) <= wanted
         tool_rows = (trace.get("schedule") or {}).get("row_ids", [])
         out["tool_rows_found"] = bool(wanted & set(tool_rows))
+    all_bins = set(case.get("expected_bins_all") or [])
+    if all_bins and behaviour == "answer":
+        # multi_item / vague_item: every item's (or kind's) bin is named in what the user
+        # reads, by its Korean name or an alias (rag.bins.bins_named_in), or is the answer's bin.
+        from rag.bins import bins_named_in
+        named = (bins_named_in(answer.get("answer_text", "")) | {answer.get("bin")}
+                 if answered else set())
+        out["bins_all_ok"] = all_bins <= named
+        out["bins_all_missing"] = sorted(all_bins - named)
     text = _llm_text(trace)
     if answered and text:
         out["language_ok"] = written_in(text, case.get("lang"))
     if behaviour == "answer":
         out["case_ok"] = (answered and out.get("bin_ok", True) is not False
-                          and out.get("rows_found", True) is not False)
+                          and out.get("rows_found", True) is not False
+                          and out.get("bins_all_ok", True) is not False)
     else:
         out["case_ok"] = out["behaviour_ok"]
     out["failure_stage"] = None if out["case_ok"] else failure_stage(out, trace, case)
@@ -297,6 +318,8 @@ def failure_stage(scored: dict, trace: dict, case: dict) -> str:
                 return "generation"
             if scored.get("downgraded"):
                 return "validation"
+        if scored.get("bins_all_ok") is False:
+            return "generation"
         return "other"
     if behaviour in ("abstain", "out_of_scope"):
         return "gate" if gate.get("item") == "answer" or gate.get("schedule") == "answer" \
@@ -348,6 +371,7 @@ def aggregate(rows: list[dict]) -> dict:
         "case_ok": _rate([r["case_ok"] for r in rows]),
         "behaviour_ok": _rate([r["behaviour_ok"] for r in rows]),
         "bin_ok": _rate([r.get("bin_ok") for r in rows if r["expected"] == "answer"]),
+        "bins_all_ok": _rate([r.get("bins_all_ok") for r in rows if "bins_all_ok" in r]),
         "false_answer": _rate([r["false_answer"] for r in rows]),
         "abstain_ok": _rate([r["behaviour_ok"] for r in rows
                              if r["expected"] in ("abstain", "out_of_scope")]),

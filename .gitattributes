@@ -1,0 +1,3 @@
+# Evaluation case files keep LF on every OS: their SHA-256 is recorded in split_manifest.json.
+eval/cases/**/*.jsonl text eol=lf
+eval/cases/**/*.json text eol=lf

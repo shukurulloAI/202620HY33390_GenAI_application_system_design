@@ -1,0 +1,195 @@
+{
+ "_about": "Names of the 16 v2 template items (eval/make_cases.py sample_items) in six languages, written to fit every v2 template of that language. extra: also_gold = more required chunks, also_supporting = supporting chunks (eval/cases/LABELLING.md), also_bins = more accepted bins.",
+ "names": {
+  "item2018_0086": {
+   "en": "an old photocopier",
+   "ko": "복사기",
+   "zh": "复印机",
+   "vi": "máy photocopy cũ",
+   "uz": "eski nusxa ko'chirish apparati",
+   "ru": "старый копировальный аппарат"
+  },
+  "item2018_0196": {
+   "en": "an electric rice cooker",
+   "ko": "전기밥솥",
+   "zh": "电饭锅",
+   "vi": "nồi cơm điện",
+   "uz": "elektr guruch pishirgich",
+   "ru": "электрические рисоварки"
+  },
+  "item2018_0161": {
+   "en": "a set of barbell weights",
+   "ko": "역기",
+   "zh": "杠铃",
+   "vi": "bộ tạ đòn",
+   "uz": "shtanga",
+   "ru": "штанга"
+  },
+  "item2018_0069": {
+   "en": "a box of old nails",
+   "ko": "못",
+   "zh": "钉子",
+   "vi": "đinh cũ",
+   "uz": "eski mixlar",
+   "ru": "старые гвозди"
+  },
+  "item2018_0092": {
+   "en": "old window blinds",
+   "ko": "블라인드",
+   "zh": "百叶窗帘",
+   "vi": "rèm sáo cũ",
+   "uz": "eski jalyuzi",
+   "ru": "старые жалюзи"
+  },
+  "item2018_0107": {
+   "en": "a rice storage bin",
+   "ko": "쌀통",
+   "zh": "米桶",
+   "vi": "thùng đựng gạo",
+   "uz": "guruch saqlash qutisi",
+   "ru": "ларь для риса"
+  },
+  "item2018_0083": {
+   "en": "a few bricks",
+   "ko": "벽돌",
+   "zh": "砖头",
+   "vi": "mấy viên gạch",
+   "uz": "g'ishtlar",
+   "ru": "кирпичи"
+  },
+  "item2018_0163": {
+   "en": "a pencil sharpener",
+   "ko": "연필깎이",
+   "zh": "卷笔刀",
+   "vi": "đồ gọt bút chì",
+   "uz": "qalamtarash",
+   "ru": "точилки для карандашей"
+  },
+  "item2018_0121": {
+   "en": "a kitchen scrubbing sponge",
+   "ko": "수세미",
+   "zh": "洗碗用的百洁布",
+   "vi": "miếng rửa chén",
+   "uz": "idish yuvish gubkasi",
+   "ru": "губки для мытья посуды"
+  },
+  "item2018_0113": {
+   "en": "a brown paper envelope",
+   "ko": "갈색 종이 서류봉투",
+   "zh": "牛皮纸文件袋",
+   "vi": "phong bì giấy màu nâu",
+   "uz": "jigarrang qog'oz konvert",
+   "ru": "коричневые бумажные конверты"
+  },
+  "item2018_0275": {
+   "en": "old posters",
+   "ko": "포스터",
+   "zh": "旧海报",
+   "vi": "áp phích cũ",
+   "uz": "eski plakatlar",
+   "ru": "старые плакаты"
+  },
+  "item2018_0089": {
+   "en": "an empty plastic spray bottle",
+   "ko": "플라스틱 분무기",
+   "zh": "塑料喷壶",
+   "vi": "bình xịt nhựa",
+   "uz": "plastik purkagich",
+   "ru": "пластиковые пульверизаторы"
+  },
+  "item2018_0059": {
+   "en": "a plastic megaphone",
+   "ko": "플라스틱 메가폰",
+   "zh": "塑料喇叭",
+   "vi": "cái loa cầm tay bằng nhựa",
+   "uz": "plastik ruporlar",
+   "ru": "пластиковые рупоры"
+  },
+  "item2018_0072": {
+   "en": "an old straw hat",
+   "ko": "밀짚모자",
+   "zh": "草帽",
+   "vi": "mũ rơm cũ",
+   "uz": "somon shlyapa",
+   "ru": "соломенные шляпы"
+  },
+  "item2018_0117": {
+   "en": "a washing machine",
+   "ko": "세탁기",
+   "zh": "洗衣机",
+   "vi": "máy giặt",
+   "uz": "kir yuvish mashinasi",
+   "ru": "стиральные машины"
+  },
+  "item2018_0002": {
+   "en": "old furniture",
+   "ko": "가구",
+   "zh": "旧家具",
+   "vi": "đồ nội thất cũ",
+   "uz": "eski mebel",
+   "ru": "старая мебель"
+  }
+ },
+ "extra": {
+  "item2018_0086": {
+   "also_gold": [
+    "rule2026_017",
+    "guide2018_p16"
+   ]
+  },
+  "item2018_0196": {
+   "also_gold": [
+    "rule2026_018",
+    "guide2018_p16"
+   ]
+  },
+  "item2018_0117": {
+   "also_gold": [
+    "rule2026_017",
+    "guide2018_p16"
+   ]
+  },
+  "item2018_0069": {
+   "also_gold": [
+    "rule2026_033"
+   ]
+  },
+  "item2018_0161": {
+   "also_supporting": [
+    "rule2026_033"
+   ]
+  },
+  "item2018_0113": {
+   "also_supporting": [
+    "rule2026_006",
+    "guide2018_p06"
+   ]
+  },
+  "item2018_0275": {
+   "also_supporting": [
+    "rule2026_006",
+    "guide2018_p06"
+   ],
+   "note": "rule2026_006 excludes waterproof-coated posters (방수 가공 포스터) from paper; ordinary posters are paper."
+  },
+  "item2018_0089": {
+   "also_supporting": [
+    "rule2026_011",
+    "guide2018_p14",
+    "faq2018_027"
+   ]
+  },
+  "item2018_0059": {
+   "also_supporting": [
+    "rule2026_011",
+    "guide2018_p14"
+   ]
+  },
+  "item2018_0002": {
+   "also_supporting": [
+    "guide2018_p16",
+    "note2026_01"
+   ]
+  }
+ }
+}

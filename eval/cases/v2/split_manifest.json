@@ -1,0 +1,81 @@
+{
+  "version": "v2",
+  "seed": 20261108,
+  "test_share": 0.3,
+  "created": "2026-11-14T20:03:58",
+  "git_commit": "5628bc181cceb42195d7d9e6b20437bccffb2f6a",
+  "frozen": false,
+  "frozen_note": "DRAFT: not frozen; rebuild after the review, then run without --draft.",
+  "n": {
+    "all": 216,
+    "dev": 151,
+    "test": 65
+  },
+  "by_slice": {
+    "dev": {
+      "condition": 10,
+      "multi_item": 8,
+      "vague_item": 7,
+      "item_tricky": 14,
+      "conflict": 10,
+      "false_premise": 8,
+      "no_evidence": 10,
+      "out_of_scope": 7,
+      "schedule": 15,
+      "combined": 10,
+      "ambiguous_location": 7,
+      "bulky": 7,
+      "natural_phrasing": 10,
+      "item_direct": 17,
+      "analogy": 11
+    },
+    "test": {
+      "condition": 4,
+      "multi_item": 4,
+      "vague_item": 3,
+      "item_tricky": 6,
+      "conflict": 4,
+      "false_premise": 4,
+      "no_evidence": 4,
+      "out_of_scope": 3,
+      "schedule": 7,
+      "combined": 4,
+      "ambiguous_location": 3,
+      "bulky": 3,
+      "natural_phrasing": 4,
+      "item_direct": 7,
+      "analogy": 5
+    }
+  },
+  "by_lang": {
+    "dev": {
+      "en": 33,
+      "vi": 24,
+      "uz": 16,
+      "ru": 22,
+      "ko": 30,
+      "zh": 26
+    },
+    "test": {
+      "zh": 7,
+      "en": 21,
+      "ru": 5,
+      "ko": 13,
+      "uz": 11,
+      "vi": 8
+    }
+  },
+  "seen_in_development": 47,
+  "sha256": {
+    "dev": "cfd5b83f8b03732338aeefa5a8e2a60076cbdaac061d3d80d0e135894d749e00",
+    "test": "0d0a8e2918fc9e8d276c1027da32b9ceeb35e23e2db0139806f0164ee2a6dd19",
+    "handwritten": "a70b2e79ca4635866e0dcbfb13bd8ad19ce75de5ba5b7cec9d9ca3e22513d973",
+    "item_names": "1378d71c5ddf65506df36fca6a68cf313532c0fdfc31305dcaf8acdbd686a22d",
+    "item_chunks": "bf523327f7e499b840bd402d405cdcd235a64354683b9a81c08f220811f01dbc",
+    "schedule": "1395dcc72472a3b35f07d59826a76c593acac9ce28732aef5bdd8b4a9f437bb7"
+  },
+  "missing": {
+    "real_users": "No real questions from international students were collected (PLAN.md §7.2). The slice is reported as missing."
+  },
+  "authorship": "Drafted with AI assistance from the lecture-guided design (eval/cases/LABELLING.md); questions, gold labels and translations reviewed by the team before the freeze."
+}
