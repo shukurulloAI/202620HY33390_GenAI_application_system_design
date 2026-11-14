@@ -33,9 +33,10 @@ from datetime import UTC, datetime
 
 from rag import config
 from rag.answer import build_answer
+from rag.bins import BIN_WASTE_TYPE
 from rag.config import PipelineConfig
 from rag.context import ContextBudget, default_counter, pack_evidence, schedule_evidence
-from rag.contract import problems
+from rag.contract import answer_bins, problems
 from rag.gate import MAX_ZONES, GateDecision, decide
 from rag.generate import answer_schema, build_prompt, parse_answer
 from rag.handoff import message
@@ -218,6 +219,9 @@ class Pipeline:
         if gate.status == "ANSWER":
             emit("write")
         draft, evidence = self._draft(request, route, gate, selected, rows, day, trace, timings)
+        if self._adds_local_days(request, draft):
+            request, schedule, day, rows, gate = self._local_days(request, draft, gate,
+                                                                  schedule, day, rows, trace)
         if self._code_writes_schedule(rows):
             draft, evidence, gate = self._add_schedule_text(draft, evidence, request, gate, rows,
                                                             day, trace, timings)
@@ -325,6 +329,41 @@ class Pipeline:
         wanted = request.intent in ("schedule", "both") or (
             request.intent == "unknown" and request.district)
         return bool(wanted and request.district)
+
+    def _adds_local_days(self, request: Request, draft: dict | None) -> bool:
+        """An item question with an area chosen on the page (not read from the question):
+        the answer also gets the collection days of the answered bin there."""
+        return (request.intent == "item" and request.location_source == "input"
+                and bool(request.district) and self.cfg.schedule_text == "code"
+                and bool(draft) and draft.get("status") == "ANSWER")
+
+    def _local_days(self, request: Request, draft: dict, gate: GateDecision,
+                    schedule: ScheduleResult | None, day: DayRef | None,
+                    rows: list[ScheduleRow], trace: dict):
+        """The collection days for the answered bin's type (rag.bins.BIN_WASTE_TYPE) in the
+        chosen area, written by code like any schedule answer. Added only when the gate would
+        answer that schedule question as it is (one province, at most MAX_ZONES zones, same
+        days); otherwise the item answer stays as it was and nothing is asked."""
+        types = sorted({BIN_WASTE_TYPE[b] for b in answer_bins(draft) if b in BIN_WASTE_TYPE})
+        record = {"bins": answer_bins(draft), "types": types, "added": False}
+        trace["local_days"] = record
+        if not types:
+            record["why"] = "no collection type for the bin"
+            return request, schedule, day, rows, gate
+        waste_type = types[0] if len(types) == 1 else None          # several: every type
+        local = self.schedule.lookup(request.district, request.province, request.dong,
+                                     waste_type)
+        verdict = decide("schedule", [], local, request.district, request.dong, None, "")
+        if verdict.schedule != "answer":
+            record["why"] = "; ".join(verdict.reasons)
+            return request, schedule, day, rows, gate
+        record["added"] = True
+        trace["schedule"] = local.to_trace()
+        gate = replace(gate, schedule="answer", reasons=[
+            *gate.reasons, f"area chosen: {waste_type or 'all'} collection days added"])
+        trace["gate"] = gate.to_trace()
+        request = replace(request, waste_type=waste_type)
+        return request, local, resolve_day(request.day_ref), local.rows[:MAX_ZONES], gate
 
     def _code_writes_schedule(self, rows: list[ScheduleRow]) -> bool:
         """With schedule_text = code the generator never sees days, times or places."""

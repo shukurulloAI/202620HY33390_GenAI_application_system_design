@@ -166,11 +166,9 @@ def show_bin(result: dict, t: T) -> None:
 
 
 def show_steps(result: dict, t: T) -> None:
-    """Each item's own steps (under the item's name when there are several), then the
-    district's put-out steps."""
+    """Each item's own steps (under the item's name when there are several)."""
     items = [i for i in result.get("items") or [] if i.get("how_to_prepare")]
-    put_out = result.get("put_out_steps") or []
-    if not items and not put_out:
+    if not items:
         return
     st.markdown(f":material/checklist: **{t('prepare')}**")
     several = len(result.get("items") or []) > 1
@@ -178,8 +176,14 @@ def show_steps(result: dict, t: T) -> None:
         if several and item.get("item"):
             st.markdown(f"*{md(item['item'])}*")
         st.markdown(numbered(item["how_to_prepare"]))
-    if put_out:
-        st.markdown(numbered(put_out))
+
+
+def show_put_out(result: dict, t: T) -> None:
+    """The district's put-out method (from its table), once, under its own heading."""
+    steps = result.get("put_out_steps") or []
+    if steps:
+        st.markdown(f":material/move_to_inbox: **{t('put_out')}**")
+        st.markdown(numbered(steps))
 
 
 def numbered(steps: list[str]) -> str:
@@ -243,8 +247,29 @@ def show_sources(result: dict, t: T) -> None:
             t("source_data_date", date=c["data_date"]) if c.get("data_date")
             and str(c["data_date"]) not in source else None) if x)
         label = f"[{c.get('n')}] {source}" + (f" · {where}" if where else "")
-        with st.expander(f":material/description: {md(label)}"):   # icon=… would hide the arrow
-            st.text(service.source_text(c)["text"])
+        # A click opens the source in a pop-up: the page of the official PDF and the text
+        # the assistant read (the [n] in the answer text is the same number).
+        if st.button(md(label), key=f"source_{result.get('trace_id')}_{c.get('n')}",
+                     icon=":material/description:", type="tertiary"):
+            show_source_dialog(c, label, t)
+
+
+def show_source_dialog(citation: dict, label: str, t: T) -> None:
+    @st.dialog(t("source_title"), width="large")
+    def dialog() -> None:
+        st.markdown(f"**{md(label)}**")
+        document = service.source_document(citation)
+        pdf, page = document if document else (None, None)
+        image = service.page_image(pdf, page) if pdf and page else None
+        if image:
+            st.image(image, caption=t("source_page_image", page=page), width="stretch")
+        st.markdown(f"**{t('source_excerpt')}**")
+        st.text(service.source_text(citation)["text"])
+        if pdf:
+            st.download_button(t("download_pdf"), data=pdf.read_bytes(), file_name=pdf.name,
+                               mime="application/pdf", icon=":material/download:",
+                               key=f"pdf_{citation.get('n')}")
+    dialog()
 
 
 def show_handoff(result: dict, t: T) -> None:
@@ -340,6 +365,7 @@ def show_result(result: dict, request: dict, t: T, on_pick: Callable[[str, str],
             st.markdown(text)
             show_steps(result, t)
             show_schedule(result, t)
+            show_put_out(result, t)
             show_clarify(result, t, on_pick, disabled)
             show_handoff(result, t)
             show_sources(result, t)

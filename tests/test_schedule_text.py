@@ -65,6 +65,7 @@ def test_schedule_method_translation():
     llm = StubLLM(json.dumps({"text": "1) Houses: use the bag. 2) Flats: use the bin."}))
     answer, record = ScheduleWriter(llm).write([row], "food", "en", None, 3)
     assert not record["kept_korean"] and "Houses" in answer["put_out_steps"][0]
+    assert "Houses" not in answer["answer_text"]          # shown once, under its own heading
     assert answer["citations"] == [3] and "[3]" in answer["answer_text"]
     prompt = llm.calls[0]["prompt"]
     assert method in prompt and "Mon" not in prompt and "20:00" not in prompt  # no facts to change

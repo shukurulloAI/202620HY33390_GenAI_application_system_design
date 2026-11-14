@@ -49,25 +49,25 @@ PLACE_TERMS = ("문전수거", "거점수거")
 TEXT = {
     "en": {"days": ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"), "sep": ", ",
            "no_days": "no days listed", "no_time": "time not given", "where": "Where",
-           "how": "How", "depends": "{waste} depends on your neighbourhood:",
+           "depends": "{waste} depends on your neighbourhood:",
            "yes": "yes", "no": "no",
            "today": "Today", "tonight": "Tonight", "tomorrow": "Tomorrow",
            "no_collection": "No collection"},
     "ko": {"days": ("월", "화", "수", "목", "금", "토", "일"), "sep": ", ",
            "no_days": "요일 정보 없음", "no_time": "시간 정보 없음", "where": "장소",
-           "how": "방법", "depends": "{waste}는 지역마다 다릅니다:",
+           "depends": "{waste}는 지역마다 다릅니다:",
            "yes": "배출 가능", "no": "배출 불가",
            "today": "오늘", "tonight": "오늘 밤", "tomorrow": "내일",
            "no_collection": "미수거일"},
     "zh": {"days": ("周一", "周二", "周三", "周四", "周五", "周六", "周日"), "sep": "、",
            "no_days": "未列出日期", "no_time": "未提供时间", "where": "地点",
-           "how": "方法", "depends": "{waste}因您所在的社区而异：",
+           "depends": "{waste}因您所在的社区而异：",
            "yes": "可以", "no": "不可以",
            "today": "今天", "tonight": "今晚", "tomorrow": "明天",
            "no_collection": "不收运日"},
     "vi": {"days": ("Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"),
            "sep": ", ", "no_days": "không có ngày", "no_time": "không có giờ",
-           "where": "Địa điểm", "how": "Cách làm",
+           "where": "Địa điểm",
            "depends": "{waste} tùy theo khu phố của bạn:",
            "yes": "được", "no": "không được",
            "today": "Hôm nay", "tonight": "Tối nay", "tomorrow": "Ngày mai",
@@ -75,14 +75,14 @@ TEXT = {
     "uz": {"days": ("dushanba", "seshanba", "chorshanba", "payshanba", "juma", "shanba",
                     "yakshanba"),
            "sep": ", ", "no_days": "kunlar ko'rsatilmagan", "no_time": "vaqt ko'rsatilmagan",
-           "where": "Joy", "how": "Usul", "depends": "{waste} mahallangizga bog'liq:",
+           "where": "Joy", "depends": "{waste} mahallangizga bog'liq:",
            "yes": "mumkin", "no": "mumkin emas",
            "today": "Bugun", "tonight": "Bugun kechqurun", "tomorrow": "Ertaga",
            "no_collection": "Yig'ilmaydigan kunlar"},
     "ru": {"days": ("понедельник", "вторник", "среда", "четверг", "пятница", "суббота",
                     "воскресенье"),
            "sep": ", ", "no_days": "дни не указаны", "no_time": "время не указано",
-           "where": "Где", "how": "Как", "depends": "{waste}: зависит от вашего района:",
+           "where": "Где", "depends": "{waste}: зависит от вашего района:",
            "yes": "можно", "no": "нельзя",
            "today": "Сегодня", "tonight": "Сегодня вечером", "tomorrow": "Завтра",
            "no_collection": "Дни без вывоза"},
@@ -348,9 +348,9 @@ class ScheduleWriter:
         no_collection = write_no_collection(rows, lang)
         if no_collection:
             lines.append(no_collection)
+        # The put-out method goes to put_out_steps only: the page shows it once, under its
+        # own heading (app/ui/components.show_put_out), not also in the text.
         how, record = self.translate(method_lines(rows, waste_type), lang)
-        if how:
-            lines.append(f"{TEXT[lang]['how']}: " + " / ".join(how))
         return {"status": "ANSWER", "bin": "", "bin_en": "", "how_to_prepare": [],
                 "put_out_steps": how,
                 "answer_text": "\n".join(lines), "citations": sorted(numbers.values()),

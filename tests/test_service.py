@@ -294,3 +294,17 @@ def test_a_full_queue_is_busy_but_a_cached_answer_still_comes(traces, monkeypatc
     release.set()
     running.join(5)
     assert service._inflight["n"] == 0
+
+
+def test_a_guide_citation_points_to_its_pdf_page():
+    from rag import paths
+    item = {"kind": "item", "ref": "x", "source": "환경부 재활용품 분리배출 가이드라인 (2018) p.28",
+            "page": 28, "year": 2018, "text": "[분리배출 품목] 계란껍질"}
+    assert service.source_document(item) == (paths.GUIDE_2018_PDF, 28)
+    note = {**item, "source": "분리수거 등에 관한 지침 [별표 1] (2026)", "page": None, "year": 2026}
+    assert service.source_document(note) == (paths.ANNEX_2026_PDF, None)      # PDF, no page
+    row = {"kind": "schedule", "ref": "1", "source": "District data", "text": "row"}
+    assert service.source_document(row) is None                              # a table row
+    png = service.page_image(paths.GUIDE_2018_PDF, 28)
+    assert png.startswith(b"\x89PNG")
+    assert service.page_image(paths.GUIDE_2018_PDF, 99) is None              # 36 pages

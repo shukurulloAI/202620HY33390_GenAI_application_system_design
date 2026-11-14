@@ -220,3 +220,40 @@ def test_progress_names_each_stage_and_changes_nothing(table, replies, score, in
     observed = pipeline.answer(question, **inputs, progress=seen.append)
     assert seen == stages
     assert without_id(observed) == without_id(plain["answer"])
+
+
+def test_a_chosen_area_adds_the_collection_days_of_the_answered_bin(table):
+    """An item question that asks nothing about days, with the area chosen on the page:
+    eggshells -> 종량제봉투 -> the general-waste days there, written by code."""
+    trace, llm, _ = run([EGG_ROUTE, EGG_ANSWER], [candidate(EGGSHELL, 0.9)], table,
+                        lang="ko", district="성동구", dong="행당동")
+    a = trace["answer"]
+    assert a["status"] == "ANSWER" and first_bin(a) == "종량제봉투"
+    assert trace["local_days"] == {"bins": ["종량제봉투"], "types": ["general"], "added": True}
+    assert trace["resolved"]["intent"] == "item" and trace["gate"]["schedule"] == "answer"
+    assert {e["kind"] for e in trace["evidence"]} == {"item", "schedule"}
+    assert a["schedule"] and a["schedule"]["zones"]
+    assert "Do not mention days" not in llm.calls[1]["prompt"]   # asked as an item question
+    assert len(llm.calls) == 2                                   # no extra model call
+
+
+def test_an_area_named_only_in_the_question_adds_no_days(table):
+    named = route(item="eggshells", item_ko="계란껍질", ko_query="계란껍질 분리배출 방법",
+                  district="성동구")
+    trace, _, _ = run([named, EGG_ANSWER], [candidate(EGGSHELL, 0.9)], table,
+                      question="I live in Seongdong-gu. Where do eggshells go?", lang="ko")
+    assert trace["resolved"]["location_source"] == "router"
+    assert "local_days" not in trace and trace["answer"]["schedule"] is None
+
+
+def test_a_bin_without_collection_days_adds_none(table):
+    from rag.pipeline import Pipeline, Request
+    pipeline = Pipeline(PipelineConfig(), ScriptedLLM(), write_traces=False,
+                        retriever=FakeRetriever([]), schedule=table, counter=CharCounter())
+    request = Request("Where do batteries go?", "item", "ko", "성동구", None, "행당동", None,
+                      None, "input")
+    draft = {"status": "ANSWER", "items": [{"item": "battery", "bin": "전용함"}]}
+    trace = {}
+    out = pipeline._local_days(request, draft, None, None, None, [], trace)
+    assert out == (request, None, None, [], None)                 # unchanged
+    assert trace["local_days"]["why"] == "no collection type for the bin"

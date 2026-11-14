@@ -1,9 +1,9 @@
 {
  "about": "Real answers from the full system, for the website's offline mode (RAG_OFFLINE=1) and docs/WEBSITE.md. Regenerate with python -m experiments.make_examples.",
  "contract_version": "2.0",
- "git_commit": "e576ad2ff97356a38633febda71d2d0f86873ddb",
+ "git_commit": "f5b999d418647a0d140adb6c609d69e0e247c1d5",
  "git_dirty": true,
- "generated": "2026-11-15T03:22:06",
+ "generated": "2026-11-15T03:54:40",
  "examples": [
   {
    "name": "item-en",
@@ -49,7 +49,7 @@
      "Based on the 2018 national guideline; your district may have newer local rules."
     ],
     "handoff": null,
-    "trace_id": "a0355c2a-5071-467a-9cc1-be2d2f29a5e4"
+    "trace_id": "4bc6338c-cd02-4d9d-a795-3df8a9246521"
    }
   },
   {
@@ -66,7 +66,7 @@
     "put_out_steps": [
      "1) general housing-food-waste pay-as-you-throw bag put into dedicated container dispose on designated day, designated time in front of your house2) apartment complex-dispose food waste in designated container within the complex"
     ],
-    "answer_text": "Food waste (음식물쓰레기): Mon, Wed, Fri, 20:00-24:00 [1]\nWhere: Door-to-door collection (in front of your house) (문전수거) - 집앞\nNo collection: Chuseok, Seollal (Lunar New Year), Sat, may change (추석명절+설명절+매주토요일(변동가능))\nHow: 1) general housing-food-waste pay-as-you-throw bag put into dedicated container dispose on designated day, designated time in front of your house2) apartment complex-dispose food waste in designated container within the complex",
+    "answer_text": "Food waste (음식물쓰레기): Mon, Wed, Fri, 20:00-24:00 [1]\nWhere: Door-to-door collection (in front of your house) (문전수거) - 집앞\nNo collection: Chuseok, Seollal (Lunar New Year), Sat, may change (추석명절+설명절+매주토요일(변동가능))",
     "citations": [
      {
       "n": 1,
@@ -135,7 +135,7 @@
      "The district data is dated 2020-12-08 (more than a year old). Please confirm with the office."
     ],
     "handoff": null,
-    "trace_id": "377294b6-5395-4592-a587-b1a5d3c51882"
+    "trace_id": "e953ead8-f2ad-475d-ab86-0edfe57e076d"
    }
   },
   {
@@ -171,7 +171,7 @@
     "put_out_steps": [
      "1) Remove all kinds of foreign objects from containers2) Separate items composed of mixed materials as much as possible by material3) Put items in a transparent plastic bag and dispose of them by category"
     ],
-    "answer_text": "Empty the PET bottles, remove labels and other attached parts, compress them if possible, and close the lid before putting them in the plastic bin (플라스틱) [1, 2, 3, 4, 5].\n\nRecyclables (재활용품): Mon, Wed, Fri, 20:00-24:00 [6]\nWhere: Door-to-door collection (in front of your house) (문전수거) - 집앞\nNo collection: Chuseok, Seollal (Lunar New Year), Sat, may change (추석명절+설명절+매주토요일(변동가능))\nHow: 1) Remove all kinds of foreign objects from containers2) Separate items composed of mixed materials as much as possible by material3) Put items in a transparent plastic bag and dispose of them by category",
+    "answer_text": "Empty the PET bottles, remove labels and other attached parts, compress them if possible, and close the lid before putting them in the plastic bin (플라스틱) [1, 2, 3, 4, 5].\n\nRecyclables (재활용품): Mon, Wed, Fri, 20:00-24:00 [6]\nWhere: Door-to-door collection (in front of your house) (문전수거) - 집앞\nNo collection: Chuseok, Seollal (Lunar New Year), Sat, may change (추석명절+설명절+매주토요일(변동가능))",
     "citations": [
      {
       "n": 1,
@@ -291,7 +291,7 @@
      "The district data is dated 2020-12-08 (more than a year old). Please confirm with the office."
     ],
     "handoff": null,
-    "trace_id": "86229a87-437d-4de1-837c-85d76e910564"
+    "trace_id": "a31c6d24-b73b-48a9-894c-09f9b954123e"
    }
   },
   {
@@ -360,7 +360,7 @@
      "2018년 전국 지침에 따른 안내입니다. 거주하시는 지역에 더 새로운 규정이 있을 수 있습니다."
     ],
     "handoff": null,
-    "trace_id": "547c069a-f0e5-47ff-adb8-93c4c21defd9"
+    "trace_id": "4a738374-12a8-46f2-b842-bc3693f59996"
    }
   },
   {
@@ -407,7 +407,7 @@
      "依据2018年全国指南；您所在的地区可能有更新的地方规定。"
     ],
     "handoff": null,
-    "trace_id": "2d1b040d-fb86-4941-ac85-c43f2138e931"
+    "trace_id": "2abfef95-dbd4-434b-bc26-e4ab11f234fb"
    }
   },
   {
@@ -424,7 +424,7 @@
     "put_out_steps": [
      "1) general housing-food-waste pay-as-you-throw bag put into dedicated container dispose on designated day, designated time in front of your house2) apartment complex-dispose food waste in designated container within the complex"
     ],
-    "answer_text": "Rác thải thực phẩm (음식물쓰레기): Thứ Hai, Thứ Tư, Thứ Sáu, 20:00-24:00 [1]\nĐịa điểm: Thu gom trước cửa nhà (문전수거) - 집앞\nNgày không thu gom: Tết Chuseok, Tết Seollal (Tết Âm lịch), Thứ Bảy, có thể thay đổi (추석명절+설명절+매주토요일(변동가능))\nCách làm: 1) general housing-food-waste pay-as-you-throw bag put into dedicated container dispose on designated day, designated time in front of your house2) apartment complex-dispose food waste in designated container within the complex",
+    "answer_text": "Rác thải thực phẩm (음식물쓰레기): Thứ Hai, Thứ Tư, Thứ Sáu, 20:00-24:00 [1]\nĐịa điểm: Thu gom trước cửa nhà (문전수거) - 집앞\nNgày không thu gom: Tết Chuseok, Tết Seollal (Tết Âm lịch), Thứ Bảy, có thể thay đổi (추석명절+설명절+매주토요일(변동가능))",
     "citations": [
      {
       "n": 1,
@@ -493,7 +493,7 @@
      "Dữ liệu của quận có ngày 2020-12-08 (đã hơn một năm). Vui lòng xác nhận lại với văn phòng."
     ],
     "handoff": null,
-    "trace_id": "a3445803-5871-44c7-829f-b5190a0110be"
+    "trace_id": "28343b78-f231-4879-9e9a-d0bd096988e0"
    }
   },
   {
@@ -515,15 +515,27 @@
        "boshqarilayotilgan bo'lsa, boshqarilayotib chiqarish"
       ],
       "citations": [
+       1,
        2,
        3,
+       4,
        5
       ]
      }
     ],
     "put_out_steps": [],
-    "answer_text": "Plastik shishalar (마요네즈용기, 케찹용기, 치약용기) - plastik bo'lib, boshqarilayotilgan bo'lsa, boshqarilayotib chiqarish kerak [2, 3, 5].",
+    "answer_text": "Plastik shishalar (젖병, 마요네즈용기, 케찹용기, 식용유용기, 치약용기) - bu barchasi plastik (플라스틱) bo'lib, boshqarilayotilgan bo'lsa boshqarilayotib chiqarilishi kerak [1, 2, 3, 4, 5].",
     "citations": [
+     {
+      "n": 1,
+      "kind": "item",
+      "ref": "fd3fb9c3-e8ab-52bf-a1ea-b26fdc5a01ba",
+      "source": "환경부 재활용품 분리배출 가이드라인 (2018) p.32",
+      "page": 32,
+      "year": 2018,
+      "data_date": null,
+      "text": "[분리배출 품목] 젖병 (아기용품)\n구분: 플라스틱 (plastics), 재질별분리 (separate by material)\n배출방법: 젖병의 몸체와 윗부분의 젖꼭지는 분리하여 재질에 맞게 배출\n출처: 환경부 재활용품 분리배출 가이드라인 (2018) p.32"
+     },
      {
       "n": 2,
       "kind": "item",
@@ -545,6 +557,16 @@
       "text": "[분리배출 품목] 케찹용기\n구분: 플라스틱 (plastics), 재질별분리 (separate by material)\n배출방법: 내부를 헹구고 플라스틱 또는 재질에 맞는 분리수거함으로 배출\n출처: 환경부 재활용품 분리배출 가이드라인 (2018) p.33"
      },
      {
+      "n": 4,
+      "kind": "item",
+      "ref": "baf7dc8b-a3cf-521e-9a79-73e86aba0db0",
+      "source": "환경부 재활용품 분리배출 가이드라인 (2018) p.30",
+      "page": 30,
+      "year": 2018,
+      "data_date": null,
+      "text": "[분리배출 품목] 식용유용기 (플라스틱)\n구분: 플라스틱 (plastics)\n배출방법: 모두 사용 후 배출\n출처: 환경부 재활용품 분리배출 가이드라인 (2018) p.30"
+     },
+     {
       "n": 5,
       "kind": "item",
       "ref": "dbbe9e51-5386-5baf-a6d4-4518b4d88864",
@@ -564,7 +586,7 @@
      "2018-yilgi umummilliy qo'llanmaga asoslangan; tumaningizda yangiroq mahalliy qoidalar bo'lishi mumkin."
     ],
     "handoff": null,
-    "trace_id": "7f361227-d29f-4541-9b14-936c5f793407"
+    "trace_id": "6d6c3abb-2ba8-4a21-acaa-058757636d02"
    }
   },
   {
@@ -584,8 +606,7 @@
       "bin_en": "glass bottles",
       "how_to_prepare": [
        "вылить содержимое",
-       "промыть водой",
-       "удалить все иные материалы",
+       "промыть от остатков",
        "осторожно выкинуть, чтобы не сломать"
       ],
       "citations": [
@@ -597,7 +618,7 @@
      }
     ],
     "put_out_steps": [],
-    "answer_text": "Стеклянные бутылки выкидываются в специальный контейнер для стеклянных бутылок (유리병). Сначала вылейте содержимое, промойте водой и удалите все иные материалы. Будьте осторожны, чтобы не сломать бутылку [1, 2, 3, 4].",
+    "answer_text": "Стеклянные бутылки выкидываются в специальный контейнер для стеклянных бутылок (유리병). Сначала вылейте содержимое, промойте и осторожно выкиньте, чтобы не сломать [1, 2, 3, 4].",
     "citations": [
      {
       "n": 1,
@@ -649,7 +670,7 @@
      "По национальному правилу 2026 года (분리수거 등에 관한 지침, действует с 2026-01-01)."
     ],
     "handoff": null,
-    "trace_id": "f9258ff1-c213-432c-b3f2-b178c5775e13"
+    "trace_id": "f9b02925-42af-4643-8731-b486463467d3"
    }
   },
   {
@@ -727,7 +748,7 @@
       "district collection data for 강동구"
      ]
     },
-    "trace_id": "a1427f19-552e-40bb-b798-28d99e78beb2"
+    "trace_id": "3d6004bf-efac-4a12-acc7-caed4f89f9da"
    }
   },
   {
@@ -755,7 +776,7 @@
     },
     "notes": [],
     "handoff": null,
-    "trace_id": "76abfc14-e8d7-48ae-949a-035c209568c6"
+    "trace_id": "d35f2464-243f-4075-bd42-8ccaaf29796b"
    }
   },
   {
@@ -803,7 +824,7 @@
     },
     "notes": [],
     "handoff": null,
-    "trace_id": "3aebb171-25f1-4243-829a-4a51c931ad04"
+    "trace_id": "5660ca7a-a671-49ea-981d-e27b18f8eba0"
    }
   },
   {
@@ -835,7 +856,7 @@
       "national sorting guides (2018 guideline, 2026 rules)"
      ]
     },
-    "trace_id": "edea4044-65d6-476a-8416-66dfe4ed2c54"
+    "trace_id": "5a92b959-9387-4bf0-8b11-4dd4b9d33878"
    }
   },
   {
@@ -859,7 +880,7 @@
     "clarify": null,
     "notes": [],
     "handoff": null,
-    "trace_id": "8d32bcb1-22b4-4b45-b6a7-5b440f90ba00"
+    "trace_id": "c59ecb0d-f542-4edf-8a10-762d607ae905"
    }
   }
  ]
