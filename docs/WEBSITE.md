@@ -41,8 +41,12 @@ service.pipeline_settings()   # models and Ollama digests once loaded (maintaine
   what is happening. `ask()` is told `"queued"` when another question is being answered (one
   local LLM answers one at a time) and `"loading"` while the models load.
 - **Location:** pass `district` and `dong` from the dropdowns, using the Korean names in
-  `locations()`. Leave them out if the user didn't choose. The router then reads the location
-  from the question (`"I live in Seongdong-gu Haengdang-dong"`).
+  `locations()`. Leave them out if the user didn't choose. The location is then read from the
+  question (`"I live in Seongdong-gu Haengdang-dong"`, `"Пучхон"`, `"부천 송내1동"`): first by
+  code from the district table's names in Korean, romanised and Cyrillic spelling
+  (`rag/places.py`), else by the router. A chosen area also adds the collection days of the
+  answered bin to an item answer that asks nothing about days ("Where does a pizza box go?"
+  with 성동구 chosen also gets 성동구's recycling days). An area read from the question does not.
 - **Districts with `has_data: false`** (도봉구, 강동구) are real districts with no data. Keep
   them in the list: the assistant says it has no data and gives the office instead.
 
@@ -54,7 +58,7 @@ other question gets an example marked as such in `notes`.
 
 | `status` | Show |
 |---|---|
-| `ANSWER` | `answer_text`, the bin card (`bin_en` with `bin`), `how_to_prepare`, the schedule card if `schedule` is set, source cards, `notes`. Also `handoff` and `clarify` if present: an answer can cover only one part of the question. |
+| `ANSWER` | `answer_text`, the bin card (one line per entry of `items`), each item's `how_to_prepare`, the schedule card if `schedule` is set, `put_out_steps`, the sources, `notes`. Also `handoff` and `clarify` if present: an answer can cover only one part of the question. |
 | `CLARIFY` | `answer_text`, then `clarify.question` with `clarify.options` as buttons. When the user picks one, ask again with it filled in (see below). |
 | `INSUFFICIENT_CONTEXT` | `answer_text` and the handoff card. Never show a bin. |
 | `OUT_OF_SCOPE` | `answer_text` only. |
@@ -64,10 +68,11 @@ other question gets an example marked as such in `notes`.
 | Field | How to show it |
 |---|---|
 | `answer_text` | **Keep the line breaks.** It has several lines, and `[n]` marks cite `citations[n]`. A partial answer says in its first or last line which part failed. |
-| `bin`, `bin_en` | `bin_en` big, `bin` (Korean) small: the Korean is what's printed on the bags. |
-| `how_to_prepare` | A numbered list. |
-| `schedule.zones[]` | One card per zone: `zone`, `areas`, `place`, then for each type in `by_type` its `days`, `start`–`end` and `next_dates`. `day_check` answers "tonight?"-style questions. Show `no_collection` and `stale`. |
-| `citations[]` | Source cards: `source`, then `page` and `year` for guides or `data_date` for district rows, with `text` in an expander. `text` is the Korean evidence the model read. |
+| `items[]` | One entry per item the question asks about (contract 2.0; a one-item answer has one entry). The bin card shows `bin_en` big and `bin` (Korean) small: the Korean is what's printed on the bags. With several items, one line per item: `item: bin_en`, with `bin` under it. |
+| `items[].how_to_prepare` | Under "How to prepare it": a numbered list per item, under the item's name when there are several. |
+| `put_out_steps` | Under its own heading "How to put it out", after the schedule card: the district's put-out method from its table (translated). It is not repeated in `answer_text`. |
+| `schedule.zones[]` | Set for a schedule question, and for an item question when the user chose an area: then only the collection type of the answered bin (종이 → recycling days, 음식물 → food waste days, …), and nothing for a bin without collection days (battery box, electronics pick-up). One card per zone: `zone`, `areas`, `place`, then for each type in `by_type` its `days`, `start`–`end` and `next_dates`. `day_check` answers "tonight?"-style questions. Show `no_collection` and `stale`. |
+| `citations[]` | One button per source: `[n] source`, then `page` and `year` for guides or `data_date` for district rows. A click opens a pop-up with the cited page of the official PDF as an image (`service.source_document`, `service.page_image`), `text` (the Korean evidence the model read) and a download button for the whole guide. A district row shows `text` only. |
 | `notes` | Small grey lines under the answer, already in the user's language. |
 | `handoff` | A card: `contact` (who to call), `phone` as a `tel:` link, `korean_sentence` in large text with a copy button (it's for the office staff), and `checked` as a list. |
 | `clarify.options` | Up to 30 buttons. The values are Korean place names, so show them as they are. |

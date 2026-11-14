@@ -285,16 +285,23 @@ Prompt sections: **Task**, **Context**, **Constraints**, **Output**.
 - Few-shot examples: one supported item answer, one schedule answer, one abstention.
 - Temperature 0; seed recorded.
 
-Output JSON:
+Output JSON (answer contract 2.0, `rag/contract.py`):
 ```json
 {"status": "ANSWER | INSUFFICIENT_CONTEXT | CLARIFY",
- "bin": "투명페트병", "bin_en": "clear PET bottles",
- "how_to_prepare": ["empty", "remove label", "crush", "close cap"],
+ "items": [{"item": "PET bottle", "bin": "투명페트병", "bin_en": "clear PET bottles",
+            "how_to_prepare": ["empty", "remove label", "crush", "close cap"],
+            "citations": [1]}],
  "schedule": {"days": "...", "time": "...", "place": "..."},
+ "put_out_steps": ["..."],
  "answer_text": "...",
  "citations": [{"n": 1, "chunk_id": "..."}, {"n": 2, "row_id": "..."}],
  "data_date": "2024-xx-xx", "office_phone": "...", "missing": null}
 ```
+
+Contract 1.0 (the system frozen for the test run) had one `bin`, `bin_en` and `how_to_prepare`
+at the top level. 2.0 keeps them only in `items`, one entry per item the question asks about
+(prompt v6 asks for one record per item; a v5 answer becomes a one-item list), and keeps the
+district's put-out method apart in `put_out_steps`.
 
 `schedule`, `data_date` and `office_phone` are filled by `pipeline.schedule_fields` from the tool's rows, never by the LLM. The schedule part of `answer_text` is written by code too (`rag/schedule_text.py`): the generator sees item evidence only, and a small LLM call translates the free-text `method` field, which falls back to English and then to the Korean text if it fails. Uzbek, Vietnamese and Russian method text goes to English until a native speaker has checked them (`METHOD_LANGUAGE`). `schedule_text = llm` keeps the old behaviour, and the baseline uses it. With several zones or waste types each value is labelled, `data_date` is the oldest date, and `schedule` also keeps the full detail (`status`, `message`, `options`, `zones`).
 

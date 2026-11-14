@@ -99,7 +99,7 @@ The rows of different districts are near-duplicates, so plain vector search show
 
 ## 6. Generation contract, validation and handoff (Lessons 1, 4, 7)
 
-**Generator.** qwen2.5:7b through Ollama, with temperature 0 and seed 7. Output is constrained to a JSON schema: status, bin, how_to_prepare, answer_text with `[n]` citations, citations and missing. The context is built under a token budget (8,192-token context, 768 reserved for the answer). The generator sees **item evidence only**: days, times and places are written by code from the table, in the user's language. In Phase 2 the LLM dropped and invented days in 7 of 19 schedule answers, and writing them in code fixed that. The LLM only translates the free-text method line, with its own prompt.
+**Generator.** qwen2.5:7b through Ollama, with temperature 0 and seed 7. Output is constrained to a JSON schema: status, bin, how_to_prepare, answer_text with `[n]` citations, citations and missing (prompt v5, the frozen system). Prompt v6, the default since 2026-11-15, returns one record per item instead (item, bin, steps, citations; §8.7). The context is built under a token budget (8,192-token context, 768 reserved for the answer). The generator sees **item evidence only**: days, times and places are written by code from the table, in the user's language. In Phase 2 the LLM dropped and invented days in 7 of 19 schedule answers, and writing them in code fixed that. The LLM only translates the free-text method line, with its own prompt.
 
 **Prompt versions (E1).** Only the prompt changes between these variants; retrieval, gate and validation stay the same (dev, n = 70, router repair off):
 
@@ -305,6 +305,25 @@ The median is 21.7 s per question on an Apple M3 Pro (36 GB) with local models (
 | Total, all questions | 21.7 | 21.2 |
 
 The two splits have different cases, so only the reranker row is a controlled comparison. The test numbers in §8.1 stay valid for v2.1, because no answer changed. About 87% of the remaining time is the two LLM calls (router about 7 s, generator about 13 s). The generator's full prompt, about 2,600 tokens, is evaluated on every call (`prompt_eval_count` ≈ the counted prompt). The router and the generator take turns on one model, so neither keeps its cached prompt prefix. Giving Ollama two parallel slots (`OLLAMA_NUM_PARALLEL=2`) could keep both cached. It counts only if a dev run then gives the same answers, and it has not been tried yet. Skipping the router for questions whose place comes from the dropdowns would change answers, so it belongs to v3.
+
+### 8.7 After the test run: the v2 dev set and the current default (dev only)
+
+Everything above describes the system frozen for the test run (prompt v5, router v1). Later work used a larger draft case set, `eval/cases/v2/` (216 cases: 151 dev, 65 test; not frozen), with new slices for several items, vague items and analogies, and the Lesson 6 metric definitions (true Recall@5, Hit@5, claim-level citation precision and coverage). **None of the following has been run on a held-out test split.**
+
+| System (dev v2, n = 151) | Correct | False answers | Bin (n = 104) | Every bin named (n = 18) | Recall@5 |
+|---|---|---|---|---|---|
+| Frozen system (prompt v5, router v1) | 85 | 9 | 59 | 3 | 0.607 |
+| + place reader | 91 | 9 | 59 | 3 | 0.607 |
+| + prompt v6 and router v2 (several items) | 91 | 14 | 55 | 4 | 0.658 |
+| **+ retry of withheld answers = current default** | **98** | **18** | **63** | **5** | **0.658** |
+
+The first two rows are saved runs (`eval/reports/dev2-v5`, `dev2-v5-places`). The last two come from runs whose report folders were removed when the results were tidied up, so they cannot be re-scored; a new uncached run of the current default would give a saved record again.
+
+- **Place reader** (`rag/places.py`). The district and neighbourhood are read by code from the district table's own names, in Korean, Revised Romanization and Kontsevich Cyrillic ("Guro-gu", "Пучхон", "부천 송내1동"), before the router's guess. Districts read right: 10 → 16 of 19; gold schedule row shown: 19 → 25 of 28. No answer got worse. Chinese-character names (富平区) are not covered.
+- **Several items** (prompt v6, router v2). The router returns one entry per item, each item is searched on its own and the lists are taken in turn, and the generator returns one record per item, each checked against its own cited evidence. Recall@5 rises (0.607 → 0.658), but false answers rise too (9 → 14): v6 answers some questions v5 abstained on, with a bin from a chunk about another item (an old dining table → 음식물).
+- **Retry of withheld answers.** An answer that validation would withhold is asked once more, with the reason, including the bin the cited evidence states. 7 more answers are correct, and 4 more are false, because the model copies that bin even when the chunk is about another item. A version without the bin hint fixed nothing (the 7B model repeated its answer). The current default (v6, router v2, retry) was chosen for its correct answers and several-item support, **at twice the false-answer rate of the frozen system (18 against 9 of 151)**.
+- **Tried and not kept** (dev v2, retrieval only; the result folders were removed): hybrid search stays best (E3); the reranker gives no Recall@5 gain on dev v2 (0.607 with it, 0.619 without) but its score is what the gate uses (E5); reranking with the Korean queries only changes nothing for the cases it loses (E13); keeping the hybrid order for the evidence raises Hit@5 (0.779 → 0.817) but needs a new gate threshold (E14); a third query describing the item in the guides' words (name, materials, type) gives Recall@5 0.633 and one more case, for one more LLM call of about 2.5 s, and was removed (E12). A check that each cited chunk is about its item (by the reranker score or by name similarity) catches only about half the false answers and drops many right ones, offline on the saved traces.
+- **Website.** Answers follow contract 2.0 (`items` with per-item steps, `put_out_steps`). Sources open the cited page of the official PDF in a pop-up. An item question with an area chosen also shows that area's collection days for the answered bin (종이 → recycling days); an area read from the question does not.
 
 ## 9. Failure analysis (Lesson 6)
 

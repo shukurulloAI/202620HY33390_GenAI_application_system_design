@@ -102,19 +102,29 @@ audit has not been done yet; see the report's §11.
 
 ```
 question
- -> router (LLM): intent, item, Korean rewrite, district/dong, waste type, day   rag/router.py
- -> item retrieval: dense (bge-m3) + BM25 (kiwi) -> RRF -> cross-encoder rerank  rag/retrieve.py
+ -> router (LLM): intent, items (each with a Korean rewrite), district/dong,     rag/router.py
+    waste type, day
+ -> place reader: district/dong read by code from the table's names (Korean,     rag/places.py
+    romanised, Cyrillic); the router is the fallback
+ -> item retrieval, once per item: dense (bge-m3) + BM25 (kiwi) -> RRF           rag/retrieve.py
+    -> cross-encoder rerank; several items' lists taken in turn
  -> schedule tool: typed lookup + date check, no LLM                             rag/schedule_tool.py
  -> gate: answer / abstain / clarify / out of scope                              rag/gate.py
- -> context under a token budget -> generator (LLM, JSON schema), items only     rag/context.py, rag/generate.py
- -> validation: allowed bins, bin supported by cited evidence, citations         rag/validate.py
+ -> context under a token budget -> generator (LLM, JSON schema): one record     rag/context.py, rag/generate.py
+    per item (bin, steps, citations)
+ -> validation: allowed bins, each item's bin stated by its own cited evidence;  rag/validate.py
+    a withheld answer is asked once more with the reason
+ -> chosen area + item question: the collection days of the answered bin added   rag/pipeline.py
  -> schedule text: days, times, places by code; method translated                rag/schedule_text.py
  -> answer dict + handoff (office phone, Korean sentence) when it cannot answer  rag/answer.py, rag/handoff.py
 ```
 
 `rag/pipeline.py` runs these stages. All settings live in one `PipelineConfig` (`rag/config.py`).
-`config.DEFAULT` is the full system; `config.BASELINE` is the Phase 1 system (dense only, no
-router, rerank or gate, prompt v1).
+`config.DEFAULT` is the full system: prompt v6 (one bin per item), router v2 (one search per
+item), the place reader and the retry of withheld answers. `config.BASELINE` is the Phase 1
+system (dense only, no router, rerank or gate, prompt v1). The system frozen for the test run
+(docs/REPORT.md) is prompt v5 with router v1:
+`--set prompt_version=v5 --set router_prompt=v1 --set generation_retry=conflict --set place_reader=false`.
 
 ```bash
 python -m rag "..." --baseline                          # Phase 1 system
@@ -134,7 +144,9 @@ from rag import service
 answer = service.ask("Where do I throw away a pizza box?", lang="en",
                      district="성동구", dong="행당1동")    # province=, waste_type= optional
 service.save_feedback(answer["trace_id"], "up", "clear answer")
-service.source_text(answer["citations"][0])   # full text for a source card
+service.source_text(answer["citations"][0])   # full text for a source
+service.source_document(answer["citations"][0])  # (PDF path, page) of a guide citation, else None
+service.page_image(pdf, page)                    # that page as PNG bytes (the source pop-up)
 service.locations(); service.glossary(); service.languages(); service.health()
 service.warm_up()     # load the pipeline and the Ollama models now (the website does this at start)
 service.data_reviews()  # owner and review date per source (data/manual/stewardship.json)
@@ -170,17 +182,18 @@ Answer dict:
 |---|---|
 | `status` | `ANSWER`, `INSUFFICIENT_CONTEXT` (abstain), `CLARIFY` (ask the user), `OUT_OF_SCOPE` |
 | `lang` | Language of the answer |
-| `bin`, `bin_en` | Canonical bin (`rag/bins.py`), e.g. `종량제봉투` / "general waste (pay-as-you-throw bag)" |
-| `how_to_prepare`, `answer_text` | Steps and the answer in the user's language, with `[n]` citations. `answer_text` can have several lines |
-| `citations` | `{n, kind: item/schedule, ref: chunk_id or 관리번호, source}` |
-| `schedule` | From the tool, never the LLM: `days`, `time`, `place`, and `zones` with next dates, `day_check`, office, phone, data date, `stale` |
+| `items` | One entry per item asked about: `{item, bin, bin_en, how_to_prepare, citations}`. `bin` is a canonical bin (`rag/bins.py`), e.g. `종량제봉투` / "general waste (pay-as-you-throw bag)"; `how_to_prepare` holds that item's steps in the user's language |
+| `answer_text` | The answer in the user's language, with `[n]` citations; can have several lines |
+| `put_out_steps` | The district's put-out method (from its table, translated), when a schedule is shown |
+| `citations` | `{n, kind: item/schedule, ref: chunk_id or 관리번호, source, page, year, data_date, text}` |
+| `schedule` | For a schedule question, or an item question with an area chosen (then the answered bin's collection type only). From the tool, never the LLM: `days`, `time`, `place`, and `zones` with next dates, `day_check`, office, phone, data date, `stale` |
 | `data_date`, `office_phone` | Oldest data date of the rows shown; office phone |
 | `missing` | What could not be answered |
 | `clarify` | `{question, options}` when `status = CLARIFY` (e.g. which 중구); up to 30 options |
 | `handoff` | When it cannot answer: office, phone, a Korean sentence to show, what was checked |
 | `notes` | Source-year and data-age warnings |
 | `trace_id` | ID of the trace behind this answer |
-| `contract_version` | `1.0`; the full schema is `docs/answer_schema.json` (`rag/contract.py`) |
+| `contract_version` | `2.0` (1.0 had a top-level `bin`, `bin_en`, `how_to_prepare`); the full schema is `docs/answer_schema.json` (`rag/contract.py`) |
 
 Schedule tool on its own (no models needed):
 ```bash
@@ -234,7 +247,10 @@ model revisions, cases SHA-256, git commit) and `summary.md` (one row per varian
 each variant gained or lost). `--cases` defaults to `eval/cases/dev.jsonl` (the developer probes
 if that file is missing; probe runs write to `experiments/results/<id>/`). It refuses a test
 file without `--allow-test`. Paths inside older
-manifests are the paths at the time of that run.
+manifests are the paths at the time of that run. Another case set goes to its own folder:
+`--cases eval/cases/v2/dev.jsonl` writes `experiments/results/dev_v2/<id>/`, and
+`--reuse VARIANT=TRACES` files a finished `eval.run_eval` run as a variant instead of running it
+again.
 
 ## Evaluation
 
@@ -309,6 +325,12 @@ The page has the following:
 - **Light and dark themes.** Both meet WCAG AA contrast, and axe-core finds no accessibility
   violations in Chromium (`python -m pytest tests/e2e -m e2e`, after
   `pip install -r requirements/e2e.txt`).
+- **Sources.** Each source under an answer is a button. It opens a pop-up with the cited page
+  of the official PDF, the text the assistant read and a download button for the whole guide
+  (`data/raw/item_guides/`, also copied into the Docker image).
+- **Several items, and your area.** A question about several items gets one bin and one list
+  of steps per item. With an area chosen, an item answer also shows that area's collection days
+  for the answered bin; the area's put-out method has its own heading.
 - **Maintainer panel.** `RAG_ADMIN=1` adds a panel with the models, digests and data-review dates.
 - **Public link.** `deploy/public_link.sh` shares the website through Tailscale Funnel when the
   Tailscale app is signed in (the same link every time), or else a Cloudflare quick tunnel
