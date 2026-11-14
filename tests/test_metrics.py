@@ -96,3 +96,37 @@ def test_audit_kappa_and_pick():
     picked = pick(rows, 6)
     assert len(picked) == 6 and {r["slice"] for r in picked} == {"a", "b", "c"}
     assert pick(rows, 6) == picked                             # fixed seed
+
+
+def test_recall_counts_every_gold_chunk_and_hit_counts_any():
+    """Lesson 6: Recall@k = gold found in the top k / all gold. Finding 1 of 2 is a hit."""
+    from eval.metrics import recall_at_k, score_case
+    case = {"case_id": "c1", "slice": "item_direct", "expected_behavior": "answer",
+            "expected_bin": ["종량제봉투"], "expected_chunk_ids": ["g1", "g2"]}
+    one = score_case(_trace("ANSWER", "종량제봉투", ["x", "g1", "y"]), case)["retrieval"]
+    assert (one["hit"], one["recall"]) == (True, 0.5)
+    both = score_case(_trace("ANSWER", "종량제봉투", ["g2", "g1"]), case)["retrieval"]
+    assert both["recall"] == 1.0
+    # A gold chunk below the cutoff is not found; a repeated candidate is counted once.
+    deep = [{"chunk_id": c, "rank": r, "metadata": {}} for r, c in
+            enumerate(["g1", "g1", "a", "b", "c", "g2"], 1)]
+    assert recall_at_k(["g1", "g2"], deep, k=5) == 0.5
+    # Matched by legacy ID too; no gold = undefined.
+    legacy = [{"chunk_id": "u", "rank": 1, "metadata": {"legacy_id": "item2018_0001"}}]
+    assert recall_at_k(["item2018_0001"], legacy) == 1.0
+    assert recall_at_k([], legacy) is None
+
+
+def test_citation_precision_is_pooled_over_judged_claims():
+    from eval.metrics import score
+    cases = [{"case_id": c, "slice": "item_direct", "lang": "en", "expected_behavior": "answer",
+              "expected_bin": ["종량제봉투"]} for c in ("a", "b", "c")]
+    traces = []
+    for cid in ("a", "b", "c"):
+        t = _trace("ANSWER", "종량제봉투", [])
+        t["case_id"] = cid
+        traces.append(t)
+    labels = {"a": {"cited": 3, "supported": 3}, "b": {"cited": 1, "supported": 0}}
+    precision = score(traces, cases, labels)["overall"]["citation_precision"]
+    assert precision == {"k": 3, "n": 4, "rate": 0.75, "cases": 2}   # not the case mean 0.5
+    assert score(traces, cases)["overall"]["citation_precision"] is None   # not judged

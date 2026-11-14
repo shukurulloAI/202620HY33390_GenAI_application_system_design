@@ -24,6 +24,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+from eval.answer_judge import load_labels
 from eval.cases import load_cases
 from eval.metrics import score
 from eval.provenance import snapshot
@@ -33,6 +34,7 @@ from rag.config import load_config
 from rag.files import read_jsonl, sha256_file
 
 REPORT_DIR = paths.ROOT / "eval" / "reports"
+NOT_JUDGED = "not judged (python -m eval.answer_judge <traces>, then --rescore)"
 REPLAYED = " (not valid: some LLM replies were replayed from the cache)"
 
 
@@ -62,6 +64,11 @@ def fmt(rate: dict | None) -> str:
     return "–" if not rate else f"{rate['k']}/{rate['n']} ({rate['rate']:.0%})"
 
 
+def judged(rate: dict | None) -> str:
+    """A judge metric: k/n claims or facts, or how to get it when the traces were not judged."""
+    return fmt(rate) if rate else NOT_JUDGED
+
+
 def fmt_ci(rate: dict | None) -> str:
     """fmt plus the 95% Wilson interval, for the headline rates."""
     return "–" if not rate else f"{fmt(rate)}, 95% CI {fmt_interval(wilson(rate['k'], rate['n']))}"
@@ -88,12 +95,16 @@ def markdown(name: str, result: dict, meta: dict, show_rows: bool) -> str:
              f"| Router intent | {fmt(o['intent_ok'])} |",
              f"| Router district / dong (place only in the question) | {fmt(o['district_ok'])} / "
              f"{fmt(o['dong_ok'])} |",
-             f"| Retrieval Recall@5 / MRR / nDCG@5 / P@5 (n={r['n']}) | {r['recall@5']} / "
-             f"{r['mrr']} / {r['ndcg@5']} / {r['precision@5']} |",
+             f"| Retrieval Recall@5 / Hit@5 / MRR / nDCG@5 / P@5 (n={r['n']}) | "
+             f"{r['recall@5']} / {r.get('hit@5')} / {r['mrr']} / {r['ndcg@5']} / "
+             f"{r['precision@5']} |",
              f"| Gate TP / FP / FN / TN (n={g['n']}) | {g['tp']} / {g['fp']} / {g['fn']} / "
              f"{g['tn']} (FP rate {g['fp_rate']}, FN rate {g['fn_rate']}) |",
-             f"| Cites a gold chunk / citation precision | {fmt(o['cites_gold'])} / "
-             f"{o['citation_precision']} |",
+             f"| Cites a gold chunk (answers citing an item chunk) | {fmt(o['cites_gold'])} |",
+             f"| Citation precision (cited claims supported by their cited sources, judge) | "
+             f"{judged(o.get('citation_precision'))} |",
+             f"| Citation coverage (all claims supported by their own citations, judge) | "
+             f"{judged(o.get('citation_coverage'))} |",
              f"| Answer in the asked language (script) | {fmt(o['language_ok'])} |",
              f"| JSON valid | {fmt(o['json_valid'])} |",
              f"| Downgraded by validation | {o['downgraded']} |",
@@ -140,7 +151,8 @@ def rescore(name: str) -> None:
     out = REPORT_DIR / name
     meta = json.loads((out / "report.json").read_text(encoding="utf-8"))["meta"]
     cases = load_cases(paths.ROOT / meta["cases_file"])[:meta["n_cases"]]
-    result = score(read_jsonl(paths.ROOT / meta["traces_file"]), cases)
+    traces_file = paths.ROOT / meta["traces_file"]
+    result = score(read_jsonl(traces_file), cases, load_labels(traces_file))
     meta["rescored"] = {"time": datetime.now().isoformat(timespec="seconds"), **snapshot()}
     (out / "report.json").write_text(json.dumps({"meta": meta, **result}, ensure_ascii=False,
                                                 indent=1), encoding="utf-8")
@@ -185,7 +197,7 @@ def main() -> None:
     else:
         traces, settings, replayed = run(cases, args.config, args.set, args.llm,
                                          out / "traces.jsonl", args.cache)
-    result = score(traces, cases)
+    result = score(traces, cases, load_labels(args.traces or out / "traces.jsonl"))
     meta = {"name": args.name, "cases_file": paths.relative(args.cases.resolve()),
             "cases_sha256": sha256_file(args.cases), "n_cases": len(cases),
             "traces_file": (str(args.traces) if args.traces

@@ -13,7 +13,14 @@ Definitions (declared so that undefined values are counted, not hidden; §7.3):
     bin ok           ANSWER and its bin is one of expected_bin (item cases only)
     false answer     ANSWER when the case should not be answered, or with a bin not in
                      expected_bin: the costly error (§4.6)
-    retrieval        over cases with gold chunks, on the final candidate order (after rerank)
+    retrieval        over cases with gold chunks, on the final candidate order (after rerank).
+                     Recall@5 = distinct gold chunks in the top 5 / all gold chunks of the case
+                     (Lesson 6); hit@5 = at least one gold chunk in the top 5
+    citation precision  cited claims the cited sources support / all cited claims
+    citation coverage   claims supported by their own citations / all claims (uncited too).
+                     Both are summed over claims, from the judge step (eval/answer_judge.py);
+                     undefined when not judged
+    cites gold       an answer cites at least one gold chunk (ID check, no judge)
     gate             item part only, cases where the item gate decided (answer / abstain);
                      positive = the gate answered, label = the case should be answered
     case ok          answer cases: ANSWER, bin ok (if a bin is expected) and the gold row
@@ -50,7 +57,7 @@ def gold_rank(gold: list[str], trace: dict) -> int | None:
 
 def quick_summary(traces: list[dict], cases: list[dict], k: int) -> dict:
     cases_by_id = by_id(cases)
-    hits, reciprocal_ranks, n_gold = 0, 0.0, 0
+    hits, recall, reciprocal_ranks, n_gold = 0, 0.0, 0.0, 0
     for trace in traces:
         gold = gold_chunks(cases_by_id.get(trace["case_id"], {}))
         if not gold:
@@ -58,11 +65,13 @@ def quick_summary(traces: list[dict], cases: list[dict], k: int) -> dict:
         n_gold += 1
         rank = gold_rank(gold, trace)
         hits += bool(rank and rank <= k)
+        recall += recall_at_k(gold, trace.get("candidates", []), k)
         reciprocal_ranks += 1 / rank if rank else 0.0
     statuses = Counter((t.get("answer") or {}).get("status", "retrieval-only") for t in traces)
     totals = [t["timings"]["total_s"] for t in traces]
     return {"cases": len(traces), "gold_cases": n_gold,
-            f"recall@{k}": round(hits / n_gold, 3) if n_gold else None,
+            f"recall@{k}": round(recall / n_gold, 3) if n_gold else None,
+            f"hit@{k}": round(hits / n_gold, 3) if n_gold else None,
             "mrr": round(reciprocal_ranks / n_gold, 3) if n_gold else None,
             "statuses": dict(statuses),
             "mean_total_s": round(sum(totals) / len(totals), 2) if totals else None}
@@ -117,14 +126,37 @@ def _rank_of(gold: set[str], trace: dict) -> int | None:
     return None
 
 
-def _retrieval(gold: list[str], trace: dict, k: int = K) -> dict:
+def _gold_id(candidate: dict, wanted: set[str]) -> str | None:
+    """The gold ID this candidate is (matched by chunk ID or legacy ID), or None."""
+    if candidate["chunk_id"] in wanted:
+        return candidate["chunk_id"]
+    legacy = candidate["metadata"].get("legacy_id")
+    return legacy if legacy in wanted else None
+
+
+def recall_at_k(gold: list[str], candidates: list[dict], k: int = K) -> float | None:
+    """Recall@k (Lesson 6): distinct gold chunks in the top k / all gold chunks of the case.
+    None when the case has no gold chunks (undefined, not 0)."""
     wanted = set(gold)
-    top = trace.get("candidates", [])[:k]
-    relevant = [c["chunk_id"] in wanted or c["metadata"].get("legacy_id") in wanted for c in top]
+    if not wanted:
+        return None
+    found = {g for c in candidates[:k] if (g := _gold_id(c, wanted))}
+    return len(found) / len(wanted)
+
+
+def _retrieval(gold: list[str], trace: dict, k: int = K) -> dict:
+    """hit = at least one gold chunk in the top k (success@k, also called hit rate); recall =
+    the share of the case's gold chunks in the top k. They differ when a case has several
+    gold chunks: finding 1 of 3 is a hit but recall 1/3."""
+    wanted = set(gold)
+    candidates = trace.get("candidates", [])
+    top = candidates[:k]
+    relevant = [_gold_id(c, wanted) is not None for c in top]
     rank = _rank_of(wanted, trace)
     dcg = sum(1 / math.log2(i + 2) for i, rel in enumerate(relevant) if rel)
     ideal = sum(1 / math.log2(i + 2) for i in range(min(len(wanted), k)))
-    return {"gold_rank": rank, "hit": bool(rank and rank <= k), "rr": 1 / rank if rank else 0.0,
+    return {"gold_rank": rank, "hit": bool(rank and rank <= k),
+            "recall": recall_at_k(gold, candidates, k), "rr": 1 / rank if rank else 0.0,
             "ndcg": dcg / ideal if ideal else 0.0, "precision": sum(relevant) / k}
 
 
@@ -160,7 +192,9 @@ def _llm_text(trace: dict) -> str | None:
         return None
 
 
-def score_case(trace: dict, case: dict) -> dict:
+def score_case(trace: dict, case: dict, citations: dict | None = None) -> dict:
+    """`citations`: this case's judge counts from eval/answer_judge.py, or None if the
+    traces were not judged (the judged metrics are then undefined, not 0)."""
     answer = trace.get("answer") or {}
     status = answer.get("status")
     behaviour = case.get("expected_behavior")
@@ -206,8 +240,14 @@ def score_case(trace: dict, case: dict) -> dict:
         out["retrieval"] = _retrieval(gold, trace)
         cited = [c["ref"] for c in answer.get("citations", []) if c["kind"] == "item"]
         if answered and cited:
-            out["citation_precision"] = sum(c in set(gold) for c in cited) / len(cited)
             out["cites_gold"] = any(c in set(gold) for c in cited)
+    if answered and citations:
+        if citations.get("cited"):
+            out["cited_claims"] = citations["cited"]
+            out["supported_cited_claims"] = citations["supported"]
+        if citations.get("claims_judged"):
+            out["claims"] = citations["claims_judged"]
+            out["supported_claims"] = citations["supported"]
     if gate.get("item") in ("answer", "abstain"):
         out["gate_item"] = gate["item"]
         out["gate_should_answer"] = behaviour == "answer" and bool(expected_bins)
@@ -284,6 +324,17 @@ def _mean(values: list) -> float | None:
     return round(sum(defined) / len(defined), 3) if defined else None
 
 
+def _pooled(rows: list[dict], numerator: str, denominator: str) -> dict | None:
+    """{k, n, rate} summed over claims, not averaged over cases: Lesson 6 counts claims, so a
+    case with 4 cited claims weighs 4 times one with 1. None when no case has a denominator."""
+    n = sum(r.get(denominator, 0) for r in rows)
+    if not n:
+        return None
+    k = sum(r.get(numerator, 0) for r in rows)
+    return {"k": k, "n": n, "rate": round(k / n, 3),
+            "cases": sum(denominator in r for r in rows)}
+
+
 def aggregate(rows: list[dict]) -> dict:
     retrieval = [r["retrieval"] for r in rows if "retrieval" in r]
     gate = [r for r in rows if "gate_item" in r]
@@ -305,7 +356,8 @@ def aggregate(rows: list[dict]) -> dict:
         "district_ok": _rate([r.get("district_ok") for r in rows if "district_ok" in r]),
         "dong_ok": _rate([r.get("dong_ok") for r in rows if "dong_ok" in r]),
         "retrieval": {"n": len(retrieval),
-                      "recall@5": _mean([x["hit"] for x in retrieval]),
+                      "recall@5": _mean([x["recall"] for x in retrieval]),
+                      "hit@5": _mean([x["hit"] for x in retrieval]),
                       "mrr": _mean([x["rr"] for x in retrieval]),
                       "ndcg@5": _mean([x["ndcg"] for x in retrieval]),
                       "precision@5": _mean([x["precision"] for x in retrieval])},
@@ -315,7 +367,8 @@ def aggregate(rows: list[dict]) -> dict:
                  "fn_rate": round(fn / (fn + tp), 3) if fn + tp else None},
         "rows_found": _rate([r.get("rows_found") for r in rows if "rows_found" in r]),
         "only_gold_rows": _rate([r.get("only_gold_rows") for r in rows if "rows_found" in r]),
-        "citation_precision": _mean([r.get("citation_precision") for r in rows]),
+        "citation_precision": _pooled(rows, "supported_cited_claims", "cited_claims"),
+        "citation_coverage": _pooled(rows, "supported_claims", "claims"),
         "cites_gold": _rate([r.get("cites_gold") for r in rows if "cites_gold" in r]),
         "language_ok": _rate([r.get("language_ok") for r in rows if "language_ok" in r]),
         "json_valid": _rate([r.get("json_valid") for r in rows if r.get("json_valid") is not None]),
@@ -339,12 +392,14 @@ def stage_latency(traces: list[dict]) -> dict:
             for name, v in sorted(by_stage.items())}
 
 
-def score(traces: list[dict], cases: list[dict]) -> dict:
+def score(traces: list[dict], cases: list[dict], citations: dict | None = None) -> dict:
     """Everything, overall and by slice and language. Traces whose case is not in `cases`
-    are ignored; cases with no trace are counted as missing."""
+    are ignored; cases with no trace are counted as missing. `citations`: judge labels per
+    case_id (eval/answer_judge.load_labels), or None."""
     cases_by_id = by_id(cases)
-    rows = [score_case(t, cases_by_id[t["case_id"]]) for t in traces
-            if t.get("case_id") in cases_by_id]
+    citations = citations or {}
+    rows = [score_case(t, cases_by_id[t["case_id"]], citations.get(t["case_id"]))
+            for t in traces if t.get("case_id") in cases_by_id]
     seen = {r["case_id"] for r in rows}
     by = {key: {value: aggregate([r for r in rows if r[key] == value])
                 for value in sorted({r[key] for r in rows if r[key]})}

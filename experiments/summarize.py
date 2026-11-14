@@ -15,6 +15,7 @@ import argparse
 import json
 from pathlib import Path
 
+from eval.answer_judge import load_labels
 from eval.cases import load_cases
 from eval.metrics import score
 from rag import config, paths
@@ -64,7 +65,8 @@ def stability(manifest: dict) -> list[str]:
 
 def write_summary(spec: dict, manifest: dict, cases: list[dict], out_dir: Path) -> Path:
     stage = spec["stage"]
-    results = {name: score(read_jsonl(paths.ROOT / v["traces"]), cases)
+    results = {name: score(read_jsonl(paths.ROOT / v["traces"]), cases,
+                           load_labels(paths.ROOT / v["traces"]))
                for name, v in manifest["variants"].items()}
     ref = reference(spec, manifest)
     lines = [f"# {spec['id']}: {spec.get('question', '')}", "",
@@ -95,7 +97,7 @@ def write_summary(spec: dict, manifest: dict, cases: list[dict], out_dir: Path) 
                 f"| {name} | {_pct(o['case_ok'])} | {_pct(o['false_answer'])} | "
                 f"{_pct(o['bin_ok'])} | {_pct(o['behaviour_ok'])} | {_pct(o['abstain_ok'])} | "
                 f"{_pct(o['clarify_ok'])} | {_pct(o['cites_gold'])} | "
-                f"{o['citation_precision']} | {_pct(o['language_ok'])} | "
+                f"{_pct(o['citation_precision'])} | {_pct(o['language_ok'])} | "
                 f"{_pct(o['json_valid'])} | {o['downgraded']} | {o.get('item_withheld', 0)} | "
                 f"{o['latency_s']['median']} |")
         slices = sorted({c["slice"] for c in cases})

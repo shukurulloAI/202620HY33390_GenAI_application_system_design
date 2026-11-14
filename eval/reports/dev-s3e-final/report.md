@@ -6,19 +6,21 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `5e9159e
 
 | Metric | Value |
 |---|---|
-| Case correct | 56/70 (80%) |
-| Expected behaviour (answer / abstain / clarify / out of scope) | 59/70 (84%) |
-| Bin correct (answerable item cases) | 32/45 (71%) |
-| **False answers** (answered when it should not, or wrong bin) | 3/70 (4%) |
+| Case correct | 56/70 (80%), 95% CI 69%–88% |
+| Expected behaviour (answer / abstain / clarify / out of scope) | 59/70 (84%), 95% CI 74%–91% |
+| Bin correct (answerable item cases) | 32/45 (71%), 95% CI 57%–82% |
+| **False answers** (answered when it should not, or wrong bin) | 3/70 (4%), 95% CI 1%–12% |
 | Abstained when it should | 9/10 (90%) |
 | Asked back when it should | 4/4 (100%) |
 | Gold schedule row shown | 19/19 (100%) |
 | Only gold rows shown | 18/19 (95%) |
 | Router intent | 62/63 (98%) |
 | Router district / dong (place only in the question) | 4/4 (100%) / 3/4 (75%) |
-| Retrieval Recall@5 / MRR / nDCG@5 / P@5 (n=44) | 0.841 / 0.737 / 0.649 / 0.282 |
+| Retrieval Recall@5 / Hit@5 / MRR / nDCG@5 / P@5 (n=44) | 0.672 / 0.841 / 0.737 / 0.649 / 0.282 |
 | Gate TP / FP / FN / TN (n=46) | 42 / 0 / 2 / 2 (FP rate 0.0, FN rate 0.045) |
-| Cites a gold chunk / citation precision | 30/35 (86%) / 0.712 |
+| Cites a gold chunk (answers citing an item chunk) | 30/35 (86%) |
+| Citation precision (cited claims supported by their cited sources, judge) | 28/36 (78%) |
+| Citation coverage (all claims supported by their own citations, judge) | 28/52 (54%) |
 | Answer in the asked language (script) | 34/35 (97%) |
 | JSON valid | 41/42 (98%) |
 | Downgraded by validation | 5 |
@@ -31,11 +33,11 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `5e9159e
 | | Cases | Correct | Behaviour | Bin | False answers | Recall@5 |
 |---|---|---|---|---|---|---|
 | ambiguous_location | 4 | 4/4 (100%) | 4/4 (100%) | – | 0/4 (0%) | None |
-| combined | 8 | 8/8 (100%) | 8/8 (100%) | 8/8 (100%) | 0/8 (0%) | 1.0 |
-| conflict | 6 | 0/6 (0%) | 1/6 (17%) | 0/6 (0%) | 1/6 (17%) | 0.667 |
-| false_premise | 6 | 4/6 (67%) | 4/6 (67%) | 4/6 (67%) | 0/6 (0%) | 1.0 |
-| item_direct | 14 | 9/14 (64%) | 11/14 (79%) | 9/14 (64%) | 2/14 (14%) | 0.615 |
-| item_tricky | 11 | 11/11 (100%) | 11/11 (100%) | 11/11 (100%) | 0/11 (0%) | 1.0 |
+| combined | 8 | 8/8 (100%) | 8/8 (100%) | 8/8 (100%) | 0/8 (0%) | 0.802 |
+| conflict | 6 | 0/6 (0%) | 1/6 (17%) | 0/6 (0%) | 1/6 (17%) | 0.5 |
+| false_premise | 6 | 4/6 (67%) | 4/6 (67%) | 4/6 (67%) | 0/6 (0%) | 0.856 |
+| item_direct | 14 | 9/14 (64%) | 11/14 (79%) | 9/14 (64%) | 2/14 (14%) | 0.41 |
+| item_tricky | 11 | 11/11 (100%) | 11/11 (100%) | 11/11 (100%) | 0/11 (0%) | 0.879 |
 | no_evidence | 7 | 6/7 (86%) | 6/7 (86%) | – | 0/7 (0%) | None |
 | out_of_scope | 3 | 3/3 (100%) | 3/3 (100%) | – | 0/3 (0%) | None |
 | schedule | 11 | 11/11 (100%) | 11/11 (100%) | – | 0/11 (0%) | None |
@@ -44,12 +46,12 @@ Cases: `eval/cases/dev.jsonl` (70 cases, sha256 `5a62a1c6b684`), commit `5e9159e
 
 | | Cases | Correct | Behaviour | Bin | False answers | Recall@5 |
 |---|---|---|---|---|---|---|
-| en | 25 | 18/25 (72%) | 19/25 (76%) | 13/19 (68%) | 1/25 (4%) | 0.833 |
-| ko | 22 | 21/22 (96%) | 21/22 (96%) | 11/12 (92%) | 0/22 (0%) | 1.0 |
+| en | 25 | 18/25 (72%) | 19/25 (76%) | 13/19 (68%) | 1/25 (4%) | 0.637 |
+| ko | 22 | 21/22 (96%) | 21/22 (96%) | 11/12 (92%) | 0/22 (0%) | 0.812 |
 | ru | 6 | 5/6 (83%) | 5/6 (83%) | 2/3 (67%) | 0/6 (0%) | 0.667 |
-| uz | 7 | 5/7 (71%) | 6/7 (86%) | 2/4 (50%) | 1/7 (14%) | 0.5 |
-| vi | 4 | 2/4 (50%) | 2/4 (50%) | 1/3 (33%) | 0/4 (0%) | 0.667 |
-| zh | 6 | 5/6 (83%) | 6/6 (100%) | 3/4 (75%) | 1/6 (17%) | 1.0 |
+| uz | 7 | 5/7 (71%) | 6/7 (86%) | 2/4 (50%) | 1/7 (14%) | 0.333 |
+| vi | 4 | 2/4 (50%) | 2/4 (50%) | 1/3 (33%) | 0/4 (0%) | 0.5 |
+| zh | 6 | 5/6 (83%) | 6/6 (100%) | 3/4 (75%) | 1/6 (17%) | 0.875 |
 
 ## Earliest failed stage (slice × stage)
 

@@ -68,7 +68,8 @@ def canonical_bin(text: str) -> str | None:
         return None
     if key in _LOOKUP:
         return _LOOKUP[key]
-    if re.search(r"(무색|투명).*(pet|페트)", re.sub(r"\s+", "", text).lower()):
+    compact = re.sub(r"\s+", "", text).lower()
+    if re.search(r"(무색|투명).*(pet|페트)", compact) and "제외" not in compact:
         return "투명페트병"
     return None
 
