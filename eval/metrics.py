@@ -301,7 +301,10 @@ def score_case(trace: dict, case: dict, citations: dict | None = None) -> dict:
 
 def failure_stage(scored: dict, trace: dict, case: dict) -> str:
     """The earliest stage that went wrong (§7.5): router -> retrieval / schedule tool -> gate
-    -> generation -> validation. Labelled by rule from the trace, not by a person."""
+    -> generation -> validation. Labelled by rule from the trace, not by a person.
+    A run that raised an error (eval.run_eval.failed_trace) is labelled "error"."""
+    if trace.get("error"):
+        return "error"
     behaviour = case["expected_behavior"]
     route = trace.get("route") or {}
     gate = trace.get("gate") or {}

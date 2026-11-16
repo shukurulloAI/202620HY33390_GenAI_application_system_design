@@ -53,15 +53,21 @@ RERANKER_MAX_LENGTH = 512
 OLLAMA_URL = os.environ.get("RAG_OLLAMA_URL", "http://localhost:11434")
 OLLAMA_KEEP_ALIVE = "30m"          # keep the model loaded between questions (Ollama default: 5m)
 OLLAMA_RETRY_WAIT_S = 2.0          # one retry after a connection error (e.g. Ollama restarting)
-# qwen2.5:7b chosen over the course default qwen2.5:3b after the Phase 1 probes:
-# 3b contradicted its evidence on pizza box / chicken bones (7/12 vs 9/12 correct,
-# see docs/PHASE1_NOTES.md). 3b stays available with --set llm_model.
-LLM_MODEL = "qwen2.5:7b"
+# gemma4:12b for router and generator since 2026-11-16 (E10 on dev v2, only the model
+# changed): 119/151 correct and 6 false answers, against 100 and 18 for qwen2.5:7b; its
+# Korean rewrites are cleaner (Recall@5 0.658 -> 0.783); median 7.7 s against 6.8 s.
+# Before: qwen2.5:7b, chosen over the course default qwen2.5:3b after the Phase 1 probes
+# (docs/PHASE1_NOTES.md). Both stay available with --set llm_model.
+LLM_MODEL = "gemma4:12b"
 # Hugging Face tokenizer per Ollama model, used to count prompt tokens before sending.
 LLM_TOKENIZERS = {
     "qwen2.5:3b": "Qwen/Qwen2.5-3B-Instruct",
     "qwen2.5:7b": "Qwen/Qwen2.5-7B-Instruct",
     "exaone3.5:7.8b": "LGAI-EXAONE/EXAONE-3.5-7.8B-Instruct",   # LG AI Research, Korean/English
+    # Gemma's own tokenizer is licence-gated on Hugging Face, so its prompts are counted with
+    # the Qwen tokenizer: on dev v2 that counts 4% high (never low), a safe budget estimate.
+    "gemma4:12b": "Qwen/Qwen2.5-7B-Instruct",
+    "gemma3:12b": "Qwen/Qwen2.5-7B-Instruct",
 }
 LLM_TOKENIZER = LLM_TOKENIZERS[LLM_MODEL]
 LLM_CONTEXT = 8192                 # num_ctx sent to Ollama
@@ -97,22 +103,25 @@ class PipelineConfig:
                                         # check (rag/router.Router._repair). Dev, with v4:
                                         # 51 -> 53/70 correct (h08, item14), none worse
     router_prompt: str = "v2"           # v1: one item | v2: one entry per item (several items)
-                                        # and one search per item. Dev v2 with prompt v6:
-                                        # Recall@5 0.607 -> 0.658 (v1 with v5)
+                                        # and one search per item. E11 on dev v2: v2 119/151
+                                        # correct, 6 false; v1 116, 5 (p = .45); Recall@5
+                                        # 0.754 -> 0.783, every bin named 9 -> 10 of 18
     place_reader: bool = True           # read the district / neighbourhood by code from the
                                         # table's names (rag/places.py); the router is the
-                                        # fallback. Dev v2 (v5): 85 -> 91/151 correct, district
-                                        # read 10/19 -> 16/19, gold schedule row 19 -> 25/28
-    prompt_version: str = "v6"          # E1 on dev: v5 54/70 correct, v4 51, v2 51. Dev v2:
-                                        # v6 (one bin per item) + router v2 91/151 correct like
-                                        # v5, 14 false answers vs 9; chosen for several-item
-                                        # answers (decision 2026-11-15)
+                                        # fallback. Dev v2: district read 10/19 -> 16/19, gold
+                                        # schedule row 19 -> 25/28
+    prompt_version: str = "v6"          # E1 on dev v2: v6 (one record per item) 119/151
+                                        # correct, 6 false; v5 (one bin) 121, 6 (p = .73).
+                                        # v6 kept: each item's bin is validated on its own
     conflict_policy: str = "prefer_2026"  # prefer_2026 | none   (E8)
     validation: str = "enforce"         # off | flag | enforce   (PLAN.md §4.9)
     generation_retry: str = "rejected"  # conflict: retry only a bin/text conflict | rejected:
-                                        # retry any withheld answer, stating the reason. Dev v2
-                                        # (v6 + router v2): rejected 91 -> 98 correct, but
-                                        # 14 -> 18 false answers; chosen anyway (2026-11-15)
+                                        # retry any withheld answer, stating the reason |
+                                        # condition: rejected, plus bins named in exception
+                                        # lines count and the retry keeps the question's
+                                        # condition. E12 on dev v2: rejected 119 correct, 6
+                                        # false; conflict 111, 2 (p = .02 / .22); condition
+                                        # 121, 7. rejected kept (decision 2026-11-16)
     schedule_retrieval: str = "structured"  # structured (typed lookup) | vector | postfilter |
                                             # prefilter; the last three exist only for E4
     schedule_text: str = "code"         # code: days, times and places written by code, the LLM
@@ -127,7 +136,7 @@ class PipelineConfig:
                "rerank_query": ("original", "rewrite", "max"),
                "prompt_version": ("v0", "v1", "v2", "v3", "v4", "v5", "v6"),
                "router_prompt": ("v1", "v2"),
-               "generation_retry": ("conflict", "rejected"),
+               "generation_retry": ("conflict", "rejected", "condition"),
                "conflict_policy": ("prefer_2026", "none"),
                "validation": ("off", "flag", "enforce"),
                "schedule_retrieval": ("structured", "vector", "postfilter", "prefilter"),

@@ -417,10 +417,12 @@ class Pipeline:
         days = (schedule_days(llm_rows, request.waste_type) if llm_rows
                 else set() if gate.schedule != "skip" else None)
         model_answered = draft.get("status") == "ANSWER"       # before validation downgrades
+        # condition: a bin stated by an exception line of the cited chunk counts as stated
+        exceptions = self.cfg.generation_retry == "condition"
         draft, validation = validate(draft, evidence, days, self.cfg.validation,
-                                     item_question=gate.item == "answer")
+                                     item_question=gate.item == "answer", exceptions=exceptions)
         conflict = bool(validation.get("bin_text_conflict"))
-        rejected = (self.cfg.generation_retry == "rejected" and model_answered
+        rejected = (self.cfg.generation_retry in ("rejected", "condition") and model_answered
                     and bool(validation.get("reasons")))
         if validation.get("downgraded") and (conflict or rejected):
             # Ask once more, saying why the answer was rejected; keep the new answer only if
@@ -434,7 +436,7 @@ class Pipeline:
             #     but cited another number, 4 named another bin.
             note = (BIN_CONFLICT_NOTE.format(bin=validation["bin"],
                                              named=", ".join(validation["bins_in_text"]))
-                    if conflict else REJECTED_NOTE.format(
+                    if conflict else (CONDITION_NOTE if exceptions else REJECTED_NOTE).format(
                         # with "(they state [...])": dev v2 (v6 + router v2) 7 retried answers
                         # became correct, 4 became false (the chunk was about another item).
                         # Without it the model repeated itself: 0 correct, 0 false.
@@ -447,7 +449,7 @@ class Pipeline:
             retry_draft, retry_checks = parse_answer(retry.text, len(evidence))
             retry_draft, retry_validation = validate(
                 retry_draft, evidence, days, self.cfg.validation,
-                item_question=gate.item == "answer")
+                item_question=gate.item == "answer", exceptions=exceptions)
             passed = (retry_draft.get("status") == "ANSWER"
                       and not retry_validation.get("downgraded"))
             trace["llm"]["retry"] = {
@@ -515,6 +517,13 @@ BIN_CONFLICT_NOTE = (
 REJECTED_NOTE = (
     "Your previous answer was rejected: {reasons}. Answer again from the same evidence. "
     "Each bin must be the 구분 category of the evidence you cite for it.")
+# generation_retry = "condition": the note above made the model drop the user's condition
+# and copy the chunk's heading (dev v2 k08, p06: dirty styrofoam -> 발포합성수지).
+CONDITION_NOTE = (
+    "Your previous answer was rejected: {reasons}. Answer again from the same evidence. "
+    "Keep the condition the question states (dirty, with food, broken, coated...): give the "
+    "bin the evidence states for that condition, including its exceptions (비해당, 단,). "
+    "If the evidence does not cover the condition, say so instead of guessing.")
 
 
 def item_only_question(question: str, route: Route) -> str:

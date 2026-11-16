@@ -9,7 +9,9 @@ Checks on the parsed answer, after the JSON/citation checks in generate.parse_an
                      chunks state (never one the text contradicts)
     bin_text_conflict  the bin field differs from the bin(s) named in answer_text
     bin_supported    the bin is one the cited chunks state (categories / 2026 group); only
-                     if they state none, one of its names must appear in their text
+                     if they state none, one of its names must appear in their text. With
+                     `exceptions`, also a bin an exception line of a cited chunk names
+                     ("※ 비해당 품목 : … 종량제봉투", "단, … 종량제봉투로 배출")
     cited            an ANSWER cites at least one evidence block
     schedule_days    weekdays named in answer_text are days the tool returned
     schedule_invented  days or clock times in an answer that was shown no schedule, or, for
@@ -62,6 +64,17 @@ def weekdays_named(text: str) -> set[int]:
             if re.search(words, text, re.IGNORECASE) or re.search(vi, text)}
 
 
+_EXCEPTION_MARKERS = ("비해당", "단,", "다만")
+
+
+def exception_bins(evidence: list) -> set[str]:
+    """Bins named in the exception lines of item chunks: the 2026 rule for styrofoam is
+    filed under 발포합성수지 but sends styrofoam with food on it to 종량제봉투 in its
+    "※ 비해당 품목" line. 16 such lines in the corpus."""
+    return {b for e in evidence if e.kind == "item" for line in e.text.splitlines()
+            if any(m in line for m in _EXCEPTION_MARKERS) for b in bins_named_in(line)}
+
+
 def text_bins(text: str) -> set[str]:
     """Canonical bins named in parentheses in the answer, e.g. 'general waste bag (종량제봉투)'."""
     return {b for t in re.findall(r"\(([^()]+)\)", text or "") if (b := canonical_bin(t))}
@@ -73,11 +86,13 @@ def days_mentioned(text: str) -> set[int]:
 
 
 def validate(answer: dict, evidence: list, schedule_days: set[int] | None,
-             mode: str = "enforce", item_question: bool = True) -> tuple[dict, dict]:
+             mode: str = "enforce", item_question: bool = True,
+             exceptions: bool = False) -> tuple[dict, dict]:
     """Returns (answer, checks). `evidence` = EvidenceItems shown to the model;
     `schedule_days` = weekdays the tool returned for the asked waste type(s), empty if the
     model was shown no schedule for a question that asks about one, None if none was asked;
-    `item_question` = the question asks about an item (so an answer needs a bin)."""
+    `item_question` = the question asks about an item (so an answer needs a bin);
+    `exceptions` = also accept a bin named in an exception line of the cited chunks."""
     if mode == "off":
         return answer, {"mode": "off"}
     checks = {"mode": mode, "bin_raw": answer.get("bin", ""), "bin": "",
@@ -124,7 +139,10 @@ def validate(answer: dict, evidence: list, schedule_days: set[int] | None,
         # of them: a passing mention in running text (e.g. an exception "else 종량제봉투"
         # on a guide page) is not enough. Text matching is only the fallback for cited
         # chunks that state no bin (guide pages, FAQ).
-        checks["bin_supported"] = bin_key in stated if stated else in_text
+        allowed = stated | (exception_bins(first_cited) if exceptions else set())
+        checks["bin_supported"] = bin_key in allowed if stated else in_text
+        if exceptions and stated and bin_key in allowed - stated:
+            checks["bin_from_exception"] = bin_key
         if not checks["bin_supported"]:
             checks["reasons"].append(f"bin '{bin_key}' is not stated in the cited evidence"
                                      + (f" (they state {sorted(stated)})" if stated else ""))
@@ -138,8 +156,9 @@ def validate(answer: dict, evidence: list, schedule_days: set[int] | None,
         key = canonical_bin(entry.get("bin", ""))
         own = [by_n[n] for n in entry.get("citations", []) if n in by_n] or cited
         own_stated = set().union(*(evidence_bins(e.metadata) for e in own if e.kind == "item"))
+        own_allowed = own_stated | (exception_bins(own) if exceptions else set())
         own_text = re.sub(r"\s+", "", " ".join(e.text for e in own))
-        supported = key is not None and (key in own_stated if own_stated else any(
+        supported = key is not None and (key in own_allowed if own_stated else any(
             name.replace(" ", "") in own_text for name in names_for(key)))
         in_answer_text = not named or key in named
         checks["items"].append({"item": entry.get("item", ""), "bin": key or entry.get("bin", ""),

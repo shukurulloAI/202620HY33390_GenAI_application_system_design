@@ -1,0 +1,25 @@
+{
+  "id": "E12",
+  "question": "Should an answer that validation withholds be asked once more?",
+  "stage": "full",
+  "base": "default",
+  "fixed": {},
+  "reference": "rejected",
+  "variants": {
+    "conflict": {
+      "generation_retry": "conflict"
+    },
+    "rejected": {
+      "generation_retry": "rejected"
+    },
+    "condition": {
+      "generation_retry": "condition"
+    }
+  },
+  "metrics": [
+    "case correct",
+    "false answers",
+    "latency p90"
+  ],
+  "notes": "Dev v2 only. conflict: only an answer whose bin and text disagree is asked again. rejected: any answer validation would withhold is asked again, with the reason. condition: like rejected, but a bin named by an exception line of the cited chunk (\"※ 비해당 품목\", \"단,\") counts as stated, and the retry note asks to keep the question's condition instead of copying the chunk's category (rejected turned dirty styrofoam, k08 and p06, into 발포합성수지)."
+}

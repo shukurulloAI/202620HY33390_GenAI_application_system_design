@@ -126,3 +126,22 @@ def test_the_first_item_is_checked_against_only_its_own_evidence():
                          {"item": "balls", "bin": "종량제봉투", "citations": [2]}]}
     out, checks = validate(swapped, ev, None)
     assert out["status"] == "INSUFFICIENT_CONTEXT" and checks["bin_supported"] is False
+
+
+def test_a_bin_named_by_an_exception_line_counts_only_with_exceptions():
+    """Dev v2 k08: the 2026 styrofoam rule is filed under 발포합성수지 but sends styrofoam
+    with food on it to 종량제봉투 in its "※ 비해당 품목" line."""
+    rule = EvidenceItem(1, "item", "rule2026_014", "src",
+                        "[분리배출 기준 2026] 발포 합성수지 > 스티로폼 완충재\n"
+                        "- 내용물을 비우고 물로 헹구는 등 이물질을 제거하여 배출\n"
+                        "※ 비해당 품목 : 음식물이 묻어 있거나 이물질을 제거하기 어려운 경우 등은 "
+                        "종량제봉투, 특수규격마대 또는 대형폐기물 처리 등 지자체 조례에 따라 배출",
+                        {"doc_type": "rule", "item": "발포 합성수지", "sub_item": "스티로폼 완충재"})
+    answer = {"status": "ANSWER", "bin": "종량제봉투", "citations": [1],
+              "answer_text": "Smelly after washing: general waste bag (종량제봉투) [1]."}
+    assert validate(answer, [rule], None)[0]["status"] == "INSUFFICIENT_CONTEXT"
+    out, checks = validate(answer, [rule], None, exceptions=True)
+    assert out["status"] == "ANSWER" and checks["bin_from_exception"] == "종량제봉투"
+    # A bin the chunk names nowhere is still refused.
+    other = {**answer, "bin": "플라스틱", "answer_text": "Plastic (플라스틱) [1]."}
+    assert validate(other, [rule], None, exceptions=True)[0]["status"] == "INSUFFICIENT_CONTEXT"

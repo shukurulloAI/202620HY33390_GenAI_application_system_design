@@ -55,6 +55,7 @@ class OllamaClient:
                          {"role": "user", "content": prompt}],
             "stream": False,
             "keep_alive": config.OLLAMA_KEEP_ALIVE,
+            "think": False,      # thinking models (gemma4) answer directly; others ignore it
             "options": {"temperature": temperature, "seed": seed,
                         "num_predict": max_tokens, "num_ctx": self.num_ctx},
         }

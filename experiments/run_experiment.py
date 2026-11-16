@@ -6,7 +6,7 @@ config file, changing only the fields the variant lists.
     python -m experiments.run_experiment <config> --cases eval/cases/dev.jsonl
     python -m experiments.run_experiment <config> --variants dense hybrid-rrf --limit 10
     python -m experiments.run_experiment <config> --cases eval/cases/v2/dev.jsonl \
-        --reuse v5-balanced-examples=eval/reports/dev2-v5/traces.jsonl
+        --reuse rejected=eval/reports/gemma4-12-dev2/traces.jsonl
                                             # file a finished run instead of running again
 
 Output (probes: experiments/results/<id>/; evaluation cases: experiments/results/dev/<id>/,

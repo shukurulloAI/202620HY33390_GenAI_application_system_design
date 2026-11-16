@@ -21,6 +21,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
+import uuid
 from datetime import datetime
 from pathlib import Path
 
@@ -50,7 +52,11 @@ def run(cases: list[dict], config_base: str | None, overrides: list[str], llm: s
     traces = []
     with out.open("w", encoding="utf-8") as f:
         for i, case in enumerate(cases, 1):
-            trace = pipeline.run_case(case)
+            started = time.perf_counter()
+            try:
+                trace = pipeline.run_case(case)
+            except Exception as exc:     # e.g. Ollama aborts a reply: the case fails, run goes on
+                trace = failed_trace(case, exc, time.perf_counter() - started)
             f.write(json.dumps(trace, ensure_ascii=False) + "\n")
             f.flush()
             traces.append(trace)
@@ -58,6 +64,21 @@ def run(cases: list[dict], config_base: str | None, overrides: list[str], llm: s
             print(f"\r{i}/{len(cases)} {case['case_id']:8} {status:22}", end="", flush=True)
     print()
     return traces, pipeline.settings(), client.cached if cache else 0
+
+
+def failed_trace(case: dict, exc: Exception, seconds: float) -> dict:
+    """A case whose run raised an error (Ollama aborting a reply, a bug). It is scored as a
+    failure with the answer the website gives in that situation (rag.service: an abstention
+    with a handoff), so one error does not stop the run and is not silently dropped."""
+    from rag.service import unavailable_answer
+    location = case.get("location") or {}
+    trace_id = str(uuid.uuid4())
+    return {"trace_id": trace_id, "case_id": case.get("case_id") or case.get("probe_id"),
+            "error": f"{type(exc).__name__}: {exc}",
+            "input": {"question": case.get("question"), "lang": case.get("lang"), **location},
+            "candidates": [], "selected": [], "timings": {"total_s": round(seconds, 3)},
+            "answer": unavailable_answer(case.get("lang"), location.get("district"),
+                                         location.get("dong"), trace_id)}
 
 
 def fmt(rate: dict | None) -> str:
@@ -204,9 +225,11 @@ def main() -> None:
             "cases_sha256": sha256_file(args.cases), "n_cases": len(cases),
             "traces_file": (str(args.traces) if args.traces
                             else f"{paths.relative(out)}/traces.jsonl"),
-            "settings": settings or (traces[0].get("settings") if traces else None),
+            "settings": settings or next((t["settings"] for t in traces if t.get("settings")),
+                                         None),
             "config": args.config, "overrides": args.set, **provenance,
             "llm_replayed": replayed,
+            "errors": {t["case_id"]: t["error"] for t in traces if t.get("error")},
             "time": datetime.now().isoformat(timespec="seconds")}
     (out / "report.json").write_text(json.dumps({"meta": meta, **result}, ensure_ascii=False,
                                                 indent=1), encoding="utf-8")
@@ -217,6 +240,9 @@ def main() -> None:
     print(f"{args.name}: correct {fmt(o['case_ok'])}, false answers {fmt(o['false_answer'])}, "
           f"bin {fmt(o['bin_ok'])}, recall@5 {o['retrieval']['recall@5']} -> "
           f"{paths.relative(out)}/report.md")
+    if meta["errors"]:
+        print(f"  {len(meta['errors'])} case(s) failed with an error and count as wrong: "
+              + ", ".join(f"{cid} ({err[:80]})" for cid, err in meta["errors"].items()))
 
 
 if __name__ == "__main__":

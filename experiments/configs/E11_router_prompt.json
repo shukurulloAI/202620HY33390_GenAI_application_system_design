@@ -1,0 +1,23 @@
+{
+  "id": "E11",
+  "question": "Does one router entry and one search per item (router v2) help?",
+  "stage": "full",
+  "base": "default",
+  "fixed": {},
+  "reference": "v2-items",
+  "variants": {
+    "v1-one-item": {
+      "router_prompt": "v1"
+    },
+    "v2-items": {
+      "router_prompt": "v2"
+    }
+  },
+  "metrics": [
+    "case correct",
+    "false answers",
+    "Recall@5",
+    "every bin named (several items)"
+  ],
+  "notes": "Dev v2 only. Only the router prompt changes. v1 returns one item and one Korean query, so a question about several items is searched once; v2 returns one entry per item and each is searched on its own. The answer prompt stays the default's (v6, one record per item)."
+}

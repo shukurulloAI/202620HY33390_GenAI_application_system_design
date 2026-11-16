@@ -1,0 +1,26 @@
+{
+  "id": "E10",
+  "question": "Which local LLM should be the router and the generator?",
+  "stage": "full",
+  "base": "default",
+  "fixed": {},
+  "reference": "gemma4-12b",
+  "variants": {
+    "qwen2.5-7b": {
+      "llm_model": "qwen2.5:7b"
+    },
+    "gemma3-12b": {
+      "llm_model": "gemma3:12b"
+    },
+    "gemma4-12b": {
+      "llm_model": "gemma4:12b"
+    }
+  },
+  "metrics": [
+    "case correct",
+    "false answers",
+    "Recall@5",
+    "latency"
+  ],
+  "notes": "Dev v2 only. Only the Ollama model changes; the router and the generator use the same model, so one model is in GPU memory (16 GB). Prompts, retrieval, gate, validation and retry are the default's. The prompts were tuned with qwen2.5:7b. Thinking is switched off for every model (rag/llm_client.py). Prompt tokens are counted with the Qwen tokenizer for the Gemma models (rag/config.py). qwen3.8 was not tried: it ships only as 27B (18 GB)."
+}
