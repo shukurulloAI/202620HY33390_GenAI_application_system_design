@@ -501,7 +501,7 @@ Undefined cases are declared, e.g., Recall@k for abstain cases = `None`, exclude
 | Lexical search | `rank_bm25` + `kiwipiepy` Korean tokenizer | Lessons 4–5 hybrid |
 | Reranker | `BAAI/bge-reranker-v2-m3` (CrossEncoder) | Lesson 5 |
 | Orchestration | LangChain (explicit steps) or plain Python with the same stage boundaries | Lesson 4 |
-| Router + generator LLM | Ollama `qwen2.5:7b` for both (default) behind an `LLMClient` interface; `qwen2.5:3b` = course baseline; `exaone3.5:7.8b` (LG, Korean/English) tested in Phase 2 and not adopted | Lesson 1 provider boundary; see `docs/PHASE1_NOTES.md`, `PHASE2_NOTES.md` |
+| Router + generator LLM | Ollama `gemma4:12b` for both (default since 2026-11-16, E10 on dev v2) behind an `LLMClient` interface; `qwen2.5:7b` = the v1 system's model; `qwen2.5:3b` = course baseline; `exaone3.5:7.8b` (LG, Korean/English) tested in Phase 2 and not adopted | Lesson 1 provider boundary; see `docs/PHASE1_NOTES.md`, `PHASE2_NOTES.md` |
 | Judge LLM | A stronger model than the generator, pinned | Lesson 6 |
 | Evaluation | Own metrics code (chunk-ID based) + `ragas` | Lesson 6 |
 | UI | Streamlit | Simple demo |
@@ -829,7 +829,7 @@ Maintenance (Moderna lesson): each source has an owner, a revision hash and a re
 
 ## 14. Open decisions
 
-- [ ] LLM: `qwen2.5:7b` for router and generator (Phase 1–2 probes; EXAONE 3.5 7.8B tested and not adopted, see `PHASE2_NOTES.md` §8); still open: a stronger model for low-resource languages (Uzbek), and the judge model
+- [x] LLM: `gemma4:12b` for router and generator (E10 on dev v2: 119/151 correct and 6 false answers against 100 and 18 for `qwen2.5:7b`, the v1 model; EXAONE 3.5 7.8B tested in Phase 2 and not adopted, see `PHASE2_NOTES.md` §8); still open: the judge model
 - [ ] Which extra languages besides English and Korean
 - [ ] Whether to include the 770-item API snapshot (needs an API key)
 - [ ] Project deadline, presentation date and demo format

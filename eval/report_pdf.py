@@ -17,7 +17,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CHROMES = ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-           "google-chrome", "chromium", "chromium-browser"]
+           "google-chrome", "chromium", "chromium-browser",
+           r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+           r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"]   # Edge = Chromium
 
 CSS = """
 @page { size: A4; margin: 18mm 17mm 18mm 17mm; }

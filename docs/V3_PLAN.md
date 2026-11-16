@@ -7,7 +7,6 @@ failures need **data that people review**, not more code (REPORT §9, §11):
 |---|---|---|
 | The router mistranslates item names (uz, ru, vi, rare items) | 5 of 8 test failures | A reviewed table of item names, Korean ↔ user languages |
 | A 2018 entry outranks the 2026 rule for its group | Conflict slice 0/2 test, 0/6 dev; h25 | A reviewed map from 2018 entries to 2026 rules |
-| A cited chunk states a bin but is about another item | item08; 12/19 follow a planted chunk | Validation: the cited chunk must name the asked item |
 
 ## Order of work
 
@@ -35,10 +34,7 @@ names from the v2 test failures, which the report described.
 (`python -m experiments.run_experiment ... --cases eval/cases/dev.jsonl`):
 - router: look the item name up in the table before asking the LLM, and keep the LLM as the
   fallback;
-- retrieval: when a 2018 entry is retrieved, add the 2026 rule it maps to;
-- validation: refuse an answer whose cited chunk is about another item (`item_match` in
-  `rag/gate.py` already computes this);
-- gate: use `item_match` in the decision.
+- retrieval: when a 2018 entry is retrieved, add the 2026 rule it maps to.
 
 Each change is reported on dev with the paired test against the previous step
 (`python -m eval.compare`) and the cases it gained or lost.

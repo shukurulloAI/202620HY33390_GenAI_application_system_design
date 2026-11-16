@@ -224,7 +224,7 @@ Start it from the repo root, where Streamlit finds `.streamlit/config.toml`.
 
 ```bash
 docker compose --profile offline up                  # the offline demo: http://localhost:8501
-docker compose --profile live run --rm ollama-pull   # first time: qwen2.5:7b into a volume
+docker compose --profile live run --rm ollama-pull   # first time: gemma4:12b into a volume
 docker compose --profile live up                     # the full system, Ollama in a container
 ```
 
