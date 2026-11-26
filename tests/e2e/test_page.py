@@ -144,8 +144,12 @@ def test_the_answer_sits_beside_the_question_on_a_laptop_and_below_it_on_a_phone
     the answer 440); on a tablet or a phone the answer comes below, as wide as the question."""
     page = open_page(width=width, height=900)
     ask(page, "Where do I throw away a pizza box?")
-    question = page.locator(".st-key-question_panel").bounding_box()
-    answer = page.locator(".st-key-answer_panel").bounding_box()
+    # Both boxes in one frame: on a phone the page smooth-scrolls to the answer, and two
+    # separate reads could land at two different scroll positions.
+    question, answer = page.evaluate(
+        "() => ['question_panel', 'answer_panel'].map(key => {"
+        " const r = document.querySelector('.st-key-' + key).getBoundingClientRect();"
+        " return {x: r.x, y: r.y, width: r.width, height: r.height}; })")
     assert page.locator(".st-key-page").bounding_box()["width"] <= 1040
     if beside:
         assert abs(answer["y"] - question["y"]) < 2
