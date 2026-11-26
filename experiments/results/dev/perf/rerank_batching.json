@@ -1,0 +1,30 @@
+{
+ "question": "Does the batched reranker reproduce the frozen system's candidates?",
+ "cases": "eval/cases/dev.jsonl",
+ "cases_sha256": "5a62a1c6b68418c405dde29f5b891915335c5f1dbb5102696712e44d92354da5",
+ "reference": "eval/reports/dev-s3e-final/traces.jsonl",
+ "cases_reranked": 46,
+ "differ": [],
+ "versions": {
+  "batched": {
+   "same_order": 46,
+   "max_score_diff": 0.0,
+   "rerank_s": {
+    "median": 2.672,
+    "mean": 2.732
+   }
+  },
+  "per_query": {
+   "same_order": 46,
+   "max_score_diff": 0.0,
+   "rerank_s": {
+    "median": 6.56,
+    "mean": 5.64
+   }
+  }
+ },
+ "llm_replayed": 102,
+ "git_commit": "05732599a153f549739eb5d0def7a6f8f5c5e97e",
+ "git_dirty": false,
+ "time": "2026-11-11T16:53:22"
+}

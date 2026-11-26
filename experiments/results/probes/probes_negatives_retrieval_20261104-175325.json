@@ -1,0 +1,135 @@
+{
+  "label": "negatives",
+  "config": {
+    "embedding": "bge-m3",
+    "retrieval": "hybrid",
+    "bm25_tokenizer": "kiwi",
+    "query_mode": "both",
+    "rerank": true,
+    "rerank_query": "max",
+    "k_retrieve": 20,
+    "k_final": 5,
+    "rrf_k": 60,
+    "router": true,
+    "gate_tau": 0.1,
+    "llm_model": "qwen2.5:7b",
+    "router_model": null,
+    "prompt_version": "v2",
+    "conflict_policy": "prefer_2026",
+    "validation": "enforce",
+    "temperature": 0.0,
+    "seed": 7
+  },
+  "settings": {
+    "pipeline_version": "v2",
+    "config": {
+      "embedding": "bge-m3",
+      "retrieval": "hybrid",
+      "bm25_tokenizer": "kiwi",
+      "query_mode": "both",
+      "rerank": true,
+      "rerank_query": "max",
+      "k_retrieve": 20,
+      "k_final": 5,
+      "rrf_k": 60,
+      "router": true,
+      "gate_tau": 0.1,
+      "llm_model": "qwen2.5:7b",
+      "router_model": null,
+      "prompt_version": "v2",
+      "conflict_policy": "prefer_2026",
+      "validation": "enforce",
+      "temperature": 0.0,
+      "seed": 7
+    },
+    "retriever": "dense:bge-m3@5617a9f6 | bm25:kiwi | rerank:bge-reranker-v2-m3@953dc6f6",
+    "collection": "items_bge-m3_5617a9f6_dac8d09c",
+    "router": "router_v1:qwen2.5:7b",
+    "llm": "qwen2.5:7b",
+    "schedule_source": "Data/korean_waste_policies.csv"
+  },
+  "retrieval_only": true,
+  "total": 4,
+  "hit_at_k_final": 0,
+  "gold_probes": 0,
+  "mrr": 0.0,
+  "median_total_s": 4.631,
+  "rows": [
+    {
+      "probe_id": "p10",
+      "question": "How do I scrap my car?",
+      "intent": "out_of_scope",
+      "rewrite": "",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 2.83,
+        "total_s": 2.83
+      }
+    },
+    {
+      "probe_id": "p17",
+      "question": "How do I extend my visa?",
+      "intent": "out_of_scope",
+      "rewrite": "",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 2.342,
+        "total_s": 2.342
+      }
+    },
+    {
+      "probe_id": "p21",
+      "question": "How do I dispose of an old bottle of nail polish?",
+      "intent": "item",
+      "rewrite": "네일 pol리스 병 오래된 네일 pol리스 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": 0.039,
+      "selected": [
+        "item2018_0214",
+        "item2018_0052",
+        "item2018_0056",
+        "guide2018_p10",
+        "guide2018_p13"
+      ],
+      "timings": {
+        "route_s": 3.827,
+        "retrieve_s": 0.342,
+        "rerank_s": 3.361,
+        "total_s": 7.531
+      }
+    },
+    {
+      "probe_id": "p22",
+      "question": "What should I do with my dead hamster?",
+      "intent": "item",
+      "rewrite": "사망한 해마스터 처리 방법",
+      "rewrite_used": true,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": 0.001,
+      "selected": [
+        "item2018_0109",
+        "item2018_0185",
+        "item2018_0029",
+        "guide2018_p12",
+        "guide2018_p16"
+      ],
+      "timings": {
+        "route_s": 2.9,
+        "retrieve_s": 0.147,
+        "rerank_s": 3.384,
+        "total_s": 6.432
+      }
+    }
+  ]
+}

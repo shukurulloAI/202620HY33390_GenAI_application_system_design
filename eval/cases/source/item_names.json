@@ -1,0 +1,240 @@
+{
+ "about": "Names of the sampled 2018 dictionary items in each language, written for eval/make_cases.py. zh/vi/uz/ru need a native check. extra: bins and chunks that also support the answer (2026 rules).",
+ "names": {
+  "item2018_0212": {
+   "en": "a water purifier",
+   "ko": "정수기",
+   "zh": "净水器",
+   "vi": "máy lọc nước",
+   "uz": "Suv tozalagich",
+   "ru": "Водоочиститель"
+  },
+  "item2018_0276": {
+   "en": "an old printer",
+   "ko": "프린터",
+   "zh": "旧打印机",
+   "vi": "máy in cũ",
+   "uz": "Eski printer",
+   "ru": "Старый принтер"
+  },
+  "item2018_0167": {
+   "en": "a wire hanger from the dry cleaner",
+   "ko": "세탁소 철사 옷걸이",
+   "zh": "洗衣店的铁丝衣架",
+   "vi": "móc treo quần áo bằng dây thép của tiệm giặt",
+   "uz": "Kimyoviy tozalashdan kelgan sim ilgich",
+   "ru": "Проволочная вешалка из химчистки"
+  },
+  "item2018_0090": {
+   "en": "an empty baby formula can",
+   "ko": "다 먹은 분유 깡통",
+   "zh": "空奶粉罐",
+   "vi": "lon sữa bột trẻ em đã dùng hết",
+   "uz": "Bo'sh bolalar quruq suti bankasi",
+   "ru": "Пустая банка из-под детской смеси"
+  },
+  "item2018_0186": {
+   "en": "a long-handled mop",
+   "ko": "자루걸레",
+   "zh": "长柄拖把",
+   "vi": "cây lau nhà cán dài",
+   "uz": "Uzun dastali shvabra",
+   "ru": "Швабра"
+  },
+  "item2018_0192": {
+   "en": "a display cabinet",
+   "ko": "장식장",
+   "zh": "装饰柜",
+   "vi": "tủ trưng bày",
+   "uz": "Vitrina shkafi",
+   "ru": "Сервант"
+  },
+  "item2018_0042": {
+   "en": "a cracked earthenware pot (ttukbaegi)",
+   "ko": "금 간 뚝배기",
+   "zh": "裂开的砂锅",
+   "vi": "nồi đất (ttukbaegi) bị nứt",
+   "uz": "Yorilgan sopol qozon (ttukbaegi)",
+   "ru": "Треснувший глиняный горшок (ттукпэги)"
+  },
+  "item2018_0081": {
+   "en": "a burnt-out incandescent light bulb",
+   "ko": "다 쓴 백열전구",
+   "zh": "烧坏的白炽灯泡",
+   "vi": "bóng đèn sợi đốt đã cháy",
+   "uz": "Kuyib qolgan cho'g'lanma lampochka",
+   "ru": "Перегоревшая лампа накаливания"
+  },
+  "item2018_0170": {
+   "en": "bubble wrap",
+   "ko": "뽁뽁이(에어캡)",
+   "zh": "气泡膜",
+   "vi": "màng xốp hơi (bubble wrap)",
+   "uz": "Pufakchali o'rash plyonkasi",
+   "ru": "Пузырчатая плёнка"
+  },
+  "item2018_0106": {
+   "en": "spoiled food",
+   "ko": "상한 음식",
+   "zh": "变质的食物",
+   "vi": "thức ăn bị hỏng",
+   "uz": "Buzilgan ovqat",
+   "ru": "Испорченная еда"
+  },
+  "item2018_0165": {
+   "en": "orange peels",
+   "ko": "오렌지 껍질",
+   "zh": "橙子皮",
+   "vi": "vỏ cam",
+   "uz": "Apelsin po'stlog'i",
+   "ru": "Апельсиновые корки"
+  },
+  "item2018_0058": {
+   "en": "an old scarf",
+   "ko": "안 쓰는 목도리",
+   "zh": "旧围巾",
+   "vi": "khăn quàng cổ cũ",
+   "uz": "Eski sharf",
+   "ru": "Старый шарф"
+  },
+  "item2018_0118": {
+   "en": "used cotton wool",
+   "ko": "솜",
+   "zh": "用过的棉花",
+   "vi": "bông gòn đã dùng",
+   "uz": "Ishlatilgan paxta (vata)",
+   "ru": "Использованная вата"
+  },
+  "item2018_0054": {
+   "en": "a dried-out marker pen",
+   "ko": "다 쓴 마커펜",
+   "zh": "用完的记号笔",
+   "vi": "bút dạ đã hết mực",
+   "uz": "Ishlatib bo'lingan marker",
+   "ru": "Высохший маркер"
+  },
+  "item2018_0263": {
+   "en": "an old desk calendar",
+   "ko": "지난 탁상달력",
+   "zh": "旧台历",
+   "vi": "lịch để bàn cũ",
+   "uz": "Eski stol kalendari",
+   "ru": "Старый настольный календарь"
+  },
+  "item2018_0218": {
+   "en": "the cardboard tube from a toilet paper roll",
+   "ko": "휴지심",
+   "zh": "卫生纸芯",
+   "vi": "lõi giấy vệ sinh",
+   "uz": "Tualet qog'ozi g'altagi",
+   "ru": "Картонная втулка от туалетной бумаги"
+  },
+  "item2018_0137": {
+   "en": "an empty plastic cooking oil bottle",
+   "ko": "다 쓴 플라스틱 식용유 통",
+   "zh": "空的塑料食用油瓶",
+   "vi": "chai dầu ăn bằng nhựa đã hết",
+   "uz": "Bo'sh plastik o'simlik yog'i idishi",
+   "ru": "Пустая пластиковая бутылка из-под растительного масла"
+  },
+  "item2018_0078": {
+   "en": "plastic straws",
+   "ko": "빨대",
+   "zh": "塑料吸管",
+   "vi": "ống hút nhựa",
+   "uz": "Plastik trubochkalar",
+   "ru": "Пластиковые трубочки"
+  },
+  "item2018_0139": {
+   "en": "old shoes",
+   "ko": "헌 신발",
+   "zh": "旧鞋子",
+   "vi": "giày cũ",
+   "uz": "Eski poyabzal",
+   "ru": "Старая обувь"
+  },
+  "item2018_0096": {
+   "en": "a broken electric bidet seat",
+   "ko": "고장 난 전기 비데",
+   "zh": "坏了的智能马桶盖",
+   "vi": "bệ bidet điện bị hỏng",
+   "uz": "Buzilgan elektr bide qopqog'i",
+   "ru": "Сломанная электрическая крышка-биде"
+  }
+ },
+ "extra": {
+  "item2018_0090": {
+   "also_bins": [
+    "금속캔"
+   ],
+   "also_gold": [
+    "rule2026_008",
+    "rule2026_021"
+   ],
+   "note": "2026: food cans (식료품캔) go with metal cans; 2018 says 고철. Both accepted."
+  },
+  "item2018_0139": {
+   "also_bins": [
+    "의류"
+   ],
+   "also_gold": [
+    "rule2026_015",
+    "rule2026_029"
+   ],
+   "note": "2026 groups 잡화 with clothing; 2018 says 종량제봉투. Both accepted."
+  },
+  "item2018_0212": {
+   "also_gold": [
+    "rule2026_017",
+    "rule2026_031"
+   ]
+  },
+  "item2018_0276": {
+   "also_gold": [
+    "rule2026_018",
+    "rule2026_031"
+   ]
+  },
+  "item2018_0096": {
+   "also_gold": [
+    "rule2026_018",
+    "rule2026_031"
+   ]
+  },
+  "item2018_0170": {
+   "also_gold": [
+    "rule2026_013"
+   ]
+  },
+  "item2018_0078": {
+   "also_gold": []
+  },
+  "item2018_0137": {
+   "also_gold": [
+    "rule2026_011",
+    "rule2026_023"
+   ]
+  },
+  "item2018_0167": {
+   "also_gold": [
+    "rule2026_033"
+   ]
+  },
+  "item2018_0058": {
+   "also_gold": [
+    "rule2026_015",
+    "rule2026_029"
+   ]
+  },
+  "item2018_0263": {
+   "also_gold": [
+    "rule2026_006"
+   ]
+  },
+  "item2018_0218": {
+   "also_gold": [
+    "rule2026_006"
+   ]
+  }
+ }
+}

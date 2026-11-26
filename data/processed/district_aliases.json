@@ -1,0 +1,6831 @@
+{
+  "andong": [
+    "경상북도",
+    "안동시"
+  ],
+  "andong-si": [
+    "경상북도",
+    "안동시"
+  ],
+  "andongsi": [
+    "경상북도",
+    "안동시"
+  ],
+  "ansan": [
+    "경기도",
+    "안산시"
+  ],
+  "ansan-si": [
+    "경기도",
+    "안산시"
+  ],
+  "ansansi": [
+    "경기도",
+    "안산시"
+  ],
+  "anseong": [
+    "경기도",
+    "안성시"
+  ],
+  "anseong-si": [
+    "경기도",
+    "안성시"
+  ],
+  "anseongsi": [
+    "경기도",
+    "안성시"
+  ],
+  "anyang": [
+    "경기도",
+    "안양시"
+  ],
+  "anyang-si": [
+    "경기도",
+    "안양시"
+  ],
+  "anyangsi": [
+    "경기도",
+    "안양시"
+  ],
+  "asan": [
+    "충청남도",
+    "아산시"
+  ],
+  "asan-si": [
+    "충청남도",
+    "아산시"
+  ],
+  "asansi": [
+    "충청남도",
+    "아산시"
+  ],
+  "boeun": [
+    "충청북도",
+    "보은군"
+  ],
+  "boeun-gun": [
+    "충청북도",
+    "보은군"
+  ],
+  "boeungun": [
+    "충청북도",
+    "보은군"
+  ],
+  "bonghwa": [
+    "경상북도",
+    "봉화군"
+  ],
+  "bonghwa-gun": [
+    "경상북도",
+    "봉화군"
+  ],
+  "bonghwagun": [
+    "경상북도",
+    "봉화군"
+  ],
+  "boryeong": [
+    "충청남도",
+    "보령시"
+  ],
+  "boryeong-si": [
+    "충청남도",
+    "보령시"
+  ],
+  "boryeongsi": [
+    "충청남도",
+    "보령시"
+  ],
+  "boseong": [
+    "전남광주통합특별시",
+    "보성군"
+  ],
+  "boseong-gun": [
+    "전남광주통합특별시",
+    "보성군"
+  ],
+  "boseonggun": [
+    "전남광주통합특별시",
+    "보성군"
+  ],
+  "buan": [
+    "전북특별자치도",
+    "부안군"
+  ],
+  "buan-gun": [
+    "전북특별자치도",
+    "부안군"
+  ],
+  "buangun": [
+    "전북특별자치도",
+    "부안군"
+  ],
+  "bucheon": [
+    "경기도",
+    "부천시"
+  ],
+  "bucheon-si": [
+    "경기도",
+    "부천시"
+  ],
+  "bucheonsi": [
+    "경기도",
+    "부천시"
+  ],
+  "buk": "북구",
+  "buk-gu": "북구",
+  "bukgu": "북구",
+  "bupyeong": [
+    "인천광역시",
+    "부평구"
+  ],
+  "bupyeong-gu": [
+    "인천광역시",
+    "부평구"
+  ],
+  "bupyeonggu": [
+    "인천광역시",
+    "부평구"
+  ],
+  "busanbuk": [
+    "부산광역시",
+    "북구"
+  ],
+  "busanbuk-gu": [
+    "부산광역시",
+    "북구"
+  ],
+  "busanbukgu": [
+    "부산광역시",
+    "북구"
+  ],
+  "busanbusanjin": [
+    "부산광역시",
+    "부산진구"
+  ],
+  "busanbusanjin-gu": [
+    "부산광역시",
+    "부산진구"
+  ],
+  "busanbusanjingu": [
+    "부산광역시",
+    "부산진구"
+  ],
+  "busandong": [
+    "부산광역시",
+    "동구"
+  ],
+  "busandong-gu": [
+    "부산광역시",
+    "동구"
+  ],
+  "busandonggu": [
+    "부산광역시",
+    "동구"
+  ],
+  "busandongnae": [
+    "부산광역시",
+    "동래구"
+  ],
+  "busandongnae-gu": [
+    "부산광역시",
+    "동래구"
+  ],
+  "busandongnaegu": [
+    "부산광역시",
+    "동래구"
+  ],
+  "busangangseo": [
+    "부산광역시",
+    "강서구"
+  ],
+  "busangangseo-gu": [
+    "부산광역시",
+    "강서구"
+  ],
+  "busangangseogu": [
+    "부산광역시",
+    "강서구"
+  ],
+  "busangeumjeong": [
+    "부산광역시",
+    "금정구"
+  ],
+  "busangeumjeong-gu": [
+    "부산광역시",
+    "금정구"
+  ],
+  "busangeumjeonggu": [
+    "부산광역시",
+    "금정구"
+  ],
+  "busangijang": [
+    "부산광역시",
+    "기장군"
+  ],
+  "busangijang-gun": [
+    "부산광역시",
+    "기장군"
+  ],
+  "busangijanggun": [
+    "부산광역시",
+    "기장군"
+  ],
+  "busanhaeundae": [
+    "부산광역시",
+    "해운대구"
+  ],
+  "busanhaeundae-gu": [
+    "부산광역시",
+    "해운대구"
+  ],
+  "busanhaeundaegu": [
+    "부산광역시",
+    "해운대구"
+  ],
+  "busanjin": [
+    "부산광역시",
+    "부산진구"
+  ],
+  "busanjin-gu": [
+    "부산광역시",
+    "부산진구"
+  ],
+  "busanjingu": [
+    "부산광역시",
+    "부산진구"
+  ],
+  "busanjung": [
+    "부산광역시",
+    "중구"
+  ],
+  "busanjung-gu": [
+    "부산광역시",
+    "중구"
+  ],
+  "busanjunggu": [
+    "부산광역시",
+    "중구"
+  ],
+  "busannam": [
+    "부산광역시",
+    "남구"
+  ],
+  "busannam-gu": [
+    "부산광역시",
+    "남구"
+  ],
+  "busannamgu": [
+    "부산광역시",
+    "남구"
+  ],
+  "busansaha": [
+    "부산광역시",
+    "사하구"
+  ],
+  "busansaha-gu": [
+    "부산광역시",
+    "사하구"
+  ],
+  "busansahagu": [
+    "부산광역시",
+    "사하구"
+  ],
+  "busansasang": [
+    "부산광역시",
+    "사상구"
+  ],
+  "busansasang-gu": [
+    "부산광역시",
+    "사상구"
+  ],
+  "busansasanggu": [
+    "부산광역시",
+    "사상구"
+  ],
+  "busanseo": [
+    "부산광역시",
+    "서구"
+  ],
+  "busanseo-gu": [
+    "부산광역시",
+    "서구"
+  ],
+  "busanseogu": [
+    "부산광역시",
+    "서구"
+  ],
+  "busansuyeong": [
+    "부산광역시",
+    "수영구"
+  ],
+  "busansuyeong-gu": [
+    "부산광역시",
+    "수영구"
+  ],
+  "busansuyeonggu": [
+    "부산광역시",
+    "수영구"
+  ],
+  "busanyeongdo": [
+    "부산광역시",
+    "영도구"
+  ],
+  "busanyeongdo-gu": [
+    "부산광역시",
+    "영도구"
+  ],
+  "busanyeongdogu": [
+    "부산광역시",
+    "영도구"
+  ],
+  "busanyeonje": [
+    "부산광역시",
+    "연제구"
+  ],
+  "busanyeonje-gu": [
+    "부산광역시",
+    "연제구"
+  ],
+  "busanyeonjegu": [
+    "부산광역시",
+    "연제구"
+  ],
+  "buyeo": [
+    "충청남도",
+    "부여군"
+  ],
+  "buyeo-gun": [
+    "충청남도",
+    "부여군"
+  ],
+  "buyeogun": [
+    "충청남도",
+    "부여군"
+  ],
+  "changnyeong": [
+    "경상남도",
+    "창녕군"
+  ],
+  "changnyeong-gun": [
+    "경상남도",
+    "창녕군"
+  ],
+  "changnyeonggun": [
+    "경상남도",
+    "창녕군"
+  ],
+  "changwon": [
+    "경상남도",
+    "창원시"
+  ],
+  "changwon-si": [
+    "경상남도",
+    "창원시"
+  ],
+  "changwonsi": [
+    "경상남도",
+    "창원시"
+  ],
+  "cheonan": [
+    "충청남도",
+    "천안시"
+  ],
+  "cheonan-si": [
+    "충청남도",
+    "천안시"
+  ],
+  "cheonansi": [
+    "충청남도",
+    "천안시"
+  ],
+  "cheongdo": [
+    "경상북도",
+    "청도군"
+  ],
+  "cheongdo-gun": [
+    "경상북도",
+    "청도군"
+  ],
+  "cheongdogun": [
+    "경상북도",
+    "청도군"
+  ],
+  "cheongsong": [
+    "경상북도",
+    "청송군"
+  ],
+  "cheongsong-gun": [
+    "경상북도",
+    "청송군"
+  ],
+  "cheongsonggun": [
+    "경상북도",
+    "청송군"
+  ],
+  "cheongyang": [
+    "충청남도",
+    "청양군"
+  ],
+  "cheongyang-gun": [
+    "충청남도",
+    "청양군"
+  ],
+  "cheongyanggun": [
+    "충청남도",
+    "청양군"
+  ],
+  "cheorwon": [
+    "강원특별자치도",
+    "철원군"
+  ],
+  "cheorwon-gun": [
+    "강원특별자치도",
+    "철원군"
+  ],
+  "cheorwongun": [
+    "강원특별자치도",
+    "철원군"
+  ],
+  "chilgok": [
+    "경상북도",
+    "칠곡군"
+  ],
+  "chilgok-gun": [
+    "경상북도",
+    "칠곡군"
+  ],
+  "chilgokgun": [
+    "경상북도",
+    "칠곡군"
+  ],
+  "chuncheon": [
+    "강원특별자치도",
+    "춘천시"
+  ],
+  "chuncheon-si": [
+    "강원특별자치도",
+    "춘천시"
+  ],
+  "chuncheonsi": [
+    "강원특별자치도",
+    "춘천시"
+  ],
+  "chungbukboeun": [
+    "충청북도",
+    "보은군"
+  ],
+  "chungbukboeun-gun": [
+    "충청북도",
+    "보은군"
+  ],
+  "chungbukboeungun": [
+    "충청북도",
+    "보은군"
+  ],
+  "chungbukchungju": [
+    "충청북도",
+    "충주시"
+  ],
+  "chungbukchungju-si": [
+    "충청북도",
+    "충주시"
+  ],
+  "chungbukchungjusi": [
+    "충청북도",
+    "충주시"
+  ],
+  "chungbukdanyang": [
+    "충청북도",
+    "단양군"
+  ],
+  "chungbukdanyang-gun": [
+    "충청북도",
+    "단양군"
+  ],
+  "chungbukdanyanggun": [
+    "충청북도",
+    "단양군"
+  ],
+  "chungbukeumseong": [
+    "충청북도",
+    "음성군"
+  ],
+  "chungbukeumseong-gun": [
+    "충청북도",
+    "음성군"
+  ],
+  "chungbukeumseonggun": [
+    "충청북도",
+    "음성군"
+  ],
+  "chungbukgoesan": [
+    "충청북도",
+    "괴산군"
+  ],
+  "chungbukgoesan-gun": [
+    "충청북도",
+    "괴산군"
+  ],
+  "chungbukgoesangun": [
+    "충청북도",
+    "괴산군"
+  ],
+  "chungbukjecheon": [
+    "충청북도",
+    "제천시"
+  ],
+  "chungbukjecheon-si": [
+    "충청북도",
+    "제천시"
+  ],
+  "chungbukjecheonsi": [
+    "충청북도",
+    "제천시"
+  ],
+  "chungbukjeungpyeong": [
+    "충청북도",
+    "증평군"
+  ],
+  "chungbukjeungpyeong-gun": [
+    "충청북도",
+    "증평군"
+  ],
+  "chungbukjeungpyeonggun": [
+    "충청북도",
+    "증평군"
+  ],
+  "chungbukjincheon": [
+    "충청북도",
+    "진천군"
+  ],
+  "chungbukjincheon-gun": [
+    "충청북도",
+    "진천군"
+  ],
+  "chungbukjincheongun": [
+    "충청북도",
+    "진천군"
+  ],
+  "chungbukokcheon": [
+    "충청북도",
+    "옥천군"
+  ],
+  "chungbukokcheon-gun": [
+    "충청북도",
+    "옥천군"
+  ],
+  "chungbukokcheongun": [
+    "충청북도",
+    "옥천군"
+  ],
+  "chungbukyeongdong": [
+    "충청북도",
+    "영동군"
+  ],
+  "chungbukyeongdong-gun": [
+    "충청북도",
+    "영동군"
+  ],
+  "chungbukyeongdonggun": [
+    "충청북도",
+    "영동군"
+  ],
+  "chungcheongbuk-doboeun": [
+    "충청북도",
+    "보은군"
+  ],
+  "chungcheongbuk-doboeun-gun": [
+    "충청북도",
+    "보은군"
+  ],
+  "chungcheongbuk-doboeungun": [
+    "충청북도",
+    "보은군"
+  ],
+  "chungcheongbuk-dochungju": [
+    "충청북도",
+    "충주시"
+  ],
+  "chungcheongbuk-dochungju-si": [
+    "충청북도",
+    "충주시"
+  ],
+  "chungcheongbuk-dochungjusi": [
+    "충청북도",
+    "충주시"
+  ],
+  "chungcheongbuk-dodanyang": [
+    "충청북도",
+    "단양군"
+  ],
+  "chungcheongbuk-dodanyang-gun": [
+    "충청북도",
+    "단양군"
+  ],
+  "chungcheongbuk-dodanyanggun": [
+    "충청북도",
+    "단양군"
+  ],
+  "chungcheongbuk-doeumseong": [
+    "충청북도",
+    "음성군"
+  ],
+  "chungcheongbuk-doeumseong-gun": [
+    "충청북도",
+    "음성군"
+  ],
+  "chungcheongbuk-doeumseonggun": [
+    "충청북도",
+    "음성군"
+  ],
+  "chungcheongbuk-dogoesan": [
+    "충청북도",
+    "괴산군"
+  ],
+  "chungcheongbuk-dogoesan-gun": [
+    "충청북도",
+    "괴산군"
+  ],
+  "chungcheongbuk-dogoesangun": [
+    "충청북도",
+    "괴산군"
+  ],
+  "chungcheongbuk-dojecheon": [
+    "충청북도",
+    "제천시"
+  ],
+  "chungcheongbuk-dojecheon-si": [
+    "충청북도",
+    "제천시"
+  ],
+  "chungcheongbuk-dojecheonsi": [
+    "충청북도",
+    "제천시"
+  ],
+  "chungcheongbuk-dojeungpyeong": [
+    "충청북도",
+    "증평군"
+  ],
+  "chungcheongbuk-dojeungpyeong-gun": [
+    "충청북도",
+    "증평군"
+  ],
+  "chungcheongbuk-dojeungpyeonggun": [
+    "충청북도",
+    "증평군"
+  ],
+  "chungcheongbuk-dojincheon": [
+    "충청북도",
+    "진천군"
+  ],
+  "chungcheongbuk-dojincheon-gun": [
+    "충청북도",
+    "진천군"
+  ],
+  "chungcheongbuk-dojincheongun": [
+    "충청북도",
+    "진천군"
+  ],
+  "chungcheongbuk-dookcheon": [
+    "충청북도",
+    "옥천군"
+  ],
+  "chungcheongbuk-dookcheon-gun": [
+    "충청북도",
+    "옥천군"
+  ],
+  "chungcheongbuk-dookcheongun": [
+    "충청북도",
+    "옥천군"
+  ],
+  "chungcheongbuk-doyeongdong": [
+    "충청북도",
+    "영동군"
+  ],
+  "chungcheongbuk-doyeongdong-gun": [
+    "충청북도",
+    "영동군"
+  ],
+  "chungcheongbuk-doyeongdonggun": [
+    "충청북도",
+    "영동군"
+  ],
+  "chungcheongnam-doasan": [
+    "충청남도",
+    "아산시"
+  ],
+  "chungcheongnam-doasan-si": [
+    "충청남도",
+    "아산시"
+  ],
+  "chungcheongnam-doasansi": [
+    "충청남도",
+    "아산시"
+  ],
+  "chungcheongnam-doboryeong": [
+    "충청남도",
+    "보령시"
+  ],
+  "chungcheongnam-doboryeong-si": [
+    "충청남도",
+    "보령시"
+  ],
+  "chungcheongnam-doboryeongsi": [
+    "충청남도",
+    "보령시"
+  ],
+  "chungcheongnam-dobuyeo": [
+    "충청남도",
+    "부여군"
+  ],
+  "chungcheongnam-dobuyeo-gun": [
+    "충청남도",
+    "부여군"
+  ],
+  "chungcheongnam-dobuyeogun": [
+    "충청남도",
+    "부여군"
+  ],
+  "chungcheongnam-docheonan": [
+    "충청남도",
+    "천안시"
+  ],
+  "chungcheongnam-docheonan-si": [
+    "충청남도",
+    "천안시"
+  ],
+  "chungcheongnam-docheonansi": [
+    "충청남도",
+    "천안시"
+  ],
+  "chungcheongnam-docheongyang": [
+    "충청남도",
+    "청양군"
+  ],
+  "chungcheongnam-docheongyang-gun": [
+    "충청남도",
+    "청양군"
+  ],
+  "chungcheongnam-docheongyanggun": [
+    "충청남도",
+    "청양군"
+  ],
+  "chungcheongnam-dodangjin": [
+    "충청남도",
+    "당진시"
+  ],
+  "chungcheongnam-dodangjin-si": [
+    "충청남도",
+    "당진시"
+  ],
+  "chungcheongnam-dodangjinsi": [
+    "충청남도",
+    "당진시"
+  ],
+  "chungcheongnam-dogeumsan": [
+    "충청남도",
+    "금산군"
+  ],
+  "chungcheongnam-dogeumsan-gun": [
+    "충청남도",
+    "금산군"
+  ],
+  "chungcheongnam-dogeumsangun": [
+    "충청남도",
+    "금산군"
+  ],
+  "chungcheongnam-dogyeryong": [
+    "충청남도",
+    "계룡시"
+  ],
+  "chungcheongnam-dogyeryong-si": [
+    "충청남도",
+    "계룡시"
+  ],
+  "chungcheongnam-dogyeryongsi": [
+    "충청남도",
+    "계룡시"
+  ],
+  "chungcheongnam-dohongseong": [
+    "충청남도",
+    "홍성군"
+  ],
+  "chungcheongnam-dohongseong-gun": [
+    "충청남도",
+    "홍성군"
+  ],
+  "chungcheongnam-dohongseonggun": [
+    "충청남도",
+    "홍성군"
+  ],
+  "chungcheongnam-dononsan": [
+    "충청남도",
+    "논산시"
+  ],
+  "chungcheongnam-dononsan-si": [
+    "충청남도",
+    "논산시"
+  ],
+  "chungcheongnam-dononsansi": [
+    "충청남도",
+    "논산시"
+  ],
+  "chungcheongnam-doseocheon": [
+    "충청남도",
+    "서천군"
+  ],
+  "chungcheongnam-doseocheon-gun": [
+    "충청남도",
+    "서천군"
+  ],
+  "chungcheongnam-doseocheongun": [
+    "충청남도",
+    "서천군"
+  ],
+  "chungcheongnam-doseosan": [
+    "충청남도",
+    "서산시"
+  ],
+  "chungcheongnam-doseosan-si": [
+    "충청남도",
+    "서산시"
+  ],
+  "chungcheongnam-doseosansi": [
+    "충청남도",
+    "서산시"
+  ],
+  "chungcheongnam-dotaean": [
+    "충청남도",
+    "태안군"
+  ],
+  "chungcheongnam-dotaean-gun": [
+    "충청남도",
+    "태안군"
+  ],
+  "chungcheongnam-dotaeangun": [
+    "충청남도",
+    "태안군"
+  ],
+  "chungju": [
+    "충청북도",
+    "충주시"
+  ],
+  "chungju-si": [
+    "충청북도",
+    "충주시"
+  ],
+  "chungjusi": [
+    "충청북도",
+    "충주시"
+  ],
+  "chungnamasan": [
+    "충청남도",
+    "아산시"
+  ],
+  "chungnamasan-si": [
+    "충청남도",
+    "아산시"
+  ],
+  "chungnamasansi": [
+    "충청남도",
+    "아산시"
+  ],
+  "chungnamboryeong": [
+    "충청남도",
+    "보령시"
+  ],
+  "chungnamboryeong-si": [
+    "충청남도",
+    "보령시"
+  ],
+  "chungnamboryeongsi": [
+    "충청남도",
+    "보령시"
+  ],
+  "chungnambuyeo": [
+    "충청남도",
+    "부여군"
+  ],
+  "chungnambuyeo-gun": [
+    "충청남도",
+    "부여군"
+  ],
+  "chungnambuyeogun": [
+    "충청남도",
+    "부여군"
+  ],
+  "chungnamcheonan": [
+    "충청남도",
+    "천안시"
+  ],
+  "chungnamcheonan-si": [
+    "충청남도",
+    "천안시"
+  ],
+  "chungnamcheonansi": [
+    "충청남도",
+    "천안시"
+  ],
+  "chungnamcheongyang": [
+    "충청남도",
+    "청양군"
+  ],
+  "chungnamcheongyang-gun": [
+    "충청남도",
+    "청양군"
+  ],
+  "chungnamcheongyanggun": [
+    "충청남도",
+    "청양군"
+  ],
+  "chungnamdangjin": [
+    "충청남도",
+    "당진시"
+  ],
+  "chungnamdangjin-si": [
+    "충청남도",
+    "당진시"
+  ],
+  "chungnamdangjinsi": [
+    "충청남도",
+    "당진시"
+  ],
+  "chungnamgeumsan": [
+    "충청남도",
+    "금산군"
+  ],
+  "chungnamgeumsan-gun": [
+    "충청남도",
+    "금산군"
+  ],
+  "chungnamgeumsangun": [
+    "충청남도",
+    "금산군"
+  ],
+  "chungnamgyeryong": [
+    "충청남도",
+    "계룡시"
+  ],
+  "chungnamgyeryong-si": [
+    "충청남도",
+    "계룡시"
+  ],
+  "chungnamgyeryongsi": [
+    "충청남도",
+    "계룡시"
+  ],
+  "chungnamhongseong": [
+    "충청남도",
+    "홍성군"
+  ],
+  "chungnamhongseong-gun": [
+    "충청남도",
+    "홍성군"
+  ],
+  "chungnamhongseonggun": [
+    "충청남도",
+    "홍성군"
+  ],
+  "chungnamnonsan": [
+    "충청남도",
+    "논산시"
+  ],
+  "chungnamnonsan-si": [
+    "충청남도",
+    "논산시"
+  ],
+  "chungnamnonsansi": [
+    "충청남도",
+    "논산시"
+  ],
+  "chungnamseocheon": [
+    "충청남도",
+    "서천군"
+  ],
+  "chungnamseocheon-gun": [
+    "충청남도",
+    "서천군"
+  ],
+  "chungnamseocheongun": [
+    "충청남도",
+    "서천군"
+  ],
+  "chungnamseosan": [
+    "충청남도",
+    "서산시"
+  ],
+  "chungnamseosan-si": [
+    "충청남도",
+    "서산시"
+  ],
+  "chungnamseosansi": [
+    "충청남도",
+    "서산시"
+  ],
+  "chungnamtaean": [
+    "충청남도",
+    "태안군"
+  ],
+  "chungnamtaean-gun": [
+    "충청남도",
+    "태안군"
+  ],
+  "chungnamtaeangun": [
+    "충청남도",
+    "태안군"
+  ],
+  "daedeok": [
+    "대전광역시",
+    "대덕구"
+  ],
+  "daedeok-gu": [
+    "대전광역시",
+    "대덕구"
+  ],
+  "daedeokgu": [
+    "대전광역시",
+    "대덕구"
+  ],
+  "daegubuk": [
+    "대구광역시",
+    "북구"
+  ],
+  "daegubuk-gu": [
+    "대구광역시",
+    "북구"
+  ],
+  "daegubukgu": [
+    "대구광역시",
+    "북구"
+  ],
+  "daegudalseo": [
+    "대구광역시",
+    "달서구"
+  ],
+  "daegudalseo-gu": [
+    "대구광역시",
+    "달서구"
+  ],
+  "daegudalseogu": [
+    "대구광역시",
+    "달서구"
+  ],
+  "daegudalseong": [
+    "대구광역시",
+    "달성군"
+  ],
+  "daegudalseong-gun": [
+    "대구광역시",
+    "달성군"
+  ],
+  "daegudalseonggun": [
+    "대구광역시",
+    "달성군"
+  ],
+  "daegudong": [
+    "대구광역시",
+    "동구"
+  ],
+  "daegudong-gu": [
+    "대구광역시",
+    "동구"
+  ],
+  "daegudonggu": [
+    "대구광역시",
+    "동구"
+  ],
+  "daegugunwi": [
+    "대구광역시",
+    "군위군"
+  ],
+  "daegugunwi-gun": [
+    "대구광역시",
+    "군위군"
+  ],
+  "daegugunwigun": [
+    "대구광역시",
+    "군위군"
+  ],
+  "daegujung": [
+    "대구광역시",
+    "중구"
+  ],
+  "daegujung-gu": [
+    "대구광역시",
+    "중구"
+  ],
+  "daegujunggu": [
+    "대구광역시",
+    "중구"
+  ],
+  "daegunam": [
+    "대구광역시",
+    "남구"
+  ],
+  "daegunam-gu": [
+    "대구광역시",
+    "남구"
+  ],
+  "daegunamgu": [
+    "대구광역시",
+    "남구"
+  ],
+  "daeguseo": [
+    "대구광역시",
+    "서구"
+  ],
+  "daeguseo-gu": [
+    "대구광역시",
+    "서구"
+  ],
+  "daeguseogu": [
+    "대구광역시",
+    "서구"
+  ],
+  "daegususeong": [
+    "대구광역시",
+    "수성구"
+  ],
+  "daegususeong-gu": [
+    "대구광역시",
+    "수성구"
+  ],
+  "daegususeonggu": [
+    "대구광역시",
+    "수성구"
+  ],
+  "daejeondaedeok": [
+    "대전광역시",
+    "대덕구"
+  ],
+  "daejeondaedeok-gu": [
+    "대전광역시",
+    "대덕구"
+  ],
+  "daejeondaedeokgu": [
+    "대전광역시",
+    "대덕구"
+  ],
+  "daejeondong": [
+    "대전광역시",
+    "동구"
+  ],
+  "daejeondong-gu": [
+    "대전광역시",
+    "동구"
+  ],
+  "daejeondonggu": [
+    "대전광역시",
+    "동구"
+  ],
+  "daejeonjung": [
+    "대전광역시",
+    "중구"
+  ],
+  "daejeonjung-gu": [
+    "대전광역시",
+    "중구"
+  ],
+  "daejeonjunggu": [
+    "대전광역시",
+    "중구"
+  ],
+  "daejeonseo": [
+    "대전광역시",
+    "서구"
+  ],
+  "daejeonseo-gu": [
+    "대전광역시",
+    "서구"
+  ],
+  "daejeonseogu": [
+    "대전광역시",
+    "서구"
+  ],
+  "daejeonyuseong": [
+    "대전광역시",
+    "유성구"
+  ],
+  "daejeonyuseong-gu": [
+    "대전광역시",
+    "유성구"
+  ],
+  "daejeonyuseonggu": [
+    "대전광역시",
+    "유성구"
+  ],
+  "dalseo": [
+    "대구광역시",
+    "달서구"
+  ],
+  "dalseo-gu": [
+    "대구광역시",
+    "달서구"
+  ],
+  "dalseogu": [
+    "대구광역시",
+    "달서구"
+  ],
+  "dalseong": [
+    "대구광역시",
+    "달성군"
+  ],
+  "dalseong-gun": [
+    "대구광역시",
+    "달성군"
+  ],
+  "dalseonggun": [
+    "대구광역시",
+    "달성군"
+  ],
+  "damyang": [
+    "전남광주통합특별시",
+    "담양군"
+  ],
+  "damyang-gun": [
+    "전남광주통합특별시",
+    "담양군"
+  ],
+  "damyanggun": [
+    "전남광주통합특별시",
+    "담양군"
+  ],
+  "dangjin": [
+    "충청남도",
+    "당진시"
+  ],
+  "dangjin-si": [
+    "충청남도",
+    "당진시"
+  ],
+  "dangjinsi": [
+    "충청남도",
+    "당진시"
+  ],
+  "danyang": [
+    "충청북도",
+    "단양군"
+  ],
+  "danyang-gun": [
+    "충청북도",
+    "단양군"
+  ],
+  "danyanggun": [
+    "충청북도",
+    "단양군"
+  ],
+  "dong": "동구",
+  "dong-gu": "동구",
+  "dongdaemun": [
+    "서울특별시",
+    "동대문구"
+  ],
+  "dongdaemun-gu": [
+    "서울특별시",
+    "동대문구"
+  ],
+  "dongdaemungu": [
+    "서울특별시",
+    "동대문구"
+  ],
+  "dongducheon": [
+    "경기도",
+    "동두천시"
+  ],
+  "dongducheon-si": [
+    "경기도",
+    "동두천시"
+  ],
+  "dongducheonsi": [
+    "경기도",
+    "동두천시"
+  ],
+  "donggu": "동구",
+  "donghae": [
+    "강원특별자치도",
+    "동해시"
+  ],
+  "donghae-si": [
+    "강원특별자치도",
+    "동해시"
+  ],
+  "donghaesi": [
+    "강원특별자치도",
+    "동해시"
+  ],
+  "dongjak": [
+    "서울특별시",
+    "동작구"
+  ],
+  "dongjak-gu": [
+    "서울특별시",
+    "동작구"
+  ],
+  "dongjakgu": [
+    "서울특별시",
+    "동작구"
+  ],
+  "dongnae": [
+    "부산광역시",
+    "동래구"
+  ],
+  "dongnae-gu": [
+    "부산광역시",
+    "동래구"
+  ],
+  "dongnaegu": [
+    "부산광역시",
+    "동래구"
+  ],
+  "eumseong": [
+    "충청북도",
+    "음성군"
+  ],
+  "eumseong-gun": [
+    "충청북도",
+    "음성군"
+  ],
+  "eumseonggun": [
+    "충청북도",
+    "음성군"
+  ],
+  "eunpyeong": [
+    "서울특별시",
+    "은평구"
+  ],
+  "eunpyeong-gu": [
+    "서울특별시",
+    "은평구"
+  ],
+  "eunpyeonggu": [
+    "서울특별시",
+    "은평구"
+  ],
+  "gangbuk": [
+    "서울특별시",
+    "강북구"
+  ],
+  "gangbuk-gu": [
+    "서울특별시",
+    "강북구"
+  ],
+  "gangbukgu": [
+    "서울특별시",
+    "강북구"
+  ],
+  "ganghwa": [
+    "인천광역시",
+    "강화군"
+  ],
+  "ganghwa-gun": [
+    "인천광역시",
+    "강화군"
+  ],
+  "ganghwagun": [
+    "인천광역시",
+    "강화군"
+  ],
+  "gangjin": [
+    "전남광주통합특별시",
+    "강진군"
+  ],
+  "gangjin-gun": [
+    "전남광주통합특별시",
+    "강진군"
+  ],
+  "gangjingun": [
+    "전남광주통합특별시",
+    "강진군"
+  ],
+  "gangnam": [
+    "서울특별시",
+    "강남구"
+  ],
+  "gangnam-gu": [
+    "서울특별시",
+    "강남구"
+  ],
+  "gangnamgu": [
+    "서울특별시",
+    "강남구"
+  ],
+  "gangneung": [
+    "강원특별자치도",
+    "강릉시"
+  ],
+  "gangneung-si": [
+    "강원특별자치도",
+    "강릉시"
+  ],
+  "gangneungsi": [
+    "강원특별자치도",
+    "강릉시"
+  ],
+  "gangseo": "강서구",
+  "gangseo-gu": "강서구",
+  "gangseogu": "강서구",
+  "gangwon-docheorwon": [
+    "강원특별자치도",
+    "철원군"
+  ],
+  "gangwon-docheorwon-gun": [
+    "강원특별자치도",
+    "철원군"
+  ],
+  "gangwon-docheorwongun": [
+    "강원특별자치도",
+    "철원군"
+  ],
+  "gangwon-dochuncheon": [
+    "강원특별자치도",
+    "춘천시"
+  ],
+  "gangwon-dochuncheon-si": [
+    "강원특별자치도",
+    "춘천시"
+  ],
+  "gangwon-dochuncheonsi": [
+    "강원특별자치도",
+    "춘천시"
+  ],
+  "gangwon-dodonghae": [
+    "강원특별자치도",
+    "동해시"
+  ],
+  "gangwon-dodonghae-si": [
+    "강원특별자치도",
+    "동해시"
+  ],
+  "gangwon-dodonghaesi": [
+    "강원특별자치도",
+    "동해시"
+  ],
+  "gangwon-dogangneung": [
+    "강원특별자치도",
+    "강릉시"
+  ],
+  "gangwon-dogangneung-si": [
+    "강원특별자치도",
+    "강릉시"
+  ],
+  "gangwon-dogangneungsi": [
+    "강원특별자치도",
+    "강릉시"
+  ],
+  "gangwon-dogoseong": [
+    "강원특별자치도",
+    "고성군"
+  ],
+  "gangwon-dogoseong-gun": [
+    "강원특별자치도",
+    "고성군"
+  ],
+  "gangwon-dogoseonggun": [
+    "강원특별자치도",
+    "고성군"
+  ],
+  "gangwon-dohoengseong": [
+    "강원특별자치도",
+    "횡성군"
+  ],
+  "gangwon-dohoengseong-gun": [
+    "강원특별자치도",
+    "횡성군"
+  ],
+  "gangwon-dohoengseonggun": [
+    "강원특별자치도",
+    "횡성군"
+  ],
+  "gangwon-dohongcheon": [
+    "강원특별자치도",
+    "홍천군"
+  ],
+  "gangwon-dohongcheon-gun": [
+    "강원특별자치도",
+    "홍천군"
+  ],
+  "gangwon-dohongcheongun": [
+    "강원특별자치도",
+    "홍천군"
+  ],
+  "gangwon-doinje": [
+    "강원특별자치도",
+    "인제군"
+  ],
+  "gangwon-doinje-gun": [
+    "강원특별자치도",
+    "인제군"
+  ],
+  "gangwon-doinjegun": [
+    "강원특별자치도",
+    "인제군"
+  ],
+  "gangwon-dojeongseon": [
+    "강원특별자치도",
+    "정선군"
+  ],
+  "gangwon-dojeongseon-gun": [
+    "강원특별자치도",
+    "정선군"
+  ],
+  "gangwon-dojeongseongun": [
+    "강원특별자치도",
+    "정선군"
+  ],
+  "gangwon-dopyeongchang": [
+    "강원특별자치도",
+    "평창군"
+  ],
+  "gangwon-dopyeongchang-gun": [
+    "강원특별자치도",
+    "평창군"
+  ],
+  "gangwon-dopyeongchanggun": [
+    "강원특별자치도",
+    "평창군"
+  ],
+  "gangwon-dosamcheok": [
+    "강원특별자치도",
+    "삼척시"
+  ],
+  "gangwon-dosamcheok-si": [
+    "강원특별자치도",
+    "삼척시"
+  ],
+  "gangwon-dosamcheoksi": [
+    "강원특별자치도",
+    "삼척시"
+  ],
+  "gangwon-dotaebaek": [
+    "강원특별자치도",
+    "태백시"
+  ],
+  "gangwon-dotaebaek-si": [
+    "강원특별자치도",
+    "태백시"
+  ],
+  "gangwon-dotaebaeksi": [
+    "강원특별자치도",
+    "태백시"
+  ],
+  "gangwon-dowonju": [
+    "강원특별자치도",
+    "원주시"
+  ],
+  "gangwon-dowonju-si": [
+    "강원특별자치도",
+    "원주시"
+  ],
+  "gangwon-dowonjusi": [
+    "강원특별자치도",
+    "원주시"
+  ],
+  "gangwon-doyanggu": [
+    "강원특별자치도",
+    "양구군"
+  ],
+  "gangwon-doyanggu-gun": [
+    "강원특별자치도",
+    "양구군"
+  ],
+  "gangwon-doyanggugun": [
+    "강원특별자치도",
+    "양구군"
+  ],
+  "gangwon-doyangyang": [
+    "강원특별자치도",
+    "양양군"
+  ],
+  "gangwon-doyangyang-gun": [
+    "강원특별자치도",
+    "양양군"
+  ],
+  "gangwon-doyangyanggun": [
+    "강원특별자치도",
+    "양양군"
+  ],
+  "gangwon-doyeongwol": [
+    "강원특별자치도",
+    "영월군"
+  ],
+  "gangwon-doyeongwol-gun": [
+    "강원특별자치도",
+    "영월군"
+  ],
+  "gangwon-doyeongwolgun": [
+    "강원특별자치도",
+    "영월군"
+  ],
+  "gangwoncheorwon": [
+    "강원특별자치도",
+    "철원군"
+  ],
+  "gangwoncheorwon-gun": [
+    "강원특별자치도",
+    "철원군"
+  ],
+  "gangwoncheorwongun": [
+    "강원특별자치도",
+    "철원군"
+  ],
+  "gangwonchuncheon": [
+    "강원특별자치도",
+    "춘천시"
+  ],
+  "gangwonchuncheon-si": [
+    "강원특별자치도",
+    "춘천시"
+  ],
+  "gangwonchuncheonsi": [
+    "강원특별자치도",
+    "춘천시"
+  ],
+  "gangwondonghae": [
+    "강원특별자치도",
+    "동해시"
+  ],
+  "gangwondonghae-si": [
+    "강원특별자치도",
+    "동해시"
+  ],
+  "gangwondonghaesi": [
+    "강원특별자치도",
+    "동해시"
+  ],
+  "gangwongangneung": [
+    "강원특별자치도",
+    "강릉시"
+  ],
+  "gangwongangneung-si": [
+    "강원특별자치도",
+    "강릉시"
+  ],
+  "gangwongangneungsi": [
+    "강원특별자치도",
+    "강릉시"
+  ],
+  "gangwongoseong": [
+    "강원특별자치도",
+    "고성군"
+  ],
+  "gangwongoseong-gun": [
+    "강원특별자치도",
+    "고성군"
+  ],
+  "gangwongoseonggun": [
+    "강원특별자치도",
+    "고성군"
+  ],
+  "gangwonhoengseong": [
+    "강원특별자치도",
+    "횡성군"
+  ],
+  "gangwonhoengseong-gun": [
+    "강원특별자치도",
+    "횡성군"
+  ],
+  "gangwonhoengseonggun": [
+    "강원특별자치도",
+    "횡성군"
+  ],
+  "gangwonhongcheon": [
+    "강원특별자치도",
+    "홍천군"
+  ],
+  "gangwonhongcheon-gun": [
+    "강원특별자치도",
+    "홍천군"
+  ],
+  "gangwonhongcheongun": [
+    "강원특별자치도",
+    "홍천군"
+  ],
+  "gangwoninje": [
+    "강원특별자치도",
+    "인제군"
+  ],
+  "gangwoninje-gun": [
+    "강원특별자치도",
+    "인제군"
+  ],
+  "gangwoninjegun": [
+    "강원특별자치도",
+    "인제군"
+  ],
+  "gangwonjeongseon": [
+    "강원특별자치도",
+    "정선군"
+  ],
+  "gangwonjeongseon-gun": [
+    "강원특별자치도",
+    "정선군"
+  ],
+  "gangwonjeongseongun": [
+    "강원특별자치도",
+    "정선군"
+  ],
+  "gangwonpyeongchang": [
+    "강원특별자치도",
+    "평창군"
+  ],
+  "gangwonpyeongchang-gun": [
+    "강원특별자치도",
+    "평창군"
+  ],
+  "gangwonpyeongchanggun": [
+    "강원특별자치도",
+    "평창군"
+  ],
+  "gangwonsamcheok": [
+    "강원특별자치도",
+    "삼척시"
+  ],
+  "gangwonsamcheok-si": [
+    "강원특별자치도",
+    "삼척시"
+  ],
+  "gangwonsamcheoksi": [
+    "강원특별자치도",
+    "삼척시"
+  ],
+  "gangwontaebaek": [
+    "강원특별자치도",
+    "태백시"
+  ],
+  "gangwontaebaek-si": [
+    "강원특별자치도",
+    "태백시"
+  ],
+  "gangwontaebaeksi": [
+    "강원특별자치도",
+    "태백시"
+  ],
+  "gangwonwonju": [
+    "강원특별자치도",
+    "원주시"
+  ],
+  "gangwonwonju-si": [
+    "강원특별자치도",
+    "원주시"
+  ],
+  "gangwonwonjusi": [
+    "강원특별자치도",
+    "원주시"
+  ],
+  "gangwonyanggu": [
+    "강원특별자치도",
+    "양구군"
+  ],
+  "gangwonyanggu-gun": [
+    "강원특별자치도",
+    "양구군"
+  ],
+  "gangwonyanggugun": [
+    "강원특별자치도",
+    "양구군"
+  ],
+  "gangwonyangyang": [
+    "강원특별자치도",
+    "양양군"
+  ],
+  "gangwonyangyang-gun": [
+    "강원특별자치도",
+    "양양군"
+  ],
+  "gangwonyangyanggun": [
+    "강원특별자치도",
+    "양양군"
+  ],
+  "gangwonyeongwol": [
+    "강원특별자치도",
+    "영월군"
+  ],
+  "gangwonyeongwol-gun": [
+    "강원특별자치도",
+    "영월군"
+  ],
+  "gangwonyeongwolgun": [
+    "강원특별자치도",
+    "영월군"
+  ],
+  "gapyeong": [
+    "경기도",
+    "가평군"
+  ],
+  "gapyeong-gun": [
+    "경기도",
+    "가평군"
+  ],
+  "gapyeonggun": [
+    "경기도",
+    "가평군"
+  ],
+  "geochang": [
+    "경상남도",
+    "거창군"
+  ],
+  "geochang-gun": [
+    "경상남도",
+    "거창군"
+  ],
+  "geochanggun": [
+    "경상남도",
+    "거창군"
+  ],
+  "geoje": [
+    "경상남도",
+    "거제시"
+  ],
+  "geoje-si": [
+    "경상남도",
+    "거제시"
+  ],
+  "geojesi": [
+    "경상남도",
+    "거제시"
+  ],
+  "geomdan": [
+    "인천광역시",
+    "검단구"
+  ],
+  "geomdan-gu": [
+    "인천광역시",
+    "검단구"
+  ],
+  "geomdangu": [
+    "인천광역시",
+    "검단구"
+  ],
+  "geumcheon": [
+    "서울특별시",
+    "금천구"
+  ],
+  "geumcheon-gu": [
+    "서울특별시",
+    "금천구"
+  ],
+  "geumcheongu": [
+    "서울특별시",
+    "금천구"
+  ],
+  "geumjeong": [
+    "부산광역시",
+    "금정구"
+  ],
+  "geumjeong-gu": [
+    "부산광역시",
+    "금정구"
+  ],
+  "geumjeonggu": [
+    "부산광역시",
+    "금정구"
+  ],
+  "geumsan": [
+    "충청남도",
+    "금산군"
+  ],
+  "geumsan-gun": [
+    "충청남도",
+    "금산군"
+  ],
+  "geumsangun": [
+    "충청남도",
+    "금산군"
+  ],
+  "gijang": [
+    "부산광역시",
+    "기장군"
+  ],
+  "gijang-gun": [
+    "부산광역시",
+    "기장군"
+  ],
+  "gijanggun": [
+    "부산광역시",
+    "기장군"
+  ],
+  "gimcheon": [
+    "경상북도",
+    "김천시"
+  ],
+  "gimcheon-si": [
+    "경상북도",
+    "김천시"
+  ],
+  "gimcheonsi": [
+    "경상북도",
+    "김천시"
+  ],
+  "gimhae": [
+    "경상남도",
+    "김해시"
+  ],
+  "gimhae-si": [
+    "경상남도",
+    "김해시"
+  ],
+  "gimhaesi": [
+    "경상남도",
+    "김해시"
+  ],
+  "gimje": [
+    "전북특별자치도",
+    "김제시"
+  ],
+  "gimje-si": [
+    "전북특별자치도",
+    "김제시"
+  ],
+  "gimjesi": [
+    "전북특별자치도",
+    "김제시"
+  ],
+  "gimpo": [
+    "경기도",
+    "김포시"
+  ],
+  "gimpo-si": [
+    "경기도",
+    "김포시"
+  ],
+  "gimposi": [
+    "경기도",
+    "김포시"
+  ],
+  "gochang": [
+    "전북특별자치도",
+    "고창군"
+  ],
+  "gochang-gun": [
+    "전북특별자치도",
+    "고창군"
+  ],
+  "gochanggun": [
+    "전북특별자치도",
+    "고창군"
+  ],
+  "goesan": [
+    "충청북도",
+    "괴산군"
+  ],
+  "goesan-gun": [
+    "충청북도",
+    "괴산군"
+  ],
+  "goesangun": [
+    "충청북도",
+    "괴산군"
+  ],
+  "goheung": [
+    "전남광주통합특별시",
+    "고흥군"
+  ],
+  "goheung-gun": [
+    "전남광주통합특별시",
+    "고흥군"
+  ],
+  "goheunggun": [
+    "전남광주통합특별시",
+    "고흥군"
+  ],
+  "gokseong": [
+    "전남광주통합특별시",
+    "곡성군"
+  ],
+  "gokseong-gun": [
+    "전남광주통합특별시",
+    "곡성군"
+  ],
+  "gokseonggun": [
+    "전남광주통합특별시",
+    "곡성군"
+  ],
+  "goryeong": [
+    "경상북도",
+    "고령군"
+  ],
+  "goryeong-gun": [
+    "경상북도",
+    "고령군"
+  ],
+  "goryeonggun": [
+    "경상북도",
+    "고령군"
+  ],
+  "goseong": "고성군",
+  "goseong-gun": "고성군",
+  "goseonggun": "고성군",
+  "goyang": [
+    "경기도",
+    "고양시"
+  ],
+  "goyang-si": [
+    "경기도",
+    "고양시"
+  ],
+  "goyangsi": [
+    "경기도",
+    "고양시"
+  ],
+  "gumi": [
+    "경상북도",
+    "구미시"
+  ],
+  "gumi-si": [
+    "경상북도",
+    "구미시"
+  ],
+  "gumisi": [
+    "경상북도",
+    "구미시"
+  ],
+  "gunpo": [
+    "경기도",
+    "군포시"
+  ],
+  "gunpo-si": [
+    "경기도",
+    "군포시"
+  ],
+  "gunposi": [
+    "경기도",
+    "군포시"
+  ],
+  "gunsan": [
+    "전북특별자치도",
+    "군산시"
+  ],
+  "gunsan-si": [
+    "전북특별자치도",
+    "군산시"
+  ],
+  "gunsansi": [
+    "전북특별자치도",
+    "군산시"
+  ],
+  "gunwi": [
+    "대구광역시",
+    "군위군"
+  ],
+  "gunwi-gun": [
+    "대구광역시",
+    "군위군"
+  ],
+  "gunwigun": [
+    "대구광역시",
+    "군위군"
+  ],
+  "guri": [
+    "경기도",
+    "구리시"
+  ],
+  "guri-si": [
+    "경기도",
+    "구리시"
+  ],
+  "gurisi": [
+    "경기도",
+    "구리시"
+  ],
+  "guro": [
+    "서울특별시",
+    "구로구"
+  ],
+  "guro-gu": [
+    "서울특별시",
+    "구로구"
+  ],
+  "gurogu": [
+    "서울특별시",
+    "구로구"
+  ],
+  "gurye": [
+    "전남광주통합특별시",
+    "구례군"
+  ],
+  "gurye-gun": [
+    "전남광주통합특별시",
+    "구례군"
+  ],
+  "guryegun": [
+    "전남광주통합특별시",
+    "구례군"
+  ],
+  "gwacheon": [
+    "경기도",
+    "과천시"
+  ],
+  "gwacheon-si": [
+    "경기도",
+    "과천시"
+  ],
+  "gwacheonsi": [
+    "경기도",
+    "과천시"
+  ],
+  "gwanak": [
+    "서울특별시",
+    "관악구"
+  ],
+  "gwanak-gu": [
+    "서울특별시",
+    "관악구"
+  ],
+  "gwanakgu": [
+    "서울특별시",
+    "관악구"
+  ],
+  "gwangjin": [
+    "서울특별시",
+    "광진구"
+  ],
+  "gwangjin-gu": [
+    "서울특별시",
+    "광진구"
+  ],
+  "gwangjingu": [
+    "서울특별시",
+    "광진구"
+  ],
+  "gwangju-si": [
+    "경기도",
+    "광주시"
+  ],
+  "gwangjuboseong": [
+    "전남광주통합특별시",
+    "보성군"
+  ],
+  "gwangjuboseong-gun": [
+    "전남광주통합특별시",
+    "보성군"
+  ],
+  "gwangjuboseonggun": [
+    "전남광주통합특별시",
+    "보성군"
+  ],
+  "gwangjubuk": [
+    "전남광주통합특별시",
+    "북구"
+  ],
+  "gwangjubuk-gu": [
+    "전남광주통합특별시",
+    "북구"
+  ],
+  "gwangjubukgu": [
+    "전남광주통합특별시",
+    "북구"
+  ],
+  "gwangjudamyang": [
+    "전남광주통합특별시",
+    "담양군"
+  ],
+  "gwangjudamyang-gun": [
+    "전남광주통합특별시",
+    "담양군"
+  ],
+  "gwangjudamyanggun": [
+    "전남광주통합특별시",
+    "담양군"
+  ],
+  "gwangjudong": [
+    "전남광주통합특별시",
+    "동구"
+  ],
+  "gwangjudong-gu": [
+    "전남광주통합특별시",
+    "동구"
+  ],
+  "gwangjudonggu": [
+    "전남광주통합특별시",
+    "동구"
+  ],
+  "gwangjugangjin": [
+    "전남광주통합특별시",
+    "강진군"
+  ],
+  "gwangjugangjin-gun": [
+    "전남광주통합특별시",
+    "강진군"
+  ],
+  "gwangjugangjingun": [
+    "전남광주통합특별시",
+    "강진군"
+  ],
+  "gwangjugoheung": [
+    "전남광주통합특별시",
+    "고흥군"
+  ],
+  "gwangjugoheung-gun": [
+    "전남광주통합특별시",
+    "고흥군"
+  ],
+  "gwangjugoheunggun": [
+    "전남광주통합특별시",
+    "고흥군"
+  ],
+  "gwangjugokseong": [
+    "전남광주통합특별시",
+    "곡성군"
+  ],
+  "gwangjugokseong-gun": [
+    "전남광주통합특별시",
+    "곡성군"
+  ],
+  "gwangjugokseonggun": [
+    "전남광주통합특별시",
+    "곡성군"
+  ],
+  "gwangjugurye": [
+    "전남광주통합특별시",
+    "구례군"
+  ],
+  "gwangjugurye-gun": [
+    "전남광주통합특별시",
+    "구례군"
+  ],
+  "gwangjuguryegun": [
+    "전남광주통합특별시",
+    "구례군"
+  ],
+  "gwangjugwangsan": [
+    "전남광주통합특별시",
+    "광산구"
+  ],
+  "gwangjugwangsan-gu": [
+    "전남광주통합특별시",
+    "광산구"
+  ],
+  "gwangjugwangsangu": [
+    "전남광주통합특별시",
+    "광산구"
+  ],
+  "gwangjugwangyang": [
+    "전남광주통합특별시",
+    "광양시"
+  ],
+  "gwangjugwangyang-si": [
+    "전남광주통합특별시",
+    "광양시"
+  ],
+  "gwangjugwangyangsi": [
+    "전남광주통합특별시",
+    "광양시"
+  ],
+  "gwangjuhaenam": [
+    "전남광주통합특별시",
+    "해남군"
+  ],
+  "gwangjuhaenam-gun": [
+    "전남광주통합특별시",
+    "해남군"
+  ],
+  "gwangjuhaenamgun": [
+    "전남광주통합특별시",
+    "해남군"
+  ],
+  "gwangjuhampyeong": [
+    "전남광주통합특별시",
+    "함평군"
+  ],
+  "gwangjuhampyeong-gun": [
+    "전남광주통합특별시",
+    "함평군"
+  ],
+  "gwangjuhampyeonggun": [
+    "전남광주통합특별시",
+    "함평군"
+  ],
+  "gwangjuhwasun": [
+    "전남광주통합특별시",
+    "화순군"
+  ],
+  "gwangjuhwasun-gun": [
+    "전남광주통합특별시",
+    "화순군"
+  ],
+  "gwangjuhwasungun": [
+    "전남광주통합특별시",
+    "화순군"
+  ],
+  "gwangjujangheung": [
+    "전남광주통합특별시",
+    "장흥군"
+  ],
+  "gwangjujangheung-gun": [
+    "전남광주통합특별시",
+    "장흥군"
+  ],
+  "gwangjujangheunggun": [
+    "전남광주통합특별시",
+    "장흥군"
+  ],
+  "gwangjujangseong": [
+    "전남광주통합특별시",
+    "장성군"
+  ],
+  "gwangjujangseong-gun": [
+    "전남광주통합특별시",
+    "장성군"
+  ],
+  "gwangjujangseonggun": [
+    "전남광주통합특별시",
+    "장성군"
+  ],
+  "gwangjujindo": [
+    "전남광주통합특별시",
+    "진도군"
+  ],
+  "gwangjujindo-gun": [
+    "전남광주통합특별시",
+    "진도군"
+  ],
+  "gwangjujindogun": [
+    "전남광주통합특별시",
+    "진도군"
+  ],
+  "gwangjumokpo": [
+    "전남광주통합특별시",
+    "목포시"
+  ],
+  "gwangjumokpo-si": [
+    "전남광주통합특별시",
+    "목포시"
+  ],
+  "gwangjumokposi": [
+    "전남광주통합특별시",
+    "목포시"
+  ],
+  "gwangjumuan": [
+    "전남광주통합특별시",
+    "무안군"
+  ],
+  "gwangjumuan-gun": [
+    "전남광주통합특별시",
+    "무안군"
+  ],
+  "gwangjumuangun": [
+    "전남광주통합특별시",
+    "무안군"
+  ],
+  "gwangjunaju": [
+    "전남광주통합특별시",
+    "나주시"
+  ],
+  "gwangjunaju-si": [
+    "전남광주통합특별시",
+    "나주시"
+  ],
+  "gwangjunajusi": [
+    "전남광주통합특별시",
+    "나주시"
+  ],
+  "gwangjunam": [
+    "전남광주통합특별시",
+    "남구"
+  ],
+  "gwangjunam-gu": [
+    "전남광주통합특별시",
+    "남구"
+  ],
+  "gwangjunamgu": [
+    "전남광주통합특별시",
+    "남구"
+  ],
+  "gwangjuseo": [
+    "전남광주통합특별시",
+    "서구"
+  ],
+  "gwangjuseo-gu": [
+    "전남광주통합특별시",
+    "서구"
+  ],
+  "gwangjuseogu": [
+    "전남광주통합특별시",
+    "서구"
+  ],
+  "gwangjusi": [
+    "경기도",
+    "광주시"
+  ],
+  "gwangjusinan": [
+    "전남광주통합특별시",
+    "신안군"
+  ],
+  "gwangjusinan-gun": [
+    "전남광주통합특별시",
+    "신안군"
+  ],
+  "gwangjusinangun": [
+    "전남광주통합특별시",
+    "신안군"
+  ],
+  "gwangjusuncheon": [
+    "전남광주통합특별시",
+    "순천시"
+  ],
+  "gwangjusuncheon-si": [
+    "전남광주통합특별시",
+    "순천시"
+  ],
+  "gwangjusuncheonsi": [
+    "전남광주통합특별시",
+    "순천시"
+  ],
+  "gwangjuwando": [
+    "전남광주통합특별시",
+    "완도군"
+  ],
+  "gwangjuwando-gun": [
+    "전남광주통합특별시",
+    "완도군"
+  ],
+  "gwangjuwandogun": [
+    "전남광주통합특별시",
+    "완도군"
+  ],
+  "gwangjuyeongam": [
+    "전남광주통합특별시",
+    "영암군"
+  ],
+  "gwangjuyeongam-gun": [
+    "전남광주통합특별시",
+    "영암군"
+  ],
+  "gwangjuyeongamgun": [
+    "전남광주통합특별시",
+    "영암군"
+  ],
+  "gwangjuyeonggwang": [
+    "전남광주통합특별시",
+    "영광군"
+  ],
+  "gwangjuyeonggwang-gun": [
+    "전남광주통합특별시",
+    "영광군"
+  ],
+  "gwangjuyeonggwanggun": [
+    "전남광주통합특별시",
+    "영광군"
+  ],
+  "gwangjuyeosu": [
+    "전남광주통합특별시",
+    "여수시"
+  ],
+  "gwangjuyeosu-si": [
+    "전남광주통합특별시",
+    "여수시"
+  ],
+  "gwangjuyeosusi": [
+    "전남광주통합특별시",
+    "여수시"
+  ],
+  "gwangmyeong": [
+    "경기도",
+    "광명시"
+  ],
+  "gwangmyeong-si": [
+    "경기도",
+    "광명시"
+  ],
+  "gwangmyeongsi": [
+    "경기도",
+    "광명시"
+  ],
+  "gwangsan": [
+    "전남광주통합특별시",
+    "광산구"
+  ],
+  "gwangsan-gu": [
+    "전남광주통합특별시",
+    "광산구"
+  ],
+  "gwangsangu": [
+    "전남광주통합특별시",
+    "광산구"
+  ],
+  "gwangyang": [
+    "전남광주통합특별시",
+    "광양시"
+  ],
+  "gwangyang-si": [
+    "전남광주통합특별시",
+    "광양시"
+  ],
+  "gwangyangsi": [
+    "전남광주통합특별시",
+    "광양시"
+  ],
+  "gyeongbukandong": [
+    "경상북도",
+    "안동시"
+  ],
+  "gyeongbukandong-si": [
+    "경상북도",
+    "안동시"
+  ],
+  "gyeongbukandongsi": [
+    "경상북도",
+    "안동시"
+  ],
+  "gyeongbukbonghwa": [
+    "경상북도",
+    "봉화군"
+  ],
+  "gyeongbukbonghwa-gun": [
+    "경상북도",
+    "봉화군"
+  ],
+  "gyeongbukbonghwagun": [
+    "경상북도",
+    "봉화군"
+  ],
+  "gyeongbukcheongdo": [
+    "경상북도",
+    "청도군"
+  ],
+  "gyeongbukcheongdo-gun": [
+    "경상북도",
+    "청도군"
+  ],
+  "gyeongbukcheongdogun": [
+    "경상북도",
+    "청도군"
+  ],
+  "gyeongbukcheongsong": [
+    "경상북도",
+    "청송군"
+  ],
+  "gyeongbukcheongsong-gun": [
+    "경상북도",
+    "청송군"
+  ],
+  "gyeongbukcheongsonggun": [
+    "경상북도",
+    "청송군"
+  ],
+  "gyeongbukchilgok": [
+    "경상북도",
+    "칠곡군"
+  ],
+  "gyeongbukchilgok-gun": [
+    "경상북도",
+    "칠곡군"
+  ],
+  "gyeongbukchilgokgun": [
+    "경상북도",
+    "칠곡군"
+  ],
+  "gyeongbukgimcheon": [
+    "경상북도",
+    "김천시"
+  ],
+  "gyeongbukgimcheon-si": [
+    "경상북도",
+    "김천시"
+  ],
+  "gyeongbukgimcheonsi": [
+    "경상북도",
+    "김천시"
+  ],
+  "gyeongbukgoryeong": [
+    "경상북도",
+    "고령군"
+  ],
+  "gyeongbukgoryeong-gun": [
+    "경상북도",
+    "고령군"
+  ],
+  "gyeongbukgoryeonggun": [
+    "경상북도",
+    "고령군"
+  ],
+  "gyeongbukgumi": [
+    "경상북도",
+    "구미시"
+  ],
+  "gyeongbukgumi-si": [
+    "경상북도",
+    "구미시"
+  ],
+  "gyeongbukgumisi": [
+    "경상북도",
+    "구미시"
+  ],
+  "gyeongbukgyeongju": [
+    "경상북도",
+    "경주시"
+  ],
+  "gyeongbukgyeongju-si": [
+    "경상북도",
+    "경주시"
+  ],
+  "gyeongbukgyeongjusi": [
+    "경상북도",
+    "경주시"
+  ],
+  "gyeongbukgyeongsan": [
+    "경상북도",
+    "경산시"
+  ],
+  "gyeongbukgyeongsan-si": [
+    "경상북도",
+    "경산시"
+  ],
+  "gyeongbukgyeongsansi": [
+    "경상북도",
+    "경산시"
+  ],
+  "gyeongbukmungyeong": [
+    "경상북도",
+    "문경시"
+  ],
+  "gyeongbukmungyeong-si": [
+    "경상북도",
+    "문경시"
+  ],
+  "gyeongbukmungyeongsi": [
+    "경상북도",
+    "문경시"
+  ],
+  "gyeongbukpohang": [
+    "경상북도",
+    "포항시"
+  ],
+  "gyeongbukpohang-si": [
+    "경상북도",
+    "포항시"
+  ],
+  "gyeongbukpohangsi": [
+    "경상북도",
+    "포항시"
+  ],
+  "gyeongbuksangju": [
+    "경상북도",
+    "상주시"
+  ],
+  "gyeongbuksangju-si": [
+    "경상북도",
+    "상주시"
+  ],
+  "gyeongbuksangjusi": [
+    "경상북도",
+    "상주시"
+  ],
+  "gyeongbukseongju": [
+    "경상북도",
+    "성주군"
+  ],
+  "gyeongbukseongju-gun": [
+    "경상북도",
+    "성주군"
+  ],
+  "gyeongbukseongjugun": [
+    "경상북도",
+    "성주군"
+  ],
+  "gyeongbukuiseong": [
+    "경상북도",
+    "의성군"
+  ],
+  "gyeongbukuiseong-gun": [
+    "경상북도",
+    "의성군"
+  ],
+  "gyeongbukuiseonggun": [
+    "경상북도",
+    "의성군"
+  ],
+  "gyeongbukuljin": [
+    "경상북도",
+    "울진군"
+  ],
+  "gyeongbukuljin-gun": [
+    "경상북도",
+    "울진군"
+  ],
+  "gyeongbukuljingun": [
+    "경상북도",
+    "울진군"
+  ],
+  "gyeongbukulleung": [
+    "경상북도",
+    "울릉군"
+  ],
+  "gyeongbukulleung-gun": [
+    "경상북도",
+    "울릉군"
+  ],
+  "gyeongbukulleunggun": [
+    "경상북도",
+    "울릉군"
+  ],
+  "gyeongbukyecheon": [
+    "경상북도",
+    "예천군"
+  ],
+  "gyeongbukyecheon-gun": [
+    "경상북도",
+    "예천군"
+  ],
+  "gyeongbukyecheongun": [
+    "경상북도",
+    "예천군"
+  ],
+  "gyeongbukyeongcheon": [
+    "경상북도",
+    "영천시"
+  ],
+  "gyeongbukyeongcheon-si": [
+    "경상북도",
+    "영천시"
+  ],
+  "gyeongbukyeongcheonsi": [
+    "경상북도",
+    "영천시"
+  ],
+  "gyeongbukyeongdeok": [
+    "경상북도",
+    "영덕군"
+  ],
+  "gyeongbukyeongdeok-gun": [
+    "경상북도",
+    "영덕군"
+  ],
+  "gyeongbukyeongdeokgun": [
+    "경상북도",
+    "영덕군"
+  ],
+  "gyeongbukyeongju": [
+    "경상북도",
+    "영주시"
+  ],
+  "gyeongbukyeongju-si": [
+    "경상북도",
+    "영주시"
+  ],
+  "gyeongbukyeongjusi": [
+    "경상북도",
+    "영주시"
+  ],
+  "gyeongbukyeongyang": [
+    "경상북도",
+    "영양군"
+  ],
+  "gyeongbukyeongyang-gun": [
+    "경상북도",
+    "영양군"
+  ],
+  "gyeongbukyeongyanggun": [
+    "경상북도",
+    "영양군"
+  ],
+  "gyeonggi-doansan": [
+    "경기도",
+    "안산시"
+  ],
+  "gyeonggi-doansan-si": [
+    "경기도",
+    "안산시"
+  ],
+  "gyeonggi-doansansi": [
+    "경기도",
+    "안산시"
+  ],
+  "gyeonggi-doanseong": [
+    "경기도",
+    "안성시"
+  ],
+  "gyeonggi-doanseong-si": [
+    "경기도",
+    "안성시"
+  ],
+  "gyeonggi-doanseongsi": [
+    "경기도",
+    "안성시"
+  ],
+  "gyeonggi-doanyang": [
+    "경기도",
+    "안양시"
+  ],
+  "gyeonggi-doanyang-si": [
+    "경기도",
+    "안양시"
+  ],
+  "gyeonggi-doanyangsi": [
+    "경기도",
+    "안양시"
+  ],
+  "gyeonggi-dobucheon": [
+    "경기도",
+    "부천시"
+  ],
+  "gyeonggi-dobucheon-si": [
+    "경기도",
+    "부천시"
+  ],
+  "gyeonggi-dobucheonsi": [
+    "경기도",
+    "부천시"
+  ],
+  "gyeonggi-dodongducheon": [
+    "경기도",
+    "동두천시"
+  ],
+  "gyeonggi-dodongducheon-si": [
+    "경기도",
+    "동두천시"
+  ],
+  "gyeonggi-dodongducheonsi": [
+    "경기도",
+    "동두천시"
+  ],
+  "gyeonggi-dogapyeong": [
+    "경기도",
+    "가평군"
+  ],
+  "gyeonggi-dogapyeong-gun": [
+    "경기도",
+    "가평군"
+  ],
+  "gyeonggi-dogapyeonggun": [
+    "경기도",
+    "가평군"
+  ],
+  "gyeonggi-dogimpo": [
+    "경기도",
+    "김포시"
+  ],
+  "gyeonggi-dogimpo-si": [
+    "경기도",
+    "김포시"
+  ],
+  "gyeonggi-dogimposi": [
+    "경기도",
+    "김포시"
+  ],
+  "gyeonggi-dogoyang": [
+    "경기도",
+    "고양시"
+  ],
+  "gyeonggi-dogoyang-si": [
+    "경기도",
+    "고양시"
+  ],
+  "gyeonggi-dogoyangsi": [
+    "경기도",
+    "고양시"
+  ],
+  "gyeonggi-dogunpo": [
+    "경기도",
+    "군포시"
+  ],
+  "gyeonggi-dogunpo-si": [
+    "경기도",
+    "군포시"
+  ],
+  "gyeonggi-dogunposi": [
+    "경기도",
+    "군포시"
+  ],
+  "gyeonggi-doguri": [
+    "경기도",
+    "구리시"
+  ],
+  "gyeonggi-doguri-si": [
+    "경기도",
+    "구리시"
+  ],
+  "gyeonggi-dogurisi": [
+    "경기도",
+    "구리시"
+  ],
+  "gyeonggi-dogwacheon": [
+    "경기도",
+    "과천시"
+  ],
+  "gyeonggi-dogwacheon-si": [
+    "경기도",
+    "과천시"
+  ],
+  "gyeonggi-dogwacheonsi": [
+    "경기도",
+    "과천시"
+  ],
+  "gyeonggi-dogwangju": [
+    "경기도",
+    "광주시"
+  ],
+  "gyeonggi-dogwangju-si": [
+    "경기도",
+    "광주시"
+  ],
+  "gyeonggi-dogwangjusi": [
+    "경기도",
+    "광주시"
+  ],
+  "gyeonggi-dogwangmyeong": [
+    "경기도",
+    "광명시"
+  ],
+  "gyeonggi-dogwangmyeong-si": [
+    "경기도",
+    "광명시"
+  ],
+  "gyeonggi-dogwangmyeongsi": [
+    "경기도",
+    "광명시"
+  ],
+  "gyeonggi-dohanam": [
+    "경기도",
+    "하남시"
+  ],
+  "gyeonggi-dohanam-si": [
+    "경기도",
+    "하남시"
+  ],
+  "gyeonggi-dohanamsi": [
+    "경기도",
+    "하남시"
+  ],
+  "gyeonggi-dohwaseong": [
+    "경기도",
+    "화성시"
+  ],
+  "gyeonggi-dohwaseong-si": [
+    "경기도",
+    "화성시"
+  ],
+  "gyeonggi-dohwaseongsi": [
+    "경기도",
+    "화성시"
+  ],
+  "gyeonggi-doicheon": [
+    "경기도",
+    "이천시"
+  ],
+  "gyeonggi-doicheon-si": [
+    "경기도",
+    "이천시"
+  ],
+  "gyeonggi-doicheonsi": [
+    "경기도",
+    "이천시"
+  ],
+  "gyeonggi-donamyangju": [
+    "경기도",
+    "남양주시"
+  ],
+  "gyeonggi-donamyangju-si": [
+    "경기도",
+    "남양주시"
+  ],
+  "gyeonggi-donamyangjusi": [
+    "경기도",
+    "남양주시"
+  ],
+  "gyeonggi-doosan": [
+    "경기도",
+    "오산시"
+  ],
+  "gyeonggi-doosan-si": [
+    "경기도",
+    "오산시"
+  ],
+  "gyeonggi-doosansi": [
+    "경기도",
+    "오산시"
+  ],
+  "gyeonggi-dopaju": [
+    "경기도",
+    "파주시"
+  ],
+  "gyeonggi-dopaju-si": [
+    "경기도",
+    "파주시"
+  ],
+  "gyeonggi-dopajusi": [
+    "경기도",
+    "파주시"
+  ],
+  "gyeonggi-dopocheon": [
+    "경기도",
+    "포천시"
+  ],
+  "gyeonggi-dopocheon-si": [
+    "경기도",
+    "포천시"
+  ],
+  "gyeonggi-dopocheonsi": [
+    "경기도",
+    "포천시"
+  ],
+  "gyeonggi-dopyeongtaek": [
+    "경기도",
+    "평택시"
+  ],
+  "gyeonggi-dopyeongtaek-si": [
+    "경기도",
+    "평택시"
+  ],
+  "gyeonggi-dopyeongtaeksi": [
+    "경기도",
+    "평택시"
+  ],
+  "gyeonggi-doseongnam": [
+    "경기도",
+    "성남시"
+  ],
+  "gyeonggi-doseongnam-si": [
+    "경기도",
+    "성남시"
+  ],
+  "gyeonggi-doseongnamsi": [
+    "경기도",
+    "성남시"
+  ],
+  "gyeonggi-dosiheung": [
+    "경기도",
+    "시흥시"
+  ],
+  "gyeonggi-dosiheung-si": [
+    "경기도",
+    "시흥시"
+  ],
+  "gyeonggi-dosiheungsi": [
+    "경기도",
+    "시흥시"
+  ],
+  "gyeonggi-dosuwon": [
+    "경기도",
+    "수원시"
+  ],
+  "gyeonggi-dosuwon-si": [
+    "경기도",
+    "수원시"
+  ],
+  "gyeonggi-dosuwonsi": [
+    "경기도",
+    "수원시"
+  ],
+  "gyeonggi-douijeongbu": [
+    "경기도",
+    "의정부시"
+  ],
+  "gyeonggi-douijeongbu-si": [
+    "경기도",
+    "의정부시"
+  ],
+  "gyeonggi-douijeongbusi": [
+    "경기도",
+    "의정부시"
+  ],
+  "gyeonggi-douiwang": [
+    "경기도",
+    "의왕시"
+  ],
+  "gyeonggi-douiwang-si": [
+    "경기도",
+    "의왕시"
+  ],
+  "gyeonggi-douiwangsi": [
+    "경기도",
+    "의왕시"
+  ],
+  "gyeonggi-doyangju": [
+    "경기도",
+    "양주시"
+  ],
+  "gyeonggi-doyangju-si": [
+    "경기도",
+    "양주시"
+  ],
+  "gyeonggi-doyangjusi": [
+    "경기도",
+    "양주시"
+  ],
+  "gyeonggi-doyangpyeong": [
+    "경기도",
+    "양평군"
+  ],
+  "gyeonggi-doyangpyeong-gun": [
+    "경기도",
+    "양평군"
+  ],
+  "gyeonggi-doyangpyeonggun": [
+    "경기도",
+    "양평군"
+  ],
+  "gyeonggi-doyeoju": [
+    "경기도",
+    "여주시"
+  ],
+  "gyeonggi-doyeoju-si": [
+    "경기도",
+    "여주시"
+  ],
+  "gyeonggi-doyeojusi": [
+    "경기도",
+    "여주시"
+  ],
+  "gyeonggi-doyeoncheon": [
+    "경기도",
+    "연천군"
+  ],
+  "gyeonggi-doyeoncheon-gun": [
+    "경기도",
+    "연천군"
+  ],
+  "gyeonggi-doyeoncheongun": [
+    "경기도",
+    "연천군"
+  ],
+  "gyeonggi-doyongin": [
+    "경기도",
+    "용인시"
+  ],
+  "gyeonggi-doyongin-si": [
+    "경기도",
+    "용인시"
+  ],
+  "gyeonggi-doyonginsi": [
+    "경기도",
+    "용인시"
+  ],
+  "gyeonggiansan": [
+    "경기도",
+    "안산시"
+  ],
+  "gyeonggiansan-si": [
+    "경기도",
+    "안산시"
+  ],
+  "gyeonggiansansi": [
+    "경기도",
+    "안산시"
+  ],
+  "gyeonggianseong": [
+    "경기도",
+    "안성시"
+  ],
+  "gyeonggianseong-si": [
+    "경기도",
+    "안성시"
+  ],
+  "gyeonggianseongsi": [
+    "경기도",
+    "안성시"
+  ],
+  "gyeonggianyang": [
+    "경기도",
+    "안양시"
+  ],
+  "gyeonggianyang-si": [
+    "경기도",
+    "안양시"
+  ],
+  "gyeonggianyangsi": [
+    "경기도",
+    "안양시"
+  ],
+  "gyeonggibucheon": [
+    "경기도",
+    "부천시"
+  ],
+  "gyeonggibucheon-si": [
+    "경기도",
+    "부천시"
+  ],
+  "gyeonggibucheonsi": [
+    "경기도",
+    "부천시"
+  ],
+  "gyeonggidongducheon": [
+    "경기도",
+    "동두천시"
+  ],
+  "gyeonggidongducheon-si": [
+    "경기도",
+    "동두천시"
+  ],
+  "gyeonggidongducheonsi": [
+    "경기도",
+    "동두천시"
+  ],
+  "gyeonggigapyeong": [
+    "경기도",
+    "가평군"
+  ],
+  "gyeonggigapyeong-gun": [
+    "경기도",
+    "가평군"
+  ],
+  "gyeonggigapyeonggun": [
+    "경기도",
+    "가평군"
+  ],
+  "gyeonggigimpo": [
+    "경기도",
+    "김포시"
+  ],
+  "gyeonggigimpo-si": [
+    "경기도",
+    "김포시"
+  ],
+  "gyeonggigimposi": [
+    "경기도",
+    "김포시"
+  ],
+  "gyeonggigoyang": [
+    "경기도",
+    "고양시"
+  ],
+  "gyeonggigoyang-si": [
+    "경기도",
+    "고양시"
+  ],
+  "gyeonggigoyangsi": [
+    "경기도",
+    "고양시"
+  ],
+  "gyeonggigunpo": [
+    "경기도",
+    "군포시"
+  ],
+  "gyeonggigunpo-si": [
+    "경기도",
+    "군포시"
+  ],
+  "gyeonggigunposi": [
+    "경기도",
+    "군포시"
+  ],
+  "gyeonggiguri": [
+    "경기도",
+    "구리시"
+  ],
+  "gyeonggiguri-si": [
+    "경기도",
+    "구리시"
+  ],
+  "gyeonggigurisi": [
+    "경기도",
+    "구리시"
+  ],
+  "gyeonggigwacheon": [
+    "경기도",
+    "과천시"
+  ],
+  "gyeonggigwacheon-si": [
+    "경기도",
+    "과천시"
+  ],
+  "gyeonggigwacheonsi": [
+    "경기도",
+    "과천시"
+  ],
+  "gyeonggigwangju": [
+    "경기도",
+    "광주시"
+  ],
+  "gyeonggigwangju-si": [
+    "경기도",
+    "광주시"
+  ],
+  "gyeonggigwangjusi": [
+    "경기도",
+    "광주시"
+  ],
+  "gyeonggigwangmyeong": [
+    "경기도",
+    "광명시"
+  ],
+  "gyeonggigwangmyeong-si": [
+    "경기도",
+    "광명시"
+  ],
+  "gyeonggigwangmyeongsi": [
+    "경기도",
+    "광명시"
+  ],
+  "gyeonggihanam": [
+    "경기도",
+    "하남시"
+  ],
+  "gyeonggihanam-si": [
+    "경기도",
+    "하남시"
+  ],
+  "gyeonggihanamsi": [
+    "경기도",
+    "하남시"
+  ],
+  "gyeonggihwaseong": [
+    "경기도",
+    "화성시"
+  ],
+  "gyeonggihwaseong-si": [
+    "경기도",
+    "화성시"
+  ],
+  "gyeonggihwaseongsi": [
+    "경기도",
+    "화성시"
+  ],
+  "gyeonggiicheon": [
+    "경기도",
+    "이천시"
+  ],
+  "gyeonggiicheon-si": [
+    "경기도",
+    "이천시"
+  ],
+  "gyeonggiicheonsi": [
+    "경기도",
+    "이천시"
+  ],
+  "gyeongginamyangju": [
+    "경기도",
+    "남양주시"
+  ],
+  "gyeongginamyangju-si": [
+    "경기도",
+    "남양주시"
+  ],
+  "gyeongginamyangjusi": [
+    "경기도",
+    "남양주시"
+  ],
+  "gyeonggiosan": [
+    "경기도",
+    "오산시"
+  ],
+  "gyeonggiosan-si": [
+    "경기도",
+    "오산시"
+  ],
+  "gyeonggiosansi": [
+    "경기도",
+    "오산시"
+  ],
+  "gyeonggipaju": [
+    "경기도",
+    "파주시"
+  ],
+  "gyeonggipaju-si": [
+    "경기도",
+    "파주시"
+  ],
+  "gyeonggipajusi": [
+    "경기도",
+    "파주시"
+  ],
+  "gyeonggipocheon": [
+    "경기도",
+    "포천시"
+  ],
+  "gyeonggipocheon-si": [
+    "경기도",
+    "포천시"
+  ],
+  "gyeonggipocheonsi": [
+    "경기도",
+    "포천시"
+  ],
+  "gyeonggipyeongtaek": [
+    "경기도",
+    "평택시"
+  ],
+  "gyeonggipyeongtaek-si": [
+    "경기도",
+    "평택시"
+  ],
+  "gyeonggipyeongtaeksi": [
+    "경기도",
+    "평택시"
+  ],
+  "gyeonggiseongnam": [
+    "경기도",
+    "성남시"
+  ],
+  "gyeonggiseongnam-si": [
+    "경기도",
+    "성남시"
+  ],
+  "gyeonggiseongnamsi": [
+    "경기도",
+    "성남시"
+  ],
+  "gyeonggisiheung": [
+    "경기도",
+    "시흥시"
+  ],
+  "gyeonggisiheung-si": [
+    "경기도",
+    "시흥시"
+  ],
+  "gyeonggisiheungsi": [
+    "경기도",
+    "시흥시"
+  ],
+  "gyeonggisuwon": [
+    "경기도",
+    "수원시"
+  ],
+  "gyeonggisuwon-si": [
+    "경기도",
+    "수원시"
+  ],
+  "gyeonggisuwonsi": [
+    "경기도",
+    "수원시"
+  ],
+  "gyeonggiuijeongbu": [
+    "경기도",
+    "의정부시"
+  ],
+  "gyeonggiuijeongbu-si": [
+    "경기도",
+    "의정부시"
+  ],
+  "gyeonggiuijeongbusi": [
+    "경기도",
+    "의정부시"
+  ],
+  "gyeonggiuiwang": [
+    "경기도",
+    "의왕시"
+  ],
+  "gyeonggiuiwang-si": [
+    "경기도",
+    "의왕시"
+  ],
+  "gyeonggiuiwangsi": [
+    "경기도",
+    "의왕시"
+  ],
+  "gyeonggiyangju": [
+    "경기도",
+    "양주시"
+  ],
+  "gyeonggiyangju-si": [
+    "경기도",
+    "양주시"
+  ],
+  "gyeonggiyangjusi": [
+    "경기도",
+    "양주시"
+  ],
+  "gyeonggiyangpyeong": [
+    "경기도",
+    "양평군"
+  ],
+  "gyeonggiyangpyeong-gun": [
+    "경기도",
+    "양평군"
+  ],
+  "gyeonggiyangpyeonggun": [
+    "경기도",
+    "양평군"
+  ],
+  "gyeonggiyeoju": [
+    "경기도",
+    "여주시"
+  ],
+  "gyeonggiyeoju-si": [
+    "경기도",
+    "여주시"
+  ],
+  "gyeonggiyeojusi": [
+    "경기도",
+    "여주시"
+  ],
+  "gyeonggiyeoncheon": [
+    "경기도",
+    "연천군"
+  ],
+  "gyeonggiyeoncheon-gun": [
+    "경기도",
+    "연천군"
+  ],
+  "gyeonggiyeoncheongun": [
+    "경기도",
+    "연천군"
+  ],
+  "gyeonggiyongin": [
+    "경기도",
+    "용인시"
+  ],
+  "gyeonggiyongin-si": [
+    "경기도",
+    "용인시"
+  ],
+  "gyeonggiyonginsi": [
+    "경기도",
+    "용인시"
+  ],
+  "gyeongju": [
+    "경상북도",
+    "경주시"
+  ],
+  "gyeongju-si": [
+    "경상북도",
+    "경주시"
+  ],
+  "gyeongjusi": [
+    "경상북도",
+    "경주시"
+  ],
+  "gyeongnamchangnyeong": [
+    "경상남도",
+    "창녕군"
+  ],
+  "gyeongnamchangnyeong-gun": [
+    "경상남도",
+    "창녕군"
+  ],
+  "gyeongnamchangnyeonggun": [
+    "경상남도",
+    "창녕군"
+  ],
+  "gyeongnamchangwon": [
+    "경상남도",
+    "창원시"
+  ],
+  "gyeongnamchangwon-si": [
+    "경상남도",
+    "창원시"
+  ],
+  "gyeongnamchangwonsi": [
+    "경상남도",
+    "창원시"
+  ],
+  "gyeongnamgeochang": [
+    "경상남도",
+    "거창군"
+  ],
+  "gyeongnamgeochang-gun": [
+    "경상남도",
+    "거창군"
+  ],
+  "gyeongnamgeochanggun": [
+    "경상남도",
+    "거창군"
+  ],
+  "gyeongnamgeoje": [
+    "경상남도",
+    "거제시"
+  ],
+  "gyeongnamgeoje-si": [
+    "경상남도",
+    "거제시"
+  ],
+  "gyeongnamgeojesi": [
+    "경상남도",
+    "거제시"
+  ],
+  "gyeongnamgimhae": [
+    "경상남도",
+    "김해시"
+  ],
+  "gyeongnamgimhae-si": [
+    "경상남도",
+    "김해시"
+  ],
+  "gyeongnamgimhaesi": [
+    "경상남도",
+    "김해시"
+  ],
+  "gyeongnamgoseong": [
+    "경상남도",
+    "고성군"
+  ],
+  "gyeongnamgoseong-gun": [
+    "경상남도",
+    "고성군"
+  ],
+  "gyeongnamgoseonggun": [
+    "경상남도",
+    "고성군"
+  ],
+  "gyeongnamhadong": [
+    "경상남도",
+    "하동군"
+  ],
+  "gyeongnamhadong-gun": [
+    "경상남도",
+    "하동군"
+  ],
+  "gyeongnamhadonggun": [
+    "경상남도",
+    "하동군"
+  ],
+  "gyeongnamhaman": [
+    "경상남도",
+    "함안군"
+  ],
+  "gyeongnamhaman-gun": [
+    "경상남도",
+    "함안군"
+  ],
+  "gyeongnamhamangun": [
+    "경상남도",
+    "함안군"
+  ],
+  "gyeongnamhamyang": [
+    "경상남도",
+    "함양군"
+  ],
+  "gyeongnamhamyang-gun": [
+    "경상남도",
+    "함양군"
+  ],
+  "gyeongnamhamyanggun": [
+    "경상남도",
+    "함양군"
+  ],
+  "gyeongnamhapcheon": [
+    "경상남도",
+    "합천군"
+  ],
+  "gyeongnamhapcheon-gun": [
+    "경상남도",
+    "합천군"
+  ],
+  "gyeongnamhapcheongun": [
+    "경상남도",
+    "합천군"
+  ],
+  "gyeongnamjinju": [
+    "경상남도",
+    "진주시"
+  ],
+  "gyeongnamjinju-si": [
+    "경상남도",
+    "진주시"
+  ],
+  "gyeongnamjinjusi": [
+    "경상남도",
+    "진주시"
+  ],
+  "gyeongnammiryang": [
+    "경상남도",
+    "밀양시"
+  ],
+  "gyeongnammiryang-si": [
+    "경상남도",
+    "밀양시"
+  ],
+  "gyeongnammiryangsi": [
+    "경상남도",
+    "밀양시"
+  ],
+  "gyeongnamnamhae": [
+    "경상남도",
+    "남해군"
+  ],
+  "gyeongnamnamhae-gun": [
+    "경상남도",
+    "남해군"
+  ],
+  "gyeongnamnamhaegun": [
+    "경상남도",
+    "남해군"
+  ],
+  "gyeongnamsacheon": [
+    "경상남도",
+    "사천시"
+  ],
+  "gyeongnamsacheon-si": [
+    "경상남도",
+    "사천시"
+  ],
+  "gyeongnamsacheonsi": [
+    "경상남도",
+    "사천시"
+  ],
+  "gyeongnamsancheong": [
+    "경상남도",
+    "산청군"
+  ],
+  "gyeongnamsancheong-gun": [
+    "경상남도",
+    "산청군"
+  ],
+  "gyeongnamsancheonggun": [
+    "경상남도",
+    "산청군"
+  ],
+  "gyeongnamtongyeong": [
+    "경상남도",
+    "통영시"
+  ],
+  "gyeongnamtongyeong-si": [
+    "경상남도",
+    "통영시"
+  ],
+  "gyeongnamtongyeongsi": [
+    "경상남도",
+    "통영시"
+  ],
+  "gyeongnamuiryeong": [
+    "경상남도",
+    "의령군"
+  ],
+  "gyeongnamuiryeong-gun": [
+    "경상남도",
+    "의령군"
+  ],
+  "gyeongnamuiryeonggun": [
+    "경상남도",
+    "의령군"
+  ],
+  "gyeongnamyangsan": [
+    "경상남도",
+    "양산시"
+  ],
+  "gyeongnamyangsan-si": [
+    "경상남도",
+    "양산시"
+  ],
+  "gyeongnamyangsansi": [
+    "경상남도",
+    "양산시"
+  ],
+  "gyeongsan": [
+    "경상북도",
+    "경산시"
+  ],
+  "gyeongsan-si": [
+    "경상북도",
+    "경산시"
+  ],
+  "gyeongsangbuk-doandong": [
+    "경상북도",
+    "안동시"
+  ],
+  "gyeongsangbuk-doandong-si": [
+    "경상북도",
+    "안동시"
+  ],
+  "gyeongsangbuk-doandongsi": [
+    "경상북도",
+    "안동시"
+  ],
+  "gyeongsangbuk-dobonghwa": [
+    "경상북도",
+    "봉화군"
+  ],
+  "gyeongsangbuk-dobonghwa-gun": [
+    "경상북도",
+    "봉화군"
+  ],
+  "gyeongsangbuk-dobonghwagun": [
+    "경상북도",
+    "봉화군"
+  ],
+  "gyeongsangbuk-docheongdo": [
+    "경상북도",
+    "청도군"
+  ],
+  "gyeongsangbuk-docheongdo-gun": [
+    "경상북도",
+    "청도군"
+  ],
+  "gyeongsangbuk-docheongdogun": [
+    "경상북도",
+    "청도군"
+  ],
+  "gyeongsangbuk-docheongsong": [
+    "경상북도",
+    "청송군"
+  ],
+  "gyeongsangbuk-docheongsong-gun": [
+    "경상북도",
+    "청송군"
+  ],
+  "gyeongsangbuk-docheongsonggun": [
+    "경상북도",
+    "청송군"
+  ],
+  "gyeongsangbuk-dochilgok": [
+    "경상북도",
+    "칠곡군"
+  ],
+  "gyeongsangbuk-dochilgok-gun": [
+    "경상북도",
+    "칠곡군"
+  ],
+  "gyeongsangbuk-dochilgokgun": [
+    "경상북도",
+    "칠곡군"
+  ],
+  "gyeongsangbuk-dogimcheon": [
+    "경상북도",
+    "김천시"
+  ],
+  "gyeongsangbuk-dogimcheon-si": [
+    "경상북도",
+    "김천시"
+  ],
+  "gyeongsangbuk-dogimcheonsi": [
+    "경상북도",
+    "김천시"
+  ],
+  "gyeongsangbuk-dogoryeong": [
+    "경상북도",
+    "고령군"
+  ],
+  "gyeongsangbuk-dogoryeong-gun": [
+    "경상북도",
+    "고령군"
+  ],
+  "gyeongsangbuk-dogoryeonggun": [
+    "경상북도",
+    "고령군"
+  ],
+  "gyeongsangbuk-dogumi": [
+    "경상북도",
+    "구미시"
+  ],
+  "gyeongsangbuk-dogumi-si": [
+    "경상북도",
+    "구미시"
+  ],
+  "gyeongsangbuk-dogumisi": [
+    "경상북도",
+    "구미시"
+  ],
+  "gyeongsangbuk-dogyeongju": [
+    "경상북도",
+    "경주시"
+  ],
+  "gyeongsangbuk-dogyeongju-si": [
+    "경상북도",
+    "경주시"
+  ],
+  "gyeongsangbuk-dogyeongjusi": [
+    "경상북도",
+    "경주시"
+  ],
+  "gyeongsangbuk-dogyeongsan": [
+    "경상북도",
+    "경산시"
+  ],
+  "gyeongsangbuk-dogyeongsan-si": [
+    "경상북도",
+    "경산시"
+  ],
+  "gyeongsangbuk-dogyeongsansi": [
+    "경상북도",
+    "경산시"
+  ],
+  "gyeongsangbuk-domungyeong": [
+    "경상북도",
+    "문경시"
+  ],
+  "gyeongsangbuk-domungyeong-si": [
+    "경상북도",
+    "문경시"
+  ],
+  "gyeongsangbuk-domungyeongsi": [
+    "경상북도",
+    "문경시"
+  ],
+  "gyeongsangbuk-dopohang": [
+    "경상북도",
+    "포항시"
+  ],
+  "gyeongsangbuk-dopohang-si": [
+    "경상북도",
+    "포항시"
+  ],
+  "gyeongsangbuk-dopohangsi": [
+    "경상북도",
+    "포항시"
+  ],
+  "gyeongsangbuk-dosangju": [
+    "경상북도",
+    "상주시"
+  ],
+  "gyeongsangbuk-dosangju-si": [
+    "경상북도",
+    "상주시"
+  ],
+  "gyeongsangbuk-dosangjusi": [
+    "경상북도",
+    "상주시"
+  ],
+  "gyeongsangbuk-doseongju": [
+    "경상북도",
+    "성주군"
+  ],
+  "gyeongsangbuk-doseongju-gun": [
+    "경상북도",
+    "성주군"
+  ],
+  "gyeongsangbuk-doseongjugun": [
+    "경상북도",
+    "성주군"
+  ],
+  "gyeongsangbuk-douiseong": [
+    "경상북도",
+    "의성군"
+  ],
+  "gyeongsangbuk-douiseong-gun": [
+    "경상북도",
+    "의성군"
+  ],
+  "gyeongsangbuk-douiseonggun": [
+    "경상북도",
+    "의성군"
+  ],
+  "gyeongsangbuk-douljin": [
+    "경상북도",
+    "울진군"
+  ],
+  "gyeongsangbuk-douljin-gun": [
+    "경상북도",
+    "울진군"
+  ],
+  "gyeongsangbuk-douljingun": [
+    "경상북도",
+    "울진군"
+  ],
+  "gyeongsangbuk-doulleung": [
+    "경상북도",
+    "울릉군"
+  ],
+  "gyeongsangbuk-doulleung-gun": [
+    "경상북도",
+    "울릉군"
+  ],
+  "gyeongsangbuk-doulleunggun": [
+    "경상북도",
+    "울릉군"
+  ],
+  "gyeongsangbuk-doyecheon": [
+    "경상북도",
+    "예천군"
+  ],
+  "gyeongsangbuk-doyecheon-gun": [
+    "경상북도",
+    "예천군"
+  ],
+  "gyeongsangbuk-doyecheongun": [
+    "경상북도",
+    "예천군"
+  ],
+  "gyeongsangbuk-doyeongcheon": [
+    "경상북도",
+    "영천시"
+  ],
+  "gyeongsangbuk-doyeongcheon-si": [
+    "경상북도",
+    "영천시"
+  ],
+  "gyeongsangbuk-doyeongcheonsi": [
+    "경상북도",
+    "영천시"
+  ],
+  "gyeongsangbuk-doyeongdeok": [
+    "경상북도",
+    "영덕군"
+  ],
+  "gyeongsangbuk-doyeongdeok-gun": [
+    "경상북도",
+    "영덕군"
+  ],
+  "gyeongsangbuk-doyeongdeokgun": [
+    "경상북도",
+    "영덕군"
+  ],
+  "gyeongsangbuk-doyeongju": [
+    "경상북도",
+    "영주시"
+  ],
+  "gyeongsangbuk-doyeongju-si": [
+    "경상북도",
+    "영주시"
+  ],
+  "gyeongsangbuk-doyeongjusi": [
+    "경상북도",
+    "영주시"
+  ],
+  "gyeongsangbuk-doyeongyang": [
+    "경상북도",
+    "영양군"
+  ],
+  "gyeongsangbuk-doyeongyang-gun": [
+    "경상북도",
+    "영양군"
+  ],
+  "gyeongsangbuk-doyeongyanggun": [
+    "경상북도",
+    "영양군"
+  ],
+  "gyeongsangnam-dochangnyeong": [
+    "경상남도",
+    "창녕군"
+  ],
+  "gyeongsangnam-dochangnyeong-gun": [
+    "경상남도",
+    "창녕군"
+  ],
+  "gyeongsangnam-dochangnyeonggun": [
+    "경상남도",
+    "창녕군"
+  ],
+  "gyeongsangnam-dochangwon": [
+    "경상남도",
+    "창원시"
+  ],
+  "gyeongsangnam-dochangwon-si": [
+    "경상남도",
+    "창원시"
+  ],
+  "gyeongsangnam-dochangwonsi": [
+    "경상남도",
+    "창원시"
+  ],
+  "gyeongsangnam-dogeochang": [
+    "경상남도",
+    "거창군"
+  ],
+  "gyeongsangnam-dogeochang-gun": [
+    "경상남도",
+    "거창군"
+  ],
+  "gyeongsangnam-dogeochanggun": [
+    "경상남도",
+    "거창군"
+  ],
+  "gyeongsangnam-dogeoje": [
+    "경상남도",
+    "거제시"
+  ],
+  "gyeongsangnam-dogeoje-si": [
+    "경상남도",
+    "거제시"
+  ],
+  "gyeongsangnam-dogeojesi": [
+    "경상남도",
+    "거제시"
+  ],
+  "gyeongsangnam-dogimhae": [
+    "경상남도",
+    "김해시"
+  ],
+  "gyeongsangnam-dogimhae-si": [
+    "경상남도",
+    "김해시"
+  ],
+  "gyeongsangnam-dogimhaesi": [
+    "경상남도",
+    "김해시"
+  ],
+  "gyeongsangnam-dogoseong": [
+    "경상남도",
+    "고성군"
+  ],
+  "gyeongsangnam-dogoseong-gun": [
+    "경상남도",
+    "고성군"
+  ],
+  "gyeongsangnam-dogoseonggun": [
+    "경상남도",
+    "고성군"
+  ],
+  "gyeongsangnam-dohadong": [
+    "경상남도",
+    "하동군"
+  ],
+  "gyeongsangnam-dohadong-gun": [
+    "경상남도",
+    "하동군"
+  ],
+  "gyeongsangnam-dohadonggun": [
+    "경상남도",
+    "하동군"
+  ],
+  "gyeongsangnam-dohaman": [
+    "경상남도",
+    "함안군"
+  ],
+  "gyeongsangnam-dohaman-gun": [
+    "경상남도",
+    "함안군"
+  ],
+  "gyeongsangnam-dohamangun": [
+    "경상남도",
+    "함안군"
+  ],
+  "gyeongsangnam-dohamyang": [
+    "경상남도",
+    "함양군"
+  ],
+  "gyeongsangnam-dohamyang-gun": [
+    "경상남도",
+    "함양군"
+  ],
+  "gyeongsangnam-dohamyanggun": [
+    "경상남도",
+    "함양군"
+  ],
+  "gyeongsangnam-dohapcheon": [
+    "경상남도",
+    "합천군"
+  ],
+  "gyeongsangnam-dohapcheon-gun": [
+    "경상남도",
+    "합천군"
+  ],
+  "gyeongsangnam-dohapcheongun": [
+    "경상남도",
+    "합천군"
+  ],
+  "gyeongsangnam-dojinju": [
+    "경상남도",
+    "진주시"
+  ],
+  "gyeongsangnam-dojinju-si": [
+    "경상남도",
+    "진주시"
+  ],
+  "gyeongsangnam-dojinjusi": [
+    "경상남도",
+    "진주시"
+  ],
+  "gyeongsangnam-domiryang": [
+    "경상남도",
+    "밀양시"
+  ],
+  "gyeongsangnam-domiryang-si": [
+    "경상남도",
+    "밀양시"
+  ],
+  "gyeongsangnam-domiryangsi": [
+    "경상남도",
+    "밀양시"
+  ],
+  "gyeongsangnam-donamhae": [
+    "경상남도",
+    "남해군"
+  ],
+  "gyeongsangnam-donamhae-gun": [
+    "경상남도",
+    "남해군"
+  ],
+  "gyeongsangnam-donamhaegun": [
+    "경상남도",
+    "남해군"
+  ],
+  "gyeongsangnam-dosacheon": [
+    "경상남도",
+    "사천시"
+  ],
+  "gyeongsangnam-dosacheon-si": [
+    "경상남도",
+    "사천시"
+  ],
+  "gyeongsangnam-dosacheonsi": [
+    "경상남도",
+    "사천시"
+  ],
+  "gyeongsangnam-dosancheong": [
+    "경상남도",
+    "산청군"
+  ],
+  "gyeongsangnam-dosancheong-gun": [
+    "경상남도",
+    "산청군"
+  ],
+  "gyeongsangnam-dosancheonggun": [
+    "경상남도",
+    "산청군"
+  ],
+  "gyeongsangnam-dotongyeong": [
+    "경상남도",
+    "통영시"
+  ],
+  "gyeongsangnam-dotongyeong-si": [
+    "경상남도",
+    "통영시"
+  ],
+  "gyeongsangnam-dotongyeongsi": [
+    "경상남도",
+    "통영시"
+  ],
+  "gyeongsangnam-douiryeong": [
+    "경상남도",
+    "의령군"
+  ],
+  "gyeongsangnam-douiryeong-gun": [
+    "경상남도",
+    "의령군"
+  ],
+  "gyeongsangnam-douiryeonggun": [
+    "경상남도",
+    "의령군"
+  ],
+  "gyeongsangnam-doyangsan": [
+    "경상남도",
+    "양산시"
+  ],
+  "gyeongsangnam-doyangsan-si": [
+    "경상남도",
+    "양산시"
+  ],
+  "gyeongsangnam-doyangsansi": [
+    "경상남도",
+    "양산시"
+  ],
+  "gyeongsansi": [
+    "경상북도",
+    "경산시"
+  ],
+  "gyeryong": [
+    "충청남도",
+    "계룡시"
+  ],
+  "gyeryong-si": [
+    "충청남도",
+    "계룡시"
+  ],
+  "gyeryongsi": [
+    "충청남도",
+    "계룡시"
+  ],
+  "gyeyang": [
+    "인천광역시",
+    "계양구"
+  ],
+  "gyeyang-gu": [
+    "인천광역시",
+    "계양구"
+  ],
+  "gyeyanggu": [
+    "인천광역시",
+    "계양구"
+  ],
+  "hadong": [
+    "경상남도",
+    "하동군"
+  ],
+  "hadong-gun": [
+    "경상남도",
+    "하동군"
+  ],
+  "hadonggun": [
+    "경상남도",
+    "하동군"
+  ],
+  "haenam": [
+    "전남광주통합특별시",
+    "해남군"
+  ],
+  "haenam-gun": [
+    "전남광주통합특별시",
+    "해남군"
+  ],
+  "haenamgun": [
+    "전남광주통합특별시",
+    "해남군"
+  ],
+  "haeundae": [
+    "부산광역시",
+    "해운대구"
+  ],
+  "haeundae-gu": [
+    "부산광역시",
+    "해운대구"
+  ],
+  "haeundaegu": [
+    "부산광역시",
+    "해운대구"
+  ],
+  "haman": [
+    "경상남도",
+    "함안군"
+  ],
+  "haman-gun": [
+    "경상남도",
+    "함안군"
+  ],
+  "hamangun": [
+    "경상남도",
+    "함안군"
+  ],
+  "hampyeong": [
+    "전남광주통합특별시",
+    "함평군"
+  ],
+  "hampyeong-gun": [
+    "전남광주통합특별시",
+    "함평군"
+  ],
+  "hampyeonggun": [
+    "전남광주통합특별시",
+    "함평군"
+  ],
+  "hamyang": [
+    "경상남도",
+    "함양군"
+  ],
+  "hamyang-gun": [
+    "경상남도",
+    "함양군"
+  ],
+  "hamyanggun": [
+    "경상남도",
+    "함양군"
+  ],
+  "hanam": [
+    "경기도",
+    "하남시"
+  ],
+  "hanam-si": [
+    "경기도",
+    "하남시"
+  ],
+  "hanamsi": [
+    "경기도",
+    "하남시"
+  ],
+  "hapcheon": [
+    "경상남도",
+    "합천군"
+  ],
+  "hapcheon-gun": [
+    "경상남도",
+    "합천군"
+  ],
+  "hapcheongun": [
+    "경상남도",
+    "합천군"
+  ],
+  "hoengseong": [
+    "강원특별자치도",
+    "횡성군"
+  ],
+  "hoengseong-gun": [
+    "강원특별자치도",
+    "횡성군"
+  ],
+  "hoengseonggun": [
+    "강원특별자치도",
+    "횡성군"
+  ],
+  "hongcheon": [
+    "강원특별자치도",
+    "홍천군"
+  ],
+  "hongcheon-gun": [
+    "강원특별자치도",
+    "홍천군"
+  ],
+  "hongcheongun": [
+    "강원특별자치도",
+    "홍천군"
+  ],
+  "hongseong": [
+    "충청남도",
+    "홍성군"
+  ],
+  "hongseong-gun": [
+    "충청남도",
+    "홍성군"
+  ],
+  "hongseonggun": [
+    "충청남도",
+    "홍성군"
+  ],
+  "hwaseong": [
+    "경기도",
+    "화성시"
+  ],
+  "hwaseong-si": [
+    "경기도",
+    "화성시"
+  ],
+  "hwaseongsi": [
+    "경기도",
+    "화성시"
+  ],
+  "hwasun": [
+    "전남광주통합특별시",
+    "화순군"
+  ],
+  "hwasun-gun": [
+    "전남광주통합특별시",
+    "화순군"
+  ],
+  "hwasungun": [
+    "전남광주통합특별시",
+    "화순군"
+  ],
+  "icheon": [
+    "경기도",
+    "이천시"
+  ],
+  "icheon-si": [
+    "경기도",
+    "이천시"
+  ],
+  "icheonsi": [
+    "경기도",
+    "이천시"
+  ],
+  "iksan": [
+    "전북특별자치도",
+    "익산시"
+  ],
+  "iksan-si": [
+    "전북특별자치도",
+    "익산시"
+  ],
+  "iksansi": [
+    "전북특별자치도",
+    "익산시"
+  ],
+  "imsil": [
+    "전북특별자치도",
+    "임실군"
+  ],
+  "imsil-gun": [
+    "전북특별자치도",
+    "임실군"
+  ],
+  "imsilgun": [
+    "전북특별자치도",
+    "임실군"
+  ],
+  "incheonbupyeong": [
+    "인천광역시",
+    "부평구"
+  ],
+  "incheonbupyeong-gu": [
+    "인천광역시",
+    "부평구"
+  ],
+  "incheonbupyeonggu": [
+    "인천광역시",
+    "부평구"
+  ],
+  "incheonganghwa": [
+    "인천광역시",
+    "강화군"
+  ],
+  "incheonganghwa-gun": [
+    "인천광역시",
+    "강화군"
+  ],
+  "incheonganghwagun": [
+    "인천광역시",
+    "강화군"
+  ],
+  "incheongeomdan": [
+    "인천광역시",
+    "검단구"
+  ],
+  "incheongeomdan-gu": [
+    "인천광역시",
+    "검단구"
+  ],
+  "incheongeomdangu": [
+    "인천광역시",
+    "검단구"
+  ],
+  "incheongyeyang": [
+    "인천광역시",
+    "계양구"
+  ],
+  "incheongyeyang-gu": [
+    "인천광역시",
+    "계양구"
+  ],
+  "incheongyeyanggu": [
+    "인천광역시",
+    "계양구"
+  ],
+  "incheonjemulpo": [
+    "인천광역시",
+    "제물포구"
+  ],
+  "incheonjemulpo-gu": [
+    "인천광역시",
+    "제물포구"
+  ],
+  "incheonjemulpogu": [
+    "인천광역시",
+    "제물포구"
+  ],
+  "incheonmichuhol": [
+    "인천광역시",
+    "미추홀구"
+  ],
+  "incheonmichuhol-gu": [
+    "인천광역시",
+    "미추홀구"
+  ],
+  "incheonmichuholgu": [
+    "인천광역시",
+    "미추홀구"
+  ],
+  "incheonnamdong": [
+    "인천광역시",
+    "남동구"
+  ],
+  "incheonnamdong-gu": [
+    "인천광역시",
+    "남동구"
+  ],
+  "incheonnamdonggu": [
+    "인천광역시",
+    "남동구"
+  ],
+  "incheonongjin": [
+    "인천광역시",
+    "옹진군"
+  ],
+  "incheonongjin-gun": [
+    "인천광역시",
+    "옹진군"
+  ],
+  "incheonongjingun": [
+    "인천광역시",
+    "옹진군"
+  ],
+  "incheonseohae": [
+    "인천광역시",
+    "서해구"
+  ],
+  "incheonseohae-gu": [
+    "인천광역시",
+    "서해구"
+  ],
+  "incheonseohaegu": [
+    "인천광역시",
+    "서해구"
+  ],
+  "incheonyeongjong": [
+    "인천광역시",
+    "영종구"
+  ],
+  "incheonyeongjong-gu": [
+    "인천광역시",
+    "영종구"
+  ],
+  "incheonyeongjonggu": [
+    "인천광역시",
+    "영종구"
+  ],
+  "incheonyeonsu": [
+    "인천광역시",
+    "연수구"
+  ],
+  "incheonyeonsu-gu": [
+    "인천광역시",
+    "연수구"
+  ],
+  "incheonyeonsugu": [
+    "인천광역시",
+    "연수구"
+  ],
+  "inje": [
+    "강원특별자치도",
+    "인제군"
+  ],
+  "inje-gun": [
+    "강원특별자치도",
+    "인제군"
+  ],
+  "injegun": [
+    "강원특별자치도",
+    "인제군"
+  ],
+  "jangheung": [
+    "전남광주통합특별시",
+    "장흥군"
+  ],
+  "jangheung-gun": [
+    "전남광주통합특별시",
+    "장흥군"
+  ],
+  "jangheunggun": [
+    "전남광주통합특별시",
+    "장흥군"
+  ],
+  "jangseong": [
+    "전남광주통합특별시",
+    "장성군"
+  ],
+  "jangseong-gun": [
+    "전남광주통합특별시",
+    "장성군"
+  ],
+  "jangseonggun": [
+    "전남광주통합특별시",
+    "장성군"
+  ],
+  "jangsu": [
+    "전북특별자치도",
+    "장수군"
+  ],
+  "jangsu-gun": [
+    "전북특별자치도",
+    "장수군"
+  ],
+  "jangsugun": [
+    "전북특별자치도",
+    "장수군"
+  ],
+  "jecheon": [
+    "충청북도",
+    "제천시"
+  ],
+  "jecheon-si": [
+    "충청북도",
+    "제천시"
+  ],
+  "jecheonsi": [
+    "충청북도",
+    "제천시"
+  ],
+  "jeju-si": [
+    "제주특별자치도",
+    "제주시"
+  ],
+  "jejujeju": [
+    "제주특별자치도",
+    "제주시"
+  ],
+  "jejujeju-si": [
+    "제주특별자치도",
+    "제주시"
+  ],
+  "jejujejusi": [
+    "제주특별자치도",
+    "제주시"
+  ],
+  "jejuseogwipo": [
+    "제주특별자치도",
+    "서귀포시"
+  ],
+  "jejuseogwipo-si": [
+    "제주특별자치도",
+    "서귀포시"
+  ],
+  "jejuseogwiposi": [
+    "제주특별자치도",
+    "서귀포시"
+  ],
+  "jejusi": [
+    "제주특별자치도",
+    "제주시"
+  ],
+  "jemulpo": [
+    "인천광역시",
+    "제물포구"
+  ],
+  "jemulpo-gu": [
+    "인천광역시",
+    "제물포구"
+  ],
+  "jemulpogu": [
+    "인천광역시",
+    "제물포구"
+  ],
+  "jeollabuk-dobuan": [
+    "전북특별자치도",
+    "부안군"
+  ],
+  "jeollabuk-dobuan-gun": [
+    "전북특별자치도",
+    "부안군"
+  ],
+  "jeollabuk-dobuangun": [
+    "전북특별자치도",
+    "부안군"
+  ],
+  "jeollabuk-dogimje": [
+    "전북특별자치도",
+    "김제시"
+  ],
+  "jeollabuk-dogimje-si": [
+    "전북특별자치도",
+    "김제시"
+  ],
+  "jeollabuk-dogimjesi": [
+    "전북특별자치도",
+    "김제시"
+  ],
+  "jeollabuk-dogochang": [
+    "전북특별자치도",
+    "고창군"
+  ],
+  "jeollabuk-dogochang-gun": [
+    "전북특별자치도",
+    "고창군"
+  ],
+  "jeollabuk-dogochanggun": [
+    "전북특별자치도",
+    "고창군"
+  ],
+  "jeollabuk-dogunsan": [
+    "전북특별자치도",
+    "군산시"
+  ],
+  "jeollabuk-dogunsan-si": [
+    "전북특별자치도",
+    "군산시"
+  ],
+  "jeollabuk-dogunsansi": [
+    "전북특별자치도",
+    "군산시"
+  ],
+  "jeollabuk-doiksan": [
+    "전북특별자치도",
+    "익산시"
+  ],
+  "jeollabuk-doiksan-si": [
+    "전북특별자치도",
+    "익산시"
+  ],
+  "jeollabuk-doiksansi": [
+    "전북특별자치도",
+    "익산시"
+  ],
+  "jeollabuk-doimsil": [
+    "전북특별자치도",
+    "임실군"
+  ],
+  "jeollabuk-doimsil-gun": [
+    "전북특별자치도",
+    "임실군"
+  ],
+  "jeollabuk-doimsilgun": [
+    "전북특별자치도",
+    "임실군"
+  ],
+  "jeollabuk-dojangsu": [
+    "전북특별자치도",
+    "장수군"
+  ],
+  "jeollabuk-dojangsu-gun": [
+    "전북특별자치도",
+    "장수군"
+  ],
+  "jeollabuk-dojangsugun": [
+    "전북특별자치도",
+    "장수군"
+  ],
+  "jeollabuk-dojeongeup": [
+    "전북특별자치도",
+    "정읍시"
+  ],
+  "jeollabuk-dojeongeup-si": [
+    "전북특별자치도",
+    "정읍시"
+  ],
+  "jeollabuk-dojeongeupsi": [
+    "전북특별자치도",
+    "정읍시"
+  ],
+  "jeollabuk-dojeonju": [
+    "전북특별자치도",
+    "전주시"
+  ],
+  "jeollabuk-dojeonju-si": [
+    "전북특별자치도",
+    "전주시"
+  ],
+  "jeollabuk-dojeonjusi": [
+    "전북특별자치도",
+    "전주시"
+  ],
+  "jeollabuk-dojinan": [
+    "전북특별자치도",
+    "진안군"
+  ],
+  "jeollabuk-dojinan-gun": [
+    "전북특별자치도",
+    "진안군"
+  ],
+  "jeollabuk-dojinangun": [
+    "전북특별자치도",
+    "진안군"
+  ],
+  "jeollabuk-domuju": [
+    "전북특별자치도",
+    "무주군"
+  ],
+  "jeollabuk-domuju-gun": [
+    "전북특별자치도",
+    "무주군"
+  ],
+  "jeollabuk-domujugun": [
+    "전북특별자치도",
+    "무주군"
+  ],
+  "jeollabuk-dosunchang": [
+    "전북특별자치도",
+    "순창군"
+  ],
+  "jeollabuk-dosunchang-gun": [
+    "전북특별자치도",
+    "순창군"
+  ],
+  "jeollabuk-dosunchanggun": [
+    "전북특별자치도",
+    "순창군"
+  ],
+  "jeollabuk-dowanju": [
+    "전북특별자치도",
+    "완주군"
+  ],
+  "jeollabuk-dowanju-gun": [
+    "전북특별자치도",
+    "완주군"
+  ],
+  "jeollabuk-dowanjugun": [
+    "전북특별자치도",
+    "완주군"
+  ],
+  "jeonbukbuan": [
+    "전북특별자치도",
+    "부안군"
+  ],
+  "jeonbukbuan-gun": [
+    "전북특별자치도",
+    "부안군"
+  ],
+  "jeonbukbuangun": [
+    "전북특별자치도",
+    "부안군"
+  ],
+  "jeonbukgimje": [
+    "전북특별자치도",
+    "김제시"
+  ],
+  "jeonbukgimje-si": [
+    "전북특별자치도",
+    "김제시"
+  ],
+  "jeonbukgimjesi": [
+    "전북특별자치도",
+    "김제시"
+  ],
+  "jeonbukgochang": [
+    "전북특별자치도",
+    "고창군"
+  ],
+  "jeonbukgochang-gun": [
+    "전북특별자치도",
+    "고창군"
+  ],
+  "jeonbukgochanggun": [
+    "전북특별자치도",
+    "고창군"
+  ],
+  "jeonbukgunsan": [
+    "전북특별자치도",
+    "군산시"
+  ],
+  "jeonbukgunsan-si": [
+    "전북특별자치도",
+    "군산시"
+  ],
+  "jeonbukgunsansi": [
+    "전북특별자치도",
+    "군산시"
+  ],
+  "jeonbukiksan": [
+    "전북특별자치도",
+    "익산시"
+  ],
+  "jeonbukiksan-si": [
+    "전북특별자치도",
+    "익산시"
+  ],
+  "jeonbukiksansi": [
+    "전북특별자치도",
+    "익산시"
+  ],
+  "jeonbukimsil": [
+    "전북특별자치도",
+    "임실군"
+  ],
+  "jeonbukimsil-gun": [
+    "전북특별자치도",
+    "임실군"
+  ],
+  "jeonbukimsilgun": [
+    "전북특별자치도",
+    "임실군"
+  ],
+  "jeonbukjangsu": [
+    "전북특별자치도",
+    "장수군"
+  ],
+  "jeonbukjangsu-gun": [
+    "전북특별자치도",
+    "장수군"
+  ],
+  "jeonbukjangsugun": [
+    "전북특별자치도",
+    "장수군"
+  ],
+  "jeonbukjeongeup": [
+    "전북특별자치도",
+    "정읍시"
+  ],
+  "jeonbukjeongeup-si": [
+    "전북특별자치도",
+    "정읍시"
+  ],
+  "jeonbukjeongeupsi": [
+    "전북특별자치도",
+    "정읍시"
+  ],
+  "jeonbukjeonju": [
+    "전북특별자치도",
+    "전주시"
+  ],
+  "jeonbukjeonju-si": [
+    "전북특별자치도",
+    "전주시"
+  ],
+  "jeonbukjeonjusi": [
+    "전북특별자치도",
+    "전주시"
+  ],
+  "jeonbukjinan": [
+    "전북특별자치도",
+    "진안군"
+  ],
+  "jeonbukjinan-gun": [
+    "전북특별자치도",
+    "진안군"
+  ],
+  "jeonbukjinangun": [
+    "전북특별자치도",
+    "진안군"
+  ],
+  "jeonbukmuju": [
+    "전북특별자치도",
+    "무주군"
+  ],
+  "jeonbukmuju-gun": [
+    "전북특별자치도",
+    "무주군"
+  ],
+  "jeonbukmujugun": [
+    "전북특별자치도",
+    "무주군"
+  ],
+  "jeonbuksunchang": [
+    "전북특별자치도",
+    "순창군"
+  ],
+  "jeonbuksunchang-gun": [
+    "전북특별자치도",
+    "순창군"
+  ],
+  "jeonbuksunchanggun": [
+    "전북특별자치도",
+    "순창군"
+  ],
+  "jeonbukwanju": [
+    "전북특별자치도",
+    "완주군"
+  ],
+  "jeonbukwanju-gun": [
+    "전북특별자치도",
+    "완주군"
+  ],
+  "jeonbukwanjugun": [
+    "전북특별자치도",
+    "완주군"
+  ],
+  "jeongeup": [
+    "전북특별자치도",
+    "정읍시"
+  ],
+  "jeongeup-si": [
+    "전북특별자치도",
+    "정읍시"
+  ],
+  "jeongeupsi": [
+    "전북특별자치도",
+    "정읍시"
+  ],
+  "jeongseon": [
+    "강원특별자치도",
+    "정선군"
+  ],
+  "jeongseon-gun": [
+    "강원특별자치도",
+    "정선군"
+  ],
+  "jeongseongun": [
+    "강원특별자치도",
+    "정선군"
+  ],
+  "jeonju": [
+    "전북특별자치도",
+    "전주시"
+  ],
+  "jeonju-si": [
+    "전북특별자치도",
+    "전주시"
+  ],
+  "jeonjusi": [
+    "전북특별자치도",
+    "전주시"
+  ],
+  "jeonnamboseong": [
+    "전남광주통합특별시",
+    "보성군"
+  ],
+  "jeonnamboseong-gun": [
+    "전남광주통합특별시",
+    "보성군"
+  ],
+  "jeonnamboseonggun": [
+    "전남광주통합특별시",
+    "보성군"
+  ],
+  "jeonnambuk": [
+    "전남광주통합특별시",
+    "북구"
+  ],
+  "jeonnambuk-gu": [
+    "전남광주통합특별시",
+    "북구"
+  ],
+  "jeonnambukgu": [
+    "전남광주통합특별시",
+    "북구"
+  ],
+  "jeonnamdamyang": [
+    "전남광주통합특별시",
+    "담양군"
+  ],
+  "jeonnamdamyang-gun": [
+    "전남광주통합특별시",
+    "담양군"
+  ],
+  "jeonnamdamyanggun": [
+    "전남광주통합특별시",
+    "담양군"
+  ],
+  "jeonnamdong": [
+    "전남광주통합특별시",
+    "동구"
+  ],
+  "jeonnamdong-gu": [
+    "전남광주통합특별시",
+    "동구"
+  ],
+  "jeonnamdonggu": [
+    "전남광주통합특별시",
+    "동구"
+  ],
+  "jeonnamgangjin": [
+    "전남광주통합특별시",
+    "강진군"
+  ],
+  "jeonnamgangjin-gun": [
+    "전남광주통합특별시",
+    "강진군"
+  ],
+  "jeonnamgangjingun": [
+    "전남광주통합특별시",
+    "강진군"
+  ],
+  "jeonnamgoheung": [
+    "전남광주통합특별시",
+    "고흥군"
+  ],
+  "jeonnamgoheung-gun": [
+    "전남광주통합특별시",
+    "고흥군"
+  ],
+  "jeonnamgoheunggun": [
+    "전남광주통합특별시",
+    "고흥군"
+  ],
+  "jeonnamgokseong": [
+    "전남광주통합특별시",
+    "곡성군"
+  ],
+  "jeonnamgokseong-gun": [
+    "전남광주통합특별시",
+    "곡성군"
+  ],
+  "jeonnamgokseonggun": [
+    "전남광주통합특별시",
+    "곡성군"
+  ],
+  "jeonnamgurye": [
+    "전남광주통합특별시",
+    "구례군"
+  ],
+  "jeonnamgurye-gun": [
+    "전남광주통합특별시",
+    "구례군"
+  ],
+  "jeonnamguryegun": [
+    "전남광주통합특별시",
+    "구례군"
+  ],
+  "jeonnamgwangsan": [
+    "전남광주통합특별시",
+    "광산구"
+  ],
+  "jeonnamgwangsan-gu": [
+    "전남광주통합특별시",
+    "광산구"
+  ],
+  "jeonnamgwangsangu": [
+    "전남광주통합특별시",
+    "광산구"
+  ],
+  "jeonnamgwangyang": [
+    "전남광주통합특별시",
+    "광양시"
+  ],
+  "jeonnamgwangyang-si": [
+    "전남광주통합특별시",
+    "광양시"
+  ],
+  "jeonnamgwangyangsi": [
+    "전남광주통합특별시",
+    "광양시"
+  ],
+  "jeonnamhaenam": [
+    "전남광주통합특별시",
+    "해남군"
+  ],
+  "jeonnamhaenam-gun": [
+    "전남광주통합특별시",
+    "해남군"
+  ],
+  "jeonnamhaenamgun": [
+    "전남광주통합특별시",
+    "해남군"
+  ],
+  "jeonnamhampyeong": [
+    "전남광주통합특별시",
+    "함평군"
+  ],
+  "jeonnamhampyeong-gun": [
+    "전남광주통합특별시",
+    "함평군"
+  ],
+  "jeonnamhampyeonggun": [
+    "전남광주통합특별시",
+    "함평군"
+  ],
+  "jeonnamhwasun": [
+    "전남광주통합특별시",
+    "화순군"
+  ],
+  "jeonnamhwasun-gun": [
+    "전남광주통합특별시",
+    "화순군"
+  ],
+  "jeonnamhwasungun": [
+    "전남광주통합특별시",
+    "화순군"
+  ],
+  "jeonnamjangheung": [
+    "전남광주통합특별시",
+    "장흥군"
+  ],
+  "jeonnamjangheung-gun": [
+    "전남광주통합특별시",
+    "장흥군"
+  ],
+  "jeonnamjangheunggun": [
+    "전남광주통합특별시",
+    "장흥군"
+  ],
+  "jeonnamjangseong": [
+    "전남광주통합특별시",
+    "장성군"
+  ],
+  "jeonnamjangseong-gun": [
+    "전남광주통합특별시",
+    "장성군"
+  ],
+  "jeonnamjangseonggun": [
+    "전남광주통합특별시",
+    "장성군"
+  ],
+  "jeonnamjindo": [
+    "전남광주통합특별시",
+    "진도군"
+  ],
+  "jeonnamjindo-gun": [
+    "전남광주통합특별시",
+    "진도군"
+  ],
+  "jeonnamjindogun": [
+    "전남광주통합특별시",
+    "진도군"
+  ],
+  "jeonnammokpo": [
+    "전남광주통합특별시",
+    "목포시"
+  ],
+  "jeonnammokpo-si": [
+    "전남광주통합특별시",
+    "목포시"
+  ],
+  "jeonnammokposi": [
+    "전남광주통합특별시",
+    "목포시"
+  ],
+  "jeonnammuan": [
+    "전남광주통합특별시",
+    "무안군"
+  ],
+  "jeonnammuan-gun": [
+    "전남광주통합특별시",
+    "무안군"
+  ],
+  "jeonnammuangun": [
+    "전남광주통합특별시",
+    "무안군"
+  ],
+  "jeonnamnaju": [
+    "전남광주통합특별시",
+    "나주시"
+  ],
+  "jeonnamnaju-si": [
+    "전남광주통합특별시",
+    "나주시"
+  ],
+  "jeonnamnajusi": [
+    "전남광주통합특별시",
+    "나주시"
+  ],
+  "jeonnamnam": [
+    "전남광주통합특별시",
+    "남구"
+  ],
+  "jeonnamnam-gu": [
+    "전남광주통합특별시",
+    "남구"
+  ],
+  "jeonnamnamgu": [
+    "전남광주통합특별시",
+    "남구"
+  ],
+  "jeonnamseo": [
+    "전남광주통합특별시",
+    "서구"
+  ],
+  "jeonnamseo-gu": [
+    "전남광주통합특별시",
+    "서구"
+  ],
+  "jeonnamseogu": [
+    "전남광주통합특별시",
+    "서구"
+  ],
+  "jeonnamsinan": [
+    "전남광주통합특별시",
+    "신안군"
+  ],
+  "jeonnamsinan-gun": [
+    "전남광주통합특별시",
+    "신안군"
+  ],
+  "jeonnamsinangun": [
+    "전남광주통합특별시",
+    "신안군"
+  ],
+  "jeonnamsuncheon": [
+    "전남광주통합특별시",
+    "순천시"
+  ],
+  "jeonnamsuncheon-si": [
+    "전남광주통합특별시",
+    "순천시"
+  ],
+  "jeonnamsuncheonsi": [
+    "전남광주통합특별시",
+    "순천시"
+  ],
+  "jeonnamwando": [
+    "전남광주통합특별시",
+    "완도군"
+  ],
+  "jeonnamwando-gun": [
+    "전남광주통합특별시",
+    "완도군"
+  ],
+  "jeonnamwandogun": [
+    "전남광주통합특별시",
+    "완도군"
+  ],
+  "jeonnamyeongam": [
+    "전남광주통합특별시",
+    "영암군"
+  ],
+  "jeonnamyeongam-gun": [
+    "전남광주통합특별시",
+    "영암군"
+  ],
+  "jeonnamyeongamgun": [
+    "전남광주통합특별시",
+    "영암군"
+  ],
+  "jeonnamyeonggwang": [
+    "전남광주통합특별시",
+    "영광군"
+  ],
+  "jeonnamyeonggwang-gun": [
+    "전남광주통합특별시",
+    "영광군"
+  ],
+  "jeonnamyeonggwanggun": [
+    "전남광주통합특별시",
+    "영광군"
+  ],
+  "jeonnamyeosu": [
+    "전남광주통합특별시",
+    "여수시"
+  ],
+  "jeonnamyeosu-si": [
+    "전남광주통합특별시",
+    "여수시"
+  ],
+  "jeonnamyeosusi": [
+    "전남광주통합특별시",
+    "여수시"
+  ],
+  "jeungpyeong": [
+    "충청북도",
+    "증평군"
+  ],
+  "jeungpyeong-gun": [
+    "충청북도",
+    "증평군"
+  ],
+  "jeungpyeonggun": [
+    "충청북도",
+    "증평군"
+  ],
+  "jinan": [
+    "전북특별자치도",
+    "진안군"
+  ],
+  "jinan-gun": [
+    "전북특별자치도",
+    "진안군"
+  ],
+  "jinangun": [
+    "전북특별자치도",
+    "진안군"
+  ],
+  "jincheon": [
+    "충청북도",
+    "진천군"
+  ],
+  "jincheon-gun": [
+    "충청북도",
+    "진천군"
+  ],
+  "jincheongun": [
+    "충청북도",
+    "진천군"
+  ],
+  "jindo": [
+    "전남광주통합특별시",
+    "진도군"
+  ],
+  "jindo-gun": [
+    "전남광주통합특별시",
+    "진도군"
+  ],
+  "jindogun": [
+    "전남광주통합특별시",
+    "진도군"
+  ],
+  "jinju": [
+    "경상남도",
+    "진주시"
+  ],
+  "jinju-si": [
+    "경상남도",
+    "진주시"
+  ],
+  "jinjusi": [
+    "경상남도",
+    "진주시"
+  ],
+  "jongno": [
+    "서울특별시",
+    "종로구"
+  ],
+  "jongno-gu": [
+    "서울특별시",
+    "종로구"
+  ],
+  "jongnogu": [
+    "서울특별시",
+    "종로구"
+  ],
+  "jung": "중구",
+  "jung-gu": "중구",
+  "junggu": "중구",
+  "jungnang": [
+    "서울특별시",
+    "중랑구"
+  ],
+  "jungnang-gu": [
+    "서울특별시",
+    "중랑구"
+  ],
+  "jungnanggu": [
+    "서울특별시",
+    "중랑구"
+  ],
+  "mapo": [
+    "서울특별시",
+    "마포구"
+  ],
+  "mapo-gu": [
+    "서울특별시",
+    "마포구"
+  ],
+  "mapogu": [
+    "서울특별시",
+    "마포구"
+  ],
+  "michuhol": [
+    "인천광역시",
+    "미추홀구"
+  ],
+  "michuhol-gu": [
+    "인천광역시",
+    "미추홀구"
+  ],
+  "michuholgu": [
+    "인천광역시",
+    "미추홀구"
+  ],
+  "miryang": [
+    "경상남도",
+    "밀양시"
+  ],
+  "miryang-si": [
+    "경상남도",
+    "밀양시"
+  ],
+  "miryangsi": [
+    "경상남도",
+    "밀양시"
+  ],
+  "mokpo": [
+    "전남광주통합특별시",
+    "목포시"
+  ],
+  "mokpo-si": [
+    "전남광주통합특별시",
+    "목포시"
+  ],
+  "mokposi": [
+    "전남광주통합특별시",
+    "목포시"
+  ],
+  "muan": [
+    "전남광주통합특별시",
+    "무안군"
+  ],
+  "muan-gun": [
+    "전남광주통합특별시",
+    "무안군"
+  ],
+  "muangun": [
+    "전남광주통합특별시",
+    "무안군"
+  ],
+  "muju": [
+    "전북특별자치도",
+    "무주군"
+  ],
+  "muju-gun": [
+    "전북특별자치도",
+    "무주군"
+  ],
+  "mujugun": [
+    "전북특별자치도",
+    "무주군"
+  ],
+  "mungyeong": [
+    "경상북도",
+    "문경시"
+  ],
+  "mungyeong-si": [
+    "경상북도",
+    "문경시"
+  ],
+  "mungyeongsi": [
+    "경상북도",
+    "문경시"
+  ],
+  "naju": [
+    "전남광주통합특별시",
+    "나주시"
+  ],
+  "naju-si": [
+    "전남광주통합특별시",
+    "나주시"
+  ],
+  "najusi": [
+    "전남광주통합특별시",
+    "나주시"
+  ],
+  "nam": "남구",
+  "nam-gu": "남구",
+  "namdong": [
+    "인천광역시",
+    "남동구"
+  ],
+  "namdong-gu": [
+    "인천광역시",
+    "남동구"
+  ],
+  "namdonggu": [
+    "인천광역시",
+    "남동구"
+  ],
+  "namgu": "남구",
+  "namhae": [
+    "경상남도",
+    "남해군"
+  ],
+  "namhae-gun": [
+    "경상남도",
+    "남해군"
+  ],
+  "namhaegun": [
+    "경상남도",
+    "남해군"
+  ],
+  "namyangju": [
+    "경기도",
+    "남양주시"
+  ],
+  "namyangju-si": [
+    "경기도",
+    "남양주시"
+  ],
+  "namyangjusi": [
+    "경기도",
+    "남양주시"
+  ],
+  "nonsan": [
+    "충청남도",
+    "논산시"
+  ],
+  "nonsan-si": [
+    "충청남도",
+    "논산시"
+  ],
+  "nonsansi": [
+    "충청남도",
+    "논산시"
+  ],
+  "nowon": [
+    "서울특별시",
+    "노원구"
+  ],
+  "nowon-gu": [
+    "서울특별시",
+    "노원구"
+  ],
+  "nowongu": [
+    "서울특별시",
+    "노원구"
+  ],
+  "okcheon": [
+    "충청북도",
+    "옥천군"
+  ],
+  "okcheon-gun": [
+    "충청북도",
+    "옥천군"
+  ],
+  "okcheongun": [
+    "충청북도",
+    "옥천군"
+  ],
+  "ongjin": [
+    "인천광역시",
+    "옹진군"
+  ],
+  "ongjin-gun": [
+    "인천광역시",
+    "옹진군"
+  ],
+  "ongjingun": [
+    "인천광역시",
+    "옹진군"
+  ],
+  "osan": [
+    "경기도",
+    "오산시"
+  ],
+  "osan-si": [
+    "경기도",
+    "오산시"
+  ],
+  "osansi": [
+    "경기도",
+    "오산시"
+  ],
+  "paju": [
+    "경기도",
+    "파주시"
+  ],
+  "paju-si": [
+    "경기도",
+    "파주시"
+  ],
+  "pajusi": [
+    "경기도",
+    "파주시"
+  ],
+  "pocheon": [
+    "경기도",
+    "포천시"
+  ],
+  "pocheon-si": [
+    "경기도",
+    "포천시"
+  ],
+  "pocheonsi": [
+    "경기도",
+    "포천시"
+  ],
+  "pohang": [
+    "경상북도",
+    "포항시"
+  ],
+  "pohang-si": [
+    "경상북도",
+    "포항시"
+  ],
+  "pohangsi": [
+    "경상북도",
+    "포항시"
+  ],
+  "pyeongchang": [
+    "강원특별자치도",
+    "평창군"
+  ],
+  "pyeongchang-gun": [
+    "강원특별자치도",
+    "평창군"
+  ],
+  "pyeongchanggun": [
+    "강원특별자치도",
+    "평창군"
+  ],
+  "pyeongtaek": [
+    "경기도",
+    "평택시"
+  ],
+  "pyeongtaek-si": [
+    "경기도",
+    "평택시"
+  ],
+  "pyeongtaeksi": [
+    "경기도",
+    "평택시"
+  ],
+  "sacheon": [
+    "경상남도",
+    "사천시"
+  ],
+  "sacheon-si": [
+    "경상남도",
+    "사천시"
+  ],
+  "sacheonsi": [
+    "경상남도",
+    "사천시"
+  ],
+  "saha": [
+    "부산광역시",
+    "사하구"
+  ],
+  "saha-gu": [
+    "부산광역시",
+    "사하구"
+  ],
+  "sahagu": [
+    "부산광역시",
+    "사하구"
+  ],
+  "samcheok": [
+    "강원특별자치도",
+    "삼척시"
+  ],
+  "samcheok-si": [
+    "강원특별자치도",
+    "삼척시"
+  ],
+  "samcheoksi": [
+    "강원특별자치도",
+    "삼척시"
+  ],
+  "sancheong": [
+    "경상남도",
+    "산청군"
+  ],
+  "sancheong-gun": [
+    "경상남도",
+    "산청군"
+  ],
+  "sancheonggun": [
+    "경상남도",
+    "산청군"
+  ],
+  "sangju": [
+    "경상북도",
+    "상주시"
+  ],
+  "sangju-si": [
+    "경상북도",
+    "상주시"
+  ],
+  "sangjusi": [
+    "경상북도",
+    "상주시"
+  ],
+  "sasang": [
+    "부산광역시",
+    "사상구"
+  ],
+  "sasang-gu": [
+    "부산광역시",
+    "사상구"
+  ],
+  "sasanggu": [
+    "부산광역시",
+    "사상구"
+  ],
+  "sejong": [
+    "세종특별자치시",
+    "세종시"
+  ],
+  "sejong-si": [
+    "세종특별자치시",
+    "세종시"
+  ],
+  "sejongsejong": [
+    "세종특별자치시",
+    "세종시"
+  ],
+  "sejongsejong-si": [
+    "세종특별자치시",
+    "세종시"
+  ],
+  "sejongsejongsi": [
+    "세종특별자치시",
+    "세종시"
+  ],
+  "sejongsi": [
+    "세종특별자치시",
+    "세종시"
+  ],
+  "seo": "서구",
+  "seo-gu": "서구",
+  "seocheon": [
+    "충청남도",
+    "서천군"
+  ],
+  "seocheon-gun": [
+    "충청남도",
+    "서천군"
+  ],
+  "seocheongun": [
+    "충청남도",
+    "서천군"
+  ],
+  "seocho": [
+    "서울특별시",
+    "서초구"
+  ],
+  "seocho-gu": [
+    "서울특별시",
+    "서초구"
+  ],
+  "seochogu": [
+    "서울특별시",
+    "서초구"
+  ],
+  "seodaemun": [
+    "서울특별시",
+    "서대문구"
+  ],
+  "seodaemun-gu": [
+    "서울특별시",
+    "서대문구"
+  ],
+  "seodaemungu": [
+    "서울특별시",
+    "서대문구"
+  ],
+  "seogu": "서구",
+  "seogwipo": [
+    "제주특별자치도",
+    "서귀포시"
+  ],
+  "seogwipo-si": [
+    "제주특별자치도",
+    "서귀포시"
+  ],
+  "seogwiposi": [
+    "제주특별자치도",
+    "서귀포시"
+  ],
+  "seohae": [
+    "인천광역시",
+    "서해구"
+  ],
+  "seohae-gu": [
+    "인천광역시",
+    "서해구"
+  ],
+  "seohaegu": [
+    "인천광역시",
+    "서해구"
+  ],
+  "seongbuk": [
+    "서울특별시",
+    "성북구"
+  ],
+  "seongbuk-gu": [
+    "서울특별시",
+    "성북구"
+  ],
+  "seongbukgu": [
+    "서울특별시",
+    "성북구"
+  ],
+  "seongdong": [
+    "서울특별시",
+    "성동구"
+  ],
+  "seongdong-gu": [
+    "서울특별시",
+    "성동구"
+  ],
+  "seongdonggu": [
+    "서울특별시",
+    "성동구"
+  ],
+  "seongju": [
+    "경상북도",
+    "성주군"
+  ],
+  "seongju-gun": [
+    "경상북도",
+    "성주군"
+  ],
+  "seongjugun": [
+    "경상북도",
+    "성주군"
+  ],
+  "seongnam": [
+    "경기도",
+    "성남시"
+  ],
+  "seongnam-si": [
+    "경기도",
+    "성남시"
+  ],
+  "seongnamsi": [
+    "경기도",
+    "성남시"
+  ],
+  "seosan": [
+    "충청남도",
+    "서산시"
+  ],
+  "seosan-si": [
+    "충청남도",
+    "서산시"
+  ],
+  "seosansi": [
+    "충청남도",
+    "서산시"
+  ],
+  "seouldongdaemun": [
+    "서울특별시",
+    "동대문구"
+  ],
+  "seouldongdaemun-gu": [
+    "서울특별시",
+    "동대문구"
+  ],
+  "seouldongdaemungu": [
+    "서울특별시",
+    "동대문구"
+  ],
+  "seouldongjak": [
+    "서울특별시",
+    "동작구"
+  ],
+  "seouldongjak-gu": [
+    "서울특별시",
+    "동작구"
+  ],
+  "seouldongjakgu": [
+    "서울특별시",
+    "동작구"
+  ],
+  "seouleunpyeong": [
+    "서울특별시",
+    "은평구"
+  ],
+  "seouleunpyeong-gu": [
+    "서울특별시",
+    "은평구"
+  ],
+  "seouleunpyeonggu": [
+    "서울특별시",
+    "은평구"
+  ],
+  "seoulgangbuk": [
+    "서울특별시",
+    "강북구"
+  ],
+  "seoulgangbuk-gu": [
+    "서울특별시",
+    "강북구"
+  ],
+  "seoulgangbukgu": [
+    "서울특별시",
+    "강북구"
+  ],
+  "seoulgangnam": [
+    "서울특별시",
+    "강남구"
+  ],
+  "seoulgangnam-gu": [
+    "서울특별시",
+    "강남구"
+  ],
+  "seoulgangnamgu": [
+    "서울특별시",
+    "강남구"
+  ],
+  "seoulgangseo": [
+    "서울특별시",
+    "강서구"
+  ],
+  "seoulgangseo-gu": [
+    "서울특별시",
+    "강서구"
+  ],
+  "seoulgangseogu": [
+    "서울특별시",
+    "강서구"
+  ],
+  "seoulgeumcheon": [
+    "서울특별시",
+    "금천구"
+  ],
+  "seoulgeumcheon-gu": [
+    "서울특별시",
+    "금천구"
+  ],
+  "seoulgeumcheongu": [
+    "서울특별시",
+    "금천구"
+  ],
+  "seoulguro": [
+    "서울특별시",
+    "구로구"
+  ],
+  "seoulguro-gu": [
+    "서울특별시",
+    "구로구"
+  ],
+  "seoulgurogu": [
+    "서울특별시",
+    "구로구"
+  ],
+  "seoulgwanak": [
+    "서울특별시",
+    "관악구"
+  ],
+  "seoulgwanak-gu": [
+    "서울특별시",
+    "관악구"
+  ],
+  "seoulgwanakgu": [
+    "서울특별시",
+    "관악구"
+  ],
+  "seoulgwangjin": [
+    "서울특별시",
+    "광진구"
+  ],
+  "seoulgwangjin-gu": [
+    "서울특별시",
+    "광진구"
+  ],
+  "seoulgwangjingu": [
+    "서울특별시",
+    "광진구"
+  ],
+  "seouljongno": [
+    "서울특별시",
+    "종로구"
+  ],
+  "seouljongno-gu": [
+    "서울특별시",
+    "종로구"
+  ],
+  "seouljongnogu": [
+    "서울특별시",
+    "종로구"
+  ],
+  "seouljung": [
+    "서울특별시",
+    "중구"
+  ],
+  "seouljung-gu": [
+    "서울특별시",
+    "중구"
+  ],
+  "seouljunggu": [
+    "서울특별시",
+    "중구"
+  ],
+  "seouljungnang": [
+    "서울특별시",
+    "중랑구"
+  ],
+  "seouljungnang-gu": [
+    "서울특별시",
+    "중랑구"
+  ],
+  "seouljungnanggu": [
+    "서울특별시",
+    "중랑구"
+  ],
+  "seoulmapo": [
+    "서울특별시",
+    "마포구"
+  ],
+  "seoulmapo-gu": [
+    "서울특별시",
+    "마포구"
+  ],
+  "seoulmapogu": [
+    "서울특별시",
+    "마포구"
+  ],
+  "seoulnowon": [
+    "서울특별시",
+    "노원구"
+  ],
+  "seoulnowon-gu": [
+    "서울특별시",
+    "노원구"
+  ],
+  "seoulnowongu": [
+    "서울특별시",
+    "노원구"
+  ],
+  "seoulseocho": [
+    "서울특별시",
+    "서초구"
+  ],
+  "seoulseocho-gu": [
+    "서울특별시",
+    "서초구"
+  ],
+  "seoulseochogu": [
+    "서울특별시",
+    "서초구"
+  ],
+  "seoulseodaemun": [
+    "서울특별시",
+    "서대문구"
+  ],
+  "seoulseodaemun-gu": [
+    "서울특별시",
+    "서대문구"
+  ],
+  "seoulseodaemungu": [
+    "서울특별시",
+    "서대문구"
+  ],
+  "seoulseongbuk": [
+    "서울특별시",
+    "성북구"
+  ],
+  "seoulseongbuk-gu": [
+    "서울특별시",
+    "성북구"
+  ],
+  "seoulseongbukgu": [
+    "서울특별시",
+    "성북구"
+  ],
+  "seoulseongdong": [
+    "서울특별시",
+    "성동구"
+  ],
+  "seoulseongdong-gu": [
+    "서울특별시",
+    "성동구"
+  ],
+  "seoulseongdonggu": [
+    "서울특별시",
+    "성동구"
+  ],
+  "seoulsongpa": [
+    "서울특별시",
+    "송파구"
+  ],
+  "seoulsongpa-gu": [
+    "서울특별시",
+    "송파구"
+  ],
+  "seoulsongpagu": [
+    "서울특별시",
+    "송파구"
+  ],
+  "seoulyangcheon": [
+    "서울특별시",
+    "양천구"
+  ],
+  "seoulyangcheon-gu": [
+    "서울특별시",
+    "양천구"
+  ],
+  "seoulyangcheongu": [
+    "서울특별시",
+    "양천구"
+  ],
+  "seoulyeongdeungpo": [
+    "서울특별시",
+    "영등포구"
+  ],
+  "seoulyeongdeungpo-gu": [
+    "서울특별시",
+    "영등포구"
+  ],
+  "seoulyeongdeungpogu": [
+    "서울특별시",
+    "영등포구"
+  ],
+  "seoulyongsan": [
+    "서울특별시",
+    "용산구"
+  ],
+  "seoulyongsan-gu": [
+    "서울특별시",
+    "용산구"
+  ],
+  "seoulyongsangu": [
+    "서울특별시",
+    "용산구"
+  ],
+  "siheung": [
+    "경기도",
+    "시흥시"
+  ],
+  "siheung-si": [
+    "경기도",
+    "시흥시"
+  ],
+  "siheungsi": [
+    "경기도",
+    "시흥시"
+  ],
+  "sinan": [
+    "전남광주통합특별시",
+    "신안군"
+  ],
+  "sinan-gun": [
+    "전남광주통합특별시",
+    "신안군"
+  ],
+  "sinangun": [
+    "전남광주통합특별시",
+    "신안군"
+  ],
+  "songpa": [
+    "서울특별시",
+    "송파구"
+  ],
+  "songpa-gu": [
+    "서울특별시",
+    "송파구"
+  ],
+  "songpagu": [
+    "서울특별시",
+    "송파구"
+  ],
+  "sunchang": [
+    "전북특별자치도",
+    "순창군"
+  ],
+  "sunchang-gun": [
+    "전북특별자치도",
+    "순창군"
+  ],
+  "sunchanggun": [
+    "전북특별자치도",
+    "순창군"
+  ],
+  "suncheon": [
+    "전남광주통합특별시",
+    "순천시"
+  ],
+  "suncheon-si": [
+    "전남광주통합특별시",
+    "순천시"
+  ],
+  "suncheonsi": [
+    "전남광주통합특별시",
+    "순천시"
+  ],
+  "suseong": [
+    "대구광역시",
+    "수성구"
+  ],
+  "suseong-gu": [
+    "대구광역시",
+    "수성구"
+  ],
+  "suseonggu": [
+    "대구광역시",
+    "수성구"
+  ],
+  "suwon": [
+    "경기도",
+    "수원시"
+  ],
+  "suwon-si": [
+    "경기도",
+    "수원시"
+  ],
+  "suwonsi": [
+    "경기도",
+    "수원시"
+  ],
+  "suyeong": [
+    "부산광역시",
+    "수영구"
+  ],
+  "suyeong-gu": [
+    "부산광역시",
+    "수영구"
+  ],
+  "suyeonggu": [
+    "부산광역시",
+    "수영구"
+  ],
+  "taean": [
+    "충청남도",
+    "태안군"
+  ],
+  "taean-gun": [
+    "충청남도",
+    "태안군"
+  ],
+  "taeangun": [
+    "충청남도",
+    "태안군"
+  ],
+  "taebaek": [
+    "강원특별자치도",
+    "태백시"
+  ],
+  "taebaek-si": [
+    "강원특별자치도",
+    "태백시"
+  ],
+  "taebaeksi": [
+    "강원특별자치도",
+    "태백시"
+  ],
+  "tongyeong": [
+    "경상남도",
+    "통영시"
+  ],
+  "tongyeong-si": [
+    "경상남도",
+    "통영시"
+  ],
+  "tongyeongsi": [
+    "경상남도",
+    "통영시"
+  ],
+  "uijeongbu": [
+    "경기도",
+    "의정부시"
+  ],
+  "uijeongbu-si": [
+    "경기도",
+    "의정부시"
+  ],
+  "uijeongbusi": [
+    "경기도",
+    "의정부시"
+  ],
+  "uiryeong": [
+    "경상남도",
+    "의령군"
+  ],
+  "uiryeong-gun": [
+    "경상남도",
+    "의령군"
+  ],
+  "uiryeonggun": [
+    "경상남도",
+    "의령군"
+  ],
+  "uiseong": [
+    "경상북도",
+    "의성군"
+  ],
+  "uiseong-gun": [
+    "경상북도",
+    "의성군"
+  ],
+  "uiseonggun": [
+    "경상북도",
+    "의성군"
+  ],
+  "uiwang": [
+    "경기도",
+    "의왕시"
+  ],
+  "uiwang-si": [
+    "경기도",
+    "의왕시"
+  ],
+  "uiwangsi": [
+    "경기도",
+    "의왕시"
+  ],
+  "uljin": [
+    "경상북도",
+    "울진군"
+  ],
+  "uljin-gun": [
+    "경상북도",
+    "울진군"
+  ],
+  "uljingun": [
+    "경상북도",
+    "울진군"
+  ],
+  "ulju": [
+    "울산광역시",
+    "울주군"
+  ],
+  "ulju-gun": [
+    "울산광역시",
+    "울주군"
+  ],
+  "uljugun": [
+    "울산광역시",
+    "울주군"
+  ],
+  "ulleung": [
+    "경상북도",
+    "울릉군"
+  ],
+  "ulleung-gun": [
+    "경상북도",
+    "울릉군"
+  ],
+  "ulleunggun": [
+    "경상북도",
+    "울릉군"
+  ],
+  "ulsanbuk": [
+    "울산광역시",
+    "북구"
+  ],
+  "ulsanbuk-gu": [
+    "울산광역시",
+    "북구"
+  ],
+  "ulsanbukgu": [
+    "울산광역시",
+    "북구"
+  ],
+  "ulsandong": [
+    "울산광역시",
+    "동구"
+  ],
+  "ulsandong-gu": [
+    "울산광역시",
+    "동구"
+  ],
+  "ulsandonggu": [
+    "울산광역시",
+    "동구"
+  ],
+  "ulsanjung": [
+    "울산광역시",
+    "중구"
+  ],
+  "ulsanjung-gu": [
+    "울산광역시",
+    "중구"
+  ],
+  "ulsanjunggu": [
+    "울산광역시",
+    "중구"
+  ],
+  "ulsannam": [
+    "울산광역시",
+    "남구"
+  ],
+  "ulsannam-gu": [
+    "울산광역시",
+    "남구"
+  ],
+  "ulsannamgu": [
+    "울산광역시",
+    "남구"
+  ],
+  "ulsanulju": [
+    "울산광역시",
+    "울주군"
+  ],
+  "ulsanulju-gun": [
+    "울산광역시",
+    "울주군"
+  ],
+  "ulsanuljugun": [
+    "울산광역시",
+    "울주군"
+  ],
+  "wando": [
+    "전남광주통합특별시",
+    "완도군"
+  ],
+  "wando-gun": [
+    "전남광주통합특별시",
+    "완도군"
+  ],
+  "wandogun": [
+    "전남광주통합특별시",
+    "완도군"
+  ],
+  "wanju": [
+    "전북특별자치도",
+    "완주군"
+  ],
+  "wanju-gun": [
+    "전북특별자치도",
+    "완주군"
+  ],
+  "wanjugun": [
+    "전북특별자치도",
+    "완주군"
+  ],
+  "wonju": [
+    "강원특별자치도",
+    "원주시"
+  ],
+  "wonju-si": [
+    "강원특별자치도",
+    "원주시"
+  ],
+  "wonjusi": [
+    "강원특별자치도",
+    "원주시"
+  ],
+  "yangcheon": [
+    "서울특별시",
+    "양천구"
+  ],
+  "yangcheon-gu": [
+    "서울특별시",
+    "양천구"
+  ],
+  "yangcheongu": [
+    "서울특별시",
+    "양천구"
+  ],
+  "yanggu": [
+    "강원특별자치도",
+    "양구군"
+  ],
+  "yanggu-gun": [
+    "강원특별자치도",
+    "양구군"
+  ],
+  "yanggugun": [
+    "강원특별자치도",
+    "양구군"
+  ],
+  "yangju": [
+    "경기도",
+    "양주시"
+  ],
+  "yangju-si": [
+    "경기도",
+    "양주시"
+  ],
+  "yangjusi": [
+    "경기도",
+    "양주시"
+  ],
+  "yangpyeong": [
+    "경기도",
+    "양평군"
+  ],
+  "yangpyeong-gun": [
+    "경기도",
+    "양평군"
+  ],
+  "yangpyeonggun": [
+    "경기도",
+    "양평군"
+  ],
+  "yangsan": [
+    "경상남도",
+    "양산시"
+  ],
+  "yangsan-si": [
+    "경상남도",
+    "양산시"
+  ],
+  "yangsansi": [
+    "경상남도",
+    "양산시"
+  ],
+  "yangyang": [
+    "강원특별자치도",
+    "양양군"
+  ],
+  "yangyang-gun": [
+    "강원특별자치도",
+    "양양군"
+  ],
+  "yangyanggun": [
+    "강원특별자치도",
+    "양양군"
+  ],
+  "yecheon": [
+    "경상북도",
+    "예천군"
+  ],
+  "yecheon-gun": [
+    "경상북도",
+    "예천군"
+  ],
+  "yecheongun": [
+    "경상북도",
+    "예천군"
+  ],
+  "yeoju": [
+    "경기도",
+    "여주시"
+  ],
+  "yeoju-si": [
+    "경기도",
+    "여주시"
+  ],
+  "yeojusi": [
+    "경기도",
+    "여주시"
+  ],
+  "yeoncheon": [
+    "경기도",
+    "연천군"
+  ],
+  "yeoncheon-gun": [
+    "경기도",
+    "연천군"
+  ],
+  "yeoncheongun": [
+    "경기도",
+    "연천군"
+  ],
+  "yeongam": [
+    "전남광주통합특별시",
+    "영암군"
+  ],
+  "yeongam-gun": [
+    "전남광주통합특별시",
+    "영암군"
+  ],
+  "yeongamgun": [
+    "전남광주통합특별시",
+    "영암군"
+  ],
+  "yeongcheon": [
+    "경상북도",
+    "영천시"
+  ],
+  "yeongcheon-si": [
+    "경상북도",
+    "영천시"
+  ],
+  "yeongcheonsi": [
+    "경상북도",
+    "영천시"
+  ],
+  "yeongdeok": [
+    "경상북도",
+    "영덕군"
+  ],
+  "yeongdeok-gun": [
+    "경상북도",
+    "영덕군"
+  ],
+  "yeongdeokgun": [
+    "경상북도",
+    "영덕군"
+  ],
+  "yeongdeungpo": [
+    "서울특별시",
+    "영등포구"
+  ],
+  "yeongdeungpo-gu": [
+    "서울특별시",
+    "영등포구"
+  ],
+  "yeongdeungpogu": [
+    "서울특별시",
+    "영등포구"
+  ],
+  "yeongdo": [
+    "부산광역시",
+    "영도구"
+  ],
+  "yeongdo-gu": [
+    "부산광역시",
+    "영도구"
+  ],
+  "yeongdogu": [
+    "부산광역시",
+    "영도구"
+  ],
+  "yeongdong": [
+    "충청북도",
+    "영동군"
+  ],
+  "yeongdong-gun": [
+    "충청북도",
+    "영동군"
+  ],
+  "yeongdonggun": [
+    "충청북도",
+    "영동군"
+  ],
+  "yeonggwang": [
+    "전남광주통합특별시",
+    "영광군"
+  ],
+  "yeonggwang-gun": [
+    "전남광주통합특별시",
+    "영광군"
+  ],
+  "yeonggwanggun": [
+    "전남광주통합특별시",
+    "영광군"
+  ],
+  "yeongjong": [
+    "인천광역시",
+    "영종구"
+  ],
+  "yeongjong-gu": [
+    "인천광역시",
+    "영종구"
+  ],
+  "yeongjonggu": [
+    "인천광역시",
+    "영종구"
+  ],
+  "yeongju": [
+    "경상북도",
+    "영주시"
+  ],
+  "yeongju-si": [
+    "경상북도",
+    "영주시"
+  ],
+  "yeongjusi": [
+    "경상북도",
+    "영주시"
+  ],
+  "yeongwol": [
+    "강원특별자치도",
+    "영월군"
+  ],
+  "yeongwol-gun": [
+    "강원특별자치도",
+    "영월군"
+  ],
+  "yeongwolgun": [
+    "강원특별자치도",
+    "영월군"
+  ],
+  "yeongyang": [
+    "경상북도",
+    "영양군"
+  ],
+  "yeongyang-gun": [
+    "경상북도",
+    "영양군"
+  ],
+  "yeongyanggun": [
+    "경상북도",
+    "영양군"
+  ],
+  "yeonje": [
+    "부산광역시",
+    "연제구"
+  ],
+  "yeonje-gu": [
+    "부산광역시",
+    "연제구"
+  ],
+  "yeonjegu": [
+    "부산광역시",
+    "연제구"
+  ],
+  "yeonsu": [
+    "인천광역시",
+    "연수구"
+  ],
+  "yeonsu-gu": [
+    "인천광역시",
+    "연수구"
+  ],
+  "yeonsugu": [
+    "인천광역시",
+    "연수구"
+  ],
+  "yeosu": [
+    "전남광주통합특별시",
+    "여수시"
+  ],
+  "yeosu-si": [
+    "전남광주통합특별시",
+    "여수시"
+  ],
+  "yeosusi": [
+    "전남광주통합특별시",
+    "여수시"
+  ],
+  "yongin": [
+    "경기도",
+    "용인시"
+  ],
+  "yongin-si": [
+    "경기도",
+    "용인시"
+  ],
+  "yonginsi": [
+    "경기도",
+    "용인시"
+  ],
+  "yongsan": [
+    "서울특별시",
+    "용산구"
+  ],
+  "yongsan-gu": [
+    "서울특별시",
+    "용산구"
+  ],
+  "yongsangu": [
+    "서울특별시",
+    "용산구"
+  ],
+  "yuseong": [
+    "대전광역시",
+    "유성구"
+  ],
+  "yuseong-gu": [
+    "대전광역시",
+    "유성구"
+  ],
+  "yuseonggu": [
+    "대전광역시",
+    "유성구"
+  ]
+}

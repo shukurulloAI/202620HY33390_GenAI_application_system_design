@@ -1,0 +1,31 @@
+{
+  "id": "E5",
+  "question": "Does reranking help (for dense and for hybrid retrieval), and what gate threshold?",
+  "stage": "retrieval",
+  "base": "default",
+  "fixed": {},
+  "variants": {
+    "rerank-off": {
+      "retrieval": "hybrid",
+      "rerank": false
+    },
+    "rerank-on": {
+      "retrieval": "hybrid",
+      "rerank": true
+    },
+    "dense-rerank-off": {
+      "retrieval": "dense",
+      "rerank": false
+    },
+    "dense-rerank-on": {
+      "retrieval": "dense",
+      "rerank": true
+    }
+  },
+  "metrics": [
+    "MRR",
+    "nDCG@5",
+    "gate TP/FP/FN/TN per tau"
+  ],
+  "notes": "2x2: retrieval (hybrid, dense) x rerank. rerank-off/rerank-on keep their names (hybrid) so older commands still work. The tau sweep needs no re-run: python -m experiments.tau_sweep experiments/results/E5/rerank-on.jsonl --cases <dev cases>. Choose tau on dev only (PLAN.md §4.6 objective), then freeze it in rag/config.py."
+}

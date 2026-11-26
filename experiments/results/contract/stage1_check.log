@@ -1,0 +1,3 @@
+python -m experiments.check_contract (49 developer probes, live, 2026-11-08)
+49 answers, statuses {'ANSWER': 33, 'INSUFFICIENT_CONTEXT': 8, 'OUT_OF_SCOPE': 2, 'CLARIFY': 6}, 0 break the contract
+exit 0

@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.venv-judge/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+.ruff_cache/
+
+# macOS and editors
+.DS_Store
+.vscode/
+
+# Generated state (rebuild with the scripts; never commit)
+qdrant_data/
+traces/
+.cache/
+
+# Secrets
+.env
+.streamlit/secrets.toml
+
+# Rebuilt by python -m preprocess.build_all (9 MB, only for E4)
+data/processed/schedule_chunks.jsonl
+
+# Local scraping files (new layout of the old EDA and data folders)
+/notebooks/schedule_eda/waste_disposal_scrape.py
+/data/waste_disposal.db
+/data/image/
+.coverage
+coverage.xml
+htmlcov/

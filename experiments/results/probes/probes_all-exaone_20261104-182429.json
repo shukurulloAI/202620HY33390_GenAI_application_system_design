@@ -1,0 +1,1427 @@
+{
+  "label": "all-exaone",
+  "config": {
+    "embedding": "bge-m3",
+    "retrieval": "hybrid",
+    "bm25_tokenizer": "kiwi",
+    "query_mode": "both",
+    "rerank": true,
+    "rerank_query": "max",
+    "k_retrieve": 20,
+    "k_final": 5,
+    "rrf_k": 60,
+    "router": true,
+    "gate_tau": 0.045,
+    "llm_model": "exaone3.5:7.8b",
+    "router_model": null,
+    "prompt_version": "v2",
+    "conflict_policy": "prefer_2026",
+    "validation": "enforce",
+    "temperature": 0.0,
+    "seed": 7
+  },
+  "settings": {
+    "pipeline_version": "v2",
+    "config": {
+      "embedding": "bge-m3",
+      "retrieval": "hybrid",
+      "bm25_tokenizer": "kiwi",
+      "query_mode": "both",
+      "rerank": true,
+      "rerank_query": "max",
+      "k_retrieve": 20,
+      "k_final": 5,
+      "rrf_k": 60,
+      "router": true,
+      "gate_tau": 0.045,
+      "llm_model": "exaone3.5:7.8b",
+      "router_model": null,
+      "prompt_version": "v2",
+      "conflict_policy": "prefer_2026",
+      "validation": "enforce",
+      "temperature": 0.0,
+      "seed": 7
+    },
+    "retriever": "dense:bge-m3@5617a9f6 | bm25:kiwi | rerank:bge-reranker-v2-m3@953dc6f6",
+    "collection": "items_bge-m3_5617a9f6_dac8d09c",
+    "router": "router_v1:exaone3.5:7.8b",
+    "llm": "exaone3.5:7.8b",
+    "schedule_source": "Data/korean_waste_policies.csv"
+  },
+  "retrieval_only": false,
+  "total": 22,
+  "hit_at_k_final": 12,
+  "gold_probes": 13,
+  "mrr": 0.723,
+  "median_total_s": 23.477,
+  "passed": 17,
+  "rows": [
+    {
+      "probe_id": "p01",
+      "question": "Where do I throw away a pizza box?",
+      "intent": "item",
+      "rewrite": "피자 박스 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.997,
+      "selected": [
+        "item2018_0278",
+        "item2018_0052",
+        "item2018_0238",
+        "rule2026_001",
+        "item2018_0207"
+      ],
+      "timings": {
+        "route_s": 4.156,
+        "retrieve_s": 0.42,
+        "rerank_s": 3.429,
+        "schedule_s": 0.0,
+        "generate_s": 12.691,
+        "total_s": 20.701
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "ANSWER",
+      "bin": "종이",
+      "answer": "For a pizza box, if the inner part is oil-stained, dispose of it in a general waste bag (종량제봉투) [1]. Otherwise, follow general paper recycling guidelines unless specified otherwise by local regulations [3]. Note that specific rules regarding paper recycling might have changed by 2026 [4].",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.997 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.997,
+        "tau": 0.045,
+        "item_match": true,
+        "source_years": [
+          2018,
+          2026
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "종이",
+          "bin": "종이",
+          "bin_known": true,
+          "bin_supported": true,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p02",
+      "question": "Where do I throw chicken bones?",
+      "intent": "item",
+      "rewrite": "닭고기 뼈 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 2,
+      "has_gold": true,
+      "top_rerank": 0.8011,
+      "selected": [
+        "item2018_0109",
+        "guide2018_p17",
+        "item2018_0172",
+        "guide2018_p18",
+        "item2018_0003"
+      ],
+      "timings": {
+        "route_s": 6.832,
+        "retrieve_s": 0.476,
+        "rerank_s": 3.536,
+        "schedule_s": 0.0,
+        "generate_s": 13.607,
+        "total_s": 24.456
+      },
+      "status_ok": true,
+      "expect_ok": false,
+      "forbidden_found": [],
+      "pass": false,
+      "status": "ANSWER",
+      "bin": "음식물",
+      "answer": "Chicken bones (닭 등의 뼈다귀) should be disposed of in the 음식물 (food waste) bin [1]. Ensure they are dry by squeezing out excess moisture and consider chopping larger items like vegetables or fruits into smaller pieces before disposal [2].",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.801 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.8011,
+        "tau": 0.045,
+        "item_match": false,
+        "source_years": [
+          2018
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "음식물",
+          "bin": "음식물",
+          "bin_known": true,
+          "bin_supported": true,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p03",
+      "question": "닭뼈는 음식물쓰레기인가요?",
+      "intent": "item",
+      "rewrite": "닭뼈 음식물쓰레기 여부",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.966,
+      "selected": [
+        "guide2018_p17",
+        "guide2018_p18",
+        "item2018_0109",
+        "item2018_0106",
+        "item2018_0076"
+      ],
+      "timings": {
+        "route_s": 6.973,
+        "retrieve_s": 0.502,
+        "rerank_s": 2.781,
+        "schedule_s": 0.0,
+        "generate_s": 14.976,
+        "total_s": 25.236
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "ANSWER",
+      "bin": "음식물",
+      "answer": "닭뼈는 음식물쓰레기로 분류되지 않습니다 (성상기준 품 목, 육 류 항목 참조). [2] 지자체별로 차이가 있을 수 있으나, 일반적으로 닭뼈와 같은 뼈다귀는 음식물쓰레기 외의 폐기물로 분류됩니다. 따라서 닭뼈는 음식물쓰레기 봉투 대신 일반 쓰레기 봉투 (종량제봉투)에 배출해야 합니다 [3].",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.966 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.966,
+        "tau": 0.045,
+        "item_match": false,
+        "source_years": [
+          2018
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "음식물",
+          "bin": "음식물",
+          "bin_known": true,
+          "bin_supported": true,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p04",
+      "question": "Tovuq suyaklarini qayerga tashlayman?",
+      "intent": "item",
+      "rewrite": "유리병 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 16,
+      "has_gold": true,
+      "top_rerank": 0.9968,
+      "selected": [
+        "faq2018_013",
+        "rule2026_007",
+        "faq2018_014",
+        "faq2018_015",
+        "faq2018_012"
+      ],
+      "timings": {
+        "route_s": 7.033,
+        "retrieve_s": 0.094,
+        "rerank_s": 3.322,
+        "schedule_s": 0.0,
+        "generate_s": 15.716,
+        "total_s": 26.169
+      },
+      "status_ok": true,
+      "expect_ok": false,
+      "forbidden_found": [],
+      "pass": false,
+      "status": "ANSWER",
+      "bin": "유리병",
+      "answer": "Tovuq suyaklarını (유리병) 비우고 물로 깨끗이 헹구어 이물질을 제거한 후, 깨지지 않도록 조심스럽게 일반 유리병 수거함에 배출하세요 [2]. 내열유리 제품은 일반 유리와 함께 배출하면 안 되며, 특수 수거함을 사용해야 합니다 [5]. 만약 보증금 대상 유리병이라면 소매점에 반납하거나 무인회수기를 이용하세요 [3].",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.997 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.9968,
+        "tau": 0.045,
+        "item_match": true,
+        "source_years": [
+          2018,
+          2026
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "유리병",
+          "bin": "유리병",
+          "bin_known": true,
+          "bin_supported": true,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p05",
+      "question": "Can I put egg shells in food waste?",
+      "intent": "item",
+      "rewrite": "계란 껍질 음식물쓰레기 배출 가능 여부",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.9759,
+      "selected": [
+        "item2018_0010",
+        "item2018_0165",
+        "item2018_0073",
+        "guide2018_p18",
+        "guide2018_p20"
+      ],
+      "timings": {
+        "route_s": 6.804,
+        "retrieve_s": 0.09,
+        "rerank_s": 3.311,
+        "schedule_s": 0.0,
+        "generate_s": 12.594,
+        "total_s": 22.802
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "ANSWER",
+      "bin": "음식물",
+      "answer": "According to the guidelines, egg shells (알껍질) should not be placed in food waste (음식물류폐기물) as they are listed under materials not suitable for food waste disposal [4]. Instead, dispose of them in a general waste bag (종량제봉투) [1].",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.976 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.9759,
+        "tau": 0.045,
+        "item_match": true,
+        "source_years": [
+          2018
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "음식물",
+          "bin": "음식물",
+          "bin_known": true,
+          "bin_supported": true,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p06",
+      "question": "How do I throw away used batteries?",
+      "intent": "item",
+      "rewrite": "사용된 배터리 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 2,
+      "has_gold": true,
+      "top_rerank": 0.927,
+      "selected": [
+        "guide2018_p12",
+        "item2018_0207",
+        "rule2026_009",
+        "item2018_0234",
+        "item2018_0237"
+      ],
+      "timings": {
+        "route_s": 6.789,
+        "retrieve_s": 0.103,
+        "rerank_s": 3.39,
+        "schedule_s": 0.0,
+        "generate_s": 15.124,
+        "total_s": 25.41
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "ANSWER",
+      "bin": "전용함",
+      "answer": "Used batteries should be separated from other waste and placed in a dedicated collection box (전용함) [3][5]. If such a box is unavailable, ensure they are safely sealed to prevent leakage and then disposed of in a general waste bag (종량제봉투) following local guidelines [4].",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.927 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.927,
+        "tau": 0.045,
+        "item_match": false,
+        "source_years": [
+          2018,
+          2026
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "전용함",
+          "bin": "전용함",
+          "bin_known": true,
+          "bin_supported": true,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p07",
+      "question": "How should I dispose of an old mattress?",
+      "intent": "item",
+      "rewrite": "오래된 매트리스 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.9255,
+      "selected": [
+        "item2018_0055",
+        "item2018_0240",
+        "item2018_0244",
+        "item2018_0183",
+        "item2018_0241"
+      ],
+      "timings": {
+        "route_s": 7.335,
+        "retrieve_s": 0.442,
+        "rerank_s": 3.576,
+        "schedule_s": 0.0,
+        "generate_s": 12.081,
+        "total_s": 23.437
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "ANSWER",
+      "bin": "대형폐기물",
+      "answer": "Dispose of the old mattress as 대형폐기물 (large/bulky waste) [5]. If it cannot be accommodated in a 일반 쓰레기 봉투 (일반 폐기물 봉투), follow your local municipality's guidelines for scheduling a pickup or dropping off at designated large waste collection points. [1]",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.925 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.9255,
+        "tau": 0.045,
+        "item_match": false,
+        "source_years": [
+          2018
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "대형폐기물",
+          "bin": "대형폐기물",
+          "bin_known": true,
+          "bin_supported": true,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p08",
+      "question": "How do I recycle a clear PET water bottle?",
+      "intent": "item",
+      "rewrite": "투명 PET 생수병 재활용 방법",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.9144,
+      "selected": [
+        "rule2026_010",
+        "rule2026_025",
+        "note2026_02",
+        "rule2026_023",
+        "rule2026_011"
+      ],
+      "timings": {
+        "route_s": 7.008,
+        "retrieve_s": 0.107,
+        "rerank_s": 3.369,
+        "schedule_s": 0.0,
+        "generate_s": 17.638,
+        "total_s": 28.125
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "ANSWER",
+      "bin": "플라스틱",
+      "answer": "To recycle a clear PET water bottle (무색 폴리 에틸렌테레프탈레이트(PET)병), empty it completely [1], remove any labels (부착상표) [1], and if it contained sugary or organic drinks, rinse it with water [1]. Then, place it in the designated plastic recycling bin (플라스틱) [1].",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.914 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.9144,
+        "tau": 0.045,
+        "item_match": false,
+        "source_years": [
+          2026
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "플라스틱",
+          "bin": "플라스틱",
+          "bin_known": true,
+          "bin_supported": true,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p09",
+      "question": "Where do I throw away expired medicine?",
+      "intent": "item",
+      "rewrite": "유통기한 지난 약 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.8616,
+      "selected": [
+        "item2018_0155",
+        "faq2018_036",
+        "item2018_0036",
+        "guide2018_p13",
+        "rule2026_035"
+      ],
+      "timings": {
+        "route_s": 6.975,
+        "retrieve_s": 0.101,
+        "rerank_s": 3.322,
+        "schedule_s": 0.0,
+        "generate_s": 13.116,
+        "total_s": 23.517
+      },
+      "status_ok": false,
+      "expect_ok": false,
+      "forbidden_found": [],
+      "pass": false,
+      "status": "INSUFFICIENT_CONTEXT",
+      "bin": "",
+      "answer": "I could not find this in the official sources I use, so I will not guess.",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.862 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.8616,
+        "tau": 0.045,
+        "item_match": false,
+        "source_years": [
+          2018,
+          2026
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "전용함",
+          "bin": "전용함",
+          "bin_known": true,
+          "bin_supported": false,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": true,
+          "reasons": [
+            "bin '전용함' is not stated in the cited evidence"
+          ]
+        }
+      },
+      "handoff": {
+        "office": null,
+        "phone": null,
+        "contact": "Ask your district office (구청) or community service centre (주민센터).",
+        "korean_sentence": "안녕하세요. 유통기한 지난 약을 어떻게 버려야 하는지 알고 싶습니다.",
+        "checked": [
+          "national sorting guides (2018 guideline, 2026 rules)"
+        ]
+      },
+      "clarify": null
+    },
+    {
+      "probe_id": "p10",
+      "question": "How do I scrap my car?",
+      "intent": "out_of_scope",
+      "rewrite": "",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 6.658,
+        "schedule_s": 0.0,
+        "total_s": 6.658
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "OUT_OF_SCOPE",
+      "bin": "",
+      "answer": "I can only help with household waste in Korea: which bin an item goes in, and when and where to put waste out in your district.",
+      "gate": {
+        "status": "OUT_OF_SCOPE",
+        "item": "skip",
+        "schedule": "skip",
+        "reasons": [
+          "router: question is outside household waste in Korea"
+        ],
+        "top_rerank_score": null,
+        "tau": null,
+        "item_match": null,
+        "source_years": [],
+        "clarify": null
+      },
+      "checks": {},
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p11",
+      "question": "When can I put out food waste?",
+      "intent": "schedule",
+      "rewrite": "음식물쓰레기 배출 시간",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 2.805,
+        "schedule_s": 0.005,
+        "generate_s": 14.27,
+        "total_s": 17.082
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "ANSWER",
+      "bin": "",
+      "answer": "In 사근동, 행당1동, 행당2동, 응봉동, 금호1가동, 금호2가동, 금호4가동, 옥수2동, 성수1가1동, 성수1가2동, 성수2가3동 (zone 2권역), you can put out food waste on Mon, Wed, and Fri between 20:00 and 24:00 [1]. For general households, place food waste in a general waste bag (종량제봉투) after putting it in a designated container if available [1]. For apartment complexes, dispose directly into the food waste containers within the complex [1].",
+      "gate": {
+        "status": "ANSWER",
+        "item": "skip",
+        "schedule": "answer",
+        "reasons": [],
+        "top_rerank_score": null,
+        "tau": 0.045,
+        "item_match": null,
+        "source_years": [],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "",
+          "bin": "",
+          "bin_known": true,
+          "bin_supported": null,
+          "cited": true,
+          "schedule_days_ok": true,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p12",
+      "question": "What day is recycling collected?",
+      "intent": "schedule",
+      "rewrite": "재활용 수거 요일",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 6.491,
+        "schedule_s": 0.008,
+        "total_s": 6.499
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "INSUFFICIENT_CONTEXT",
+      "bin": "",
+      "answer": "I could not find this in the official sources I use, so I will not guess.",
+      "gate": {
+        "status": "INSUFFICIENT_CONTEXT",
+        "item": "skip",
+        "schedule": "abstain",
+        "reasons": [
+          "schedule tool: no schedule data for district '강동구'"
+        ],
+        "top_rerank_score": null,
+        "tau": 0.045,
+        "item_match": null,
+        "source_years": [],
+        "clarify": null
+      },
+      "checks": {},
+      "handoff": {
+        "office": null,
+        "phone": null,
+        "contact": "Ask your district office (구청) or community service centre (주민센터).",
+        "korean_sentence": "안녕하세요. 재활용품 배출 요일과 시간, 장소를 알고 싶습니다. 저는 강동구에 살고 있습니다.",
+        "checked": [
+          "district collection data for 강동구"
+        ]
+      },
+      "clarify": null
+    },
+    {
+      "probe_id": "p13",
+      "question": "How do I throw away a styrofoam box from a delivery?",
+      "intent": "item",
+      "rewrite": "배달 스티로폼 박스 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 2,
+      "has_gold": true,
+      "top_rerank": 0.9736,
+      "selected": [
+        "rule2026_028",
+        "rule2026_014",
+        "faq2018_031",
+        "guide2018_p11",
+        "guide2018_p14"
+      ],
+      "timings": {
+        "route_s": 3.391,
+        "retrieve_s": 0.087,
+        "rerank_s": 3.316,
+        "schedule_s": 0.0,
+        "generate_s": 19.798,
+        "total_s": 26.596
+      },
+      "status_ok": false,
+      "expect_ok": false,
+      "forbidden_found": [],
+      "pass": false,
+      "status": "INSUFFICIENT_CONTEXT",
+      "bin": "",
+      "answer": "I could not find this in the official sources I use, so I will not guess.",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.974 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.9736,
+        "tau": 0.045,
+        "item_match": false,
+        "source_years": [
+          2018,
+          2026
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "종이",
+          "bin": "종이",
+          "bin_known": true,
+          "bin_supported": false,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": true,
+          "reasons": [
+            "bin '종이' is not stated in the cited evidence"
+          ]
+        }
+      },
+      "handoff": {
+        "office": null,
+        "phone": null,
+        "contact": "Ask your district office (구청) or community service centre (주민센터).",
+        "korean_sentence": "안녕하세요. 스티로폼 박스를 어떻게 버려야 하는지 알고 싶습니다.",
+        "checked": [
+          "national sorting guides (2018 guideline, 2026 rules)"
+        ]
+      },
+      "clarify": null
+    },
+    {
+      "probe_id": "p14",
+      "question": "I live in Seongdong-gu Haengdang-dong. Can I put food waste out tonight?",
+      "intent": "schedule",
+      "rewrite": "음식물쓰레기 오늘 밤 배출 방법",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 6.768,
+        "schedule_s": 0.001,
+        "generate_s": 13.467,
+        "total_s": 20.238
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "ANSWER",
+      "bin": "",
+      "answer": "Yes, since you live in 행당1동 (Haengdang-dong), which falls under the 문전수거 (door-to-door collection) area, you can put out food waste tonight on Wed between 20:00 and 24:00 [1]. Place it in the appropriate container as per your housing type: a 음식물 종량제봉투 (food waste bag) if it's a general house, or the designated food waste container in your apartment complex if it's a 공동주택 (apartment complex).",
+      "gate": {
+        "status": "ANSWER",
+        "item": "skip",
+        "schedule": "answer",
+        "reasons": [],
+        "top_rerank_score": null,
+        "tau": 0.045,
+        "item_match": null,
+        "source_years": [],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "",
+          "bin": "",
+          "bin_known": true,
+          "bin_supported": null,
+          "cited": true,
+          "schedule_days_ok": true,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p15",
+      "question": "Is a pizza box not recyclable?",
+      "intent": "item",
+      "rewrite": "피자 박스 재활용 불가능 여부",
+      "rewrite_used": true,
+      "gold_rank": 1,
+      "has_gold": true,
+      "top_rerank": 0.6496,
+      "selected": [
+        "item2018_0278",
+        "faq2018_030",
+        "guide2018_p20",
+        "guide2018_p17",
+        "faq2018_033"
+      ],
+      "timings": {
+        "route_s": 6.828,
+        "retrieve_s": 0.1,
+        "rerank_s": 2.597,
+        "schedule_s": 0.0,
+        "generate_s": 15.021,
+        "total_s": 24.55
+      },
+      "status_ok": true,
+      "expect_ok": false,
+      "forbidden_found": [],
+      "pass": false,
+      "status": "ANSWER",
+      "bin": "종량제봉투",
+      "answer": "According to the guidelines, if the inside of the pizza box is contaminated with oil, it should be disposed of in a general waste bag (종량제봉투) [1]. For boxes without oil contamination, verify local recycling options as additional guidelines may apply.",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.650 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.6496,
+        "tau": 0.045,
+        "item_match": true,
+        "source_years": [
+          2018
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "종량제봉투",
+          "bin": "종량제봉투",
+          "bin_known": true,
+          "bin_supported": true,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p16",
+      "question": "鸡骨头应该扔在哪里？",
+      "intent": "item",
+      "rewrite": "닭고기 뼈 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 2,
+      "has_gold": true,
+      "top_rerank": 0.8011,
+      "selected": [
+        "item2018_0109",
+        "guide2018_p17",
+        "item2018_0172",
+        "guide2018_p18",
+        "item2018_0005"
+      ],
+      "timings": {
+        "route_s": 6.898,
+        "retrieve_s": 0.098,
+        "rerank_s": 3.313,
+        "schedule_s": 0.0,
+        "generate_s": 17.435,
+        "total_s": 27.747
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "ANSWER",
+      "bin": "음식물",
+      "answer": "鸡骨头 (생선뼈) 应该放在 음식물 (食物废弃物) 中, 但根据指南应当与其他食物分别处理, 确保去除其他不可分类物品后才放入 general waste bag (종량제봉투) [1][4]。如果直接分类不起,则在适当的 general waste bag (종량제봉투) 中处理 [1]。",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.801 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.8011,
+        "tau": 0.045,
+        "item_match": false,
+        "source_years": [
+          2018
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "음식물",
+          "bin": "음식물",
+          "bin_known": true,
+          "bin_supported": true,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p17",
+      "question": "How do I extend my visa?",
+      "intent": "out_of_scope",
+      "rewrite": "",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 6.327,
+        "schedule_s": 0.0,
+        "total_s": 6.327
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "OUT_OF_SCOPE",
+      "bin": "",
+      "answer": "I can only help with household waste in Korea: which bin an item goes in, and when and where to put waste out in your district.",
+      "gate": {
+        "status": "OUT_OF_SCOPE",
+        "item": "skip",
+        "schedule": "skip",
+        "reasons": [
+          "router: question is outside household waste in Korea"
+        ],
+        "top_rerank_score": null,
+        "tau": null,
+        "item_match": null,
+        "source_years": [],
+        "clarify": null
+      },
+      "checks": {},
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p18",
+      "question": "What day is recycling collected?",
+      "intent": "schedule",
+      "rewrite": "재활용 수거 요일",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 2.85,
+        "schedule_s": 0.0,
+        "total_s": 2.85
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "CLARIFY",
+      "bin": "",
+      "answer": "I need one more detail to answer.",
+      "gate": {
+        "status": "CLARIFY",
+        "item": "skip",
+        "schedule": "clarify",
+        "reasons": [
+          "schedule asked but no district given"
+        ],
+        "top_rerank_score": null,
+        "tau": 0.045,
+        "item_match": null,
+        "source_years": [],
+        "clarify": {
+          "question": "Which district (구) and neighbourhood (동) do you live in? Collection days depend on the area.",
+          "options": []
+        }
+      },
+      "checks": {},
+      "handoff": null,
+      "clarify": {
+        "question": "Which district (구) and neighbourhood (동) do you live in? Collection days depend on the area.",
+        "options": []
+      }
+    },
+    {
+      "probe_id": "p19",
+      "question": "중구에 사는데 음식물쓰레기 언제 버려요?",
+      "intent": "schedule",
+      "rewrite": "음식물쓰레기 중구 배출 요일 시간",
+      "rewrite_used": false,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": null,
+      "selected": [],
+      "timings": {
+        "route_s": 2.958,
+        "schedule_s": 0.001,
+        "total_s": 2.959
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "CLARIFY",
+      "bin": "",
+      "answer": "답변을 위해 정보가 하나 더 필요합니다.",
+      "gate": {
+        "status": "CLARIFY",
+        "item": "skip",
+        "schedule": "clarify",
+        "reasons": [
+          "schedule tool: '중구' exists in 5 provinces"
+        ],
+        "top_rerank_score": null,
+        "tau": 0.045,
+        "item_match": null,
+        "source_years": [],
+        "clarify": {
+          "question": "'중구' exists in 5 provinces. Which one do you mean?",
+          "options": [
+            "대구광역시 중구",
+            "대전광역시 중구",
+            "부산광역시 중구",
+            "서울특별시 중구",
+            "울산광역시 중구"
+          ]
+        }
+      },
+      "checks": {},
+      "handoff": null,
+      "clarify": {
+        "question": "'중구' exists in 5 provinces. Which one do you mean?",
+        "options": [
+          "대구광역시 중구",
+          "대전광역시 중구",
+          "부산광역시 중구",
+          "서울특별시 중구",
+          "울산광역시 중구"
+        ]
+      }
+    },
+    {
+      "probe_id": "p20",
+      "question": "Куда выбросить старые батарейки?",
+      "intent": "item",
+      "rewrite": "오래된 배터리 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": 3,
+      "has_gold": true,
+      "top_rerank": 0.8048,
+      "selected": [
+        "guide2018_p12",
+        "rule2026_009",
+        "item2018_0207",
+        "rule2026_016",
+        "item2018_0234"
+      ],
+      "timings": {
+        "route_s": 3.395,
+        "retrieve_s": 0.095,
+        "rerank_s": 3.296,
+        "schedule_s": 0.0,
+        "generate_s": 18.081,
+        "total_s": 24.871
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "ANSWER",
+      "bin": "전용함",
+      "answer": "Подавайте старые батарейки в специальный контейнер для батарейок (전용함) [4]. Если батарея не может быть отдельно выделена от продукта, выбросьте её в общее отходное контейнере (종량제봉투), обеспечив предусмотренные меры защиты, если это требуется [5].",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.805 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.8048,
+        "tau": 0.045,
+        "item_match": false,
+        "source_years": [
+          2018,
+          2026
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "전용함",
+          "bin": "전용함",
+          "bin_known": true,
+          "bin_supported": true,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": false,
+          "reasons": []
+        }
+      },
+      "handoff": null,
+      "clarify": null
+    },
+    {
+      "probe_id": "p21",
+      "question": "How do I dispose of an old bottle of nail polish?",
+      "intent": "item",
+      "rewrite": "오래된 네일폴리시 병 오래된 네일폴리시 분리배출 방법",
+      "rewrite_used": true,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": 0.0635,
+      "selected": [
+        "guide2018_p10",
+        "rule2026_010",
+        "rule2026_025",
+        "item2018_0052",
+        "rule2026_026"
+      ],
+      "timings": {
+        "route_s": 7.365,
+        "retrieve_s": 0.084,
+        "rerank_s": 3.376,
+        "schedule_s": 0.0,
+        "generate_s": 14.367,
+        "total_s": 25.195
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "INSUFFICIENT_CONTEXT",
+      "bin": "",
+      "answer": "I could not find this in the official sources I use, so I will not guess.",
+      "gate": {
+        "status": "ANSWER",
+        "item": "answer",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.064 >= tau 0.045"
+        ],
+        "top_rerank_score": 0.0635,
+        "tau": 0.045,
+        "item_match": false,
+        "source_years": [
+          2018,
+          2026
+        ],
+        "clarify": null
+      },
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false,
+        "validation": {
+          "mode": "enforce",
+          "bin_raw": "종량제봉투",
+          "bin": "종량제봉투",
+          "bin_known": true,
+          "bin_supported": false,
+          "cited": true,
+          "schedule_days_ok": null,
+          "downgraded": true,
+          "reasons": [
+            "bin '종량제봉투' is not stated in the cited evidence"
+          ]
+        }
+      },
+      "handoff": {
+        "office": null,
+        "phone": null,
+        "contact": "Ask your district office (구청) or community service centre (주민센터).",
+        "korean_sentence": "안녕하세요. 오래된 네일폴리시 병을 어떻게 버려야 하는지 알고 싶습니다.",
+        "checked": [
+          "national sorting guides (2018 guideline, 2026 rules)"
+        ]
+      },
+      "clarify": null
+    },
+    {
+      "probe_id": "p22",
+      "question": "What should I do with my dead hamster?",
+      "intent": "item",
+      "rewrite": "죽은 햄스터 처리 방법",
+      "rewrite_used": true,
+      "gold_rank": null,
+      "has_gold": false,
+      "top_rerank": 0.0088,
+      "selected": [
+        "item2018_0109",
+        "guide2018_p10",
+        "item2018_0031",
+        "item2018_0281",
+        "guide2018_p12"
+      ],
+      "timings": {
+        "route_s": 6.712,
+        "retrieve_s": 0.099,
+        "rerank_s": 3.319,
+        "schedule_s": 0.0,
+        "total_s": 10.131
+      },
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "status": "INSUFFICIENT_CONTEXT",
+      "bin": "",
+      "answer": "I could not find this in the official sources I use, so I will not guess.",
+      "gate": {
+        "status": "INSUFFICIENT_CONTEXT",
+        "item": "abstain",
+        "schedule": "skip",
+        "reasons": [
+          "top rerank score 0.009 < tau 0.045"
+        ],
+        "top_rerank_score": 0.0088,
+        "tau": 0.045,
+        "item_match": false,
+        "source_years": [],
+        "clarify": null
+      },
+      "checks": {},
+      "handoff": {
+        "office": null,
+        "phone": null,
+        "contact": "Ask your district office (구청) or community service centre (주민센터).",
+        "korean_sentence": "안녕하세요. 죽은 햄스터를 어떻게 버려야 하는지 알고 싶습니다.",
+        "checked": [
+          "national sorting guides (2018 guideline, 2026 rules)"
+        ]
+      },
+      "clarify": null
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+ "question": "Does the progress callback change any answer?",
+ "cases": "eval/cases/dev.jsonl",
+ "cases_sha256": "5a62a1c6b68418c405dde29f5b891915335c5f1dbb5102696712e44d92354da5",
+ "reference": "eval/reports/dev-v2.1/traces.jsonl",
+ "compared": [
+  "status",
+  "bin",
+  "bin_en",
+  "how_to_prepare",
+  "answer_text",
+  "citations"
+ ],
+ "n": 70,
+ "identical": 70,
+ "differ": [],
+ "stage_sequences": {
+  "route > retrieve > write": 34,
+  "route > schedule > write": 11,
+  "route > retrieve > schedule > write": 8,
+  "route": 7,
+  "route > schedule": 6,
+  "route > retrieve": 4
+ },
+ "llm_replayed": 125,
+ "git_commit": "3b8cba94bc62ff1c76f06c328b8b2d79198ff59a",
+ "git_dirty": false,
+ "time": "2026-11-11T19:03:35"
+}

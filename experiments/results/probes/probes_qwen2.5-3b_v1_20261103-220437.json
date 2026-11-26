@@ -1,0 +1,381 @@
+{
+  "model": "qwen2.5:3b",
+  "prompt": "v1",
+  "settings": {
+    "pipeline_version": "baseline-v1",
+    "retriever": "dense:bge-m3@5617a9f6",
+    "collection": "items_bge-m3_5617a9f6_dac8d09c",
+    "llm": "qwen2.5:3b",
+    "prompt_version": "v1",
+    "k_retrieve": 20,
+    "k_final": 5,
+    "temperature": 0.0,
+    "seed": 7,
+    "schedule_source": "Data/korean_waste_policies.csv"
+  },
+  "passed": 8,
+  "total": 12,
+  "rows": [
+    {
+      "probe_id": "p01",
+      "question": "Where do I throw away a pizza box?",
+      "status_ok": true,
+      "expect_ok": false,
+      "forbidden_found": [],
+      "pass": false,
+      "answer": "Throw the pizza box into a general waste bag (종량제봉투) after removing any oil or grease.",
+      "bin": "종량제봉투 (종량제봉투)",
+      "status": "ANSWER",
+      "evidence": [
+        "item2018_0278",
+        "item2018_0238",
+        "guide2018_p18",
+        "guide2018_p05",
+        "guide2018_p17"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.205,
+        "schedule_s": 0.0,
+        "generate_s": 5.02
+      }
+    },
+    {
+      "probe_id": "p02",
+      "question": "Where do I throw chicken bones?",
+      "status_ok": true,
+      "expect_ok": false,
+      "forbidden_found": [],
+      "pass": false,
+      "answer": "[2] You should put fish bones in the pay-as-you-throw bag.",
+      "bin": "",
+      "status": "ANSWER",
+      "evidence": [
+        "guide2018_p18",
+        "item2018_0109",
+        "guide2018_p17",
+        "rule2026_036",
+        "item2018_0238"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.073,
+        "schedule_s": 0.0,
+        "generate_s": 3.87
+      }
+    },
+    {
+      "probe_id": "p03",
+      "question": "닭뼈는 음식물쓰레기인가요?",
+      "status_ok": true,
+      "expect_ok": false,
+      "forbidden_found": [],
+      "pass": false,
+      "answer": "[3]에 따르면, 닭뼈는 [05. 음식물류폐기물] 분류의 '육류' 카테고리에 속합니다. 따라서 일반적으로 음식물쓰레기에 해당합니다.",
+      "bin": "",
+      "status": "ANSWER",
+      "evidence": [
+        "guide2018_p17",
+        "item2018_0109",
+        "guide2018_p18",
+        "item2018_0106",
+        "item2018_0238"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.073,
+        "schedule_s": 0.0,
+        "generate_s": 4.692
+      }
+    },
+    {
+      "probe_id": "p04",
+      "question": "Tovuq suyaklarini qayerga tashlayman?",
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "answer": "[1] [3] Suylarını maksimumda qatargan (물기를 꽉 짜) sonra, suyulardan kalmayak, tushimchilarga yordam etmek uchun, suyularini shaxsiy tovguq bagiga (종량제봉투) tashlaylik. [3] Suylarini qatargan (물기를 꽉 짜) sonni shaxsiy tovguq bagiga (종량제봉투) yozuvi uchun, suyularini shaxsiy tovguq bagiga (종량제봉투) tashlaylik.",
+      "bin": "",
+      "status": "ANSWER",
+      "evidence": [
+        "item2018_0139",
+        "item2018_0140",
+        "item2018_0018",
+        "guide2018_p17",
+        "item2018_0109"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.07,
+        "schedule_s": 0.0,
+        "generate_s": 5.975
+      }
+    },
+    {
+      "probe_id": "p05",
+      "question": "Can I put egg shells in food waste?",
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "answer": "[1] Eggshells are not allowed in food waste. They should be thrown away with other trash (general waste).",
+      "bin": "",
+      "status": "ANSWER",
+      "evidence": [
+        "guide2018_p18",
+        "guide2018_p17",
+        "item2018_0109",
+        "faq2018_032",
+        "item2018_0106"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.068,
+        "schedule_s": 0.0,
+        "generate_s": 3.94
+      }
+    },
+    {
+      "probe_id": "p06",
+      "question": "How do I throw away used batteries?",
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "answer": "[2] says to dispose of spent batteries in a dedicated collection box. [5] also mentions that spent batteries should be disposed of separately and not mixed with other waste.",
+      "bin": "",
+      "status": "ANSWER",
+      "evidence": [
+        "guide2018_p12",
+        "item2018_0237",
+        "guide2018_p10",
+        "item2018_0207",
+        "guide2018_p04"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.073,
+        "schedule_s": 0.0,
+        "generate_s": 4.889
+      }
+    },
+    {
+      "probe_id": "p07",
+      "question": "How should I dispose of an old mattress?",
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "answer": "[1] says that large items like mattresses should be disposed of as bulky waste. [1] citation.",
+      "bin": "대형 (large/bulky waste)",
+      "status": "ANSWER",
+      "evidence": [
+        "item2018_0055",
+        "item2018_0241",
+        "item2018_0240",
+        "item2018_0259",
+        "item2018_0248"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.264,
+        "schedule_s": 0.0,
+        "generate_s": 3.014
+      }
+    },
+    {
+      "probe_id": "p08",
+      "question": "How do I recycle a clear PET water bottle?",
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "answer": "[1] [2] [3] [4] Clear PET bottles should be emptied and cleaned. Remove any labels or other non-main-body materials before recycling. Place them in a separate bag from colored PET bottles.",
+      "bin": "",
+      "status": "ANSWER",
+      "evidence": [
+        "guide2018_p10",
+        "rule2026_025",
+        "rule2026_010",
+        "note2026_02",
+        "guide2018_p04"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.077,
+        "schedule_s": 0.0,
+        "generate_s": 5.953
+      }
+    },
+    {
+      "probe_id": "p09",
+      "question": "Where do I throw away expired medicine?",
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "answer": "[1] says that expired medicines should be thrown in the dedicated collection boxes at pharmacies or health centers. They will then be incinerated.",
+      "bin": "",
+      "status": "ANSWER",
+      "evidence": [
+        "faq2018_036",
+        "item2018_0155",
+        "guide2018_p17",
+        "faq2018_014",
+        "faq2018_015"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.098,
+        "schedule_s": 0.0,
+        "generate_s": 3.496
+      }
+    },
+    {
+      "probe_id": "p10",
+      "question": "How do I scrap my car?",
+      "status_ok": false,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": false,
+      "answer": "[1] says that old parts should be disposed of at a specialized facility. Consult with a used goods center or seller for proper disposal.",
+      "bin": "",
+      "status": "ANSWER",
+      "evidence": [
+        "item2018_0185",
+        "item2018_0225",
+        "item2018_0221",
+        "item2018_0161",
+        "item2018_0069"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.072,
+        "schedule_s": 0.0,
+        "generate_s": 2.747
+      }
+    },
+    {
+      "probe_id": "p11",
+      "question": "When can I put out food waste?",
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "answer": "[6] Food waste (음식물쓰레기): days Mon, Wed, Fri; time 20:00-24:00. Please put out your food waste on designated days and times.",
+      "bin": "",
+      "status": "ANSWER",
+      "evidence": [
+        "guide2018_p17",
+        "item2018_0106",
+        "guide2018_p18",
+        "item2018_0109",
+        "item2018_0076",
+        "202030300000400002"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.076,
+        "schedule_s": 0.001,
+        "generate_s": 4.826
+      }
+    },
+    {
+      "probe_id": "p12",
+      "question": "What day is recycling collected?",
+      "status_ok": true,
+      "expect_ok": true,
+      "forbidden_found": [],
+      "pass": true,
+      "answer": "The collection schedule for recycling is not specified in the provided evidence. Please check with your local government for specific days and times.",
+      "bin": "",
+      "status": "INSUFFICIENT_CONTEXT",
+      "evidence": [
+        "guide2018_p04",
+        "guide2018_p17",
+        "item2018_0133",
+        "rule2026_036",
+        "guide2018_p07"
+      ],
+      "checks": {
+        "json_valid": true,
+        "status_valid": true,
+        "invalid_citations": [],
+        "uncited_answer": false,
+        "output_truncated": false
+      },
+      "timings": {
+        "retrieve_s": 0.073,
+        "schedule_s": 0.007,
+        "generate_s": 4.859
+      }
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+# The website with Docker Compose (docs/WEBSITE.md "Running in Docker").
+#
+#   docker compose --profile offline up     # recorded answers, no models: http://localhost:8501
+#   docker compose --profile live up        # the full system, Ollama in a container
+#
+# Live, first time: build the index on the host (python -m ingest.build_index, which fills
+# qdrant_data/), then pull the generator into the Ollama volume:
+#   docker compose --profile live run --rm ollama-pull
+# The embedding model and reranker (4.6 GB) download into ./.cache/huggingface on the
+# first question. On a Mac, Ollama in a container has no GPU: run Ollama on the Mac instead
+# and start only the app with RAG_OLLAMA_URL=http://host.docker.internal:11434.
+# One local LLM answers one question at a time, so the page queues questions.
+
+services:
+  demo:
+    profiles: [offline]
+    build: {context: ., target: offline}
+    ports: ["8501:8501"]
+    volumes: [./traces:/app/traces]
+
+  ollama:
+    profiles: [live]
+    image: ollama/ollama:0.12.6
+    volumes: [ollama:/root/.ollama]
+    environment:
+      OLLAMA_KEEP_ALIVE: 30m
+
+  ollama-pull:
+    profiles: [live]
+    image: ollama/ollama:0.12.6
+    depends_on: [ollama]
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["ollama", "pull", "qwen2.5:7b"]
+
+  app:
+    profiles: [live]
+    build: {context: ., target: live}
+    depends_on: [ollama]
+    environment:
+      RAG_OLLAMA_URL: ${RAG_OLLAMA_URL:-http://ollama:11434}
+    ports: ["8501:8501"]
+    volumes:
+      - ./qdrant_data:/app/qdrant_data
+      - ./.cache:/app/.cache
+      - ./traces:/app/traces
+
+volumes:
+  ollama: {}

@@ -1,0 +1,15 @@
+{
+  "id": "E3",
+  "question": "Lexical vs dense vs hybrid?",
+  "stage": "retrieval",
+  "base": "default",
+  "fixed": {"rerank": false},
+  "variants": {
+    "dense": {"retrieval": "dense"},
+    "bm25-kiwi": {"retrieval": "bm25", "bm25_tokenizer": "kiwi"},
+    "bm25-bigram": {"retrieval": "bm25", "bm25_tokenizer": "bigram"},
+    "hybrid-rrf": {"retrieval": "hybrid", "bm25_tokenizer": "kiwi"}
+  },
+  "metrics": ["Recall@5", "MRR", "nDCG@5"],
+  "notes": "Embedding = bge-m3. Queries = original + Korean rewrite (query_mode both) for all variants."
+}

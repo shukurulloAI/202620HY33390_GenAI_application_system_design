@@ -1,0 +1,259 @@
+{
+  "id": "E3",
+  "question": "Lexical vs dense vs hybrid?",
+  "stage": "retrieval",
+  "spec_file": "experiments/configs/E3_lexical_dense_hybrid.json",
+  "cases": "/Users/shukurullomeliboyev2004/Desktop/HANYANG/RAG_hanyang/202620HY33390_GenAI_application_system_design/experiments/probes.jsonl",
+  "cases_sha256": "5a79fc9db177cf79175d1a34f59df6beb5393c96c2e70835b41437f0340df5f7",
+  "n_cases": 22,
+  "git_commit": "fa50916adbb445a98080e1b8c073e48f2d3462fa",
+  "git_dirty": false,
+  "started": "2026-11-06T00:45:23",
+  "variants": {
+    "dense": {
+      "config": {
+        "embedding": "bge-m3",
+        "retrieval": "dense",
+        "bm25_tokenizer": "kiwi",
+        "query_mode": "both",
+        "rerank": false,
+        "rerank_query": "max",
+        "k_retrieve": 20,
+        "k_final": 5,
+        "rrf_k": 60,
+        "router": true,
+        "gate_tau": 0.15,
+        "llm_model": "qwen2.5:7b",
+        "router_model": null,
+        "prompt_version": "v2",
+        "conflict_policy": "prefer_2026",
+        "validation": "enforce",
+        "temperature": 0.0,
+        "seed": 7
+      },
+      "settings": {
+        "pipeline_version": "v2",
+        "config": {
+          "embedding": "bge-m3",
+          "retrieval": "dense",
+          "bm25_tokenizer": "kiwi",
+          "query_mode": "both",
+          "rerank": false,
+          "rerank_query": "max",
+          "k_retrieve": 20,
+          "k_final": 5,
+          "rrf_k": 60,
+          "router": true,
+          "gate_tau": 0.15,
+          "llm_model": "qwen2.5:7b",
+          "router_model": null,
+          "prompt_version": "v2",
+          "conflict_policy": "prefer_2026",
+          "validation": "enforce",
+          "temperature": 0.0,
+          "seed": 7
+        },
+        "retriever": "dense:bge-m3@5617a9f6",
+        "collection": "items_bge-m3_5617a9f6_c7d19676",
+        "router": "router_v1:qwen2.5:7b",
+        "llm": "qwen2.5:7b",
+        "schedule_source": "preprocess/schedule.csv"
+      },
+      "traces": "experiments/results/E3/dense.jsonl",
+      "quick_summary": {
+        "cases": 22,
+        "gold_cases": 13,
+        "recall@5": 1.0,
+        "mrr": 0.885,
+        "statuses": {
+          "retrieval-only": 22
+        },
+        "mean_total_s": 3.41
+      }
+    },
+    "bm25-kiwi": {
+      "config": {
+        "embedding": "bge-m3",
+        "retrieval": "bm25",
+        "bm25_tokenizer": "kiwi",
+        "query_mode": "both",
+        "rerank": false,
+        "rerank_query": "max",
+        "k_retrieve": 20,
+        "k_final": 5,
+        "rrf_k": 60,
+        "router": true,
+        "gate_tau": 0.15,
+        "llm_model": "qwen2.5:7b",
+        "router_model": null,
+        "prompt_version": "v2",
+        "conflict_policy": "prefer_2026",
+        "validation": "enforce",
+        "temperature": 0.0,
+        "seed": 7
+      },
+      "settings": {
+        "pipeline_version": "v2",
+        "config": {
+          "embedding": "bge-m3",
+          "retrieval": "bm25",
+          "bm25_tokenizer": "kiwi",
+          "query_mode": "both",
+          "rerank": false,
+          "rerank_query": "max",
+          "k_retrieve": 20,
+          "k_final": 5,
+          "rrf_k": 60,
+          "router": true,
+          "gate_tau": 0.15,
+          "llm_model": "qwen2.5:7b",
+          "router_model": null,
+          "prompt_version": "v2",
+          "conflict_policy": "prefer_2026",
+          "validation": "enforce",
+          "temperature": 0.0,
+          "seed": 7
+        },
+        "retriever": "bm25:kiwi",
+        "collection": null,
+        "router": "router_v1:qwen2.5:7b",
+        "llm": "qwen2.5:7b",
+        "schedule_source": "preprocess/schedule.csv"
+      },
+      "traces": "experiments/results/E3/bm25-kiwi.jsonl",
+      "quick_summary": {
+        "cases": 22,
+        "gold_cases": 13,
+        "recall@5": 0.462,
+        "mrr": 0.398,
+        "statuses": {
+          "retrieval-only": 22
+        },
+        "mean_total_s": 3.36
+      }
+    },
+    "bm25-bigram": {
+      "config": {
+        "embedding": "bge-m3",
+        "retrieval": "bm25",
+        "bm25_tokenizer": "bigram",
+        "query_mode": "both",
+        "rerank": false,
+        "rerank_query": "max",
+        "k_retrieve": 20,
+        "k_final": 5,
+        "rrf_k": 60,
+        "router": true,
+        "gate_tau": 0.15,
+        "llm_model": "qwen2.5:7b",
+        "router_model": null,
+        "prompt_version": "v2",
+        "conflict_policy": "prefer_2026",
+        "validation": "enforce",
+        "temperature": 0.0,
+        "seed": 7
+      },
+      "settings": {
+        "pipeline_version": "v2",
+        "config": {
+          "embedding": "bge-m3",
+          "retrieval": "bm25",
+          "bm25_tokenizer": "bigram",
+          "query_mode": "both",
+          "rerank": false,
+          "rerank_query": "max",
+          "k_retrieve": 20,
+          "k_final": 5,
+          "rrf_k": 60,
+          "router": true,
+          "gate_tau": 0.15,
+          "llm_model": "qwen2.5:7b",
+          "router_model": null,
+          "prompt_version": "v2",
+          "conflict_policy": "prefer_2026",
+          "validation": "enforce",
+          "temperature": 0.0,
+          "seed": 7
+        },
+        "retriever": "bm25:bigram",
+        "collection": null,
+        "router": "router_v1:qwen2.5:7b",
+        "llm": "qwen2.5:7b",
+        "schedule_source": "preprocess/schedule.csv"
+      },
+      "traces": "experiments/results/E3/bm25-bigram.jsonl",
+      "quick_summary": {
+        "cases": 22,
+        "gold_cases": 13,
+        "recall@5": 0.615,
+        "mrr": 0.496,
+        "statuses": {
+          "retrieval-only": 22
+        },
+        "mean_total_s": 3.38
+      }
+    },
+    "hybrid-rrf": {
+      "config": {
+        "embedding": "bge-m3",
+        "retrieval": "hybrid",
+        "bm25_tokenizer": "kiwi",
+        "query_mode": "both",
+        "rerank": false,
+        "rerank_query": "max",
+        "k_retrieve": 20,
+        "k_final": 5,
+        "rrf_k": 60,
+        "router": true,
+        "gate_tau": 0.15,
+        "llm_model": "qwen2.5:7b",
+        "router_model": null,
+        "prompt_version": "v2",
+        "conflict_policy": "prefer_2026",
+        "validation": "enforce",
+        "temperature": 0.0,
+        "seed": 7
+      },
+      "settings": {
+        "pipeline_version": "v2",
+        "config": {
+          "embedding": "bge-m3",
+          "retrieval": "hybrid",
+          "bm25_tokenizer": "kiwi",
+          "query_mode": "both",
+          "rerank": false,
+          "rerank_query": "max",
+          "k_retrieve": 20,
+          "k_final": 5,
+          "rrf_k": 60,
+          "router": true,
+          "gate_tau": 0.15,
+          "llm_model": "qwen2.5:7b",
+          "router_model": null,
+          "prompt_version": "v2",
+          "conflict_policy": "prefer_2026",
+          "validation": "enforce",
+          "temperature": 0.0,
+          "seed": 7
+        },
+        "retriever": "dense:bge-m3@5617a9f6 | bm25:kiwi",
+        "collection": "items_bge-m3_5617a9f6_c7d19676",
+        "router": "router_v1:qwen2.5:7b",
+        "llm": "qwen2.5:7b",
+        "schedule_source": "preprocess/schedule.csv"
+      },
+      "traces": "experiments/results/E3/hybrid-rrf.jsonl",
+      "quick_summary": {
+        "cases": 22,
+        "gold_cases": 13,
+        "recall@5": 0.923,
+        "mrr": 0.703,
+        "statuses": {
+          "retrieval-only": 22
+        },
+        "mean_total_s": 3.43
+      }
+    }
+  },
+  "finished": "2026-11-06T00:50:33"
+}

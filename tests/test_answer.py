@@ -1,0 +1,46 @@
+"""Fields of the answer contract."""
+from __future__ import annotations
+
+from types import SimpleNamespace
+
+from rag.answer import handoff, schedule_fields
+from rag.gate import GateDecision
+from rag.router import Route
+from rag.schedule_tool import default_table
+
+
+def test_answer_schedule_fields():
+    """The flat §4.8 fields the website reads; values come from the rows, never the LLM."""
+    table = default_table()
+    one = table.lookup("성동구", dong="행당동", waste_type="food").rows
+    fields = schedule_fields(one, ["food"])
+    assert fields["days"] == "Mon, Wed, Fri" and fields["time"] and fields["place"]
+    assert fields["data_date"] == one[0].data_date and fields["office_phone"] == one[0].phone
+    several = table.lookup("노원구").rows                              # one entry per zone
+    assert len(several) > 1
+    many = schedule_fields(several, ["food"])
+    assert all(r.zone in many["days"] for r in several if r.rules["food"].days)
+    assert schedule_fields([], ["food"])["days"] is None
+
+
+def test_handoff_keeps_broken_korean_away_from_the_user():
+    route = Route(valid=True, item="nail polish bottles", item_ko="네일 pol리스 병",
+                  checks={"item_in_question": True})
+    request = SimpleNamespace(district=None, dong=None, waste_type=None, lang=None)
+    gate = GateDecision("INSUFFICIENT_CONTEXT", "abstain", "skip")
+    sentence = handoff(request, route, gate, None)["korean_sentence"]
+    assert "pol리스" not in sentence and "nail polish bottles" in sentence
+
+
+def test_a_partial_answer_says_what_failed():
+    from rag.answer import clarify, say_what_failed
+    from rag.texts import TEXTS
+    answer = {"answer_text": "Food waste: Mon, Wed, Fri [1]"}
+    say_what_failed(answer, GateDecision("ANSWER", "abstain", "answer"), "zh")
+    assert answer["answer_text"].startswith(TEXTS["zh"]["ITEM_FAILED"])
+    answer = {"answer_text": "Paper (종이) [1]"}
+    say_what_failed(answer, GateDecision("ANSWER", "answer", "abstain"), "en")
+    assert answer["answer_text"].endswith(TEXTS["en"]["SCHEDULE_FAILED"])
+    question = {"kind": "province", "args": {"district": "중구", "n": 5}, "question": "...",
+                "options": ["서울특별시 중구"]}
+    assert clarify(question, "ko")["question"] == "'중구'은(는) 5개 시·도에 있습니다. 어느 지역인가요?"

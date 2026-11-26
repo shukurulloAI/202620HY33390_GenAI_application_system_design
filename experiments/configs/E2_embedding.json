@@ -1,0 +1,14 @@
+{
+  "id": "E2",
+  "question": "Does the embedding model matter for Korean data + multilingual questions?",
+  "stage": "retrieval",
+  "base": "default",
+  "fixed": {"retrieval": "dense", "rerank": false},
+  "variants": {
+    "bge-small-en": {"embedding": "bge-small-en", "query_mode": "original"},
+    "bge-m3": {"embedding": "bge-m3", "query_mode": "original"},
+    "bge-small-en+ko-rewrite": {"embedding": "bge-small-en", "query_mode": "rewrite"}
+  },
+  "metrics": ["Recall@5", "MRR", "by language"],
+  "notes": "Router stays on in all variants so routing is identical; only the query text and the embedding change. bge-small-en truncates 29/394 chunks at 512 tokens (ingest/reports)."
+}
