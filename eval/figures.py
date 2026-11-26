@@ -3,7 +3,8 @@ Figures for the report (PLAN.md §7.5, §12), as PNG files in docs/figures/.
 
     python -m eval.figures heatmap <report name> [--out docs/figures/heatmap_<name>.png]
     python -m eval.figures ablation <report name>=<label> ... --out docs/figures/ablation.png
-    python -m eval.figures variants experiments/results/dev_v2/E10/qwen2.5-7b=<label> ... --out <png>
+    python -m eval.figures variants experiments/results/dev_v2/E10/qwen2.5-7b=<label> ...
+        --out <png>
     python -m eval.figures retrieval experiments/results/dev/E9 ... --out docs/figures/retrieval.png
 
 Colours: the reference palette of the dataviz method (one blue ramp for counts; blue and
@@ -105,7 +106,8 @@ def variants(pairs: list[str], out: Path, title: str) -> Path:
         directory, variant = Path(where).parent, Path(where).name
         manifest = json.loads((ROOT / directory / "manifest.json").read_text(encoding="utf-8"))
         entry = manifest["variants"][variant]
-        o = score(read_jsonl(ROOT / entry["traces"]), load_cases(ROOT / manifest["cases"]))["overall"]
+        traces = read_jsonl(ROOT / entry["traces"])
+        o = score(traces, load_cases(ROOT / manifest["cases"]))["overall"]
         rows.append((label or variant, o["case_ok"]["k"], o["false_answer"]["k"], o["cases"]))
     return _bars(rows, out, title)
 
