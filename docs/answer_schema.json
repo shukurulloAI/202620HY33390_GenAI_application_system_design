@@ -235,6 +235,50 @@
       "title": "Handoff",
       "type": "object"
     },
+    "ItemPart": {
+      "additionalProperties": false,
+      "description": "One item or part of an item and where it goes (several for a several-item question).",
+      "properties": {
+        "item": {
+          "description": "The item or part, in the user's words ('' if not given)",
+          "title": "Item",
+          "type": "string"
+        },
+        "bin": {
+          "description": "Canonical bin (rag/bins.py)",
+          "title": "Bin",
+          "type": "string"
+        },
+        "bin_en": {
+          "title": "Bin En",
+          "type": "string"
+        },
+        "how_to_prepare": {
+          "items": {
+            "type": "string"
+          },
+          "title": "How To Prepare",
+          "type": "array"
+        },
+        "citations": {
+          "description": "Evidence numbers for this item",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Citations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "item",
+        "bin",
+        "bin_en",
+        "how_to_prepare",
+        "citations"
+      ],
+      "title": "ItemPart",
+      "type": "object"
+    },
     "Schedule": {
       "additionalProperties": false,
       "properties": {
@@ -467,8 +511,8 @@
   "additionalProperties": false,
   "properties": {
     "contract_version": {
-      "const": "1.0",
-      "default": "1.0",
+      "const": "2.0",
+      "default": "2.0",
       "title": "Contract Version",
       "type": "string"
     },
@@ -493,20 +537,20 @@
       ],
       "title": "Lang"
     },
-    "bin": {
-      "description": "Canonical bin (rag/bins.py) or ''",
-      "title": "Bin",
-      "type": "string"
+    "items": {
+      "description": "One entry per item or part, each with its own bin and steps; [] if none",
+      "items": {
+        "$ref": "#/$defs/ItemPart"
+      },
+      "title": "Items",
+      "type": "array"
     },
-    "bin_en": {
-      "title": "Bin En",
-      "type": "string"
-    },
-    "how_to_prepare": {
+    "put_out_steps": {
+      "description": "How to put the waste out, from the district table (schedule answers); user's language",
       "items": {
         "type": "string"
       },
-      "title": "How To Prepare",
+      "title": "Put Out Steps",
       "type": "array"
     },
     "answer_text": {
@@ -594,9 +638,6 @@
   "required": [
     "status",
     "lang",
-    "bin",
-    "bin_en",
-    "how_to_prepare",
     "answer_text",
     "citations",
     "missing",
@@ -610,5 +651,5 @@
   ],
   "title": "Answer",
   "type": "object",
-  "$id": "answer-contract-v1.0"
+  "$id": "answer-contract-v2.0"
 }

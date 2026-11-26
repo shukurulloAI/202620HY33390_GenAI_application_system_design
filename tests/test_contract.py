@@ -6,7 +6,15 @@ import json
 
 import pytest
 
-from rag.contract import SCHEMA_FILE, ContractError, check, json_schema, problems
+from rag.contract import (
+    SCHEMA_FILE,
+    ContractError,
+    answer_bins,
+    check,
+    first_bin,
+    json_schema,
+    problems,
+)
 from rag.service import examples
 
 
@@ -31,7 +39,8 @@ def _answer(status: str) -> dict:
     (lambda a: a.pop("trace_id"), "trace_id"),
     (lambda a: a.update(extra_field=1), "extra_field"),
     (lambda a: a.update(status="MAYBE"), "status"),
-    (lambda a: a.update(bin="plastic"), "unknown bin"),
+    (lambda a: a["items"][0].update(bin="plastic"), "unknown bin"),
+    (lambda a: a.update(bin="종이"), "bin"),                  # 1.0 field: gone in 2.0
     (lambda a: a.update(citations=[]), "cites nothing"),
 ])
 def test_broken_answers_are_caught(change, expected):
@@ -46,8 +55,16 @@ def test_rules_between_fields():
     abstain["handoff"] = None
     assert any("handoff" in p for p in problems(abstain))
     abstain = _answer("INSUFFICIENT_CONTEXT")
-    abstain["bin"] = "종이"
-    assert any("names a bin" in p for p in problems(abstain))
+    abstain["items"] = [{"item": "box", "bin": "종이", "bin_en": "paper", "how_to_prepare": [],
+                         "citations": [1]}]
+    assert any("lists items" in p for p in problems(abstain))
     clarify = _answer("CLARIFY")
     clarify["clarify"] = None
     assert any("without a question" in p for p in problems(clarify))
+
+
+def test_bins_are_read_from_items_and_from_saved_1_0_answers():
+    two = {"items": [{"bin": "종이"}, {"bin": "비닐"}]}
+    assert answer_bins(two) == ["종이", "비닐"] and first_bin(two) == "종이"
+    assert answer_bins({"bin": "고철", "items": []}) == ["고철"]       # a 1.0 trace
+    assert first_bin({"items": []}) == "" and answer_bins({"bin": ""}) == []

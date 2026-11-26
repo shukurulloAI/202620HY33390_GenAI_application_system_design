@@ -21,9 +21,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
+import uuid
 from datetime import datetime
 from pathlib import Path
 
+from eval.answer_judge import load_labels
 from eval.cases import load_cases
 from eval.metrics import score
 from eval.provenance import snapshot
@@ -33,6 +36,7 @@ from rag.config import load_config
 from rag.files import read_jsonl, sha256_file
 
 REPORT_DIR = paths.ROOT / "eval" / "reports"
+NOT_JUDGED = "not judged (python -m eval.answer_judge <traces>, then --rescore)"
 REPLAYED = " (not valid: some LLM replies were replayed from the cache)"
 
 
@@ -48,7 +52,11 @@ def run(cases: list[dict], config_base: str | None, overrides: list[str], llm: s
     traces = []
     with out.open("w", encoding="utf-8") as f:
         for i, case in enumerate(cases, 1):
-            trace = pipeline.run_case(case)
+            started = time.perf_counter()
+            try:
+                trace = pipeline.run_case(case)
+            except Exception as exc:     # e.g. Ollama aborts a reply: the case fails, run goes on
+                trace = failed_trace(case, exc, time.perf_counter() - started)
             f.write(json.dumps(trace, ensure_ascii=False) + "\n")
             f.flush()
             traces.append(trace)
@@ -58,8 +66,28 @@ def run(cases: list[dict], config_base: str | None, overrides: list[str], llm: s
     return traces, pipeline.settings(), client.cached if cache else 0
 
 
+def failed_trace(case: dict, exc: Exception, seconds: float) -> dict:
+    """A case whose run raised an error (Ollama aborting a reply, a bug). It is scored as a
+    failure with the answer the website gives in that situation (rag.service: an abstention
+    with a handoff), so one error does not stop the run and is not silently dropped."""
+    from rag.service import unavailable_answer
+    location = case.get("location") or {}
+    trace_id = str(uuid.uuid4())
+    return {"trace_id": trace_id, "case_id": case.get("case_id") or case.get("probe_id"),
+            "error": f"{type(exc).__name__}: {exc}",
+            "input": {"question": case.get("question"), "lang": case.get("lang"), **location},
+            "candidates": [], "selected": [], "timings": {"total_s": round(seconds, 3)},
+            "answer": unavailable_answer(case.get("lang"), location.get("district"),
+                                         location.get("dong"), trace_id)}
+
+
 def fmt(rate: dict | None) -> str:
     return "–" if not rate else f"{rate['k']}/{rate['n']} ({rate['rate']:.0%})"
+
+
+def judged(rate: dict | None) -> str:
+    """A judge metric: k/n claims or facts, or how to get it when the traces were not judged."""
+    return fmt(rate) if rate else NOT_JUDGED
 
 
 def fmt_ci(rate: dict | None) -> str:
@@ -79,6 +107,8 @@ def markdown(name: str, result: dict, meta: dict, show_rows: bool) -> str:
              f"| Expected behaviour (answer / abstain / clarify / out of scope) | "
              f"{fmt_ci(o['behaviour_ok'])} |",
              f"| Bin correct (answerable item cases) | {fmt_ci(o['bin_ok'])} |",
+             *([f"| Every expected bin named (multi-item / vague-item cases) | "
+                f"{fmt(o['bins_all_ok'])} |"] if o.get("bins_all_ok") else []),
              f"| **False answers** (answered when it should not, or wrong bin) | "
              f"{fmt_ci(o['false_answer'])} |",
              f"| Abstained when it should | {fmt(o['abstain_ok'])} |",
@@ -88,12 +118,16 @@ def markdown(name: str, result: dict, meta: dict, show_rows: bool) -> str:
              f"| Router intent | {fmt(o['intent_ok'])} |",
              f"| Router district / dong (place only in the question) | {fmt(o['district_ok'])} / "
              f"{fmt(o['dong_ok'])} |",
-             f"| Retrieval Recall@5 / MRR / nDCG@5 / P@5 (n={r['n']}) | {r['recall@5']} / "
-             f"{r['mrr']} / {r['ndcg@5']} / {r['precision@5']} |",
+             f"| Retrieval Recall@5 / Hit@5 / MRR / nDCG@5 / P@5 (n={r['n']}) | "
+             f"{r['recall@5']} / {r.get('hit@5')} / {r['mrr']} / {r['ndcg@5']} / "
+             f"{r['precision@5']} |",
              f"| Gate TP / FP / FN / TN (n={g['n']}) | {g['tp']} / {g['fp']} / {g['fn']} / "
              f"{g['tn']} (FP rate {g['fp_rate']}, FN rate {g['fn_rate']}) |",
-             f"| Cites a gold chunk / citation precision | {fmt(o['cites_gold'])} / "
-             f"{o['citation_precision']} |",
+             f"| Cites a gold chunk (answers citing an item chunk) | {fmt(o['cites_gold'])} |",
+             f"| Citation precision (cited claims supported by their cited sources, judge) | "
+             f"{judged(o.get('citation_precision'))} |",
+             f"| Citation coverage (all claims supported by their own citations, judge) | "
+             f"{judged(o.get('citation_coverage'))} |",
              f"| Answer in the asked language (script) | {fmt(o['language_ok'])} |",
              f"| JSON valid | {fmt(o['json_valid'])} |",
              f"| Downgraded by validation | {o['downgraded']} |",
@@ -140,7 +174,8 @@ def rescore(name: str) -> None:
     out = REPORT_DIR / name
     meta = json.loads((out / "report.json").read_text(encoding="utf-8"))["meta"]
     cases = load_cases(paths.ROOT / meta["cases_file"])[:meta["n_cases"]]
-    result = score(read_jsonl(paths.ROOT / meta["traces_file"]), cases)
+    traces_file = paths.ROOT / meta["traces_file"]
+    result = score(read_jsonl(traces_file), cases, load_labels(traces_file))
     meta["rescored"] = {"time": datetime.now().isoformat(timespec="seconds"), **snapshot()}
     (out / "report.json").write_text(json.dumps({"meta": meta, **result}, ensure_ascii=False,
                                                 indent=1), encoding="utf-8")
@@ -185,14 +220,16 @@ def main() -> None:
     else:
         traces, settings, replayed = run(cases, args.config, args.set, args.llm,
                                          out / "traces.jsonl", args.cache)
-    result = score(traces, cases)
+    result = score(traces, cases, load_labels(args.traces or out / "traces.jsonl"))
     meta = {"name": args.name, "cases_file": paths.relative(args.cases.resolve()),
             "cases_sha256": sha256_file(args.cases), "n_cases": len(cases),
             "traces_file": (str(args.traces) if args.traces
                             else f"{paths.relative(out)}/traces.jsonl"),
-            "settings": settings or (traces[0].get("settings") if traces else None),
+            "settings": settings or next((t["settings"] for t in traces if t.get("settings")),
+                                         None),
             "config": args.config, "overrides": args.set, **provenance,
             "llm_replayed": replayed,
+            "errors": {t["case_id"]: t["error"] for t in traces if t.get("error")},
             "time": datetime.now().isoformat(timespec="seconds")}
     (out / "report.json").write_text(json.dumps({"meta": meta, **result}, ensure_ascii=False,
                                                 indent=1), encoding="utf-8")
@@ -203,6 +240,9 @@ def main() -> None:
     print(f"{args.name}: correct {fmt(o['case_ok'])}, false answers {fmt(o['false_answer'])}, "
           f"bin {fmt(o['bin_ok'])}, recall@5 {o['retrieval']['recall@5']} -> "
           f"{paths.relative(out)}/report.md")
+    if meta["errors"]:
+        print(f"  {len(meta['errors'])} case(s) failed with an error and count as wrong: "
+              + ", ".join(f"{cid} ({err[:80]})" for cid, err in meta["errors"].items()))
 
 
 if __name__ == "__main__":

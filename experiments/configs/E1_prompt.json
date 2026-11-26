@@ -22,6 +22,9 @@
     },
     "v5-balanced-examples": {
       "prompt_version": "v5"
+    },
+    "v6-items": {
+      "prompt_version": "v6"
     }
   },
   "metrics": [
@@ -30,6 +33,6 @@
     "JSON validity",
     "citation precision"
   ],
-  "notes": "Same retrieval, gate and validation for all variants; only the prompt file changes. Few-shot items (볼펜, 소화기; distractors 볼풀공, 고무장갑, 보온병) must not be in the test set. v3 = v2 without the spray-can example that leaked 'empty and puncture' into answers. v4 (Stage 3) = v3 + a wrong-premise rule, with the schedule example replaced by a false-premise example (방석). v5 (Stage 3) = v4 with example bins balanced (kettle -> 고철 as the false-premise example), after v4 named 종량제봉투 against its evidence in 7 dev cases.",
+  "notes": "Same retrieval, gate and validation for all variants; only the prompt file changes. Few-shot items (볼펜, 소화기; distractors 볼풀공, 고무장갑, 보온병) must not be in the test set. v3 = v2 without the spray-can example that leaked 'empty and puncture' into answers. v4 (Stage 3) = v3 + a wrong-premise rule, with the schedule example replaced by a false-premise example (방석). v5 (Stage 3) = v4 with example bins balanced (kettle -> 고철 as the false-premise example), after v4 named 종량제봉투 against its evidence in 7 dev cases. v6 (on dev v2) = v5 with one change: the output lists one entry per item with its own bin (items), and one constraint asks for that when the question names several items; same instructions and same three examples as v5.",
   "reference": "v2-few-shot-contract"
 }

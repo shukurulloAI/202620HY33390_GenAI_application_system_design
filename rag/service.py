@@ -48,12 +48,13 @@ from collections import OrderedDict
 from collections.abc import Callable
 from datetime import UTC, datetime
 from functools import lru_cache
+from pathlib import Path
 from urllib.error import URLError
 from urllib.request import urlopen
 from zoneinfo import ZoneInfo
 
 from rag import config, paths
-from rag.contract import check
+from rag.contract import CONTRACT_VERSION, check
 from rag.files import append_jsonl, read_jsonl
 from rag.handoff import korean_sentence
 from rag.texts import LANGUAGES, lang_or_default, text
@@ -255,8 +256,8 @@ def _reporter(progress: Callable[[str], None] | None) -> Callable[[str], None]:
 def unavailable_answer(lang: str | None, district: str | None, dong: str | None,
                        trace_id: str) -> dict:
     return check({
-        "contract_version": "1.0", "status": "INSUFFICIENT_CONTEXT", "lang": lang,
-        "bin": "", "bin_en": "", "how_to_prepare": [],
+        "contract_version": CONTRACT_VERSION, "status": "INSUFFICIENT_CONTEXT", "lang": lang,
+        "items": [], "put_out_steps": [],
         "answer_text": text("UNAVAILABLE", lang), "citations": [],
         "missing": "the assistant failed; see traces/errors.jsonl", "schedule": None,
         "data_date": None, "office_phone": None, "clarify": None, "notes": [],
@@ -320,6 +321,43 @@ def source_text(citation: dict) -> dict:
     return {"source": f"District data, {row.province} {row.district}, 관리번호 {row.row_id}",
             "page": None, "year": None, "data_date": row.data_date,
             "text": row.to_evidence(None)}
+
+
+SOURCE_PDFS = {2018: paths.GUIDE_2018_PDF, 2026: paths.ANNEX_2026_PDF}
+
+
+def source_document(citation: dict) -> tuple[Path, int | None] | None:
+    """The official PDF behind a guide citation and its page (1-based, the guide's own page
+    numbers match the PDF's), or None: district rows come from a table, not a document. A
+    2026 note has a PDF but no page."""
+    if citation.get("kind") != "item":
+        return None
+    source = source_text(citation)
+    year = source.get("year") or next((y for y in SOURCE_PDFS
+                                       if str(y) in str(source.get("source") or "")), None)
+    pdf = SOURCE_PDFS.get(year)
+    if pdf is None or not pdf.exists():
+        return None
+    return pdf, source.get("page")
+
+
+@lru_cache(maxsize=32)
+def page_image(pdf: Path, page: int, scale: float = 1.6) -> bytes | None:
+    """One PDF page as PNG bytes, for the source pop-up; None if the page does not exist.
+    Cached: a page is drawn once (about 0.2 s), then served from memory."""
+    import io
+
+    import pypdfium2
+    document = pypdfium2.PdfDocument(str(pdf))
+    try:
+        if not 1 <= page <= len(document):
+            return None
+        image = document[page - 1].render(scale=scale).to_pil()
+        buffer = io.BytesIO()
+        image.save(buffer, format="PNG", optimize=True)
+        return buffer.getvalue()
+    finally:
+        document.close()
 
 
 @lru_cache(maxsize=1)

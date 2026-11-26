@@ -1,8 +1,14 @@
 """
 Build the evaluation set (PLAN.md §7.1-7.2) and freeze its dev/test split.
 
-    python -m eval.make_cases            # writes eval/cases/{dev,test}.jsonl + split_manifest.json
-    python -m eval.make_cases --check    # rebuild in memory, fail if the files differ
+    python -m eval.make_cases                  # v1: eval/cases/{dev,test}.jsonl + split_manifest.json
+    python -m eval.make_cases --version v2 --draft   # v2 draft: files written, not frozen
+    python -m eval.make_cases --version v2     # v2: eval/cases/v2/{dev,test}.jsonl + manifest
+    python -m eval.make_cases --check [--version v2]   # rebuild in memory, fail if files differ
+
+v1 (frozen, 100 cases) is kept as it is, so its reports stay valid. v2 is a new set: a new
+handwritten source, new template items and districts (none used in v1), a new 70/30 split,
+and required + supporting gold chunks (eval/cases/LABELLING.md).
 
 Sources:
     eval/cases/source/handwritten.jsonl  65 cases written by hand: tricky items, 2018/2026
@@ -34,7 +40,9 @@ import random
 import re
 import sys
 from collections import Counter, defaultdict
+from dataclasses import dataclass, field
 from datetime import datetime
+from pathlib import Path
 
 from eval.cases import validate_case
 from eval.label_helper import schedule_rows
@@ -97,20 +105,116 @@ SCHEDULE_TEMPLATES = {
 _AREA = re.compile(r"^[가-힣0-9]{1,8}(동|읍|면|리|가)$")
 
 
+@dataclass(frozen=True)
+class Version:
+    """Everything that differs between case-set versions."""
+    name: str
+    handwritten: Path
+    item_names: Path
+    out_dir: Path
+    n_items: int
+    n_schedule: int
+    template_langs: list[str]
+    item_templates: dict[str, list[str]]
+    schedule_templates: dict[str, list[str]]
+    used_item_words: tuple[str, ...]
+    used_districts: frozenset[str]
+    exclude_legacy: frozenset[str] = field(default_factory=frozenset)
+
+    @property
+    def dev(self) -> Path:
+        return self.out_dir / "dev.jsonl"
+
+    @property
+    def test(self) -> Path:
+        return self.out_dir / "test.jsonl"
+
+    @property
+    def manifest(self) -> Path:
+        return self.out_dir / "split_manifest.json"
+
+
+V1 = Version("v1", HANDWRITTEN, ITEM_NAMES, CASES_DIR, N_ITEMS, N_SCHEDULE, TEMPLATE_LANGS,
+             ITEM_TEMPLATES, SCHEDULE_TEMPLATES, tuple(USED_ITEM_WORDS),
+             frozenset(USED_DISTRICTS))
+
+# v2 templates: several natural wordings per language, so a template case does not read like
+# every other one (v1 asked "음식물쓰레기 언제 내놓아요?" three times).
+ITEM_TEMPLATES_V2 = {
+    "en": ["How do I throw away {item}?", "Where does {item} go?",
+           "Which bin is {item} supposed to go in?", "What's the right way to get rid of {item}?"],
+    "ko": ["{item} 어떻게 버려요?", "{item} 버리는 방법 알려주세요.", "{item} 어디에 버려야 하나요?",
+           "{item} 분리수거 어떻게 해요?"],
+    "zh": ["{item}应该怎么扔？", "{item}扔到哪里？", "{item}属于什么垃圾？", "请问{item}怎么处理？"],
+    "vi": ["Tôi nên vứt {item} ở đâu?", "{item} bỏ vào thùng nào?",
+           "{item} thì phân loại thế nào ạ?", "Cho mình hỏi {item} vứt sao vậy?"],
+    "uz": ["{item} qanday tashlanadi?", "{item} qaysi chiqindiga kiradi?",
+           "{item} qayerga tashlanadi?", "{item}ni qanday saralash kerak?"],
+    "ru": ["Как выбросить {item}?", "Куда выкидывать {item}?", "{item} — это какой мусор?",
+           "Подскажите, куда девать {item}?"],
+}
+SCHEDULE_TEMPLATES_V2 = {
+    "en": ["When can I put out {waste}?", "What days is {waste} collected?",
+           "Which days should I take out the {waste} here?"],
+    "ko": ["{waste} 언제 내놓아요?", "{waste} 배출 요일이 언제예요?", "{waste} 몇 시부터 내놓을 수 있어요?"],
+    "zh": ["{waste}什么时候可以扔？", "{waste}哪天收？", "这里{waste}星期几收？"],
+    "vi": ["Khi nào tôi có thể đổ {waste}?", "{waste} được thu gom vào ngày nào?",
+           "Ở đây mấy giờ thì được bỏ {waste}?"],
+    "uz": ["{waste} qachon chiqariladi?", "{waste} qaysi kunlari olib ketiladi?",
+           "Bu yerda {waste} soat nechada chiqariladi?"],
+    "ru": ["Когда можно выносить {waste}?", "В какие дни вывозят {waste}?",
+           "Во сколько здесь можно выставлять {waste}?"],
+}
+
+
+def _v1_used() -> tuple[frozenset[str], frozenset[str]]:
+    """Gold chunks and districts of the v1 cases: v2 templates sample around them, so no v2
+    template case asks about an item or district that v1 tuning has seen."""
+    legacy, districts = set(), set()
+    for path in (V1.dev, V1.test):
+        if path.exists():
+            for case in read_jsonl(path):
+                legacy |= set(case.get("gold_legacy_ids") or [])
+                place = case.get("location") or (case.get("expected_schedule") or {}).get("place")
+                if place and place.get("district"):
+                    districts.add(place["district"])
+    return frozenset(legacy), frozenset(districts)
+
+
+def _v2() -> Version:
+    legacy, districts = _v1_used()
+    handwritten = SOURCE_DIR / "handwritten_v2.jsonl"
+    if handwritten.exists():      # nor an item a v2 handwritten case already asks about
+        legacy |= {g for c in read_jsonl(handwritten) for g in c.get("gold_legacy_ids", [])}
+    langs = ["en"] * 7 + ["ko"] * 6 + ["zh"] * 4 + ["vi"] * 4 + ["uz"] * 4 + ["ru"] * 3
+    return Version("v2", SOURCE_DIR / "handwritten_v2.jsonl", SOURCE_DIR / "item_names_v2.json",
+                   CASES_DIR / "v2", 16, 12, langs, ITEM_TEMPLATES_V2, SCHEDULE_TEMPLATES_V2,
+                   tuple(USED_ITEM_WORDS), frozenset(USED_DISTRICTS) | districts, legacy)
+
+
+def version(name: str) -> Version:
+    if name == "v1":
+        return V1
+    if name == "v2":
+        return _v2()
+    raise ValueError(f"unknown case-set version {name!r}")
+
+
 def _chunks_by_legacy() -> dict[str, dict]:
     return {c["metadata"]["legacy_id"]: c for c in read_jsonl(paths.ITEM_CHUNKS)}
 
 
-def sample_items(chunks: dict[str, dict]) -> list[str]:
+def sample_items(chunks: dict[str, dict], spec: Version = V1) -> list[str]:
     """2 items per bin from the 2018 dictionary (one bin each, not used in development),
-    then one more from each of the two largest bins: 20 legacy IDs."""
+    then one more from each of the two largest bins (v1: 20 legacy IDs)."""
     rng = random.Random(SEED)
     pool = defaultdict(list)
     for legacy, chunk in sorted(chunks.items()):
         meta = chunk["metadata"]
         bins = evidence_bins(meta)
         if (meta["doc_type"] != "item" or len(bins) != 1 or bins & {"재질별분리", "전문시설"}
-                or any(word in meta["item"] for word in USED_ITEM_WORDS)):
+                or any(word in meta["item"] for word in spec.used_item_words)
+                or legacy in spec.exclude_legacy):
             continue
         pool[next(iter(bins))].append(legacy)
     picked = []
@@ -118,22 +222,27 @@ def sample_items(chunks: dict[str, dict]) -> list[str]:
         items = sorted(pool[bin_key])
         rng.shuffle(items)
         picked += items[:2]
-    for bin_key in sorted(pool, key=lambda b: -len(pool[b]))[:2]:
+    # Fill up from the largest bins, one each, until there are enough (v1: the two largest
+    # were enough; v2 has small bins left after its own items are excluded).
+    for bin_key in sorted(pool, key=lambda b: -len(pool[b])):
+        if len(picked) >= spec.n_items:
+            break
         items = sorted(pool[bin_key])
         random.Random(f"fill-{bin_key}").shuffle(items)
         picked.append(next(i for i in items if i not in picked))
-    return picked[:N_ITEMS]
+    return picked[:spec.n_items]
 
 
-def item_cases(chunks: dict[str, dict], langs: list[str], rng: random.Random) -> list[dict]:
-    names = json.loads(ITEM_NAMES.read_text(encoding="utf-8"))
+def item_cases(chunks: dict[str, dict], langs: list[str], rng: random.Random,
+               spec: Version = V1) -> list[dict]:
+    names = json.loads(spec.item_names.read_text(encoding="utf-8"))
     out = []
-    for n, (legacy, lang) in enumerate(zip(sample_items(chunks), langs, strict=True), 1):
+    for n, (legacy, lang) in enumerate(zip(sample_items(chunks, spec), langs, strict=True), 1):
         meta = chunks[legacy]["metadata"]
         extra = names["extra"].get(legacy, {})
         bins = sorted(evidence_bins(meta) | set(extra.get("also_bins", [])))
         name = names["names"][legacy][lang]
-        question = rng.choice(ITEM_TEMPLATES[lang]).format(item=name)
+        question = rng.choice(spec.item_templates[lang]).format(item=name)
         out.append({"case_id": f"item{n:02d}", "slice": "item_direct", "lang": lang,
                     "question": question[0].upper() + question[1:], "location": None,
                     "expected_behavior": "answer", "expected_bin": bins,
@@ -141,19 +250,21 @@ def item_cases(chunks: dict[str, dict], langs: list[str], rng: random.Random) ->
                     "reference_facts": [f"{meta['item']}: {chunks[legacy]['text'].splitlines()[2]}"],
                     "notes": extra.get("note", ""), "seen_in_development": False,
                     "source": "template"})
+        if "also_supporting" in extra:                       # v2 graded gold
+            out[-1]["supporting_legacy_ids"] = list(extra["also_supporting"])
     return out
 
 
-def schedule_cases(langs: list[str], rng: random.Random) -> list[dict]:
+def schedule_cases(langs: list[str], rng: random.Random, spec: Version = V1) -> list[dict]:
     """One question per district, sampled uniformly over districts with data. The place is
     a neighbourhood that only one row lists, so the gold row is not a matter of opinion."""
     table = default_table()
     districts = sorted({(r.province, r.district) for r in table.rows
-                        if r.district not in USED_DISTRICTS})
+                        if r.district not in spec.used_districts})
     rng.shuffle(districts)
     out = []
     for province, district in districts:
-        if len(out) == N_SCHEDULE:
+        if len(out) == spec.n_schedule:
             break
         rows = [r for r in table.rows if (r.province, r.district) == (province, district)]
         rng.shuffle(rows)
@@ -164,7 +275,8 @@ def schedule_cases(langs: list[str], rng: random.Random) -> list[dict]:
             if not areas or not types:
                 continue
             lang, dong, waste = langs[len(out)], rng.choice(sorted(areas)), rng.choice(types)
-            question = rng.choice(SCHEDULE_TEMPLATES[lang]).format(waste=WASTE_WORDS[lang][waste])
+            question = rng.choice(spec.schedule_templates[lang]).format(
+                waste=WASTE_WORDS[lang][waste])
             rule = row.rules[waste]
             out.append({"case_id": f"sched{len(out) + 1:02d}", "slice": "schedule",
                         "lang": lang, "question": question[0].upper() + question[1:],
@@ -179,7 +291,7 @@ def schedule_cases(langs: list[str], rng: random.Random) -> list[dict]:
     return out
 
 
-def finish(case: dict, chunks: dict[str, dict]) -> dict:
+def finish(case: dict, chunks: dict[str, dict], spec: Version = V1) -> dict:
     """Source record -> case schema (§7.1): legacy IDs to UUIDs, schedule gold by table scan."""
     case = dict(case)
     legacy = case.pop("gold_legacy_ids")
@@ -188,6 +300,13 @@ def finish(case: dict, chunks: dict[str, dict]) -> dict:
         raise ValueError(f"{case['case_id']}: unknown chunks {unknown}")
     case["expected_chunk_ids"] = [chunks[i]["id"] for i in legacy]
     case["gold_legacy_ids"] = legacy
+    if "supporting_legacy_ids" in case:                   # v2: graded gold
+        helping = case.pop("supporting_legacy_ids")
+        unknown = [i for i in helping if i not in chunks]
+        if unknown:
+            raise ValueError(f"{case['case_id']}: unknown supporting chunks {unknown}")
+        case["supporting_chunk_ids"] = [chunks[i]["id"] for i in helping]
+        case["supporting_legacy_ids"] = helping
     place = case.pop("schedule_place", None)
     if place:
         rows = schedule_rows(place["district"], place.get("province"), place.get("dong"))
@@ -197,7 +316,7 @@ def finish(case: dict, chunks: dict[str, dict]) -> dict:
     case.setdefault("expected_schedule", None)
     case.setdefault("waste_type", None)
     case.setdefault("source", "handwritten")
-    case["version"] = VERSION
+    case["version"] = spec.name
     return case
 
 
@@ -217,16 +336,19 @@ def split(cases: list[dict], rng: random.Random) -> None:
             case["split"] = "test" if case["case_id"] in test_ids else "dev"
 
 
-def build() -> list[dict]:
-    """Each random step has its own stream, so changing one step never moves another."""
+def build(spec: Version = V1) -> list[dict]:
+    """Each random step has its own stream, so changing one step never moves another. v1's
+    streams keep their v1 names, so v1 rebuilds byte for byte."""
     chunks = _chunks_by_legacy()
-    langs = list(TEMPLATE_LANGS)
-    random.Random(f"{SEED}-langs").shuffle(langs)
-    cases = read_jsonl(HANDWRITTEN)
-    cases += item_cases(chunks, langs[:N_ITEMS], random.Random(f"{SEED}-item-templates"))
-    cases += schedule_cases(langs[N_ITEMS:], random.Random(f"{SEED}-schedule"))
-    cases = [finish(c, chunks) for c in cases]
-    split(cases, random.Random(f"{SEED}-split"))
+    tag = SEED if spec.name == "v1" else f"{SEED}-{spec.name}"
+    langs = list(spec.template_langs)
+    random.Random(f"{tag}-langs").shuffle(langs)
+    cases = read_jsonl(spec.handwritten)
+    cases += item_cases(chunks, langs[:spec.n_items], random.Random(f"{tag}-item-templates"),
+                        spec)
+    cases += schedule_cases(langs[spec.n_items:], random.Random(f"{tag}-schedule"), spec)
+    cases = [finish(c, chunks, spec) for c in cases]
+    split(cases, random.Random(f"{tag}-split"))
     ids = [c["case_id"] for c in cases]
     if len(ids) != len(set(ids)):
         raise ValueError("duplicate case_id")
@@ -242,37 +364,49 @@ def _dump(cases: list[dict]) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--version", default="v1", choices=["v1", "v2"])
+    parser.add_argument("--draft", action="store_true",
+                        help="write the files but do not freeze them (before the team review)")
     parser.add_argument("--check", action="store_true",
                         help="fail if the files on disk differ from a fresh build")
     args = parser.parse_args()
-    cases = build()
+    spec = version(args.version)
+    cases = build(spec)
     dev = [c for c in cases if c["split"] == "dev"]
     test = [c for c in cases if c["split"] == "test"]
     if args.check:
-        same = (paths.DEV_CASES.read_text(encoding="utf-8") == _dump(dev)
-                and TEST_CASES.read_text(encoding="utf-8") == _dump(test))
+        same = (spec.dev.exists() and spec.test.exists()
+                and spec.dev.read_text(encoding="utf-8") == _dump(dev)
+                and spec.test.read_text(encoding="utf-8") == _dump(test))
         print("cases are up to date" if same else "cases differ from a fresh build")
         sys.exit(0 if same else 1)
-    if MANIFEST.exists() and json.loads(MANIFEST.read_text(encoding="utf-8")).get("frozen"):
-        raise SystemExit(f"{paths.relative(MANIFEST)} is frozen; the split is not rebuilt "
+    if spec.manifest.exists() and json.loads(
+            spec.manifest.read_text(encoding="utf-8")).get("frozen"):
+        raise SystemExit(f"{paths.relative(spec.manifest)} is frozen; the split is not rebuilt "
                          "after tuning has started. Make a new version instead.")
-    CASES_DIR.mkdir(parents=True, exist_ok=True)
-    paths.DEV_CASES.write_text(_dump(dev), encoding="utf-8")
-    TEST_CASES.write_text(_dump(test), encoding="utf-8")
+    spec.out_dir.mkdir(parents=True, exist_ok=True)
+    # v2 writes LF on every OS, so its recorded hashes hold on Windows too (.gitattributes
+    # keeps LF on checkout). v1 keeps its old behaviour.
+    newline = None if spec.name == "v1" else "\n"
+    spec.dev.write_text(_dump(dev), encoding="utf-8", newline=newline)
+    spec.test.write_text(_dump(test), encoding="utf-8", newline=newline)
 
     def counts(key):
         return {s: dict(Counter(c[key] for c in cases if c["split"] == s)) for s in ("dev", "test")}
 
-    MANIFEST.write_text(json.dumps({
-        "version": VERSION, "seed": SEED, "test_share": TEST_SHARE,
+    manifest = {
+        "version": spec.name, "seed": SEED, "test_share": TEST_SHARE,
         "created": datetime.now().isoformat(timespec="seconds"), "git_commit": git_commit(),
-        "frozen": True,
-        "frozen_note": "Split made before any tuning. Do not rebuild; a new set is a new version.",
+        "frozen": not args.draft,
+        "frozen_note": ("DRAFT: not frozen; rebuild after the review, then run without --draft."
+                        if args.draft else
+                        "Split made before any tuning. Do not rebuild; a new set is a new version."),
         "n": {"all": len(cases), "dev": len(dev), "test": len(test)},
         "by_slice": counts("slice"), "by_lang": counts("lang"),
         "seen_in_development": sum(c["seen_in_development"] for c in cases),
-        "sha256": {"dev": sha256_file(paths.DEV_CASES), "test": sha256_file(TEST_CASES),
-                   "handwritten": sha256_file(HANDWRITTEN), "item_names": sha256_file(ITEM_NAMES),
+        "sha256": {"dev": sha256_file(spec.dev), "test": sha256_file(spec.test),
+                   "handwritten": sha256_file(spec.handwritten),
+                   "item_names": sha256_file(spec.item_names),
                    "item_chunks": sha256_file(paths.ITEM_CHUNKS),
                    "schedule": sha256_file(paths.SCHEDULE_CSV)},
         "missing": {"real_users": "No real questions from international students were collected "
@@ -280,8 +414,15 @@ def main() -> None:
         "authorship": "All cases were written by the system developer with AI assistance, not "
                       "by an independent person; translations were not checked by native "
                       "speakers. See the report's limitations.",
-    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"{len(cases)} cases: dev {len(dev)}, test {len(test)} -> {paths.relative(CASES_DIR)}/")
+    }
+    if spec.name != "v1":
+        manifest["authorship"] = ("Drafted with AI assistance from the lecture-guided design "
+                                  "(eval/cases/LABELLING.md); questions, gold labels and "
+                                  "translations reviewed by the team before the freeze.")
+    spec.manifest.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+                             encoding="utf-8", newline=newline)
+    print(f"{len(cases)} cases: dev {len(dev)}, test {len(test)} -> "
+          f"{paths.relative(spec.out_dir)}/")
 
 
 if __name__ == "__main__":

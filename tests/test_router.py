@@ -64,3 +64,28 @@ def test_an_item_question_that_asks_when_gets_the_schedule_too():
                       ko_query="피자 상자 분리배출")
         assert "intent_repaired" not in check_invariants(question, route)
         assert route.intent == "item", question
+
+
+def test_router_v2_reads_one_entry_per_item():
+    from rag.router import _parse
+    text = ('{"intent": "item", "items": [{"item": "fishing rod", "item_ko": "낚싯대", '
+            '"ko_query": "분리배출 방법"}, {"item": "golf balls", "item_ko": "골프공", '
+            '"ko_query": "golf"}], "district": "", "dong": "", "waste_type": "none", '
+            '"day_ref": "none", "negation": false, "lang": "en"}')
+    data = _parse(text, "v2")
+    assert data["item"] == "fishing rod" and data["item_ko"] == "낚싯대"   # first = old fields
+    assert [e["item_ko"] for e in data["items"]] == ["낚싯대", "골프공"]
+    assert _parse(text, "v1") is None                     # v1 needs item / item_ko / ko_query
+    route = Route(valid=True, **data)
+    checks = check_invariants("Where do a fishing rod and golf balls go?", route)
+    assert route.items[0]["ko_query"] == route.ko_query and "낚싯대" in route.ko_query
+    assert route.items[1]["ko_query"] == "골프공 golf"     # the Korean name is added
+    assert checks["items"][0]["item_ko_korean"] is True
+
+
+def test_router_v1_still_gives_a_one_item_list():
+    from rag.router import _parse
+    data = _parse('{"intent": "item", "item": "umbrella", "item_ko": "우산", '
+                  '"ko_query": "우산 분리배출", "district": "", "dong": "", '
+                  '"waste_type": "none", "day_ref": "none", "negation": false, "lang": "en"}')
+    assert data["items"] == [{"item": "umbrella", "item_ko": "우산", "ko_query": "우산 분리배출"}]

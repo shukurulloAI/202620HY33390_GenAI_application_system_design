@@ -13,6 +13,11 @@ CLARIFY answer always has a question, an abstention never names a bin, and a han
 always there when the assistant could not answer.
 
 Changing a field means bumping CONTRACT_VERSION and updating the website (PLAN.md §10.2).
+
+2.0: bins and preparation steps live only in `items`, one entry per item (a one-item answer
+has one entry). 1.0 also had a top-level bin / bin_en / how_to_prepare, a copy of the first
+item mixed with the schedule's put-out steps; those steps are now `put_out_steps`. Saved
+1.0 traces are read with `answer_bins()` / `first_bin()`.
 """
 from __future__ import annotations
 
@@ -24,7 +29,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_valida
 from rag import paths
 from rag.bins import BINS
 
-CONTRACT_VERSION = "1.0"
+CONTRACT_VERSION = "2.0"
 SCHEMA_FILE = paths.ROOT / "docs" / "answer_schema.json"
 
 Status = Literal["ANSWER", "CLARIFY", "INSUFFICIENT_CONTEXT", "OUT_OF_SCOPE"]
@@ -33,6 +38,15 @@ WasteType = Literal["general", "food", "recycling", "bulky"]
 
 class _Strict(BaseModel):
     model_config = ConfigDict(extra="forbid")
+
+
+class ItemPart(_Strict):
+    """One item or part of an item and where it goes (several for a several-item question)."""
+    item: str = Field(description="The item or part, in the user's words ('' if not given)")
+    bin: str = Field(description="Canonical bin (rag/bins.py)")
+    bin_en: str
+    how_to_prepare: list[str]
+    citations: list[int] = Field(description="Evidence numbers for this item")
 
 
 class Citation(_Strict):
@@ -106,12 +120,15 @@ class Handoff(_Strict):
 
 
 class Answer(_Strict):
-    contract_version: Literal["1.0"] = CONTRACT_VERSION
+    contract_version: Literal["2.0"] = CONTRACT_VERSION
     status: Status
     lang: str | None
-    bin: str = Field(description="Canonical bin (rag/bins.py) or ''")
-    bin_en: str
-    how_to_prepare: list[str]
+    items: list[ItemPart] = Field(default_factory=list,
+                                  description="One entry per item or part, each with its own "
+                                              "bin and steps; [] if none")
+    put_out_steps: list[str] = Field(default_factory=list,
+                                     description="How to put the waste out, from the district "
+                                                 "table (schedule answers); user's language")
     answer_text: str = Field(description="In the user's language; several lines; [n] cites")
     citations: list[Citation]
     missing: str = Field(description="What could not be answered (diagnostic, English)")
@@ -126,10 +143,10 @@ class Answer(_Strict):
     @model_validator(mode="after")
     def _rules_between_fields(self) -> Answer:
         problems = []
-        if self.bin and self.bin not in BINS:
-            problems.append(f"unknown bin {self.bin!r}")
-        if self.status != "ANSWER" and self.bin:
-            problems.append(f"{self.status} answer names a bin")
+        problems += [f"unknown bin {i.bin!r} for item {i.item!r}" for i in self.items
+                     if i.bin not in BINS]
+        if self.status != "ANSWER" and self.items:
+            problems.append(f"{self.status} answer lists items")
         if self.status == "CLARIFY" and not self.clarify:
             problems.append("CLARIFY without a question")
         if self.status == "INSUFFICIENT_CONTEXT" and not self.handoff:
@@ -144,6 +161,18 @@ class Answer(_Strict):
         if problems:
             raise ValueError("; ".join(problems))
         return self
+
+
+def answer_bins(answer: dict) -> list[str]:
+    """The bins an answer names, one per item, in order; [] if none. Also reads 1.0 answers
+    (saved traces), which had a top-level `bin`."""
+    bins = [i.get("bin") for i in answer.get("items") or [] if i.get("bin")]
+    return bins or ([answer["bin"]] if answer.get("bin") else [])
+
+
+def first_bin(answer: dict) -> str:
+    """The first item's bin, or ''."""
+    return next(iter(answer_bins(answer)), "")
 
 
 class ContractError(ValueError):

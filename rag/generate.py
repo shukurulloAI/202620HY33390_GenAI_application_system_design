@@ -3,7 +3,12 @@ Grounded answer generation (PLAN.md §4.8; Lessons 1, 2, 4).
 
 Prompts live in rag/prompts/answer_<version>.md with SYSTEM and USER sections, so
 every trace records which prompt version produced an answer (E1 compares versions).
-The model must return JSON matching ANSWER_SCHEMA; Ollama enforces the schema.
+The model must return JSON matching answer_schema(version); Ollama enforces the schema.
+
+From v6 the model returns `items`, one entry per item or part (its bin, steps and
+citations), so a question about several items gets several bins. parse_answer turns every
+version's output into the same shape: `items` plus the first item's bin and steps in the
+v5 fields `bin` / `how_to_prepare`, which the rest of the system still reads.
 """
 from __future__ import annotations
 
@@ -32,6 +37,38 @@ ANSWER_SCHEMA = {
     "required": ["status", "bin", "bin_en", "how_to_prepare", "answer_text",
                  "citations", "missing"],
 }
+
+ITEM_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "item": {"type": "string"},
+        "bin": {"type": "string", "enum": list(BINS)},
+        "how_to_prepare": {"type": "array", "items": {"type": "string"}},
+        "citations": {"type": "array", "items": {"type": "integer"}},
+    },
+    "required": ["item", "bin", "how_to_prepare", "citations"],
+}
+ANSWER_SCHEMA_V6 = {
+    "type": "object",
+    "properties": {
+        "status": {"type": "string", "enum": list(STATUSES)},
+        "items": {"type": "array", "items": ITEM_SCHEMA},
+        "answer_text": {"type": "string"},
+        "citations": {"type": "array", "items": {"type": "integer"}},
+        "missing": {"type": "string"},
+    },
+    "required": ["status", "items", "answer_text", "citations", "missing"],
+}
+
+
+def answer_schema(version: str) -> dict:
+    """The JSON schema the model's output must follow for this prompt version."""
+    return ANSWER_SCHEMA_V6 if _version_number(version) >= 6 else ANSWER_SCHEMA
+
+
+def _version_number(version: str) -> int:
+    match = re.match(r"v(\d+)", version or "")
+    return int(match.group(1)) if match else 0
 
 
 @lru_cache(maxsize=8)
@@ -73,8 +110,8 @@ def parse_answer(text: str, n_evidence: int) -> tuple[dict, dict]:
     except (json.JSONDecodeError, ValueError):
         checks["json_valid"] = False
         return {"status": "INVALID_OUTPUT", "bin": "", "bin_en": "", "how_to_prepare": [],
-                "answer_text": "", "citations": [], "missing": "model output was not JSON",
-                }, checks
+                "items": [], "answer_text": "", "citations": [],
+                "missing": "model output was not JSON"}, checks
     if answer.get("status") not in STATUSES:
         checks["status_valid"] = False
     cited = []
@@ -91,5 +128,36 @@ def parse_answer(text: str, n_evidence: int) -> tuple[dict, dict]:
         elif not 1 <= n <= n_evidence:
             checks["invalid_citations"].append(n)
     answer["citations"] = sorted(set(cited))
+    answer["items"] = _items(answer, n_evidence, checks)
+    first = answer["items"][0] if answer["items"] else {}
+    answer["bin"] = first.get("bin", answer.get("bin") or "")
+    answer["bin_en"] = BINS.get(answer["bin"], answer.get("bin_en") or "")
+    answer["how_to_prepare"] = first.get("how_to_prepare", answer.get("how_to_prepare") or [])
     checks["uncited_answer"] = answer.get("status") == "ANSWER" and not cited
     return answer, checks
+
+
+def _items(answer: dict, n_evidence: int, checks: dict) -> list[dict]:
+    """The `items` list for any prompt version. v6 output is cleaned (citation numbers out of
+    range dropped, entries without a bin skipped); v5 output, which has one bin, becomes one
+    entry with the answer's own citations."""
+    if "items" not in answer:
+        if not answer.get("bin"):
+            return []
+        return [{"item": "", "bin": answer["bin"],
+                 "how_to_prepare": list(answer.get("how_to_prepare") or []),
+                 "citations": list(answer["citations"])}]
+    items = []
+    for entry in answer.get("items") or []:
+        if not isinstance(entry, dict) or not entry.get("bin"):
+            continue
+        cites = []
+        for n in entry.get("citations") or []:
+            if isinstance(n, int) and 1 <= n <= n_evidence:
+                cites.append(n)
+            else:
+                checks["invalid_citations"].append(n)
+        items.append({"item": str(entry.get("item") or ""), "bin": str(entry["bin"]),
+                      "how_to_prepare": [str(s) for s in entry.get("how_to_prepare") or []],
+                      "citations": sorted(set(cites))})
+    return items

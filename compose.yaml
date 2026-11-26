@@ -31,7 +31,7 @@ services:
     depends_on: [ollama]
     environment:
       OLLAMA_HOST: http://ollama:11434
-    entrypoint: ["ollama", "pull", "qwen2.5:7b"]
+    entrypoint: ["ollama", "pull", "gemma4:12b"]
 
   app:
     profiles: [live]

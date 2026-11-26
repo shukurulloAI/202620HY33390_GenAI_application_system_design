@@ -5,9 +5,13 @@ config file, changing only the fields the variant lists.
     python -m experiments.run_experiment experiments/configs/E3_lexical_dense_hybrid.json
     python -m experiments.run_experiment <config> --cases eval/cases/dev.jsonl
     python -m experiments.run_experiment <config> --variants dense hybrid-rrf --limit 10
+    python -m experiments.run_experiment <config> --cases eval/cases/v2/dev.jsonl \
+        --reuse rejected=eval/reports/gemma4-12-dev2/traces.jsonl
+                                            # file a finished run instead of running again
 
 Output (probes: experiments/results/<id>/; evaluation cases: experiments/results/dev/<id>/,
-so the Phase 2 probe results stay as they were):
+so the Phase 2 probe results stay as they were; another case set, e.g. eval/cases/v2/dev.jsonl,
+goes to experiments/results/dev_v2/<id>/):
     <variant>.jsonl   one full trace per case (case_id included)
     manifest.json     configs, models, cases file + SHA-256, git commit, metrics per variant
                       (a run of some --variants adds to the manifest of the same cases)
@@ -93,6 +97,35 @@ def run_variant(spec: dict, name: str, cfg: PipelineConfig, cases: list[dict], l
     return entry
 
 
+def reuse_variant(name: str, cfg: PipelineConfig, cases: list[dict], source: Path,
+                  out_dir: Path) -> dict:
+    """A variant's manifest entry from traces of a run already made (eval/run_eval.py), so
+    the same run is not made twice. Refused unless every trace ran with exactly this variant's
+    config and the traces cover exactly these cases."""
+    import shutil
+
+    from rag.files import read_jsonl
+    from rag.schedule_tool import default_table
+    traces = read_jsonl(source)
+    wrong = [t["case_id"] for t in traces
+             if (t.get("settings") or {}).get("config") != cfg.to_dict()]
+    if wrong:
+        raise SystemExit(f"{source}: {len(wrong)} traces ran with another config than "
+                         f"'{name}' (first: {wrong[0]})")
+    if {t["case_id"] for t in traces} != {c["case_id"] for c in cases}:
+        raise SystemExit(f"{source}: the traces do not cover exactly the {len(cases)} cases")
+    path = out_dir / f"{name}.jsonl"
+    shutil.copyfile(source, path)
+    summary = quick_summary(traces, cases, cfg.k_final)
+    if any(c.get("expected_schedule") for c in cases):
+        summary["schedule"] = schedule_summary(traces, cases, default_table())
+    result = score(traces, cases)
+    return {"config": cfg.to_dict(), "settings": traces[0]["settings"],
+            "traces": paths.relative(path), "reused_from": paths.relative(source.resolve()),
+            "quick_summary": summary, "llm_replayed": 0,
+            "metrics": {k: v for k, v in result.items() if k != "rows"}}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -103,6 +136,9 @@ def main() -> None:
     parser.add_argument("--slices", nargs="*", help="only cases of these slices (e.g. E4)")
     parser.add_argument("--allow-test", action="store_true")
     parser.add_argument("--llm", default="ollama", choices=["ollama", "fixture"])
+    parser.add_argument("--reuse", nargs="*", default=[], metavar="VARIANT=TRACES",
+                        help="file an existing traces file as this variant (checked against "
+                             "its config) instead of running it")
     parser.add_argument("--cache", action="store_true",
                         help="replay identical temperature-0 LLM requests from .cache/llm "
                              "(for retrieval-stage experiments, where routing is the same)")
@@ -122,7 +158,9 @@ def main() -> None:
     if args.variants:
         variants = {name: v for name, v in variants.items() if name in args.variants}
     is_eval = any("expected_behavior" in c for c in cases)
-    out_dir = paths.RESULTS_DIR / cases_path.stem / spec["id"] if is_eval else \
+    folder = (cases_path.stem if cases_path.resolve().parent == paths.DEV_CASES.parent
+              else f"{cases_path.stem}_{cases_path.resolve().parent.name}")   # dev_v2
+    out_dir = paths.RESULTS_DIR / folder / spec["id"] if is_eval else \
         paths.RESULTS_DIR / spec["id"]
     out_dir.mkdir(parents=True, exist_ok=True)
     manifest_file = out_dir / "manifest.json"
@@ -135,11 +173,16 @@ def main() -> None:
                 "limit": limit, **snapshot(),
                 "started": datetime.now().isoformat(timespec="seconds"), "variants": kept}
 
+    reuse = dict(item.split("=", 1) for item in args.reuse)
+    unknown = set(reuse) - set(variants)
+    if unknown:
+        raise SystemExit(f"--reuse names unknown variants: {sorted(unknown)}")
     base = base_config(spec)
     for name, fields in variants.items():
         cfg = base.replace(**spec.get("fixed", {}), **fields)
-        manifest["variants"][name] = run_variant(spec, name, cfg, cases, args.llm, out_dir,
-                                                 args.cache)
+        manifest["variants"][name] = (
+            reuse_variant(name, cfg, cases, Path(reuse[name]), out_dir) if name in reuse
+            else run_variant(spec, name, cfg, cases, args.llm, out_dir, args.cache))
         manifest["variants"][name]["git_commit"] = manifest["git_commit"]
         manifest_file.write_text(json.dumps(manifest, ensure_ascii=False, indent=2),
                                  encoding="utf-8")         # after each variant: a crash keeps it

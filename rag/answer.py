@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from rag.bins import BINS
 from rag.contract import CONTRACT_VERSION
 from rag.gate import GateDecision
 from rag.handoff import build_handoff, message
@@ -41,9 +42,12 @@ def build_answer(draft: dict, evidence: list, *, request: Request, route: Route,
         "contract_version": CONTRACT_VERSION,
         "status": draft.get("status"),
         "lang": request.lang,
-        "bin": draft.get("bin", ""),
-        "bin_en": draft.get("bin_en", ""),
-        "how_to_prepare": draft.get("how_to_prepare", []),
+        "items": [{"item": i.get("item", ""), "bin": i["bin"],
+                   "bin_en": i.get("bin_en") or BINS.get(i["bin"], ""),
+                   "how_to_prepare": list(i.get("how_to_prepare") or []),
+                   "citations": list(i.get("citations") or [])}
+                  for i in draft.get("items") or [] if draft.get("status") == "ANSWER"],
+        "put_out_steps": list(draft.get("put_out_steps") or []),
         "answer_text": draft.get("answer_text", ""),
         "citations": [citation(e) for e in cited],
         "missing": draft.get("missing", ""),

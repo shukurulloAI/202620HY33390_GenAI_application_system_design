@@ -285,16 +285,23 @@ Prompt sections: **Task**, **Context**, **Constraints**, **Output**.
 - Few-shot examples: one supported item answer, one schedule answer, one abstention.
 - Temperature 0; seed recorded.
 
-Output JSON:
+Output JSON (answer contract 2.0, `rag/contract.py`):
 ```json
 {"status": "ANSWER | INSUFFICIENT_CONTEXT | CLARIFY",
- "bin": "투명페트병", "bin_en": "clear PET bottles",
- "how_to_prepare": ["empty", "remove label", "crush", "close cap"],
+ "items": [{"item": "PET bottle", "bin": "투명페트병", "bin_en": "clear PET bottles",
+            "how_to_prepare": ["empty", "remove label", "crush", "close cap"],
+            "citations": [1]}],
  "schedule": {"days": "...", "time": "...", "place": "..."},
+ "put_out_steps": ["..."],
  "answer_text": "...",
  "citations": [{"n": 1, "chunk_id": "..."}, {"n": 2, "row_id": "..."}],
  "data_date": "2024-xx-xx", "office_phone": "...", "missing": null}
 ```
+
+Contract 1.0 (the system frozen for the test run) had one `bin`, `bin_en` and `how_to_prepare`
+at the top level. 2.0 keeps them only in `items`, one entry per item the question asks about
+(prompt v6 asks for one record per item; a v5 answer becomes a one-item list), and keeps the
+district's put-out method apart in `put_out_steps`.
 
 `schedule`, `data_date` and `office_phone` are filled by `pipeline.schedule_fields` from the tool's rows, never by the LLM. The schedule part of `answer_text` is written by code too (`rag/schedule_text.py`): the generator sees item evidence only, and a small LLM call translates the free-text `method` field, which falls back to English and then to the Korean text if it fails. Uzbek, Vietnamese and Russian method text goes to English until a native speaker has checked them (`METHOD_LANGUAGE`). `schedule_text = llm` keeps the old behaviour, and the baseline uses it. With several zones or waste types each value is labelled, `data_date` is the oldest date, and `schedule` also keeps the full detail (`status`, `message`, `options`, `zones`).
 
@@ -494,7 +501,7 @@ Undefined cases are declared, e.g., Recall@k for abstain cases = `None`, exclude
 | Lexical search | `rank_bm25` + `kiwipiepy` Korean tokenizer | Lessons 4–5 hybrid |
 | Reranker | `BAAI/bge-reranker-v2-m3` (CrossEncoder) | Lesson 5 |
 | Orchestration | LangChain (explicit steps) or plain Python with the same stage boundaries | Lesson 4 |
-| Router + generator LLM | Ollama `qwen2.5:7b` for both (default) behind an `LLMClient` interface; `qwen2.5:3b` = course baseline; `exaone3.5:7.8b` (LG, Korean/English) tested in Phase 2 and not adopted | Lesson 1 provider boundary; see `docs/PHASE1_NOTES.md`, `PHASE2_NOTES.md` |
+| Router + generator LLM | Ollama `gemma4:12b` for both (default since 2026-11-16, E10 on dev v2) behind an `LLMClient` interface; `qwen2.5:7b` = the v1 system's model; `qwen2.5:3b` = course baseline; `exaone3.5:7.8b` (LG, Korean/English) tested in Phase 2 and not adopted | Lesson 1 provider boundary; see `docs/PHASE1_NOTES.md`, `PHASE2_NOTES.md` |
 | Judge LLM | A stronger model than the generator, pinned | Lesson 6 |
 | Evaluation | Own metrics code (chunk-ID based) + `ragas` | Lesson 6 |
 | UI | Streamlit | Simple demo |
@@ -822,7 +829,7 @@ Maintenance (Moderna lesson): each source has an owner, a revision hash and a re
 
 ## 14. Open decisions
 
-- [ ] LLM: `qwen2.5:7b` for router and generator (Phase 1–2 probes; EXAONE 3.5 7.8B tested and not adopted, see `PHASE2_NOTES.md` §8); still open: a stronger model for low-resource languages (Uzbek), and the judge model
+- [x] LLM: `gemma4:12b` for router and generator (E10 on dev v2: 119/151 correct and 6 false answers against 100 and 18 for `qwen2.5:7b`, the v1 model; EXAONE 3.5 7.8B tested in Phase 2 and not adopted, see `PHASE2_NOTES.md` §8); still open: the judge model
 - [ ] Which extra languages besides English and Korean
 - [ ] Whether to include the 770-item API snapshot (needs an API key)
 - [ ] Project deadline, presentation date and demo format

@@ -312,8 +312,8 @@ def test_a_source_label_does_not_repeat_its_page_year_or_date(offline):
     for question in ("Where do I throw away a pizza box?", "When can I put out food waste?"):
         example = next(e for e in service.examples() if e["question"] == question)
         at = submit(question)
-        labels = [e.label.replace("\\", "") for e in at.expander       # after the icon
-                  if e.label.startswith(":material/description: \\[")]
+        labels = [b.label.replace("\\", "") for b in at.button         # the source buttons
+                  if b.key and b.key.startswith("source_")]
         assert len(labels) == len(example["answer"]["citations"])
         for c, label in zip(example["answer"]["citations"], labels, strict=True):
             assert label.count(f"p. {c['page']}") + label.count(f"p.{c['page']}") <= 1 \
@@ -367,3 +367,18 @@ def test_visitor_log_and_who_the_visitor_is():
         assert state.visitor_id(shared, None, "s") == "s"       # this machine, Docker, LAN, CGNAT
     assert state.visitor_id(None, {"CF-Connecting-IP": "not an ip"}, "s") == "s"
     assert state.visitor_id(None, None, "session-9") == "session-9"
+
+
+def test_a_source_opens_its_guide_page_in_a_pop_up(offline):
+    """A click on a source shows the cited page of the official PDF, the text the
+    assistant read and a download button for the whole guide."""
+    question = "Where do I throw away a pizza box?"
+    example = next(e for e in service.examples() if e["question"] == question)
+    first = example["answer"]["citations"][0]
+    at = submit(question)
+    button = next(b for b in at.button if b.key and b.key.startswith("source_"))
+    button.click().run()
+    assert not at.exception
+    assert any(service.source_text(first)["text"] in t.value for t in at.text)
+    assert len(at.get("image")) == 1                                  # the PDF page
+    assert any(d.proto.label.endswith("(PDF)") for d in at.get("download_button"))

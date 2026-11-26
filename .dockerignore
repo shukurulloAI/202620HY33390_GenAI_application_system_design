@@ -20,6 +20,8 @@ traces
 .cache
 # Inputs of preprocessing and evaluation outputs
 data/raw
+# ...except the two guides, shown in the source pop-up (5 MB)
+!data/raw/item_guides/*.pdf
 data/interim
 data/processed/schedule_chunks.jsonl
 eval/reports

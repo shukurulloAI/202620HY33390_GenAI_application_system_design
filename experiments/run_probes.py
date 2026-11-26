@@ -24,12 +24,13 @@ from eval.metrics import gold_rank
 from eval.provenance import snapshot
 from rag import paths
 from rag.config import load_config
+from rag.contract import answer_bins, first_bin
 from rag.llm_client import make_client
 from rag.pipeline import Pipeline
 
 
 def check(probe: dict, answer: dict) -> dict:
-    text = " ".join([answer.get("bin", ""), answer.get("answer_text", "")]).lower()
+    text = " ".join([*answer_bins(answer), answer.get("answer_text", "")]).lower()
     expected = probe["expect_status"]
     expected = [expected] if isinstance(expected, str) else expected
     status_ok = answer.get("status") in expected
@@ -52,7 +53,7 @@ def run_probe(pipeline: Pipeline, probe: dict, retrieval_only: bool) -> dict:
            "selected": trace["selected"], "timings": trace["timings"]}
     if not retrieval_only:
         answer = trace["answer"]
-        row.update(check(probe, answer), status=answer["status"], bin=answer["bin"],
+        row.update(check(probe, answer), status=answer["status"], bin=first_bin(answer),
                    answer=answer["answer_text"], gate=trace.get("gate"),
                    checks=trace.get("checks"), handoff=answer.get("handoff"),
                    clarify=answer.get("clarify"))

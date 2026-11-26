@@ -21,6 +21,11 @@ invents an entity silently changes the question:
                             throw away a pizza box?") -> intent both, so the schedule is
                             looked up too (qwen2.5:7b routes these as item only)
 
+router_v2 returns `items`, one {item, item_ko, ko_query} per item the question names, so a
+question about several items is searched once per item (pipeline.retrieve). The first item
+also fills item / item_ko / ko_query, which the rest of the system reads; every item gets
+the Korean checks above.
+
 Fallbacks: invalid JSON -> one retry -> route.valid = False, and the pipeline searches
 with the original question only (Phase 1 behaviour). The original question is always
 kept next to the rewrite in the trace.
@@ -59,6 +64,24 @@ ROUTER_SCHEMA = {
                  "waste_type", "day_ref", "negation", "lang"],
 }
 
+ITEM_ENTRY = {"type": "object",
+              "properties": {"item": {"type": "string"}, "item_ko": {"type": "string"},
+                             "ko_query": {"type": "string"}},
+              "required": ["item", "item_ko", "ko_query"]}
+ROUTER_SCHEMA_V2 = {
+    "type": "object",
+    "properties": {**{k: v for k, v in ROUTER_SCHEMA["properties"].items()
+                      if k not in ("item", "item_ko", "ko_query")},
+                   "items": {"type": "array", "items": ITEM_ENTRY}},
+    "required": ["intent", "items", "district", "dong", "waste_type", "day_ref", "negation",
+                 "lang"],
+}
+
+
+def router_schema(prompt_version: str) -> dict:
+    return ROUTER_SCHEMA_V2 if prompt_version == "v2" else ROUTER_SCHEMA
+
+
 _NEGATION = re.compile(
     r"\bnot\b|n't\b|\bnever\b|안\s|않|아니|아닌|못\s|\bemas\b|\bне\b|không|不|没",
     re.IGNORECASE)
@@ -95,6 +118,7 @@ class Route:
     day_ref: str | None = None
     negation: bool = False
     lang: str | None = None
+    items: list = field(default_factory=list)      # [{item, item_ko, ko_query}], first = item
     checks: dict = field(default_factory=dict)
     attempts: list = field(default_factory=list)   # raw outputs, for the trace
 
@@ -138,6 +162,7 @@ class Router:
         self.temperature, self.seed = temperature, seed
         self.repair = repair             # one retry when the rewrite fails the Korean check
         self.name = f"router_{prompt_version}{'+repair' if repair else ''}:{llm.model_id}"
+        self.max_tokens = 384 if prompt_version == "v2" else 256   # room for several items
 
     def route(self, question: str) -> Route:
         system, user = load_prompt(f"router_{self.prompt_version}")
@@ -146,12 +171,13 @@ class Router:
         for attempt in range(2):                         # one retry (PLAN.md §4.3)
             suffix = "" if attempt == 0 else "\n\nReturn only the JSON object."
             result = self.llm.generate(system=system, prompt=prompt + suffix,
-                                       json_schema=ROUTER_SCHEMA, max_tokens=256,
+                                       json_schema=router_schema(self.prompt_version),
+                                       max_tokens=self.max_tokens,
                                        temperature=self.temperature, seed=self.seed)
             attempts.append({"raw": result.text, "latency_s": result.latency_s,
                              "prompt_tokens": result.prompt_tokens,
                              "completion_tokens": result.completion_tokens})
-            data = _parse(result.text)
+            data = _parse(result.text, self.prompt_version)
             if data is not None:
                 break
         if data is None:
@@ -171,13 +197,14 @@ class Router:
         for Uzbek frying oil and '#gaşorke su kapağı' for Russian soda bottles)."""
         suffix = REPAIR.format(item_ko=route.item_ko, ko_query=route.ko_query)
         result = self.llm.generate(system=system, prompt=prompt + suffix,
-                                   json_schema=ROUTER_SCHEMA, max_tokens=256,
+                                   json_schema=router_schema(self.prompt_version),
+                                   max_tokens=self.max_tokens,
                                    temperature=self.temperature, seed=self.seed)
         attempts = [*route.attempts, {"raw": result.text, "latency_s": result.latency_s,
                                       "prompt_tokens": result.prompt_tokens,
                                       "completion_tokens": result.completion_tokens,
                                       "repair": True}]
-        data = _parse(result.text)
+        data = _parse(result.text, self.prompt_version)
         if data is None:
             route.attempts = attempts
             return None
@@ -199,17 +226,29 @@ def needs_repair(route: Route) -> bool:
                  or route.checks.get("ko_query_korean") is False))
 
 
-def _parse(text: str) -> dict | None:
+def _parse(text: str, prompt_version: str = "v1") -> dict | None:
     try:
         data = json.loads(text)
     except json.JSONDecodeError:
         return None
-    if not isinstance(data, dict) or set(ROUTER_SCHEMA["required"]) - set(data):
+    schema = router_schema(prompt_version)
+    if not isinstance(data, dict) or set(schema["required"]) - set(data):
         return None
     if data["intent"] not in INTENTS:
         return None
+    if "items" in schema["properties"]:            # v2: one entry per item
+        items = [{k: str(e.get(k) or "").strip() for k in ("item", "item_ko", "ko_query")}
+                 for e in data.get("items") or [] if isinstance(e, dict)]
+        items = [e for e in items if e["item"] or e["item_ko"]]
+        first = items[0] if items else {"item": "", "item_ko": "", "ko_query": ""}
+        data = {**data, **first}
+    else:
+        items = None
     out = {k: (data[k].strip() if isinstance(data[k], str) else data[k])
            for k in ROUTER_SCHEMA["required"]}
+    out["items"] = items if items is not None else (
+        [{"item": out["item"], "item_ko": out["item_ko"], "ko_query": out["ko_query"]}]
+        if out["item"] or out["item_ko"] else [])
     out["waste_type"] = None if out["waste_type"] in ("none", "", None) else out["waste_type"]
     out["day_ref"] = None if out["day_ref"] in ("none", "", None) else out["day_ref"]
     out["negation"] = bool(out["negation"])
@@ -265,6 +304,19 @@ def check_invariants(question: str, route: Route) -> dict:
     checks["rewrite_usable"] = (route.intent != "out_of_scope"
                                 and checks.get("item_ko_korean", True)
                                 and checks.get("ko_query_korean", False))
+    if route.items:                                # the checked first item, then the others
+        route.items[0] = {"item": route.item, "item_ko": route.item_ko,
+                          "ko_query": route.ko_query}
+    checks["items"] = []
+    for entry in route.items[1:]:
+        if entry["item_ko"] and entry["item_ko"].replace(" ", "") not in \
+                entry["ko_query"].replace(" ", ""):
+            entry["ko_query"] = f"{entry['item_ko']} {entry['ko_query']}".strip()
+        checks["items"].append({
+            "item": entry["item"],
+            "item_ko_korean": is_korean(entry["item_ko"], strict=True) if entry["item_ko"]
+            else None,
+            "rewrite_usable": route.intent != "out_of_scope" and is_korean(entry["ko_query"])})
     return checks
 
 

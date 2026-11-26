@@ -9,6 +9,7 @@ import pytest
 
 from rag import paths
 from rag.config import PipelineConfig
+from rag.contract import first_bin
 from rag.files import read_jsonl
 from rag.pipeline import Pipeline
 from rag.retrieve import Candidate
@@ -30,9 +31,14 @@ def candidate(legacy_id, rerank_score):
 
 
 def route(**fields):
+    """A router reply in both formats: router_v1 reads item / item_ko / ko_query, router_v2
+    (the default) the same item as the one entry of `items`."""
     base = {"intent": "item", "item": "", "item_ko": "", "ko_query": "", "district": "",
             "dong": "", "waste_type": "none", "day_ref": "none", "negation": False, "lang": "en"}
-    return json.dumps({**base, **fields}, ensure_ascii=False)
+    data = {**base, **fields}
+    one = {k: data[k] for k in ("item", "item_ko", "ko_query")}
+    data.setdefault("items", [one] if one["item"] or one["item_ko"] else [])
+    return json.dumps(data, ensure_ascii=False)
 
 
 def answer(**fields):
@@ -51,10 +57,10 @@ def table():
     return default_table()
 
 
-def run(replies, candidates, table, question="Where do eggshells go?", **inputs):
+def run(replies, candidates, table, question="Where do eggshells go?", cfg=None, **inputs):
     llm = ScriptedLLM(*replies)
     retriever = FakeRetriever(candidates)
-    pipeline = Pipeline(PipelineConfig(), llm, write_traces=False, retriever=retriever,
+    pipeline = Pipeline(cfg or PipelineConfig(), llm, write_traces=False, retriever=retriever,
                         schedule=table, counter=CharCounter())
     trace = pipeline.run(question, **inputs)
     assert trace["contract_problems"] == []
@@ -64,7 +70,7 @@ def run(replies, candidates, table, question="Where do eggshells go?", **inputs)
 def test_item_answer(table):
     trace, llm, retriever = run([EGG_ROUTE, EGG_ANSWER], [candidate(EGGSHELL, 0.9)], table)
     a = trace["answer"]
-    assert (a["status"], a["bin"]) == ("ANSWER", "종량제봉투")
+    assert (a["status"], first_bin(a)) == ("ANSWER", "종량제봉투")
     assert trace["gate"]["item"] == "answer" and len(llm.calls) == 2
     assert set(retriever.queries[0]) == {"original", "rewrite"}
     assert trace["evidence"][0]["ref"] == chunks_by_legacy_id()[EGGSHELL]["id"]
@@ -72,7 +78,7 @@ def test_item_answer(table):
 
 def test_gate_abstains_without_calling_the_generator(table):
     trace, llm, _ = run([EGG_ROUTE], [candidate(EGGSHELL, 0.05)], table)   # tau is 0.15
-    assert trace["answer"]["status"] == "INSUFFICIENT_CONTEXT" and trace["answer"]["bin"] == ""
+    assert trace["answer"]["status"] == "INSUFFICIENT_CONTEXT" and first_bin(trace["answer"]) == ""
     assert trace["gate"]["item"] == "abstain" and len(llm.calls) == 1   # the router only
     assert trace["llm"] is None
 
@@ -86,14 +92,16 @@ def test_out_of_scope_is_refused(table):
 
 def test_unusable_generator_output_is_downgraded(table):
     trace, _, _ = run([EGG_ROUTE, "not json"], [candidate(EGGSHELL, 0.9)], table)
-    assert trace["answer"]["status"] == "INSUFFICIENT_CONTEXT" and trace["answer"]["bin"] == ""
+    assert trace["answer"]["status"] == "INSUFFICIENT_CONTEXT" and first_bin(trace["answer"]) == ""
     assert trace["checks"]["validation"]["downgraded"]
 
 
 def test_a_bin_the_cited_chunk_does_not_state_is_refused(table):
     wrong = answer(bin="음식물", bin_en="food waste", answer_text="Food waste [1].", citations=[1])
-    trace, _, _ = run([EGG_ROUTE, wrong], [candidate(EGGSHELL, 0.9)], table)
-    assert trace["answer"]["status"] == "INSUFFICIENT_CONTEXT" and trace["answer"]["bin"] == ""
+    # the same wrong bin twice: the default retry (rejected) cannot rescue it
+    trace, llm, _ = run([EGG_ROUTE, wrong, wrong], [candidate(EGGSHELL, 0.9)], table)
+    assert trace["answer"]["status"] == "INSUFFICIENT_CONTEXT" and first_bin(trace["answer"]) == ""
+    assert len(llm.calls) == 3 and trace["llm"]["retry"]["passed"] is False
 
 
 # The bin field says one bin, the text tells the user another (a pizza box: 종이, its greasy
@@ -105,9 +113,9 @@ CONFLICTING = answer(bin="종량제봉투", bin_en="general waste bag", citation
 def test_a_bin_that_its_text_contradicts_is_asked_once_more(table):
     trace, llm, _ = run([EGG_ROUTE, CONFLICTING, EGG_ANSWER], [candidate(EGGSHELL, 0.9)], table)
     a = trace["answer"]
-    assert (a["status"], a["bin"]) == ("ANSWER", "종량제봉투") and len(llm.calls) == 3
+    assert (a["status"], first_bin(a)) == ("ANSWER", "종량제봉투") and len(llm.calls) == 3
     assert "Your previous answer gave the bin 종량제봉투" in llm.calls[2]["prompt"]
-    retry = trace["llm"]["bin_conflict_retry"]
+    retry = trace["llm"]["retry"]
     assert retry["passed"] and "names ['음식물']" in retry["first_reasons"][0]
     assert trace["checks"]["validation"]["retried_after"] == retry["first_reasons"]
 
@@ -116,16 +124,43 @@ def test_a_retry_that_still_contradicts_itself_is_withheld(table):
     trace, llm, _ = run([EGG_ROUTE, CONFLICTING, CONFLICTING], [candidate(EGGSHELL, 0.9)],
                         table)
     assert trace["answer"]["status"] == "INSUFFICIENT_CONTEXT" and len(llm.calls) == 3
-    assert trace["llm"]["bin_conflict_retry"]["passed"] is False
+    assert trace["llm"]["retry"]["passed"] is False
     assert trace["checks"]["validation"]["bin_text_conflict"]
 
 
 def test_only_an_answer_that_would_be_withheld_for_a_conflict_is_retried(table):
+    """generation_retry = conflict (the default before 2026-11-15)."""
     for reply in (EGG_ANSWER,                                         # passes: no retry
                   answer(bin="음식물", bin_en="food waste", answer_text="Food waste [1].",
                          citations=[1])):                             # withheld, no conflict
-        trace, llm, _ = run([EGG_ROUTE, reply], [candidate(EGGSHELL, 0.9)], table)
-        assert len(llm.calls) == 2 and "bin_conflict_retry" not in trace["llm"]
+        trace, llm, _ = run([EGG_ROUTE, reply], [candidate(EGGSHELL, 0.9)], table,
+                            cfg=PipelineConfig(generation_retry="conflict"))
+        assert len(llm.calls) == 2 and "retry" not in trace["llm"]
+
+
+WRONG_BIN = answer(bin="음식물", bin_en="food waste", answer_text="Food waste [1].",
+                   citations=[1])
+
+
+def test_with_generation_retry_rejected_any_withheld_answer_is_asked_again(table):
+    cfg = PipelineConfig(generation_retry="rejected")
+    trace, llm, _ = run([EGG_ROUTE, WRONG_BIN, EGG_ANSWER], [candidate(EGGSHELL, 0.9)], table,
+                        cfg=cfg)
+    assert (trace["answer"]["status"], first_bin(trace["answer"])) == ("ANSWER", "종량제봉투")
+    assert len(llm.calls) == 3
+    # the reason keeps the hint: the bin the cited evidence states
+    assert ("Your previous answer was rejected: bin '음식물' is not stated in the cited "
+            "evidence (they state ['종량제봉투'])") in llm.calls[2]["prompt"]
+    assert trace["llm"]["retry"]["kind"] == "rejected" and trace["llm"]["retry"]["passed"]
+
+    trace, llm, _ = run([EGG_ROUTE, WRONG_BIN, WRONG_BIN], [candidate(EGGSHELL, 0.9)], table,
+                        cfg=cfg)                                  # still wrong: withheld
+    assert trace["answer"]["status"] == "INSUFFICIENT_CONTEXT" and len(llm.calls) == 3
+
+    abstain = answer(status="INSUFFICIENT_CONTEXT", bin="", bin_en="", citations=[],
+                     answer_text="I cannot tell.")
+    trace, llm, _ = run([EGG_ROUTE, abstain], [candidate(EGGSHELL, 0.9)], table, cfg=cfg)
+    assert len(llm.calls) == 2                                    # the model abstained itself
 
 
 def test_router_failure_falls_back_to_the_question(table):
@@ -145,7 +180,7 @@ def test_combined_question_schedule_is_written_by_code(table):
     trace, llm, _ = run([COMBINED_ROUTE, EGG_ANSWER], [candidate(EGGSHELL, 0.9)], table,
                         question=COMBINED_Q, lang="ko", district="성동구", dong="행당동")
     a = trace["answer"]
-    assert a["status"] == "ANSWER" and a["bin"] == "종량제봉투"
+    assert a["status"] == "ANSWER" and first_bin(a) == "종량제봉투"
     assert "Do not mention days" in llm.calls[1]["prompt"]       # the generator sees no days
     assert {e["kind"] for e in trace["evidence"]} == {"item", "schedule"}
     assert len(llm.calls) == 2                                    # Korean: nothing to translate
@@ -155,7 +190,7 @@ def test_combined_question_keeps_the_schedule_when_the_item_fails(table):
     unsure = answer(status="INSUFFICIENT_CONTEXT", missing="not in the evidence")
     trace, _, _ = run([COMBINED_ROUTE, unsure], [candidate(EGGSHELL, 0.9)], table,
                       question=COMBINED_Q, lang="ko", district="성동구", dong="행당동")
-    assert trace["answer"]["status"] == "ANSWER" and trace["answer"]["bin"] == ""
+    assert trace["answer"]["status"] == "ANSWER" and first_bin(trace["answer"]) == ""
     assert trace["gate"]["item"] == "abstain"
     assert "schedule answered alone" in trace["gate"]["reasons"][-1]
     assert {e["kind"] for e in trace["evidence"]} == {"schedule"}
@@ -185,3 +220,40 @@ def test_progress_names_each_stage_and_changes_nothing(table, replies, score, in
     observed = pipeline.answer(question, **inputs, progress=seen.append)
     assert seen == stages
     assert without_id(observed) == without_id(plain["answer"])
+
+
+def test_a_chosen_area_adds_the_collection_days_of_the_answered_bin(table):
+    """An item question that asks nothing about days, with the area chosen on the page:
+    eggshells -> 종량제봉투 -> the general-waste days there, written by code."""
+    trace, llm, _ = run([EGG_ROUTE, EGG_ANSWER], [candidate(EGGSHELL, 0.9)], table,
+                        lang="ko", district="성동구", dong="행당동")
+    a = trace["answer"]
+    assert a["status"] == "ANSWER" and first_bin(a) == "종량제봉투"
+    assert trace["local_days"] == {"bins": ["종량제봉투"], "types": ["general"], "added": True}
+    assert trace["resolved"]["intent"] == "item" and trace["gate"]["schedule"] == "answer"
+    assert {e["kind"] for e in trace["evidence"]} == {"item", "schedule"}
+    assert a["schedule"] and a["schedule"]["zones"]
+    assert "Do not mention days" not in llm.calls[1]["prompt"]   # asked as an item question
+    assert len(llm.calls) == 2                                   # no extra model call
+
+
+def test_an_area_named_only_in_the_question_adds_no_days(table):
+    named = route(item="eggshells", item_ko="계란껍질", ko_query="계란껍질 분리배출 방법",
+                  district="성동구")
+    trace, _, _ = run([named, EGG_ANSWER], [candidate(EGGSHELL, 0.9)], table,
+                      question="I live in Seongdong-gu. Where do eggshells go?", lang="ko")
+    assert trace["resolved"]["location_source"] == "router"
+    assert "local_days" not in trace and trace["answer"]["schedule"] is None
+
+
+def test_a_bin_without_collection_days_adds_none(table):
+    from rag.pipeline import Pipeline, Request
+    pipeline = Pipeline(PipelineConfig(), ScriptedLLM(), write_traces=False,
+                        retriever=FakeRetriever([]), schedule=table, counter=CharCounter())
+    request = Request("Where do batteries go?", "item", "ko", "성동구", None, "행당동", None,
+                      None, "input")
+    draft = {"status": "ANSWER", "items": [{"item": "battery", "bin": "전용함"}]}
+    trace = {}
+    out = pipeline._local_days(request, draft, None, None, None, [], trace)
+    assert out == (request, None, None, [], None)                 # unchanged
+    assert trace["local_days"]["why"] == "no collection type for the bin"

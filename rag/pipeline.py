@@ -33,13 +33,15 @@ from datetime import UTC, datetime
 
 from rag import config
 from rag.answer import build_answer
+from rag.bins import BIN_WASTE_TYPE
 from rag.config import PipelineConfig
 from rag.context import ContextBudget, default_counter, pack_evidence, schedule_evidence
-from rag.contract import problems
+from rag.contract import answer_bins, problems
 from rag.gate import MAX_ZONES, GateDecision, decide
-from rag.generate import ANSWER_SCHEMA, build_prompt, parse_answer
+from rag.generate import answer_schema, build_prompt, parse_answer
 from rag.handoff import message
 from rag.llm_client import LLMClient, make_client, model_digest
+from rag.places import read_place
 from rag.retrieve import ItemRetriever
 from rag.router import ASKS_WHEN, Route, Router
 from rag.schedule_text import ScheduleWriter, merge_schedule
@@ -121,7 +123,8 @@ class Pipeline:
                 router_llm = (make_client("ollama", self.cfg.router_model)
                               if self.cfg.router_model else self.llm)
             self.router = Router(router_llm, temperature=self.cfg.temperature,
-                                 seed=self.cfg.seed, repair=self.cfg.router_repair)
+                                 seed=self.cfg.seed, repair=self.cfg.router_repair,
+                                 prompt_version=self.cfg.router_prompt)
         self.counter = counter or default_counter(
             config.LLM_TOKENIZERS.get(self.llm.model_id, config.LLM_TOKENIZER))
         self.budget = ContextBudget()
@@ -175,6 +178,19 @@ class Pipeline:
         with timed(timings, "route_s"):
             route = self.route(question)
         trace["route"] = route.to_trace()
+        if self.cfg.place_reader and not district:
+            place = read_place(question)
+            trace["place"] = place.to_trace() if place else None
+            if place:
+                # Read by code from the table's own names: it wins over the router's guess.
+                # A name in several provinces keeps them all, so the schedule tool asks.
+                router_place = (route.district, route.dong)
+                route.district = place.district
+                route.dong = place.dong or (route.dong if router_place[0] == place.district
+                                            else "")
+                if len(place.provinces) == 1:
+                    province = place.provinces[0]
+                trace["place"]["router_had"] = list(router_place)
         request = Request.resolve(question, route, lang, district, province, dong, waste_type)
         trace["resolved"] = request.to_trace()
 
@@ -203,6 +219,9 @@ class Pipeline:
         if gate.status == "ANSWER":
             emit("write")
         draft, evidence = self._draft(request, route, gate, selected, rows, day, trace, timings)
+        if self._adds_local_days(request, draft):
+            request, schedule, day, rows, gate = self._local_days(request, draft, gate,
+                                                                  schedule, day, rows, trace)
         if self._code_writes_schedule(rows):
             draft, evidence, gate = self._add_schedule_text(draft, evidence, request, gate, rows,
                                                             day, trace, timings)
@@ -240,7 +259,44 @@ class Pipeline:
                 names.append(route.item_ko)
         if self.cfg.rerank_item and names:
             rerank_queries = [*rerank_queries, *names]
-        return self.retriever.search(queries, rerank_queries, item_names=names)
+        if not (route.valid and route.intent != "out_of_scope" and len(route.items) > 1):
+            return self.retriever.search(queries, rerank_queries, item_names=names)
+        return self._retrieve_each(question, route)
+
+    def _retrieve_each(self, question: str, route: Route):
+        """Several items: one search per item, then the reranked lists taken in turn
+        (round-robin, no repeats), so every item has evidence in the top k_final. An item
+        whose Korean rewrite failed the checks is searched with the question instead."""
+        usable = [route.checks.get("rewrite_usable", False),
+                  *(c.get("rewrite_usable", False) for c in route.checks.get("items", []))]
+        items = route.items
+        per_item, runs, timings = [], [], {}
+        for entry, ok in zip(items, usable, strict=False):
+            names = [entry["item"]] + ([entry["item_ko"]] if ok and entry["item_ko"] else [])
+            if ok:
+                queries = {"original": entry["item"], "rewrite": entry["ko_query"]}
+                rerank = [q for q in (entry["ko_query"], entry["item_ko"], entry["item"]) if q]
+            else:
+                queries, rerank = {"original": question}, [question, entry["item"]]
+            candidates, _, record = self.retriever.search(queries, rerank,
+                                                          item_names=[n for n in names if n])
+            for key, value in record.pop("timings").items():
+                timings[key] = round(timings.get(key, 0.0) + value, 3)
+            per_item.append({"item": entry["item"], **record,
+                             "top": [c.chunk_id for c in candidates[:self.cfg.k_final]]})
+            runs.append(candidates)
+        share = max(2, -(-self.cfg.k_final // len(items)))       # ceil(k_final / n)
+        merged, seen = [], set()
+        for depth in range(max(len(r) for r in runs)):
+            for run in runs:
+                if depth < len(run) and run[depth].chunk_id not in seen:
+                    seen.add(run[depth].chunk_id)
+                    merged.append((depth, run[depth]))
+        # the first `share` of each item first, then everything else in turn
+        merged.sort(key=lambda dc: dc[0] >= share)
+        candidates = [replace(c, rank=r) for r, (_, c) in enumerate(merged, 1)]
+        record = {"per_item": per_item, "share": share, "timings": timings}
+        return candidates, candidates[:self.cfg.k_final], record
 
     def _retrieve_items(self, request: Request, route: Route, trace: dict,
                         timings: dict[str, float]) -> list:
@@ -273,6 +329,41 @@ class Pipeline:
         wanted = request.intent in ("schedule", "both") or (
             request.intent == "unknown" and request.district)
         return bool(wanted and request.district)
+
+    def _adds_local_days(self, request: Request, draft: dict | None) -> bool:
+        """An item question with an area chosen on the page (not read from the question):
+        the answer also gets the collection days of the answered bin there."""
+        return (request.intent == "item" and request.location_source == "input"
+                and bool(request.district) and self.cfg.schedule_text == "code"
+                and bool(draft) and draft.get("status") == "ANSWER")
+
+    def _local_days(self, request: Request, draft: dict, gate: GateDecision,
+                    schedule: ScheduleResult | None, day: DayRef | None,
+                    rows: list[ScheduleRow], trace: dict):
+        """The collection days for the answered bin's type (rag.bins.BIN_WASTE_TYPE) in the
+        chosen area, written by code like any schedule answer. Added only when the gate would
+        answer that schedule question as it is (one province, at most MAX_ZONES zones, same
+        days); otherwise the item answer stays as it was and nothing is asked."""
+        types = sorted({BIN_WASTE_TYPE[b] for b in answer_bins(draft) if b in BIN_WASTE_TYPE})
+        record = {"bins": answer_bins(draft), "types": types, "added": False}
+        trace["local_days"] = record
+        if not types:
+            record["why"] = "no collection type for the bin"
+            return request, schedule, day, rows, gate
+        waste_type = types[0] if len(types) == 1 else None          # several: every type
+        local = self.schedule.lookup(request.district, request.province, request.dong,
+                                     waste_type)
+        verdict = decide("schedule", [], local, request.district, request.dong, None, "")
+        if verdict.schedule != "answer":
+            record["why"] = "; ".join(verdict.reasons)
+            return request, schedule, day, rows, gate
+        record["added"] = True
+        trace["schedule"] = local.to_trace()
+        gate = replace(gate, schedule="answer", reasons=[
+            *gate.reasons, f"area chosen: {waste_type or 'all'} collection days added"])
+        trace["gate"] = gate.to_trace()
+        request = replace(request, waste_type=waste_type)
+        return request, local, resolve_day(request.day_ref), local.rows[:MAX_ZONES], gate
 
     def _code_writes_schedule(self, rows: list[ScheduleRow]) -> bool:
         """With schedule_text = code the generator never sees days, times or places."""
@@ -313,7 +404,8 @@ class Pipeline:
         trace["budget"] = budget
         system, prompt = prompt_with(evidence_text)
         with timed(timings, "generate_s"):
-            result = self.llm.generate(system=system, prompt=prompt, json_schema=ANSWER_SCHEMA,
+            result = self.llm.generate(system=system, prompt=prompt,
+                                       json_schema=answer_schema(self.cfg.prompt_version),
                                        temperature=self.cfg.temperature, seed=self.cfg.seed)
         draft, checks = parse_answer(result.text, len(evidence))
         checks["output_truncated"] = result.done_reason == "length"
@@ -324,27 +416,44 @@ class Pipeline:
         # A schedule question with no rows shown: any day the model states is invented.
         days = (schedule_days(llm_rows, request.waste_type) if llm_rows
                 else set() if gate.schedule != "skip" else None)
+        model_answered = draft.get("status") == "ANSWER"       # before validation downgrades
+        # condition: a bin stated by an exception line of the cited chunk counts as stated
+        exceptions = self.cfg.generation_retry == "condition"
         draft, validation = validate(draft, evidence, days, self.cfg.validation,
-                                     item_question=gate.item == "answer")
-        if validation.get("bin_text_conflict") and validation.get("downgraded"):
-            # The text names another bin than the bin field: e.g. a pizza box (종이) whose
-            # greasy inner paper goes in 종량제봉투, with only the second in the text. Ask
-            # once more, saying what was inconsistent; keep the new answer only if it passes
-            # every check. Only answers that would be withheld are retried.
-            note = BIN_CONFLICT_NOTE.format(bin=validation["bin"],
-                                            named=", ".join(validation["bins_in_text"]))
+                                     item_question=gate.item == "answer", exceptions=exceptions)
+        conflict = bool(validation.get("bin_text_conflict"))
+        rejected = (self.cfg.generation_retry in ("rejected", "condition") and model_answered
+                    and bool(validation.get("reasons")))
+        if validation.get("downgraded") and (conflict or rejected):
+            # Ask once more, saying why the answer was rejected; keep the new answer only if
+            # it passes every check. Only answers that would be withheld are retried.
+            #   conflict: the text names another bin than the bin field, e.g. a pizza box
+            #     (종이) whose greasy inner paper goes in 종량제봉투, with only the second in
+            #     the text (always on).
+            #   rejected (generation_retry = "rejected"): any other check failed, most often
+            #     a bin that the cited evidence does not state. On dev v2 (v5) 10 of the 13
+            #     withheld answers had a gold chunk in the evidence: 6 named the right bin
+            #     but cited another number, 4 named another bin.
+            note = (BIN_CONFLICT_NOTE.format(bin=validation["bin"],
+                                             named=", ".join(validation["bins_in_text"]))
+                    if conflict else (CONDITION_NOTE if exceptions else REJECTED_NOTE).format(
+                        # with "(they state [...])": dev v2 (v6 + router v2) 7 retried answers
+                        # became correct, 4 became false (the chunk was about another item).
+                        # Without it the model repeated itself: 0 correct, 0 false.
+                        reasons="; ".join(validation["reasons"])))
             retry_system, retry_prompt = prompt_with(evidence_text, f"{asked}\n({note})")
             with timed(timings, "generate_retry_s"):
                 retry = self.llm.generate(system=retry_system, prompt=retry_prompt,
-                                          json_schema=ANSWER_SCHEMA,
+                                          json_schema=answer_schema(self.cfg.prompt_version),
                                           temperature=self.cfg.temperature, seed=self.cfg.seed)
             retry_draft, retry_checks = parse_answer(retry.text, len(evidence))
             retry_draft, retry_validation = validate(
                 retry_draft, evidence, days, self.cfg.validation,
-                item_question=gate.item == "answer")
+                item_question=gate.item == "answer", exceptions=exceptions)
             passed = (retry_draft.get("status") == "ANSWER"
                       and not retry_validation.get("downgraded"))
-            trace["llm"]["bin_conflict_retry"] = {
+            trace["llm"]["retry"] = {
+                "kind": "bin_conflict" if conflict else "rejected", "note": note,
                 "raw_output": retry.text, "done_reason": retry.done_reason,
                 "first_reasons": validation["reasons"], "passed": passed}
             if passed:
@@ -354,7 +463,7 @@ class Pipeline:
         if draft.get("status") not in ("ANSWER", "INSUFFICIENT_CONTEXT"):
             # Not JSON, or a status outside the schema: say nothing rather than guess.
             validation["unusable_output"] = draft.get("status")
-            draft.update(status="INSUFFICIENT_CONTEXT", bin="", bin_en="", citations=[],
+            draft.update(status="INSUFFICIENT_CONTEXT", bin="", bin_en="", citations=[], items=[],
                          missing=draft.get("missing") or "model output was unusable")
             validation["downgraded"] = True
         if validation.get("downgraded"):
@@ -405,6 +514,16 @@ BIN_CONFLICT_NOTE = (
     "Your previous answer gave the bin {bin} but its text named only {named}. Name the bin "
     "for the item itself in the text too; if the source puts a part of the item in another "
     "bin, name both and say which part goes where.")
+REJECTED_NOTE = (
+    "Your previous answer was rejected: {reasons}. Answer again from the same evidence. "
+    "Each bin must be the 구분 category of the evidence you cite for it.")
+# generation_retry = "condition": the note above made the model drop the user's condition
+# and copy the chunk's heading (dev v2 k08, p06: dirty styrofoam -> 발포합성수지).
+CONDITION_NOTE = (
+    "Your previous answer was rejected: {reasons}. Answer again from the same evidence. "
+    "Keep the condition the question states (dirty, with food, broken, coated...): give the "
+    "bin the evidence states for that condition, including its exceptions (비해당, 단,). "
+    "If the evidence does not cover the condition, say so instead of guessing.")
 
 
 def item_only_question(question: str, route: Route) -> str:

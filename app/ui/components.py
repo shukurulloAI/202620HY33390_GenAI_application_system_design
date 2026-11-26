@@ -143,25 +143,51 @@ def show_hero(t: T, status: str) -> None:
 # ---------------------------------------------------------------------------- answer parts
 
 def show_bin(result: dict, t: T) -> None:
-    if not result.get("bin"):
+    items = [i for i in result.get("items") or [] if i.get("bin")]
+    if not items:
         return
     with st.container(border=True, key="bin_card", horizontal=True, wrap=False,
                       vertical_alignment="center", gap="medium"):
         # The sign: a lit green-blue tile with the bin in its ambient light (style.css; the
         # light ends within the 2rem gap). Static HTML, no answer value in it; the bin's name
-        # beside it is escaped Markdown.
+        # beside it is escaped Markdown. Several items: one line per item, in answer order.
         st.markdown(f'<div class="bin-sign">{bin_svg()}</div>', width="content",
                     unsafe_allow_html=True)
         with st.container(key="bin_name", gap=None):
-            st.markdown(f"### {md(result.get('bin_en') or result['bin'])}")
-            st.caption(f"{md(result['bin'])} · {t('bin_note')}")
+            if len(items) > 1:
+                for item in items:
+                    label = f"{md(item['item'])}: " if item.get("item") else ""
+                    st.markdown(f"**{label}{md(item.get('bin_en') or item['bin'])}**")
+                    st.caption(md(item["bin"]))
+                st.caption(t("bin_note"))
+            else:
+                st.markdown(f"### {md(items[0].get('bin_en') or items[0]['bin'])}")
+                st.caption(f"{md(items[0]['bin'])} · {t('bin_note')}")
 
 
 def show_steps(result: dict, t: T) -> None:
-    steps = result.get("how_to_prepare") or []
+    """Each item's own steps (under the item's name when there are several)."""
+    items = [i for i in result.get("items") or [] if i.get("how_to_prepare")]
+    if not items:
+        return
+    st.markdown(f":material/checklist: **{t('prepare')}**")
+    several = len(result.get("items") or []) > 1
+    for item in items:
+        if several and item.get("item"):
+            st.markdown(f"*{md(item['item'])}*")
+        st.markdown(numbered(item["how_to_prepare"]))
+
+
+def show_put_out(result: dict, t: T) -> None:
+    """The district's put-out method (from its table), once, under its own heading."""
+    steps = result.get("put_out_steps") or []
     if steps:
-        st.markdown(f":material/checklist: **{t('prepare')}**")
-        st.markdown("\n".join(f"{i}. {md(step)}" for i, step in enumerate(steps, 1)))
+        st.markdown(f":material/move_to_inbox: **{t('put_out')}**")
+        st.markdown(numbered(steps))
+
+
+def numbered(steps: list[str]) -> str:
+    return "\n".join(f"{n}. {md(step)}" for n, step in enumerate(steps, 1))
 
 
 def zone_lines(zone: dict, t: T) -> list[str]:
@@ -221,8 +247,29 @@ def show_sources(result: dict, t: T) -> None:
             t("source_data_date", date=c["data_date"]) if c.get("data_date")
             and str(c["data_date"]) not in source else None) if x)
         label = f"[{c.get('n')}] {source}" + (f" · {where}" if where else "")
-        with st.expander(f":material/description: {md(label)}"):   # icon=… would hide the arrow
-            st.text(service.source_text(c)["text"])
+        # A click opens the source in a pop-up: the page of the official PDF and the text
+        # the assistant read (the [n] in the answer text is the same number).
+        if st.button(md(label), key=f"source_{result.get('trace_id')}_{c.get('n')}",
+                     icon=":material/description:", type="tertiary"):
+            show_source_dialog(c, label, t)
+
+
+def show_source_dialog(citation: dict, label: str, t: T) -> None:
+    @st.dialog(t("source_title"), width="large")
+    def dialog() -> None:
+        st.markdown(f"**{md(label)}**")
+        document = service.source_document(citation)
+        pdf, page = document if document else (None, None)
+        image = service.page_image(pdf, page) if pdf and page else None
+        if image:
+            st.image(image, caption=t("source_page_image", page=page), width="stretch")
+        st.markdown(f"**{t('source_excerpt')}**")
+        st.text(service.source_text(citation)["text"])
+        if pdf:
+            st.download_button(t("download_pdf"), data=pdf.read_bytes(), file_name=pdf.name,
+                               mime="application/pdf", icon=":material/download:",
+                               key=f"pdf_{citation.get('n')}")
+    dialog()
 
 
 def show_handoff(result: dict, t: T) -> None:
@@ -318,6 +365,7 @@ def show_result(result: dict, request: dict, t: T, on_pick: Callable[[str, str],
             st.markdown(text)
             show_steps(result, t)
             show_schedule(result, t)
+            show_put_out(result, t)
             show_clarify(result, t, on_pick, disabled)
             show_handoff(result, t)
             show_sources(result, t)

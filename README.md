@@ -17,7 +17,7 @@ pip install -r requirements/dev.txt
 
 # 2. Local LLM (https://ollama.com)
 ollama serve                # or open the Ollama app
-ollama pull qwen2.5:7b      # default router + generator (qwen2.5:3b = course baseline)
+ollama pull gemma4:12b      # default router + generator, 8 GB (qwen2.5:7b = the earlier default)
 
 # 3. Build and verify the vector index. Cleaned data is already in data/processed/.
 #    The first run downloads BAAI/bge-m3, and the first question BAAI/bge-reranker-v2-m3
@@ -85,36 +85,49 @@ Dependencies run one way: `preprocess`, `ingest`, `eval`, `experiments` and `app
 
 **Where are the results?** The final report is [docs/REPORT.md](docs/REPORT.md) (PDF:
 `docs/REPORT.pdf`). Evaluation runs are in `eval/reports/<name>/` (the final test run is
-`eval/reports/test-final/`), experiments on dev in `experiments/results/dev/<id>/summary.md`.
+`eval/reports/test-v2-final/`, the first one `eval/reports/test-final/`), experiments on dev in
+`experiments/results/dev_v2/<id>/summary.md` (v2 cases) and `experiments/results/dev/<id>/` (v1 cases).
 [docs/PHASE2_NOTES.md](docs/PHASE2_NOTES.md) holds the earlier developer probe results, which are
 not evaluation results. Run records written before 2026-11-09 store older commit IDs;
 [docs/COMMIT_IDS.md](docs/COMMIT_IDS.md) maps them to the current ones.
 
-**Headline.** On the 30 test cases, which were never used for tuning and were run once with the
-configuration frozen at commit `f0faba6`, the system got 22 cases right with 1 false answer. The
-Phase 1 baseline got 11 right with 4 false answers. In a paired test the gain in correct cases is
-significant (p = 0.007); the drop in false answers is not, with 30 cases (p = 0.25, 95% CI 1–17%;
-`python -m eval.compare test-final test-baseline`). On dev, with the same configuration, it got 56/70
-right with 3 false answers. The cases were written by the team (with AI assistance), not by real users, and the human
-audit has not been done yet; see the report's §11.
+**Headline.** The final system (gemma4:12b, prompt v6, router v2; frozen at commit `ccb3966`)
+was run once on the 65 v2 test cases, which were never used for tuning: 46 cases right with 6
+false answers. The Phase 1 baseline on the same cases and model got 38 right with 6 false answers.
+In a paired test neither difference is significant with 65 cases (correct p = 0.15; false answers
+p = 1.0; `python -m eval.compare test-v2-final test-v2-baseline`). On the 151 dev cases it got 119
+right with 6 false answers. A first test run of an earlier system on 30 cases (`f0faba6`, qwen2.5:7b)
+got 22 right with 1 false answer, against 11 and 4 for the baseline (p = 0.007). The cases were
+written by the team (with AI assistance), not by real users, and the human audit has not been done
+yet; see the report's §11.
 
 ## How a question is answered
 
 ```
 question
- -> router (LLM): intent, item, Korean rewrite, district/dong, waste type, day   rag/router.py
- -> item retrieval: dense (bge-m3) + BM25 (kiwi) -> RRF -> cross-encoder rerank  rag/retrieve.py
+ -> router (LLM): intent, items (each with a Korean rewrite), district/dong,     rag/router.py
+    waste type, day
+ -> place reader: district/dong read by code from the table's names (Korean,     rag/places.py
+    romanised, Cyrillic); the router is the fallback
+ -> item retrieval, once per item: dense (bge-m3) + BM25 (kiwi) -> RRF           rag/retrieve.py
+    -> cross-encoder rerank; several items' lists taken in turn
  -> schedule tool: typed lookup + date check, no LLM                             rag/schedule_tool.py
  -> gate: answer / abstain / clarify / out of scope                              rag/gate.py
- -> context under a token budget -> generator (LLM, JSON schema), items only     rag/context.py, rag/generate.py
- -> validation: allowed bins, bin supported by cited evidence, citations         rag/validate.py
+ -> context under a token budget -> generator (LLM, JSON schema): one record     rag/context.py, rag/generate.py
+    per item (bin, steps, citations)
+ -> validation: allowed bins, each item's bin stated by its own cited evidence;  rag/validate.py
+    a withheld answer is asked once more with the reason
+ -> chosen area + item question: the collection days of the answered bin added   rag/pipeline.py
  -> schedule text: days, times, places by code; method translated                rag/schedule_text.py
  -> answer dict + handoff (office phone, Korean sentence) when it cannot answer  rag/answer.py, rag/handoff.py
 ```
 
 `rag/pipeline.py` runs these stages. All settings live in one `PipelineConfig` (`rag/config.py`).
-`config.DEFAULT` is the full system; `config.BASELINE` is the Phase 1 system (dense only, no
-router, rerank or gate, prompt v1).
+`config.DEFAULT` is the full system: prompt v6 (one bin per item), router v2 (one search per
+item), the place reader and the retry of withheld answers, with gemma4:12b (report §8.7).
+`config.BASELINE` is the Phase 1 system (dense only, no router, rerank or gate, prompt v1). The
+system of the first test run (report §8.1) is:
+`--set llm_model=qwen2.5:7b --set prompt_version=v5 --set router_prompt=v1 --set generation_retry=conflict --set place_reader=false`.
 
 ```bash
 python -m rag "..." --baseline                          # Phase 1 system
@@ -134,7 +147,9 @@ from rag import service
 answer = service.ask("Where do I throw away a pizza box?", lang="en",
                      district="성동구", dong="행당1동")    # province=, waste_type= optional
 service.save_feedback(answer["trace_id"], "up", "clear answer")
-service.source_text(answer["citations"][0])   # full text for a source card
+service.source_text(answer["citations"][0])   # full text for a source
+service.source_document(answer["citations"][0])  # (PDF path, page) of a guide citation, else None
+service.page_image(pdf, page)                    # that page as PNG bytes (the source pop-up)
 service.locations(); service.glossary(); service.languages(); service.health()
 service.warm_up()     # load the pipeline and the Ollama models now (the website does this at start)
 service.data_reviews()  # owner and review date per source (data/manual/stewardship.json)
@@ -170,17 +185,18 @@ Answer dict:
 |---|---|
 | `status` | `ANSWER`, `INSUFFICIENT_CONTEXT` (abstain), `CLARIFY` (ask the user), `OUT_OF_SCOPE` |
 | `lang` | Language of the answer |
-| `bin`, `bin_en` | Canonical bin (`rag/bins.py`), e.g. `종량제봉투` / "general waste (pay-as-you-throw bag)" |
-| `how_to_prepare`, `answer_text` | Steps and the answer in the user's language, with `[n]` citations. `answer_text` can have several lines |
-| `citations` | `{n, kind: item/schedule, ref: chunk_id or 관리번호, source}` |
-| `schedule` | From the tool, never the LLM: `days`, `time`, `place`, and `zones` with next dates, `day_check`, office, phone, data date, `stale` |
+| `items` | One entry per item asked about: `{item, bin, bin_en, how_to_prepare, citations}`. `bin` is a canonical bin (`rag/bins.py`), e.g. `종량제봉투` / "general waste (pay-as-you-throw bag)"; `how_to_prepare` holds that item's steps in the user's language |
+| `answer_text` | The answer in the user's language, with `[n]` citations; can have several lines |
+| `put_out_steps` | The district's put-out method (from its table, translated), when a schedule is shown |
+| `citations` | `{n, kind: item/schedule, ref: chunk_id or 관리번호, source, page, year, data_date, text}` |
+| `schedule` | For a schedule question, or an item question with an area chosen (then the answered bin's collection type only). From the tool, never the LLM: `days`, `time`, `place`, and `zones` with next dates, `day_check`, office, phone, data date, `stale` |
 | `data_date`, `office_phone` | Oldest data date of the rows shown; office phone |
 | `missing` | What could not be answered |
 | `clarify` | `{question, options}` when `status = CLARIFY` (e.g. which 중구); up to 30 options |
 | `handoff` | When it cannot answer: office, phone, a Korean sentence to show, what was checked |
 | `notes` | Source-year and data-age warnings |
 | `trace_id` | ID of the trace behind this answer |
-| `contract_version` | `1.0`; the full schema is `docs/answer_schema.json` (`rag/contract.py`) |
+| `contract_version` | `2.0` (1.0 had a top-level `bin`, `bin_en`, `how_to_prepare`); the full schema is `docs/answer_schema.json` (`rag/contract.py`) |
 
 Schedule tool on its own (no models needed):
 ```bash
@@ -234,7 +250,10 @@ model revisions, cases SHA-256, git commit) and `summary.md` (one row per varian
 each variant gained or lost). `--cases` defaults to `eval/cases/dev.jsonl` (the developer probes
 if that file is missing; probe runs write to `experiments/results/<id>/`). It refuses a test
 file without `--allow-test`. Paths inside older
-manifests are the paths at the time of that run.
+manifests are the paths at the time of that run. Another case set goes to its own folder:
+`--cases eval/cases/v2/dev.jsonl` writes `experiments/results/dev_v2/<id>/`, and
+`--reuse VARIANT=TRACES` files a finished `eval.run_eval` run as a variant instead of running it
+again.
 
 ## Evaluation
 
@@ -243,7 +262,7 @@ python -m eval.run_eval --name my-run                 # full system on the dev s
 python -m eval.run_eval --name my-base --config baseline
 python -m eval.run_eval --name x --set gate_tau=0.3   # one field changed
 python -m eval.run_eval --name my-run --rescore       # score saved traces again after a metric fix
-python -m eval.compare test-final test-baseline       # paired test (McNemar) + 95% intervals, no models
+python -m eval.compare test-v2-final test-v2-baseline # paired test (McNemar) + 95% intervals, no models
 python -m eval.make_cases --check                     # the frozen split is unchanged
 python -m experiments.run_experiment experiments/configs/E9_item_names.json --cases eval/cases/dev.jsonl --cache
 python -m experiments.robustness                      # noise / negative / counterfactual probes
@@ -257,15 +276,24 @@ python -m eval.ragas_eval prepare my-run && .venv-judge/bin/python -m eval.ragas
 python -m eval.audit export my-run                    # two blank sheets for human raters
 python -m eval.audit agree my-run                     # after both raters filled their sheet
 python -m eval.figures heatmap my-run                 # docs/figures/heatmap_my-run.png
-python -m eval.figures ablation dev-baseline=Baseline dev-s3e-final=Final --out docs/figures/x.png
+python -m eval.figures ablation test-v2-baseline=Baseline test-v2-final=Final --out docs/figures/x.png
 python -m eval.report_pdf                             # docs/REPORT.md -> docs/REPORT.pdf
 ```
 
 `--cache` replays identical temperature-0 LLM requests (tuning only; latency is then not valid).
 
-**The test split** is refused without `--allow-test`. Stage 4 ran it once, with the configuration
-frozen at `f0faba6`; the results are in `eval/reports/test-final/`, `eval/reports/test-baseline/`
-and `experiments/results/test/robustness/`. The commands were:
+**The test split** is refused without `--allow-test`. The final system, frozen at `ccb3966`, was
+run once on the v2 test split; the results are in `eval/reports/test-v2-final/` and
+`eval/reports/test-v2-baseline/`:
+
+```bash
+python -m eval.run_eval --name test-v2-final --cases eval/cases/v2/test.jsonl --allow-test
+python -m eval.run_eval --name test-v2-baseline --config baseline --cases eval/cases/v2/test.jsonl --allow-test
+```
+
+Stage 4 ran the v1 test split once, with the configuration frozen at `f0faba6`; the results are
+in `eval/reports/test-final/`, `eval/reports/test-baseline/` and
+`experiments/results/test/robustness/`. The commands were:
 
 ```bash
 python -m eval.run_eval --name test-final --cases eval/cases/test.jsonl --allow-test
@@ -309,6 +337,12 @@ The page has the following:
 - **Light and dark themes.** Both meet WCAG AA contrast, and axe-core finds no accessibility
   violations in Chromium (`python -m pytest tests/e2e -m e2e`, after
   `pip install -r requirements/e2e.txt`).
+- **Sources.** Each source under an answer is a button. It opens a pop-up with the cited page
+  of the official PDF, the text the assistant read and a download button for the whole guide
+  (`data/raw/item_guides/`, also copied into the Docker image).
+- **Several items, and your area.** A question about several items gets one bin and one list
+  of steps per item. With an area chosen, an item answer also shows that area's collection days
+  for the answered bin; the area's put-out method has its own heading.
 - **Maintainer panel.** `RAG_ADMIN=1` adds a panel with the models, digests and data-review dates.
 - **Public link.** `deploy/public_link.sh` shares the website through Tailscale Funnel when the
   Tailscale app is signed in (the same link every time), or else a Cloudflare quick tunnel

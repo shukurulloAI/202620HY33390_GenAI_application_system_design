@@ -33,6 +33,19 @@ BINS: dict[str, str] = {
 }
 
 # Other names for the same bin: model outputs, 2026 group names, everyday words.
+# The district collection type (rag/schedule_tool.WASTE_TYPES) a bin is put out with, for
+# adding the matching collection days when the user chose an area. A bin with no column in
+# the district table gets no days: 불연성종량제 (no column of its own), 의류 / 전용함 (bins
+# and boxes), 가전제품 (free pick-up service), 전문시설 and 재질별분리 (depends on the parts).
+BIN_WASTE_TYPE: dict[str, str] = {
+    "종이": "recycling", "종이팩": "recycling", "금속캔": "recycling", "고철": "recycling",
+    "유리병": "recycling", "플라스틱": "recycling", "투명페트병": "recycling",
+    "비닐": "recycling", "발포합성수지": "recycling",
+    "음식물": "food",
+    "종량제봉투": "general",
+    "대형폐기물": "bulky",
+}
+
 ALIASES: dict[str, str] = {
     "대형": "대형폐기물", "대형생활폐기물": "대형폐기물",
     "음식물쓰레기": "음식물", "음식물류폐기물": "음식물", "음식물류": "음식물",
@@ -68,7 +81,8 @@ def canonical_bin(text: str) -> str | None:
         return None
     if key in _LOOKUP:
         return _LOOKUP[key]
-    if re.search(r"(무색|투명).*(pet|페트)", re.sub(r"\s+", "", text).lower()):
+    compact = re.sub(r"\s+", "", text).lower()
+    if re.search(r"(무색|투명).*(pet|페트)", compact) and "제외" not in compact:
         return "투명페트병"
     return None
 

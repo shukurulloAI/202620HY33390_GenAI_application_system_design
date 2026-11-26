@@ -3,6 +3,8 @@ Figures for the report (PLAN.md §7.5, §12), as PNG files in docs/figures/.
 
     python -m eval.figures heatmap <report name> [--out docs/figures/heatmap_<name>.png]
     python -m eval.figures ablation <report name>=<label> ... --out docs/figures/ablation.png
+    python -m eval.figures variants experiments/results/dev_v2/E10/qwen2.5-7b=<label> ...
+        --out <png>
     python -m eval.figures retrieval experiments/results/dev/E9 ... --out docs/figures/retrieval.png
 
 Colours: the reference palette of the dataviz method (one blue ramp for counts; blue and
@@ -83,15 +85,37 @@ def heatmap(name: str, out: Path, title: str | None = None) -> Path:
 
 
 def ablation(pairs: list[str], out: Path, title: str) -> Path:
-    labels, correct, false = [], [], []
-    n = None
+    """Correct cases and false answers of eval reports: `name=Label`."""
+    rows = []
     for pair in pairs:
         name, _, label = pair.partition("=")
         o = _report(name)["overall"]
-        labels.append(label or name)
-        correct.append(o["case_ok"]["k"])
-        false.append(o["false_answer"]["k"])
-        n = o["cases"]
+        rows.append((label or name, o["case_ok"]["k"], o["false_answer"]["k"], o["cases"]))
+    return _bars(rows, out, title)
+
+
+def variants(pairs: list[str], out: Path, title: str) -> Path:
+    """The same for experiment variants: `experiments/results/<set>/<id>/<variant>=Label`,
+    scored from their traces with the cases their manifest names."""
+    from eval.cases import load_cases
+    from eval.metrics import score
+    from rag.files import read_jsonl
+    rows = []
+    for pair in pairs:
+        where, _, label = pair.partition("=")
+        directory, variant = Path(where).parent, Path(where).name
+        manifest = json.loads((ROOT / directory / "manifest.json").read_text(encoding="utf-8"))
+        entry = manifest["variants"][variant]
+        traces = read_jsonl(ROOT / entry["traces"])
+        o = score(traces, load_cases(ROOT / manifest["cases"]))["overall"]
+        rows.append((label or variant, o["case_ok"]["k"], o["false_answer"]["k"], o["cases"]))
+    return _bars(rows, out, title)
+
+
+def _bars(rows: list[tuple], out: Path, title: str) -> Path:
+    labels = [r[0] for r in rows]
+    correct, false = [r[1] for r in rows], [r[2] for r in rows]
+    n = rows[-1][3]
     fig, ax = plt.subplots(figsize=(max(6.0, 1.25 * len(labels) + 1.5), 3.6))
     width = 0.38
     xs = range(len(labels))
@@ -148,7 +172,7 @@ def retrieval(dirs: list[Path], out: Path, title: str) -> Path:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("kind", choices=["heatmap", "ablation", "retrieval"])
+    parser.add_argument("kind", choices=["heatmap", "ablation", "variants", "retrieval"])
     parser.add_argument("items", nargs="+")
     parser.add_argument("--out", type=Path)
     parser.add_argument("--title")
@@ -159,6 +183,9 @@ def main() -> None:
     elif args.kind == "ablation":
         path = ablation(args.items, args.out or FIGURES / "ablation.png",
                         args.title or "Correct cases and false answers by configuration")
+    elif args.kind == "variants":
+        path = variants(args.items, args.out or FIGURES / "variants.png",
+                        args.title or "Correct cases and false answers by variant")
     else:
         path = retrieval([Path(d) for d in args.items], args.out or FIGURES / "retrieval.png",
                          args.title or "Item retrieval on dev")
